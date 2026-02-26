@@ -75,23 +75,20 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     for csv_path in csv_files:
         basename = os.path.basename(csv_path)
         key = basename.replace(".csv", "")
-        # Try to clean up the name for the table like Streamlit does
-        # e.g., breadth_theme_copper -> Copper, breadth_auto -> NIFTY AUTO, market_breadth_nifty50 -> Nifty 50
-        # Wait, the config uses formal titles. The easiest way without hardcoding the config is just to map broadly.
-        # But we can just use the config logic since `app.py` had a config_map.
-        # Let's read `nifty_themes.py` to get the actual titles if possible, or just generate them.
-        sys.path.insert(0, str(source_dir.resolve()))
-        title = key
+        # Parse titles safely from the Next.js config.ts
         try:
-            from nifty_themes import THEMES_CONFIG, SECTOR_INDICES, BROAD_MARKET_INDICES
-            all_config = {**BROAD_MARKET_INDICES, **SECTOR_INDICES, **THEMES_CONFIG}
-            # Find matching config
-            for name, cfg in all_config.items():
-                if basename in cfg['file']:
-                    title = name
-                    break
-        except ImportError:
-            pass
+            config_path = Path(__file__).parent.parent / "lib" / "config.ts"
+            import re
+            if config_path.exists():
+                with open(config_path, "r") as f:
+                    content = f.read()
+                matches = re.finditer(r'id:\s*"([^"]+)",\s*title:\s*"([^"]+)"', content)
+                for match in matches:
+                    if match.group(1) == key:
+                        title = match.group(2)
+                        break
+        except Exception as e:
+            print(f"Warning mapping {key}: {e}")
             
         try:
             df = pd.read_csv(csv_path)

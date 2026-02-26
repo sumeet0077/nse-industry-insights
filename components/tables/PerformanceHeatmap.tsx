@@ -57,7 +57,7 @@ function returnFormatter(params: ValueFormatterParams): string {
     return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
 }
 
-const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years"];
+const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
 
 export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
     const columnDefs = useMemo<ColDef[]>(() => {

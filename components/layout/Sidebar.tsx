@@ -17,7 +17,10 @@ const NAV_GROUPS = [
     {
         label: "Overview",
         icon: LayoutGrid,
-        items: [{ label: "Performance", href: "/performance" }],
+        items: [
+            { label: "Performance", href: "/performance" },
+            { label: "Sector Rotation", href: "/sector-rotation" }
+        ],
     },
     {
         label: "Broad Market",

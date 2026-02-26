@@ -10,12 +10,80 @@ Usage:
 """
 
 import os
+import sys
 import json
 import argparse
 import glob
 import shutil
 import pandas as pd
 from pathlib import Path
+
+def export_rrg_data(output_dir: Path, source_dir: Path):
+    """Calculate and export RRG data for D, W, M timeframes."""
+    rrg_dir = output_dir / "rrg"
+    rrg_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Try to import RRGCalculator from source_dir
+    if str(source_dir.resolve()) not in sys.path:
+        sys.path.insert(0, str(source_dir.resolve()))
+    
+    try:
+        from rrg_helper import RRGCalculator
+    except ImportError:
+        print("  SKIP RRG calculation (rrg_helper.py not found in source_dir)")
+        return
+        
+    print("  Calculating RRG Data (Daily, Weekly, Monthly)...")
+    
+    # Load Benchmark (Nifty 50)
+    benchmark_file = source_dir / "market_breadth_nifty50.csv"
+    if not benchmark_file.exists():
+        print("  SKIP RRG calculation (Benchmark Nifty 50 not found)")
+        return
+        
+    benchmark_df = pd.read_csv(benchmark_file)
+    calculator = RRGCalculator(benchmark_df)
+    
+    # Load all themes
+    patterns = [
+        str(source_dir / "breadth_*.csv"),
+    ]
+    csv_files = []
+    for pattern in patterns:
+        csv_files.extend(glob.glob(pattern))
+    
+    df_dict = {}
+    for csv_path in csv_files:
+        basename = os.path.basename(csv_path)
+        key = basename.replace(".csv", "")
+        # Use a nice name or just use the key. Streamlit uses actual names, we can use the key for now
+        # and map it in the frontend. Let's use the key (e.g., breadth_auto, breadth_theme_copper)
+        try:
+            df = pd.read_csv(csv_path)
+            if not df.empty:
+                df_dict[key] = df
+        except Exception:
+            pass
+            
+    if not df_dict:
+        print("  SKIP RRG calculation (No theme data found)")
+        return
+        
+    for tf, tf_name in [('D', 'Daily'), ('W', 'Weekly'), ('M', 'Monthly')]:
+        try:
+            rrg_df = calculator.calculate_rrg_metrics(df_dict, timeframe=tf)
+            if not rrg_df.empty:
+                out_path = rrg_dir / f"rrg_{tf}.json"
+                # Export with date_format="iso"
+                if "Date" in rrg_df.columns:
+                    rrg_df["Date"] = rrg_df["Date"].astype(str)
+                rrg_df.to_json(out_path, orient="records", date_format="iso")
+                print(f"  OK   rrg_{tf}.json ({len(rrg_df)} rows)")
+            else:
+                print(f"  ERR  rrg_{tf}.json is empty")
+        except Exception as e:
+            print(f"  ERR  rrg_{tf}.json calculation failed: {e}")
+
 
 
 def export_all_breadth_files(output_dir: Path, source_dir: Path):
@@ -111,6 +179,9 @@ def main():
 
     print("\nExporting constituent performance...")
     export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")
+
+    print("\nExporting RRG Data...")
+    export_rrg_data(output_dir, source_dir)
 
     print("\nGenerating manifest...")
     generate_manifest(output_dir)

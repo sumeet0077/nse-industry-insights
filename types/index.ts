@@ -55,4 +55,11 @@ export interface IndexConfig {
     category: "broad-market" | "sectors" | "industries";
 }
 
+export interface RRGDataPoint {
+    Date: string;
+    Ticker: string;
+    RS_Ratio: number;
+    RS_Momentum: number;
+}
+
 export type SubscriptionTier = "free" | "pro";

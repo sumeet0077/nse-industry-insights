@@ -10,6 +10,7 @@ import type {
     MarketStatus,
     MarketStatusEntry,
     ConstituentPerformanceMap,
+    RRGDataPoint,
 } from "@/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -76,4 +77,8 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
     }
 
     return null;
+}
+
+export function getRRGData(timeframe: "D" | "W" | "M"): RRGDataPoint[] {
+    return readJson<RRGDataPoint[]>(`rrg/rrg_${timeframe}.json`) ?? [];
 }

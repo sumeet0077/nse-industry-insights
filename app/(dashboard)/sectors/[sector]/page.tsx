@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getConfigById, SECTORS } from "@/lib/config";
-import { getBreadthData, getConstituentPerformance } from "@/lib/data";
+import { getBreadthData, getConstituentPerformance, getMarketStatusForIndex } from "@/lib/data";
 import { IndexDetailPage } from "@/components/common/IndexDetailPage";
 
 interface Props {
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const config = getConfigById(sector);
     if (!config) return {};
     return {
-        title: `${config.title} Market Breadth`,
+        title: `${config.title} Market Breadth | NSE Industry Insights`,
         description: `${config.title} sector breadth analysis — track stocks above the 200-day SMA.`,
     };
 }
@@ -30,6 +30,8 @@ export default async function SectorPage({ params }: Props) {
 
     const breadthData = getBreadthData(config.dataFile);
     const allConstituents = getConstituentPerformance();
+    const marketStatus = getMarketStatusForIndex(config.title);
+
     const constituents = allConstituents[config.title]
         ? Object.entries(allConstituents[config.title]).map(([ticker, data]) => {
             const { ticker: _t, ...rest } = data;
@@ -43,6 +45,7 @@ export default async function SectorPage({ params }: Props) {
             description={config.description}
             breadthData={breadthData}
             constituentData={constituents}
+            marketStatus={marketStatus}
         />
     );
 }

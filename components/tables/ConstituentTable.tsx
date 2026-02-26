@@ -59,8 +59,14 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 pinned: "left",
                 width: 140,
                 cellRenderer: (params: { value: string }) => {
+                    if (!params.value) return null;
                     const url = makeTradingViewUrl(params.value);
-                    return `<a href="${url}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 underline">${params.value.replace(".NS", "").replace(".BO", "")}</a>`;
+                    const label = params.value.replace(".NS", "").replace(".BO", "");
+                    return (
+                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+                            {label}
+                        </a>
+                    );
                 },
             },
         ];

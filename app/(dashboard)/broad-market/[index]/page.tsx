@@ -32,12 +32,20 @@ export default async function BroadMarketPage({ params }: Props) {
     const allConstituents = getConstituentPerformance();
     const marketStatus = getMarketStatusForIndex(config.title);
 
-    const constituents = allConstituents[config.title]
-        ? Object.entries(allConstituents[config.title]).map(([ticker, data]) => {
+    let constituents: any[] = [];
+    if (marketStatus) {
+        const allTickers = [
+            ...(marketStatus.above || []),
+            ...(marketStatus.below || []),
+            ...(marketStatus.new_stock || []),
+        ];
+        constituents = allTickers.map((ticker) => {
+            const data = allConstituents[ticker] || {};
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { ticker: _t, ...rest } = data;
             return { ticker, ...rest };
-        })
-        : [];
+        });
+    }
 
     return (
         <IndexDetailPage

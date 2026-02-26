@@ -18,6 +18,132 @@ import shutil
 import pandas as pd
 from pathlib import Path
 
+from datetime import timedelta
+
+def export_performance_summary(output_dir: Path, source_dir: Path):
+    """Calculate and export the performance summary heatmap data."""
+    perf_dir = output_dir / "performance"
+    perf_dir.mkdir(parents=True, exist_ok=True)
+    
+    print("  Calculating Performance Summary...")
+    
+    # First, find the Nifty 50 baseline for RS (20D) calculation
+    baseline_file = source_dir / "market_breadth_nifty50.csv"
+    nifty_latest_price = 0
+    nifty_20d_price = 0
+    nifty_rs_base = 0
+    
+    if baseline_file.exists():
+        try:
+            b_df = pd.read_csv(baseline_file)
+            if not b_df.empty and 'Index_Close' in b_df.columns:
+                b_df['Date'] = pd.to_datetime(b_df['Date'])
+                latest = b_df.iloc[-1]
+                nifty_latest_price = latest['Index_Close']
+                target_date = latest['Date'] - timedelta(days=20)
+                mask = b_df['Date'] <= target_date
+                if mask.any():
+                    nifty_20d_price = b_df[mask].iloc[-1]['Index_Close']
+                    if nifty_20d_price > 0:
+                        nifty_rs_base = (nifty_latest_price - nifty_20d_price) / nifty_20d_price
+        except Exception as e:
+            print(f"    Warning: Could not process Nifty 50 baseline for RS: {e}")
+
+    periods = {
+        "1 Day": 1,
+        "1 Week": 7,
+        "1 Month": 30,
+        "3 Months": 90,
+        "6 Months": 180,
+        "1 Year": 365,
+        "3 Years": 365*3,
+        "5 Years": 365*5
+    }
+    
+    # Load all themes
+    patterns = [
+        str(source_dir / "market_breadth_*.csv"),
+        str(source_dir / "breadth_*.csv"),
+    ]
+    csv_files = []
+    for pattern in patterns:
+        csv_files.extend(glob.glob(pattern))
+        
+    csv_files = sorted(set(csv_files))
+    summary_data = []
+    
+    for csv_path in csv_files:
+        basename = os.path.basename(csv_path)
+        key = basename.replace(".csv", "")
+        # Try to clean up the name for the table like Streamlit does
+        # e.g., breadth_theme_copper -> Copper, breadth_auto -> NIFTY AUTO, market_breadth_nifty50 -> Nifty 50
+        # Wait, the config uses formal titles. The easiest way without hardcoding the config is just to map broadly.
+        # But we can just use the config logic since `app.py` had a config_map.
+        # Let's read `nifty_themes.py` to get the actual titles if possible, or just generate them.
+        sys.path.insert(0, str(source_dir.resolve()))
+        title = key
+        try:
+            from nifty_themes import THEMES_CONFIG, SECTOR_INDICES, BROAD_MARKET_INDICES
+            all_config = {**BROAD_MARKET_INDICES, **SECTOR_INDICES, **THEMES_CONFIG}
+            # Find matching config
+            for name, cfg in all_config.items():
+                if basename in cfg['file']:
+                    title = name
+                    break
+        except ImportError:
+            pass
+            
+        try:
+            df = pd.read_csv(csv_path)
+            if df.empty or 'Index_Close' not in df.columns:
+                continue
+                
+            df['Date'] = pd.to_datetime(df['Date'])
+            latest = df.iloc[-1]
+            current_price = latest['Index_Close']
+            current_date = latest['Date']
+            
+            row = {"Theme/Index": title}
+            
+            for p_name, days in periods.items():
+                target_date = current_date - timedelta(days=days)
+                mask = df['Date'] <= target_date
+                if mask.any():
+                    past_row = df[mask].iloc[-1]
+                    past_price = past_row['Index_Close']
+                    if past_price > 0:
+                        ret = ((current_price - past_price) / past_price) * 100
+                        row[p_name] = round(ret, 2)
+                    else:
+                        row[p_name] = None
+                else:
+                    row[p_name] = None
+                    
+            # RS (20D)
+            row["RS (20D)"] = None
+            if current_price > 0:
+                target_date = current_date - timedelta(days=20)
+                mask = df['Date'] <= target_date
+                if mask.any():
+                    asset_20d_price = df[mask].iloc[-1]['Index_Close']
+                    if asset_20d_price > 0 and nifty_rs_base != 0:
+                        asset_rs_base = (current_price - asset_20d_price) / asset_20d_price
+                        rs_20d = (asset_rs_base - nifty_rs_base) * 100
+                        row["RS (20D)"] = round(rs_20d, 2)
+                        
+            summary_data.append(row)
+            
+        except Exception as e:
+            print(f"    Error processing {key}: {e}")
+            
+    if summary_data:
+        out_path = perf_dir / "performance_summary.json"
+        with open(out_path, "w") as f:
+            json.dump(summary_data, f, indent=2)
+        print(f"  OK   performance_summary.json ({len(summary_data)} rows)")
+    else:
+        print("  ERR  Could not generate performance_summary.json")
+
 def export_rrg_data(output_dir: Path, source_dir: Path):
     """Calculate and export RRG data for D, W, M timeframes."""
     rrg_dir = output_dir / "rrg"
@@ -172,7 +298,7 @@ def main():
     export_all_breadth_files(output_dir, source_dir)
 
     print("\nExporting performance summary...")
-    export_json_file(output_dir, source_dir, "performance_summary_latest.json", "performance", "performance_summary.json")
+    export_performance_summary(output_dir, source_dir)
 
     print("\nExporting market status...")
     export_json_file(output_dir, source_dir, "market_status_latest.json", "market_status", "market_status_latest.json")

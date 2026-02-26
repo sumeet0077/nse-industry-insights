@@ -1,66 +1,81 @@
 // lib/config.ts
 // Central registry of all indices, sectors, and industries
-// This mirrors nifty_themes.py and index_config from the Streamlit app
+// File names match the actual Streamlit project CSV→JSON output from export_json.py
 
 import type { IndexConfig } from "@/types";
 
 export const BROAD_MARKET: IndexConfig[] = [
-    {
-        id: "nifty50",
-        title: "Nifty 50",
-        description: "Top 50 large-cap companies on NSE by market capitalisation",
-        dataFile: "nifty50",
-        category: "broad-market",
-    },
-    {
-        id: "nifty500",
-        title: "Nifty 500",
-        description: "Top 500 companies representing ~95% of the total free-float market capitalisation",
-        dataFile: "nifty500",
-        category: "broad-market",
-    },
-    {
-        id: "nifty_smallcap250",
-        title: "Nifty Smallcap 250",
-        description: "250 smallcap companies outside the Nifty 500 universe",
-        dataFile: "nifty_smallcap250",
-        category: "broad-market",
-    },
+    { id: "market_breadth_nifty50", title: "Nifty 50", description: "Top 50 Blue-chip Companies", dataFile: "market_breadth_nifty50", category: "broad-market" },
+    { id: "market_breadth_nifty500", title: "Nifty 500", description: "Top 500 Companies", dataFile: "market_breadth_nifty500", category: "broad-market" },
+    { id: "market_breadth_smallcap", title: "Nifty Smallcap 250", description: "Smallcap Segment", dataFile: "market_breadth_smallcap", category: "broad-market" },
 ];
 
 export const SECTORS: IndexConfig[] = [
-    { id: "nifty_auto", title: "Nifty Auto", description: "Automobile and auto ancillaries sector", dataFile: "nifty_auto", category: "sectors" },
-    { id: "nifty_bank", title: "Nifty Bank", description: "Most liquid and large-cap banking stocks", dataFile: "nifty_bank", category: "sectors" },
-    { id: "nifty_energy", title: "Nifty Energy", description: "Energy sector companies", dataFile: "nifty_energy", category: "sectors" },
-    { id: "nifty_financial_services", title: "Nifty Financial Services", description: "Financial services sector", dataFile: "nifty_financial_services", category: "sectors" },
-    { id: "nifty_fmcg", title: "Nifty FMCG", description: "Fast-moving consumer goods sector", dataFile: "nifty_fmcg", category: "sectors" },
-    { id: "nifty_healthcare", title: "Nifty Healthcare", description: "Healthcare and pharma sector", dataFile: "nifty_healthcare", category: "sectors" },
-    { id: "nifty_it", title: "Nifty IT", description: "Information Technology sector", dataFile: "nifty_it", category: "sectors" },
-    { id: "nifty_media", title: "Nifty Media", description: "Media and entertainment sector", dataFile: "nifty_media", category: "sectors" },
-    { id: "nifty_metal", title: "Nifty Metal", description: "Metal and mining sector", dataFile: "nifty_metal", category: "sectors" },
-    { id: "nifty_pharma", title: "Nifty Pharma", description: "Pharmaceutical sector", dataFile: "nifty_pharma", category: "sectors" },
-    { id: "nifty_private_bank", title: "Nifty Private Bank", description: "Private sector banking", dataFile: "nifty_private_bank", category: "sectors" },
-    { id: "nifty_psu_bank", title: "Nifty PSU Bank", description: "Public sector banking", dataFile: "nifty_psu_bank", category: "sectors" },
-    { id: "nifty_realty", title: "Nifty Realty", description: "Real estate sector", dataFile: "nifty_realty", category: "sectors" },
+    { id: "breadth_auto", title: "Nifty Auto", description: "Automobile Sector", dataFile: "breadth_auto", category: "sectors" },
+    { id: "breadth_bank", title: "Nifty Bank", description: "Banking Sector", dataFile: "breadth_bank", category: "sectors" },
+    { id: "breadth_finance", title: "Nifty Financial Services", description: "Financial Services", dataFile: "breadth_finance", category: "sectors" },
+    { id: "breadth_fmcg", title: "Nifty FMCG", description: "Fast Moving Consumer Goods", dataFile: "breadth_fmcg", category: "sectors" },
+    { id: "breadth_healthcare", title: "Nifty Healthcare", description: "Healthcare & Hospitals", dataFile: "breadth_healthcare", category: "sectors" },
+    { id: "breadth_it", title: "Nifty IT", description: "Information Technology", dataFile: "breadth_it", category: "sectors" },
+    { id: "breadth_media", title: "Nifty Media", description: "Media & Entertainment", dataFile: "breadth_media", category: "sectors" },
+    { id: "breadth_metal", title: "Nifty Metal", description: "Metals & Mining", dataFile: "breadth_metal", category: "sectors" },
+    { id: "breadth_pharma", title: "Nifty Pharma", description: "Pharmaceuticals", dataFile: "breadth_pharma", category: "sectors" },
+    { id: "breadth_pvtbank", title: "Nifty Private Bank", description: "Private Sector Banks", dataFile: "breadth_pvtbank", category: "sectors" },
+    { id: "breadth_psubank", title: "Nifty PSU Bank", description: "Public Sector Banks", dataFile: "breadth_psubank", category: "sectors" },
+    { id: "breadth_realty", title: "Nifty Realty", description: "Real Estate", dataFile: "breadth_realty", category: "sectors" },
+    { id: "breadth_consumer", title: "Nifty Consumer Durables", description: "Consumer Durables", dataFile: "breadth_consumer", category: "sectors" },
+    { id: "breadth_oilgas", title: "Nifty Oil & Gas", description: "Oil, Gas & Petroleum", dataFile: "breadth_oilgas", category: "sectors" },
 ];
 
 export const INDUSTRIES: IndexConfig[] = [
-    { id: "copper", title: "Copper", description: "Copper producers and processors", dataFile: "copper", category: "industries" },
-    { id: "oil_gas_downstream", title: "Oil & Gas Downstream", description: "Oil refining and marketing", dataFile: "oil_gas_downstream", category: "industries" },
-    { id: "defence", title: "Defence", description: "Defence equipment and services", dataFile: "defence", category: "industries" },
-    { id: "railways", title: "Railways", description: "Railway infrastructure and rolling stock", dataFile: "railways", category: "industries" },
-    { id: "power", title: "Power", description: "Power generation and distribution", dataFile: "power", category: "industries" },
-    { id: "insurance_life", title: "Life Insurance", description: "Life insurance companies", dataFile: "insurance_life", category: "industries" },
-    { id: "insurance_general", title: "General Insurance", description: "General insurance companies", dataFile: "insurance_general", category: "industries" },
-    { id: "private_banking", title: "Private Banking", description: "Private sector banks", dataFile: "private_banking", category: "industries" },
-    { id: "psu_banking", title: "PSU Banking", description: "Public sector banks", dataFile: "psu_banking", category: "industries" },
-    { id: "housing_finance", title: "Housing Finance", description: "Housing finance companies", dataFile: "housing_finance", category: "industries" },
-    { id: "nbfc", title: "NBFC", description: "Non-banking financial companies", dataFile: "nbfc", category: "industries" },
-    { id: "retail", title: "Retail & E-Commerce", description: "Retail and online commerce", dataFile: "retail", category: "industries" },
-    { id: "amc", title: "AMC", description: "Asset management companies", dataFile: "amc", category: "industries" },
-    { id: "wealth_management", title: "Wealth Management", description: "Wealth management firms", dataFile: "wealth_management", category: "industries" },
-    { id: "capital_markets", title: "Capital Market", description: "Capital market intermediaries", dataFile: "capital_markets", category: "industries" },
-    { id: "alcohols_breweries", title: "Alcohols & Breweries", description: "Alcohol and brewery companies", dataFile: "alcohols_breweries", category: "industries" },
+    { id: "breadth_theme_copper", title: "Copper", description: "Copper Producers & Processors", dataFile: "breadth_theme_copper", category: "industries" },
+    { id: "breadth_theme_defence_and_aerospace", title: "Defence & Aerospace", description: "Defence Equipment & Services", dataFile: "breadth_theme_defence_and_aerospace", category: "industries" },
+    { id: "breadth_theme_railways_and_infrastructure", title: "Railways & Infrastructure", description: "Railway Infra & Rolling Stock", dataFile: "breadth_theme_railways_and_infrastructure", category: "industries" },
+    { id: "breadth_theme_power_tandd", title: "Power T&D", description: "Power Transmission & Distribution", dataFile: "breadth_theme_power_tandd", category: "industries" },
+    { id: "breadth_theme_life_insurance", title: "Life Insurance", description: "Life Insurance Companies", dataFile: "breadth_theme_life_insurance", category: "industries" },
+    { id: "breadth_theme_general_insurance", title: "General Insurance", description: "General Insurance Companies", dataFile: "breadth_theme_general_insurance", category: "industries" },
+    { id: "breadth_theme_private_banking", title: "Private Banking", description: "Private Sector Banks", dataFile: "breadth_theme_private_banking", category: "industries" },
+    { id: "breadth_theme_psu_banking", title: "PSU Banking", description: "Public Sector Banks", dataFile: "breadth_theme_psu_banking", category: "industries" },
+    { id: "breadth_theme_housing_finance", title: "Housing Finance", description: "Housing Finance Companies", dataFile: "breadth_theme_housing_finance", category: "industries" },
+    { id: "breadth_theme_nbfc", title: "NBFC", description: "Non-Banking Financial Companies", dataFile: "breadth_theme_nbfc", category: "industries" },
+    { id: "breadth_theme_retail_and_e_commerce", title: "Retail & E-Commerce", description: "Retail and Online Commerce", dataFile: "breadth_theme_retail_and_e_commerce", category: "industries" },
+    { id: "breadth_theme_asset_management", title: "AMC", description: "Asset Management Companies", dataFile: "breadth_theme_asset_management", category: "industries" },
+    { id: "breadth_theme_wealth_management", title: "Wealth Management", description: "Wealth Management Firms", dataFile: "breadth_theme_wealth_management", category: "industries" },
+    { id: "breadth_theme_capital_market", title: "Capital Market", description: "Capital Market Intermediaries", dataFile: "breadth_theme_capital_market", category: "industries" },
+    { id: "breadth_theme_alcohols_and_breweries", title: "Alcohols & Breweries", description: "Alcohol & Brewery Companies", dataFile: "breadth_theme_alcohols_and_breweries", category: "industries" },
+    { id: "breadth_theme_oil_and_gas_downstream", title: "Oil & Gas Downstream", description: "Oil Refining & Marketing", dataFile: "breadth_theme_oil_and_gas_downstream", category: "industries" },
+    { id: "breadth_theme_oil_and_gas_upstream", title: "Oil & Gas Upstream", description: "Oil Exploration & Production", dataFile: "breadth_theme_oil_and_gas_upstream", category: "industries" },
+    { id: "breadth_theme_cement", title: "Cement", description: "Cement Manufacturers", dataFile: "breadth_theme_cement", category: "industries" },
+    { id: "breadth_theme_solar_manufacturing", title: "Solar Manufacturing", description: "Solar Cells, Modules & EPC", dataFile: "breadth_theme_solar_manufacturing", category: "industries" },
+    { id: "breadth_theme_semiconductors_and_ems", title: "Semiconductors & EMS", description: "Semiconductor & Electronic Manufacturing", dataFile: "breadth_theme_semiconductors_and_ems", category: "industries" },
+    { id: "breadth_theme_infrastructure_and_epc", title: "Infrastructure & EPC", description: "Infrastructure & Engineering", dataFile: "breadth_theme_infrastructure_and_epc", category: "industries" },
+    { id: "breadth_theme_fintech", title: "Fintech", description: "Financial Technology", dataFile: "breadth_theme_fintech", category: "industries" },
+    { id: "breadth_theme_ev_ecosystem", title: "EV Ecosystem", description: "Electric Vehicle Ecosystem", dataFile: "breadth_theme_ev_ecosystem", category: "industries" },
+    { id: "breadth_theme_renewable_energy_generation", title: "Renewable Energy", description: "Renewable Energy Generation", dataFile: "breadth_theme_renewable_energy_generation", category: "industries" },
+    { id: "breadth_theme_green_hydrogen", title: "Green Hydrogen", description: "Green Hydrogen Companies", dataFile: "breadth_theme_green_hydrogen", category: "industries" },
+    { id: "breadth_theme_data_centres", title: "Data Centres", description: "Data Centre Companies", dataFile: "breadth_theme_data_centres", category: "industries" },
+    { id: "breadth_theme_aviation", title: "Aviation", description: "Airlines & Aviation", dataFile: "breadth_theme_aviation", category: "industries" },
+    { id: "breadth_theme_logistics", title: "Logistics", description: "Logistics & Supply Chain", dataFile: "breadth_theme_logistics", category: "industries" },
+    { id: "breadth_theme_hospitals", title: "Hospitals", description: "Hospital Chains", dataFile: "breadth_theme_hospitals", category: "industries" },
+    { id: "breadth_theme_pharma_formulations", title: "Pharma Formulations", description: "Pharma Formulation Companies", dataFile: "breadth_theme_pharma_formulations", category: "industries" },
+    { id: "breadth_theme_specialty_chemicals", title: "Specialty Chemicals", description: "Specialty Chemical Companies", dataFile: "breadth_theme_specialty_chemicals", category: "industries" },
+    { id: "breadth_theme_agrochemicals_and_fertilisers", title: "Agrochemicals & Fertilisers", description: "Agrochemicals & Fertiliser Companies", dataFile: "breadth_theme_agrochemicals_and_fertilisers", category: "industries" },
+    { id: "breadth_theme_textiles", title: "Textiles", description: "Textile Companies", dataFile: "breadth_theme_textiles", category: "industries" },
+    { id: "breadth_theme_paints", title: "Paints", description: "Paint Companies", dataFile: "breadth_theme_paints", category: "industries" },
+    { id: "breadth_theme_jewellery_gold", title: "Jewellery & Gold", description: "Jewellery & Gold Retailers", dataFile: "breadth_theme_jewellery_gold", category: "industries" },
+    { id: "breadth_theme_silver", title: "Silver", description: "Silver Producers", dataFile: "breadth_theme_silver", category: "industries" },
+    { id: "breadth_theme_critical_minerals", title: "Critical Minerals", description: "Critical Mineral Companies", dataFile: "breadth_theme_critical_minerals", category: "industries" },
+    { id: "breadth_theme_metals_and_mining", title: "Metals & Mining", description: "Metals & Mining Companies", dataFile: "breadth_theme_metals_and_mining", category: "industries" },
+    { id: "breadth_theme_telecom_services", title: "Telecom Services", description: "Telecom Service Providers", dataFile: "breadth_theme_telecom_services", category: "industries" },
+    { id: "breadth_theme_telecom_infra", title: "Telecom Infra", description: "Telecom Infrastructure", dataFile: "breadth_theme_telecom_infra", category: "industries" },
+    { id: "breadth_theme_media_and_broadcasting", title: "Media & Broadcasting", description: "Media & Broadcasting", dataFile: "breadth_theme_media_and_broadcasting", category: "industries" },
+    { id: "breadth_theme_music_and_content", title: "Music & Content", description: "Music & Content Platforms", dataFile: "breadth_theme_music_and_content", category: "industries" },
+    { id: "breadth_theme_luxury", title: "Luxury", description: "Luxury Brands", dataFile: "breadth_theme_luxury", category: "industries" },
+    { id: "breadth_theme_qsr", title: "QSR", description: "Quick Service Restaurants", dataFile: "breadth_theme_qsr", category: "industries" },
+    { id: "breadth_theme_fmcg_staples", title: "FMCG Staples", description: "FMCG Staples", dataFile: "breadth_theme_fmcg_staples", category: "industries" },
+    { id: "breadth_theme_it_services", title: "IT Services", description: "IT Services Companies", dataFile: "breadth_theme_it_services", category: "industries" },
+    { id: "breadth_theme_auto_passenger_and_cv", title: "Auto Passenger & CV", description: "Passenger Vehicles & Commercial Vehicles", dataFile: "breadth_theme_auto_passenger_and_cv", category: "industries" },
+    { id: "breadth_theme_two_and_three_wheelers", title: "Two & Three Wheelers", description: "Two & Three Wheeler Manufacturers", dataFile: "breadth_theme_two_and_three_wheelers", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
@@ -69,7 +84,7 @@ export function getConfigById(id: string): IndexConfig | undefined {
     return ALL_CONFIGS.find((c) => c.id === id);
 }
 
-// Free tier: only broad market indices
+// Free tier: only broad market indices  
 export const FREE_TIER_IDS = new Set(BROAD_MARKET.map((c) => c.id));
 
 export function isProRequired(id: string): boolean {

@@ -3,136 +3,92 @@
 export_json.py
 ==============
 Run this AFTER fetch_breadth_data.py completes on the OCI server.
-Reads all CSV breadth files and exports compact JSON for the Next.js frontend.
-Push the output to the nse-industry-insights/data/ directory.
+Auto-discovers all breadth CSV files and exports compact JSON for the Next.js frontend.
 
 Usage:
-    python3 export_json.py --output /path/to/nse-industry-insights/data
+    python3 export_json.py --output /path/to/nse-industry-insights/data --source /path/to/nifty-dashboard
 """
 
 import os
 import json
 import argparse
+import glob
+import shutil
 import pandas as pd
 from pathlib import Path
 
-# ── Config ──────────────────────────────────────────────────────────────────
 
-# These should match the dataFile values in lib/config.ts exactly
-BREADTH_FILES = {
-    "nifty50":              "data/nifty50_breadth.csv",
-    "nifty500":             "data/nifty500_breadth.csv",
-    "nifty_smallcap250":    "data/nifty_smallcap250_breadth.csv",
-    "nifty_auto":           "data/nifty_auto_breadth.csv",
-    "nifty_bank":           "data/nifty_bank_breadth.csv",
-    "nifty_energy":         "data/nifty_energy_breadth.csv",
-    "nifty_financial_services": "data/nifty_financial_services_breadth.csv",
-    "nifty_fmcg":           "data/nifty_fmcg_breadth.csv",
-    "nifty_healthcare":     "data/nifty_healthcare_breadth.csv",
-    "nifty_it":             "data/nifty_it_breadth.csv",
-    "nifty_media":          "data/nifty_media_breadth.csv",
-    "nifty_metal":          "data/nifty_metal_breadth.csv",
-    "nifty_pharma":         "data/nifty_pharma_breadth.csv",
-    "nifty_private_bank":   "data/nifty_private_bank_breadth.csv",
-    "nifty_psu_bank":       "data/nifty_psu_bank_breadth.csv",
-    "nifty_realty":         "data/nifty_realty_breadth.csv",
-    "copper":               "data/copper_breadth.csv",
-    "oil_gas_downstream":   "data/oil_gas_downstream_breadth.csv",
-    "defence":              "data/defence_breadth.csv",
-    "railways":             "data/railways_breadth.csv",
-    "power":                "data/power_breadth.csv",
-    "insurance_life":       "data/insurance_life_breadth.csv",
-    "insurance_general":    "data/insurance_general_breadth.csv",
-    "private_banking":      "data/private_banking_breadth.csv",
-    "psu_banking":          "data/psu_banking_breadth.csv",
-    "housing_finance":      "data/housing_finance_breadth.csv",
-    "nbfc":                 "data/nbfc_breadth.csv",
-    "retail":               "data/retail_breadth.csv",
-    "amc":                  "data/amc_breadth.csv",
-    "wealth_management":    "data/wealth_management_breadth.csv",
-    "capital_markets":      "data/capital_markets_breadth.csv",
-    "alcohols_breweries":   "data/alcohols_breweries_breadth.csv",
-}
-
-
-def export_breadth_files(output_dir: Path, source_dir: Path):
-    """Export all breadth CSVs to JSON."""
+def export_all_breadth_files(output_dir: Path, source_dir: Path):
+    """Auto-discover and export ALL breadth CSV files as JSON."""
     breadth_dir = output_dir / "breadth"
     breadth_dir.mkdir(parents=True, exist_ok=True)
 
-    for key, csv_rel_path in BREADTH_FILES.items():
-        csv_path = source_dir / csv_rel_path
-        if not csv_path.exists():
-            print(f"  SKIP {key}: {csv_path} not found")
-            continue
+    # Find all breadth CSVs in the source directory
+    patterns = [
+        str(source_dir / "market_breadth_*.csv"),
+        str(source_dir / "breadth_*.csv"),
+    ]
+
+    csv_files = []
+    for pattern in patterns:
+        csv_files.extend(glob.glob(pattern))
+
+    csv_files = sorted(set(csv_files))
+    print(f"  Found {len(csv_files)} breadth CSV files")
+
+    for csv_path in csv_files:
+        basename = os.path.basename(csv_path)  # e.g. breadth_auto.csv
+        key = basename.replace(".csv", "")  # e.g. breadth_auto
 
         try:
             df = pd.read_csv(csv_path)
-            # Keep only needed columns, ensure date is string
             if "Date" in df.columns:
                 df["Date"] = df["Date"].astype(str)
             out_path = breadth_dir / f"{key}.json"
             df.to_json(out_path, orient="records", date_format="iso")
-            print(f"  OK   {key} → {out_path.name} ({len(df)} rows)")
+            print(f"  OK   {key} ({len(df)} rows)")
         except Exception as e:
             print(f"  ERR  {key}: {e}")
 
 
-def export_performance_summary(output_dir: Path, source_dir: Path):
-    """Export performance summary JSON."""
-    perf_dir = output_dir / "performance"
-    perf_dir.mkdir(parents=True, exist_ok=True)
+def export_json_file(output_dir: Path, source_dir: Path, src_name: str, dest_subdir: str, dest_name: str):
+    """Copy a JSON file from source to output."""
+    dest_dir = output_dir / dest_subdir
+    dest_dir.mkdir(parents=True, exist_ok=True)
 
-    # Try loading the performance summary JSON if it exists
-    src = source_dir / "performance_summary_latest.json"
+    src = source_dir / src_name
     if src.exists():
-        import shutil
-        shutil.copy(src, perf_dir / "performance_summary.json")
-        print(f"  OK   performance_summary.json")
+        shutil.copy(src, dest_dir / dest_name)
+        print(f"  OK   {dest_name}")
+        return True
     else:
-        print(f"  SKIP performance_summary: {src} not found")
+        print(f"  SKIP {src_name} not found")
+        return False
 
 
-def export_market_status(output_dir: Path, source_dir: Path):
-    """Export market status JSON."""
-    ms_dir = output_dir / "market_status"
-    ms_dir.mkdir(parents=True, exist_ok=True)
+def generate_manifest(output_dir: Path):
+    """Generate a manifest of all available data files for the frontend."""
+    breadth_dir = output_dir / "breadth"
+    manifest = {"breadth": [], "has_performance": False, "has_market_status": False, "has_constituent_perf": False}
 
-    src = source_dir / "market_status_latest.json"
-    if src.exists():
-        import shutil
-        shutil.copy(src, ms_dir / "market_status_latest.json")
-        print(f"  OK   market_status_latest.json")
-    else:
-        print(f"  SKIP market_status: {src} not found")
+    if breadth_dir.exists():
+        for f in sorted(breadth_dir.glob("*.json")):
+            manifest["breadth"].append(f.stem)
 
+    manifest["has_performance"] = (output_dir / "performance" / "performance_summary.json").exists()
+    manifest["has_market_status"] = (output_dir / "market_status" / "market_status_latest.json").exists()
+    manifest["has_constituent_perf"] = (output_dir / "constituent_performance" / "constituent_performance_latest.json").exists()
 
-def export_constituent_performance(output_dir: Path, source_dir: Path):
-    """Export constituent performance JSON."""
-    cp_dir = output_dir / "constituent_performance"
-    cp_dir.mkdir(parents=True, exist_ok=True)
-
-    src = source_dir / "constituent_performance_latest.json"
-    if src.exists():
-        import shutil
-        shutil.copy(src, cp_dir / "constituent_performance_latest.json")
-        print(f"  OK   constituent_performance_latest.json")
-    else:
-        print(f"  SKIP constituent_performance: {src} not found")
+    manifest_path = output_dir / "manifest.json"
+    with open(manifest_path, "w") as f:
+        json.dump(manifest, f, indent=2)
+    print(f"  OK   manifest.json ({len(manifest['breadth'])} breadth files)")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Export CSVs to JSON for nse-industry-insights")
-    parser.add_argument(
-        "--output",
-        required=True,
-        help="Path to nse-industry-insights/data directory",
-    )
-    parser.add_argument(
-        "--source",
-        default=".",
-        help="Path to nifty-breadth project directory (default: current dir)",
-    )
+    parser.add_argument("--output", required=True, help="Path to nse-industry-insights/data directory")
+    parser.add_argument("--source", default=".", help="Path to nifty-breadth project directory")
     args = parser.parse_args()
 
     output_dir = Path(args.output)
@@ -145,16 +101,19 @@ def main():
     print(f"{'='*50}\n")
 
     print("Exporting breadth CSV files...")
-    export_breadth_files(output_dir, source_dir)
+    export_all_breadth_files(output_dir, source_dir)
 
     print("\nExporting performance summary...")
-    export_performance_summary(output_dir, source_dir)
+    export_json_file(output_dir, source_dir, "performance_summary_latest.json", "performance", "performance_summary.json")
 
     print("\nExporting market status...")
-    export_market_status(output_dir, source_dir)
+    export_json_file(output_dir, source_dir, "market_status_latest.json", "market_status", "market_status_latest.json")
 
     print("\nExporting constituent performance...")
-    export_constituent_performance(output_dir, source_dir)
+    export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")
+
+    print("\nGenerating manifest...")
+    generate_manifest(output_dir)
 
     print(f"\n✓ Export complete → {output_dir.resolve()}")
 

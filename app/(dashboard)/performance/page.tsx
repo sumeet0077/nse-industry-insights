@@ -1,7 +1,7 @@
 // app/(dashboard)/performance/page.tsx
 import type { Metadata } from "next";
 import { getPerformanceSummary } from "@/lib/data";
-import type { PerformanceRow } from "@/types";
+import { PerformanceHeatmap } from "@/components/tables/PerformanceHeatmap";
 
 export const metadata: Metadata = {
     title: "Performance Overview",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PerformancePage() {
-    const data: PerformanceRow[] = getPerformanceSummary();
+    const data = getPerformanceSummary();
 
     return (
         <div>
@@ -19,19 +19,15 @@ export default async function PerformancePage() {
             </p>
 
             {data.length === 0 ? (
-                <div className="text-slate-500 text-sm">
-                    Performance data unavailable. Please check back after the next data refresh.
+                <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-8 text-center">
+                    <p className="text-slate-400 text-sm mb-2">Performance data is computed on the OCI server.</p>
+                    <p className="text-slate-500 text-xs">
+                        Run <code className="text-blue-400">fetch_breadth_data.py</code> on OCI to generate the performance summary,
+                        then export with <code className="text-blue-400">export_json.py</code>.
+                    </p>
                 </div>
             ) : (
-                <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-2 text-slate-300 text-sm">
-                    {/* Phase 2: PerformanceHeatmap AG Grid component goes here */}
-                    <p className="p-4 text-slate-500">
-                        AG Grid performance heatmap coming in Phase 2 — {data.length} rows loaded ✓
-                    </p>
-                    <pre className="text-xs text-slate-600 px-4 pb-4 overflow-auto max-h-40">
-                        {JSON.stringify(data.slice(0, 3), null, 2)}
-                    </pre>
-                </div>
+                <PerformanceHeatmap data={data} />
             )}
         </div>
     );

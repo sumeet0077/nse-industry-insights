@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
+import { ALL_CONFIGS } from "@/lib/config";
 
 interface SectorRotationClientProps {
     dataD: RRGDataPoint[];
@@ -20,10 +21,17 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [selectedTickers, setSelectedTickers] = useState<string[]>(defaults);
     const [isSelecting, setIsSelecting] = useState(false);
 
-    const currentData = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
+    const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
 
-    // Extract unique tickers and sort them
+    // Map raw tickers (like "breadth_auto") to human readable titles (like "Nifty Auto")
+    const currentData = currentDataRaw.map(d => {
+        const csvName = `${d.Ticker}.csv`;
+        const config = ALL_CONFIGS.find(c => c.dataFile === csvName);
+        return config ? { ...d, Ticker: config.title } : d;
+    });
+
+    // Extract unique titles and sort them
     const allTickers = Array.from(new Set(currentData.map(d => d.Ticker))).sort();
 
     // Make sure defaults are applied when toggling to empty array

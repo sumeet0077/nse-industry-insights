@@ -98,10 +98,10 @@ export function IndexDetailPage({
                                 <p className="text-[10px] text-slate-500 uppercase">{period}</p>
                                 <p
                                     className={`text-sm font-mono font-medium ${value === null
-                                            ? "text-gray-500"
-                                            : value >= 0
-                                                ? "text-emerald-400"
-                                                : "text-red-400"
+                                        ? "text-gray-500"
+                                        : value >= 0
+                                            ? "text-emerald-400"
+                                            : "text-red-400"
                                         }`}
                                 >
                                     {value === null ? "—" : `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`}
@@ -118,8 +118,8 @@ export function IndexDetailPage({
                     <button
                         onClick={() => setActiveTab("chart")}
                         className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "chart"
-                                ? "text-blue-400 border-b-2 border-blue-400"
-                                : "text-slate-400 hover:text-white"
+                            ? "text-blue-400 border-b-2 border-blue-400"
+                            : "text-slate-400 hover:text-white"
                             }`}
                     >
                         📊 Breadth Chart
@@ -128,8 +128,8 @@ export function IndexDetailPage({
                         <button
                             onClick={() => setActiveTab("constituents")}
                             className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "constituents"
-                                    ? "text-blue-400 border-b-2 border-blue-400"
-                                    : "text-slate-400 hover:text-white"
+                                ? "text-blue-400 border-b-2 border-blue-400"
+                                : "text-slate-400 hover:text-white"
                                 }`}
                         >
                             📋 Constituents
@@ -155,7 +155,6 @@ export function IndexDetailPage({
             {activeTab === "chart" && (
                 <>
                     <BreadthChart data={breadthData} title={title} />
-                    <ParticipationChart data={breadthData} title={title} />
 
                     {/* Above / Below 200 SMA Lists */}
                     {marketStatus && (
@@ -234,6 +233,8 @@ export function IndexDetailPage({
                             )}
                         </div>
                     )}
+
+                    <ParticipationChart data={breadthData} title={title} />
                 </>
             )}
 

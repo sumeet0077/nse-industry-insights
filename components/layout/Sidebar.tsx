@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { BROAD_MARKET, SECTORS, INDUSTRIES } from "@/lib/config";
 import {
@@ -50,6 +51,17 @@ const NAV_GROUPS = [
 
 export function Sidebar() {
     const pathname = usePathname();
+    const [sortIndustries, setSortIndustries] = useState(false);
+
+    const navGroups = NAV_GROUPS.map(group => {
+        if (group.label === "Industries" && sortIndustries) {
+            return {
+                ...group,
+                items: [...group.items].sort((a, b) => a.label.localeCompare(b.label))
+            };
+        }
+        return group;
+    });
 
     return (
         <aside className="hidden lg:flex flex-col w-60 min-h-screen bg-[#0d0d14] border-r border-[#1e1e2e] overflow-y-auto">
@@ -63,13 +75,24 @@ export function Sidebar() {
 
             {/* Nav groups */}
             <nav className="flex-1 px-2 py-4 space-y-6">
-                {NAV_GROUPS.map((group) => (
+                {navGroups.map((group) => (
                     <div key={group.label}>
-                        <div className="flex items-center gap-2 px-2 mb-2">
-                            <group.icon className="h-3.5 w-3.5 text-slate-500" />
-                            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                                {group.label}
-                            </span>
+                        <div className="flex items-center justify-between px-2 mb-2">
+                            <div className="flex items-center gap-2">
+                                <group.icon className="h-3.5 w-3.5 text-slate-500" />
+                                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                                    {group.label}
+                                </span>
+                            </div>
+                            {group.label === "Industries" && (
+                                <button
+                                    onClick={() => setSortIndustries(!sortIndustries)}
+                                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${sortIndustries ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300"}`}
+                                    title="Toggle A-Z Sort"
+                                >
+                                    A-Z
+                                </button>
+                            )}
                         </div>
                         <ul className="space-y-0.5">
                             {group.items.map((item) => (

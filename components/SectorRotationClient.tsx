@@ -21,27 +21,74 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [selectedTickers, setSelectedTickers] = useState<string[]>(defaults);
     const [isSelecting, setIsSelecting] = useState(false);
 
+    // Quadrant filters
+    const allQuadrants = ["Leading", "Weakening", "Lagging", "Improving"];
+    const [selectedQuadrants, setSelectedQuadrants] = useState<string[]>(allQuadrants);
+
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
 
     // Map raw tickers (like "breadth_auto") to human readable titles (like "Nifty Auto")
     const currentData = currentDataRaw.map(d => {
-        const csvName = `${d.Ticker}.csv`;
-        const config = ALL_CONFIGS.find(c => c.dataFile === csvName);
+        const config = ALL_CONFIGS.find(c => c.dataFile === d.Ticker || c.id === d.Ticker);
         return config ? { ...d, Ticker: config.title } : d;
     });
 
-    // Extract unique titles and sort them
+    // Determine the latest point for each ticker to find its current quadrant
+    const latestPoints: Record<string, RRGDataPoint> = {};
+    for (const pt of currentData) {
+        if (!latestPoints[pt.Ticker] || pt.Date > latestPoints[pt.Ticker].Date) {
+            latestPoints[pt.Ticker] = pt;
+        }
+    }
+
+    const getQuadrant = (pt?: RRGDataPoint) => {
+        if (!pt) return "Unknown";
+        if (pt.RS_Ratio > 100 && pt.RS_Momentum > 100) return "Leading";
+        if (pt.RS_Ratio > 100 && pt.RS_Momentum <= 100) return "Weakening";
+        if (pt.RS_Ratio <= 100 && pt.RS_Momentum <= 100) return "Lagging";
+        return "Improving";
+    };
+
+    const tickerQuadrants: Record<string, string> = {};
+    const quadrantCounts: Record<string, number> = { Leading: 0, Weakening: 0, Lagging: 0, Improving: 0 };
+
+    // Extract unique titles and assign quadrants
     const allTickers = Array.from(new Set(currentData.map(d => d.Ticker))).sort();
 
-    // Make sure defaults are applied when toggling to empty array
-    const filteredData = currentData.filter(d => selectedTickers.includes(d.Ticker));
+    for (const t of allTickers) {
+        const q = getQuadrant(latestPoints[t]);
+        tickerQuadrants[t] = q;
+        if (quadrantCounts[q] !== undefined) quadrantCounts[q]++;
+    }
+
+    const totalCount = allTickers.length || 1;
+    const quadrantPcts = {
+        Leading: ((quadrantCounts.Leading / totalCount) * 100).toFixed(1),
+        Weakening: ((quadrantCounts.Weakening / totalCount) * 100).toFixed(1),
+        Lagging: ((quadrantCounts.Lagging / totalCount) * 100).toFixed(1),
+        Improving: ((quadrantCounts.Improving / totalCount) * 100).toFixed(1),
+    };
+
+    // Filter by BOTH active tickers and active quadrants
+    const filteredData = currentData.filter(d =>
+        selectedTickers.includes(d.Ticker) &&
+        selectedQuadrants.includes(tickerQuadrants[d.Ticker])
+    );
 
     const toggleTicker = (ticker: string) => {
         if (selectedTickers.includes(ticker)) {
             setSelectedTickers(selectedTickers.filter(t => t !== ticker));
         } else {
             setSelectedTickers([...selectedTickers, ticker]);
+        }
+    };
+
+    const toggleQuadrant = (quadrant: string) => {
+        if (selectedQuadrants.includes(quadrant)) {
+            setSelectedQuadrants(selectedQuadrants.filter(q => q !== quadrant));
+        } else {
+            setSelectedQuadrants([...selectedQuadrants, quadrant]);
         }
     };
 
@@ -86,6 +133,33 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                 </div>
 
                 <div className="border-t border-[#1e1e2e] pt-4">
+                    <div className="mb-4 flex flex-wrap gap-4">
+                        {allQuadrants.map(q => {
+                            const colors: Record<string, string> = {
+                                Leading: "text-emerald-400",
+                                Weakening: "text-yellow-400",
+                                Lagging: "text-red-400",
+                                Improving: "text-blue-400",
+                            };
+                            return (
+                                <label key={q} className="flex items-center gap-1.5 cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedQuadrants.includes(q)}
+                                        onChange={() => toggleQuadrant(q)}
+                                        className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
+                                    />
+                                    <span className={`text-[13px] font-semibold ${colors[q]}`}>
+                                        {q}
+                                    </span>
+                                    <span className="text-[11px] text-slate-500 font-medium bg-[#1a1a2e] px-1.5 py-0.5 rounded ml-1">
+                                        {quadrantPcts[q as keyof typeof quadrantPcts]}%
+                                    </span>
+                                </label>
+                            );
+                        })}
+                    </div>
+
                     <div className="flex justify-between items-center mb-3">
                         <label className="text-xs text-slate-400 font-semibold cursor-pointer select-none"
                             onClick={() => setIsSelecting(!isSelecting)}
@@ -118,19 +192,24 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
                     {isSelecting && (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto px-2 pb-2 custom-scrollbar">
-                            {allTickers.map(ticker => (
-                                <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedTickers.includes(ticker)}
-                                        onChange={() => toggleTicker(ticker)}
-                                        className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
-                                    />
-                                    <span className={`text-[13px] truncate transition-colors ${selectedTickers.includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
-                                        {ticker}
-                                    </span>
-                                </label>
-                            ))}
+                            {allTickers.map(ticker => {
+                                const q = tickerQuadrants[ticker];
+                                const dotColor = q === "Leading" ? "bg-emerald-400" : q === "Weakening" ? "bg-yellow-400" : q === "Lagging" ? "bg-red-400" : "bg-blue-400";
+                                return (
+                                    <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTickers.includes(ticker)}
+                                            onChange={() => toggleTicker(ticker)}
+                                            className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
+                                        />
+                                        <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} title={q} />
+                                        <span className={`text-[13px] truncate transition-colors ${selectedTickers.includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
+                                            {ticker}
+                                        </span>
+                                    </label>
+                                );
+                            })}
                         </div>
                     )}
                 </div>

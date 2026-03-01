@@ -21,8 +21,20 @@ interface RRGChartProps {
 }
 
 export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
+    if (!data || data.length === 0) {
+        return (
+            <div className="w-full h-[850px] flex items-center justify-center bg-slate-900/40 text-slate-400 rounded-lg border border-slate-800">
+                <div className="text-center">
+                    <p className="font-semibold text-lg text-slate-300 mb-2">No selections active</p>
+                    <p className="text-sm">Please select indices/themes to display the Relative Rotation Graph.</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Wrap useMemo around the rest of the chart data generation
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const chartData = useMemo(() => {
-        if (!data || data.length === 0) return null;
 
         // Group by ticker
         const grouped = data.reduce((acc, point) => {

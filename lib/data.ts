@@ -57,6 +57,12 @@ export function getConstituentPerformance(): ConstituentPerformanceMap {
 export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry | null {
     const status = getMarketStatus();
 
+    // Map UI config titles to JSON dataset keys if they differ
+    const ALIASES: Record<string, string> = {
+        "amc": "asset management",
+        // Add more manual aliases here if needed
+    };
+
     // Direct match
     if (status[configTitle]) return status[configTitle];
 
@@ -72,8 +78,10 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
 
     // Try all keys case-insensitive
     const lowerTitle = configTitle.toLowerCase();
+    const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+
     for (const key of Object.keys(status)) {
-        if (key.toLowerCase() === lowerTitle) return status[key];
+        if (key.toLowerCase() === resolvedTitle) return status[key];
     }
 
     return null;

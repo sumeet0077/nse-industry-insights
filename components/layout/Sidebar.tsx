@@ -51,13 +51,16 @@ const NAV_GROUPS = [
 
 export function Sidebar() {
     const pathname = usePathname();
-    const [sortIndustries, setSortIndustries] = useState(false);
+    const [sortMode, setSortMode] = useState<"default" | "asc" | "desc">("default");
 
     const navGroups = NAV_GROUPS.map(group => {
-        if (group.label === "Industries" && sortIndustries) {
+        if (group.label === "Industries" && sortMode !== "default") {
             return {
                 ...group,
-                items: [...group.items].sort((a, b) => a.label.localeCompare(b.label))
+                items: [...group.items].sort((a, b) => {
+                    const cmp = a.label.localeCompare(b.label);
+                    return sortMode === "asc" ? cmp : -cmp;
+                })
             };
         }
         return group;
@@ -86,11 +89,15 @@ export function Sidebar() {
                             </div>
                             {group.label === "Industries" && (
                                 <button
-                                    onClick={() => setSortIndustries(!sortIndustries)}
-                                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${sortIndustries ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300"}`}
-                                    title="Toggle A-Z Sort"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setSortMode(prev => prev === "default" ? "asc" : prev === "asc" ? "desc" : "default");
+                                    }}
+                                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${sortMode !== "default" ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300"}`}
+                                    title="Toggle Sorting"
                                 >
-                                    A-Z
+                                    {sortMode === "asc" ? "A-Z" : sortMode === "desc" ? "Z-A" : "Sort"}
                                 </button>
                             )}
                         </div>

@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
+import { ALL_CONFIGS } from "@/lib/config";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -87,9 +88,25 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
                 field: "Theme/Index",
                 pinned: "left",
                 width: 200,
-                cellClass: "text-white font-medium",
+                cellRenderer: (params: { value: string }) => {
+                    if (!params.value) return null;
+                    const config = ALL_CONFIGS.find((c) => c.title === params.value);
+                    if (!config) return <span className="text-white font-medium">{params.value}</span>;
+
+                    let path = "";
+                    if (config.category === "broad-market") path = `/broad-market/${config.id}`;
+                    else if (config.category === "sectors") path = `/sectors/${config.id}`;
+                    else if (config.category === "industries") path = `/industries/${config.id}`;
+
+                    return (
+                        <a href={path} className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                            {params.value}
+                        </a>
+                    );
+                },
             },
         ];
+
         for (const col of returnColumns) {
             cols.push({
                 headerName: col,

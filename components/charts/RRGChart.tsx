@@ -5,7 +5,14 @@ import dynamic from "next/dynamic";
 import type { RRGDataPoint } from "@/types";
 import { useMemo } from "react";
 
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+const Plot = dynamic(() => import("react-plotly.js"), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-[850px] flex items-center justify-center bg-slate-900/20 text-slate-400 rounded-lg animate-pulse">
+            Loading RRG Chart...
+        </div>
+    ),
+});
 
 interface RRGChartProps {
     data: RRGDataPoint[];
@@ -148,7 +155,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     height: 850,
                     margin: { l: 50, r: 20, t: 50, b: 50 },
                 }}
-                config={{ responsive: true, displayModeBar: false }}
+                config={{
+                    responsive: true,
+                    displayModeBar: true,
+                    displaylogo: false,
+                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
+                }}
                 style={{ width: "100%", height: "850px" }}
             />
         </div>

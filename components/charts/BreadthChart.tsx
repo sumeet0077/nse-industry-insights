@@ -4,7 +4,14 @@
 import dynamic from "next/dynamic";
 import type { BreadthDataPoint } from "@/types";
 
-const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
+const Plot = dynamic(() => import("react-plotly.js"), {
+    ssr: false,
+    loading: () => (
+        <div className="w-full h-[500px] flex items-center justify-center bg-slate-900/20 text-slate-400 rounded-lg animate-pulse">
+            Loading Chart...
+        </div>
+    ),
+});
 
 interface BreadthChartProps {
     data: BreadthDataPoint[];
@@ -76,7 +83,12 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                     autosize: true,
                     height: 500,
                 }}
-                config={{ responsive: true, displayModeBar: false }}
+                config={{
+                    responsive: true,
+                    displayModeBar: true,
+                    displaylogo: false,
+                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
+                }}
                 style={{ width: "100%", height: "500px" }}
             />
         </div>
@@ -125,7 +137,12 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
                     autosize: true,
                     height: 400,
                 }}
-                config={{ responsive: true, displayModeBar: false }}
+                config={{
+                    responsive: true,
+                    displayModeBar: true,
+                    displaylogo: false,
+                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
+                }}
                 style={{ width: "100%", height: "400px" }}
             />
         </div>

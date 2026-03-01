@@ -2,7 +2,7 @@
 "use client";
 
 import { AgGridReact } from "ag-grid-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
@@ -60,6 +60,26 @@ function returnFormatter(params: ValueFormatterParams): string {
 const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
 
 export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
+    const [showCagr, setShowCagr] = useState(false);
+
+    // Apply CAGR logic to the dataset
+    const displayData = useMemo(() => {
+        if (!showCagr) return data;
+        return data.map((row) => {
+            const newRow = { ...row };
+            if (typeof row["1 Year"] === "number") {
+                // 1Y CAGR is same as absolute return, so we leave it identical
+            }
+            if (typeof row["3 Years"] === "number" && row["3 Years"] !== null) {
+                newRow["3 Years"] = (Math.pow(1 + row["3 Years"] / 100, 1 / 3) - 1) * 100;
+            }
+            if (typeof row["5 Years"] === "number" && row["5 Years"] !== null) {
+                newRow["5 Years"] = (Math.pow(1 + row["5 Years"] / 100, 1 / 5) - 1) * 100;
+            }
+            return newRow;
+        });
+    }, [data, showCagr]);
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
             {
@@ -74,7 +94,8 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
             cols.push({
                 headerName: col,
                 field: col,
-                width: 100,
+                // Make RS (20D) wider to prevent ellipsis "RS (2..." sorting issues
+                width: col === "RS (20D)" ? 120 : 100,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
                 type: "numericColumn",
@@ -93,16 +114,29 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
     );
 
     return (
-        <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: Math.min(data.length * 35 + 50, 800) }}>
-            <AgGridReact
-                theme={myTheme}
-                rowData={data}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                suppressCellFocus={true}
-                animateRows={false}
-                domLayout="normal"
-            />
+        <div className="flex flex-col gap-3">
+            <div className="flex justify-end pr-2">
+                <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        checked={showCagr}
+                        onChange={(e) => setShowCagr(e.target.checked)}
+                        className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                    />
+                    Annualize Returns (CAGR)
+                </label>
+            </div>
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: Math.min(data.length * 35 + 50, 800) }}>
+                <AgGridReact
+                    theme={myTheme}
+                    rowData={displayData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    suppressCellFocus={true}
+                    animateRows={false}
+                    domLayout="normal"
+                />
+            </div>
         </div>
     );
 }

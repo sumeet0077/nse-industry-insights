@@ -60,10 +60,14 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             const xVal = head.RS_Ratio;
             const yVal = head.RS_Momentum;
 
-            let color = "#3b82f6"; // Improving (Blue) default
-            if (xVal > 100 && yVal > 100) color = "#22c55e"; // Leading (Green)
-            else if (xVal > 100 && yVal <= 100) color = "#eab308"; // Weakening (Yellow)
-            else if (xVal <= 100 && yVal <= 100) color = "#ef4444"; // Lagging (Red)
+            // Generate a distinct and consistent color for each ticker based on its string hash
+            let hash = 0;
+            for (let i = 0; i < ticker.length; i++) {
+                hash = ticker.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            // Use HSL for vibrant, distinct colors. Saturation 80%, Lightness 60% works well on dark backgrounds
+            const hue = Math.abs(hash) % 360;
+            const color = `hsl(${hue}, 80%, 60%)`;
 
             // Update manual axis ranges
             for (const p of tailData) {

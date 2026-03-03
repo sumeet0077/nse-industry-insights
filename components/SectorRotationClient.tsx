@@ -24,6 +24,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     // Quadrant filters
     const allQuadrants = ["Leading", "Weakening", "Lagging", "Improving"];
     const [selectedQuadrants, setSelectedQuadrants] = useState<string[]>(allQuadrants);
+    const [expandedQuadrant, setExpandedQuadrant] = useState<string | null>(null);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
@@ -243,17 +244,56 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
                     return (
                         <div key={q} className={`border rounded-lg p-3 ${colors[q]}`}>
-                            <h3 className={`text-sm font-bold mb-2 flex justify-between items-center ${textColors[q]} border-b border-white/5 pb-2`}>
-                                {q}
-                                <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded">{activeTickersInQuadrant.length}</span>
-                            </h3>
-                            <ul className="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar pr-2">
-                                {activeTickersInQuadrant.map(ticker => (
-                                    <li key={ticker} className="text-[13px] leading-relaxed text-slate-300 hover:text-white transition-colors cursor-default border-b border-white/5 pb-1 last:border-0" title={ticker}>
-                                        {ticker}
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2">
+                                <h3 className={`text-sm font-bold flex items-center gap-2 ${textColors[q]}`}>
+                                    {q}
+                                    <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-white">{activeTickersInQuadrant.length}</span>
+                                </h3>
+                                <button
+                                    onClick={() => setExpandedQuadrant(expandedQuadrant === q ? null : q)}
+                                    className="text-[10px] text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded flex items-center gap-1"
+                                >
+                                    {expandedQuadrant === q ? "Close" : "Expand"}
+                                </button>
+                            </div>
+
+                            {expandedQuadrant === q ? (
+                                // Full overlay view for screenshots
+                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
+                                    <div className={`w-full max-w-4xl max-h-[90vh] flex flex-col border rounded-xl shadow-2xl ${colors[q]}`}>
+                                        <div className="flex justify-between items-center p-4 border-b border-white/10 bg-[#111118]/80">
+                                            <h3 className={`text-xl font-bold flex items-center gap-3 ${textColors[q]}`}>
+                                                {q} Quadrant Themes
+                                                <span className="text-xs bg-white/10 px-2 py-1 rounded text-white">{activeTickersInQuadrant.length} Themes</span>
+                                            </h3>
+                                            <button
+                                                onClick={() => setExpandedQuadrant(null)}
+                                                className="text-sm font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors"
+                                            >
+                                                Close View
+                                            </button>
+                                        </div>
+                                        <div className="p-6 overflow-y-auto custom-scrollbar bg-[#111118]/40">
+                                            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
+                                                {activeTickersInQuadrant.map(ticker => (
+                                                    <li key={ticker} className="text-sm font-medium text-slate-200 border-b border-white/5 pb-2 last:border-0">
+                                                        {ticker}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Normal inline view
+                                <ul className="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar pr-2">
+                                    {activeTickersInQuadrant.map(ticker => (
+                                        <li key={ticker} className="text-[13px] leading-relaxed text-slate-300 hover:text-white transition-colors cursor-default border-b border-white/5 pb-1 last:border-0" title={ticker}>
+                                            {ticker}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     );
                 })}

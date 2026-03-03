@@ -2,11 +2,12 @@
 "use client";
 
 import { AgGridReact } from "ag-grid-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
+import { Columns, ChevronDown } from "lucide-react";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -29,12 +30,11 @@ const myTheme = themeQuartz.withParams({
 });
 
 function getHeatmapStyle(params: CellClassParams): { [key: string]: string } | undefined {
-    if (params.value === null || params.value === undefined || params.value === "") return undefined;
+    if (!params.value) return undefined;
     const v = Number(params.value);
     if (isNaN(v)) return undefined;
 
-    // Intensity-based coloring
-    const intensity = Math.min(Math.abs(v) / 30, 1); // Normalize to 0-30% range
+    const intensity = Math.min(Math.abs(v) / 30, 1);
     if (v > 0) {
         return {
             backgroundColor: `rgba(34, 197, 94, ${0.1 + intensity * 0.35})`,
@@ -62,15 +62,30 @@ const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 
 
 export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Apply CAGR logic to the dataset
+    const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
+        const initial: Record<string, boolean> = {};
+        returnColumns.forEach(c => initial[c] = true);
+        return initial;
+    });
+
+    // Close dropdown on click outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const displayData = useMemo(() => {
         if (!showCagr) return data;
         return data.map((row) => {
             const newRow = { ...row };
-            if (typeof row["1 Year"] === "number") {
-                // 1Y CAGR is same as absolute return, so we leave it identical
-            }
             if (typeof row["3 Years"] === "number" && row["3 Years"] !== null) {
                 newRow["3 Years"] = (Math.pow(1 + row["3 Years"] / 100, 1 / 3) - 1) * 100;
             }
@@ -111,7 +126,7 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
             cols.push({
                 headerName: col,
                 field: col,
-                // Make RS (20D) wider to prevent ellipsis "RS (2..." sorting issues
+                hide: !visibleColumns[col],
                 width: col === "RS (20D)" ? 130 : 110,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
@@ -120,7 +135,7 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
             });
         }
         return cols;
-    }, []);
+    }, [visibleColumns]);
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -130,9 +145,13 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
         []
     );
 
+    const toggleColumn = (col: string) => {
+        setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
+    };
+
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex justify-end pr-2">
+            <div className="flex justify-end pr-2 gap-4 items-center">
                 <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
                     <input
                         type="checkbox"
@@ -142,6 +161,36 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
                     />
                     Annualize Returns (CAGR)
                 </label>
+
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors"
+                    >
+                        <Columns size={14} />
+                        Columns
+                        <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {isDropdownOpen && (
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
+                            <div className="p-2 flex flex-col gap-1 max-h-60 overflow-y-auto">
+                                <div className="text-[10px] font-semibold text-slate-500 uppercase px-2 mb-1">Toggle Columns</div>
+                                {returnColumns.map(col => (
+                                    <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
+                                        <input
+                                            type="checkbox"
+                                            checked={visibleColumns[col]}
+                                            onChange={() => toggleColumn(col)}
+                                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                                        />
+                                        {col}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: Math.min(data.length * 35 + 50, 800) }}>
                 <AgGridReact

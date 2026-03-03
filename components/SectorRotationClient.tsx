@@ -216,6 +216,48 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
             </div>
 
             <RRGChart data={filteredData} tailLength={tailLength} timeframe={timeframeLabel} />
+
+            {/* Selected Indices Listed by Quadrant Below Graph */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {allQuadrants.map(q => {
+                    if (!selectedQuadrants.includes(q)) return null;
+
+                    // Show tickers that are both selected by user AND in this quadrant
+                    const activeTickersInQuadrant = selectedTickers.filter(t => tickerQuadrants[t] === q);
+
+                    if (activeTickersInQuadrant.length === 0) return null;
+
+                    const colors: Record<string, string> = {
+                        Leading: "border-emerald-500/20 bg-emerald-500/5",
+                        Weakening: "border-yellow-500/20 bg-yellow-500/5",
+                        Lagging: "border-red-500/20 bg-red-500/5",
+                        Improving: "border-blue-500/20 bg-blue-500/5",
+                    };
+
+                    const textColors: Record<string, string> = {
+                        Leading: "text-emerald-400",
+                        Weakening: "text-yellow-400",
+                        Lagging: "text-red-400",
+                        Improving: "text-blue-400",
+                    };
+
+                    return (
+                        <div key={q} className={`border rounded-lg p-3 ${colors[q]}`}>
+                            <h3 className={`text-sm font-bold mb-2 flex justify-between items-center ${textColors[q]} border-b border-white/5 pb-2`}>
+                                {q}
+                                <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded">{activeTickersInQuadrant.length}</span>
+                            </h3>
+                            <ul className="flex flex-col gap-1.5 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                                {activeTickersInQuadrant.map(ticker => (
+                                    <li key={ticker} className="text-xs text-slate-300 truncate hover:text-white transition-colors cursor-default" title={ticker}>
+                                        {ticker}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

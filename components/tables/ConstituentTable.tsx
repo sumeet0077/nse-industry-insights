@@ -2,10 +2,11 @@
 "use client";
 
 import { AgGridReact } from "ag-grid-react";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl } from "@/lib/utils";
+import { Columns, ChevronDown } from "lucide-react";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -16,7 +17,7 @@ interface ConstituentRow {
 
 interface ConstituentTableProps {
     data: ConstituentRow[];
-    showCagr?: boolean;
+    showCagr?: boolean; // Keep for interface compatibility if used elsewhere
 }
 
 const returnCols = ["1D", "1W", "1M", "3M", "6M", "1Y", "3Y", "5Y", "RS (20D)"];
@@ -51,6 +52,25 @@ function returnCellClass(params: CellClassParams): string {
 }
 
 export function ConstituentTable({ data, showCagr = false }: ConstituentTableProps) {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
+        const initial: Record<string, boolean> = {};
+        returnCols.forEach(c => initial[c] = true);
+        return initial;
+    });
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
             {
@@ -74,6 +94,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             cols.push({
                 headerName: col,
                 field: col,
+                hide: !visibleColumns[col],
                 width: col === "RS (20D)" ? 120 : 100,
                 valueFormatter: returnFormatter,
                 cellClass: returnCellClass,
@@ -82,7 +103,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             });
         }
         return cols;
-    }, []);
+    }, [visibleColumns]);
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -92,17 +113,54 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         []
     );
 
+    const toggleColumn = (col: string) => {
+        setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
+    };
+
     return (
-        <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: 500 }}>
-            <AgGridReact
-                theme={myTheme}
-                rowData={data}
-                columnDefs={columnDefs}
-                defaultColDef={defaultColDef}
-                suppressCellFocus={true}
-                animateRows={false}
-                domLayout="normal"
-            />
+        <div className="flex flex-col gap-3">
+            <div className="flex justify-end pr-2 gap-4 items-center">
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors"
+                    >
+                        <Columns size={14} />
+                        Columns
+                        <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                    </button>
+
+                    {isDropdownOpen && (
+                        <div className="absolute right-0 top-full mt-2 w-48 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
+                            <div className="p-2 flex flex-col gap-1 max-h-60 overflow-y-auto">
+                                <div className="text-[10px] font-semibold text-slate-500 uppercase px-2 mb-1">Toggle Columns</div>
+                                {returnCols.map(col => (
+                                    <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
+                                        <input
+                                            type="checkbox"
+                                            checked={visibleColumns[col]}
+                                            onChange={() => toggleColumn(col)}
+                                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                                        />
+                                        {col}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: 500 }}>
+                <AgGridReact
+                    theme={myTheme}
+                    rowData={data}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    suppressCellFocus={true}
+                    animateRows={false}
+                    domLayout="normal"
+                />
+            </div>
         </div>
     );
 }

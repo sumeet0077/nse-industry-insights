@@ -60,7 +60,9 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
     // Map UI config titles to JSON dataset keys if they differ
     const ALIASES: Record<string, string> = {
         "amc": "asset management",
-        // Add more manual aliases here if needed
+        "renewable energy": "renewable energy generation",
+        "nifty oil & gas": "nifty oil and gas",
+        "jewellery & gold": "jewellery (gold)",
     };
 
     // Direct match

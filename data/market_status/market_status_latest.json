@@ -425,6 +425,7 @@
             "LLOYDSME.NS",
             "LODHA.NS",
             "LTFOODS.BO",
+            "LTM.NS",
             "LTTS.NS",
             "M&M.NS",
             "MAHSCOOTER.NS",
@@ -560,8 +561,7 @@
             "ZYDUSLIFE.NS"
         ],
         "new_stock": [
-            "JSWCEMENT.NS",
-            "LTM.NS"
+            "JSWCEMENT.NS"
         ]
     },
     "Nifty Smallcap 250": {
@@ -947,6 +947,7 @@
             "COFORGE.NS",
             "HCLTECH.NS",
             "INFY.NS",
+            "LTM.NS",
             "MPHASIS.NS",
             "OFSS.NS",
             "PERSISTENT.NS",
@@ -954,9 +955,7 @@
             "TECHM.NS",
             "WIPRO.NS"
         ],
-        "new_stock": [
-            "LTM.NS"
-        ]
+        "new_stock": []
     },
     "NIFTY MEDIA": {
         "above": [
@@ -1382,6 +1381,7 @@
             "HCLTECH.NS",
             "TECHM.NS",
             "WIPRO.NS",
+            "LTIM.NS",
             "PERSISTENT.NS",
             "MPHASIS.NS",
             "COFORGE.NS",

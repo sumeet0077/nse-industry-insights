@@ -112,7 +112,7 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
                 headerName: col,
                 field: col,
                 // Make RS (20D) wider to prevent ellipsis "RS (2..." sorting issues
-                width: col === "RS (20D)" ? 120 : 100,
+                width: col === "RS (20D)" ? 130 : 110,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
                 type: "numericColumn",

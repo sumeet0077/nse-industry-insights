@@ -74,7 +74,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             cols.push({
                 headerName: col,
                 field: col,
-                width: 90,
+                width: col === "RS (20D)" ? 120 : 100,
                 valueFormatter: returnFormatter,
                 cellClass: returnCellClass,
                 type: "numericColumn",

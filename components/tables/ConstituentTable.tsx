@@ -131,9 +131,24 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     </button>
 
                     {isDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-48 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
-                            <div className="p-2 flex flex-col gap-1 max-h-60 overflow-y-auto">
-                                <div className="text-[10px] font-semibold text-slate-500 uppercase px-2 mb-1">Toggle Columns</div>
+                        <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
+                            <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
+                                <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
+                                    <span className="text-[10px] font-semibold text-slate-500 uppercase">Columns</span>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => {
+                                            const allSelected: Record<string, boolean> = {};
+                                            returnCols.forEach(c => allSelected[c] = true);
+                                            setVisibleColumns(allSelected);
+                                        }} className="text-[10px] text-blue-400 hover:text-blue-300 font-medium">All</button>
+                                        <span className="text-slate-600 text-[10px]">|</span>
+                                        <button onClick={() => {
+                                            const noneSelected: Record<string, boolean> = {};
+                                            returnCols.forEach(c => noneSelected[c] = false);
+                                            setVisibleColumns(noneSelected);
+                                        }} className="text-[10px] text-red-400 hover:text-red-300 font-medium">None</button>
+                                    </div>
+                                </div>
                                 {returnCols.map(col => (
                                     <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
                                         <input

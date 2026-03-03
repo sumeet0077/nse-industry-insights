@@ -247,9 +247,9 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                                 {q}
                                 <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded">{activeTickersInQuadrant.length}</span>
                             </h3>
-                            <ul className="flex flex-col gap-1.5 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                            <ul className="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar pr-2">
                                 {activeTickersInQuadrant.map(ticker => (
-                                    <li key={ticker} className="text-xs text-slate-300 truncate hover:text-white transition-colors cursor-default" title={ticker}>
+                                    <li key={ticker} className="text-[13px] leading-relaxed text-slate-300 hover:text-white transition-colors cursor-default border-b border-white/5 pb-1 last:border-0" title={ticker}>
                                         {ticker}
                                     </li>
                                 ))}

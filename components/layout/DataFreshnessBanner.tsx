@@ -4,11 +4,12 @@
 import { getLatestDataDate } from "@/lib/data";
 
 export function DataFreshnessBanner() {
+    // This acts as the global Source of Truth (from Nifty 500)
     const latestDate = getLatestDataDate();
 
     if (!latestDate) return null;
 
-    // Format the date nicely: "2026-03-04" -> "Tue, 04 Mar 2026"
+    // Format the date nicely: "2026-03-04" -> "Wed, 04 Mar 2026"
     const d = new Date(latestDate + "T00:00:00");
     const formatted = d.toLocaleDateString("en-IN", {
         weekday: "short",
@@ -21,7 +22,9 @@ export function DataFreshnessBanner() {
     const now = new Date();
     const diffMs = now.getTime() - d.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const isStale = diffDays > 3; // Allow up to 3 days for weekends/holidays
+
+    // Stale means the market should have updated by now, but the pipeline hasn't run globally
+    const isStale = diffDays > 3;
 
     return (
         <div
@@ -34,11 +37,11 @@ export function DataFreshnessBanner() {
                 className={`inline-block w-1.5 h-1.5 rounded-full ${isStale ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
                     }`}
             />
-            <span className="text-slate-400">Data as of</span>
+            <span className="text-slate-400">Data completely synced. Market Date:</span>
             <span className="font-semibold">{formatted}</span>
             {isStale && (
                 <span className="text-amber-500/70 ml-1">
-                    ({diffDays}d ago — may be stale)
+                    ({diffDays}d ago — waiting for market updates to finish)
                 </span>
             )}
         </div>

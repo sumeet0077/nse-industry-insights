@@ -7,7 +7,8 @@ import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-comm
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
-import { Columns, ChevronDown } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle } from "lucide-react";
+import { getLatestDataDate } from "@/lib/data";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -149,62 +150,91 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
         setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
     };
 
+    // Data validation check: 
+    // Is the first row (Nifty 50) out of sync with the global expected date?
+    const globalLatestStr = getLatestDataDate();
+
+    // We determine staleness if the global dataset is older than 3 days. 
+    // This perfectly mirrors the TopBar banner but places it conspicuously above the specific Performance table.
+    let isStale = false;
+    if (globalLatestStr) {
+        const d = new Date(globalLatestStr + "T00:00:00");
+        const now = new Date();
+        const diffMs = now.getTime() - d.getTime();
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        isStale = diffDays > 3;
+    }
+
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex justify-end pr-2 gap-4 items-center">
-                <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
-                    <input
-                        type="checkbox"
-                        checked={showCagr}
-                        onChange={(e) => setShowCagr(e.target.checked)}
-                        className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                    />
-                    Annualize Returns (CAGR)
-                </label>
-
-                <div className="relative" ref={dropdownRef}>
-                    <button
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors"
-                    >
-                        <Columns size={14} />
-                        Columns
-                        <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
-                    </button>
-
-                    {isDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
-                            <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
-                                <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
-                                    <span className="text-[10px] font-semibold text-slate-500 uppercase">Columns</span>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => {
-                                            const allSelected: Record<string, boolean> = {};
-                                            returnColumns.forEach(c => allSelected[c] = true);
-                                            setVisibleColumns(allSelected);
-                                        }} className="text-[10px] text-blue-400 hover:text-blue-300 font-medium">All</button>
-                                        <span className="text-slate-600 text-[10px]">|</span>
-                                        <button onClick={() => {
-                                            const noneSelected: Record<string, boolean> = {};
-                                            returnColumns.forEach(c => noneSelected[c] = false);
-                                            setVisibleColumns(noneSelected);
-                                        }} className="text-[10px] text-red-400 hover:text-red-300 font-medium">None</button>
-                                    </div>
-                                </div>
-                                {returnColumns.map(col => (
-                                    <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
-                                        <input
-                                            type="checkbox"
-                                            checked={visibleColumns[col]}
-                                            onChange={() => toggleColumn(col)}
-                                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                                        />
-                                        {col}
-                                    </label>
-                                ))}
-                            </div>
+            <div className="flex justify-between pr-2 gap-4 items-center">
+                <div className="flex-1 flex items-center">
+                    {isStale && (
+                        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs px-3 py-1.5 rounded flex items-center gap-2">
+                            <AlertCircle size={14} className="animate-pulse" />
+                            <span>
+                                <strong>Warning:</strong> Some themes may be missing data for {globalLatestStr}.
+                                The pipeline is currently syncing.
+                            </span>
                         </div>
                     )}
+                </div>
+
+                <div className="flex gap-4 items-center">
+                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={showCagr}
+                            onChange={(e) => setShowCagr(e.target.checked)}
+                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                        />
+                        Annualize Returns (CAGR)
+                    </label>
+
+                    <div className="relative" ref={dropdownRef}>
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors"
+                        >
+                            <Columns size={14} />
+                            Columns
+                            <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
+                                <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
+                                    <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
+                                        <span className="text-[10px] font-semibold text-slate-500 uppercase">Columns</span>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => {
+                                                const allSelected: Record<string, boolean> = {};
+                                                returnColumns.forEach(c => allSelected[c] = true);
+                                                setVisibleColumns(allSelected);
+                                            }} className="text-[10px] text-blue-400 hover:text-blue-300 font-medium">All</button>
+                                            <span className="text-slate-600 text-[10px]">|</span>
+                                            <button onClick={() => {
+                                                const noneSelected: Record<string, boolean> = {};
+                                                returnColumns.forEach(c => noneSelected[c] = false);
+                                                setVisibleColumns(noneSelected);
+                                            }} className="text-[10px] text-red-400 hover:text-red-300 font-medium">None</button>
+                                        </div>
+                                    </div>
+                                    {returnColumns.map(col => (
+                                        <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
+                                            <input
+                                                type="checkbox"
+                                                checked={visibleColumns[col]}
+                                                onChange={() => toggleColumn(col)}
+                                                className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                                            />
+                                            {col}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: Math.min(data.length * 35 + 50, 800) }}>

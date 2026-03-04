@@ -5,8 +5,9 @@ import { BreadthChart, ParticipationChart } from "@/components/charts/BreadthCha
 import { MetricCardsRow } from "@/components/common/MetricCard";
 import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { makeTradingViewUrl } from "@/lib/utils";
+import { getLatestDataDate } from "@/lib/data";
 
 interface IndexDetailPageProps {
     title: string;
@@ -59,9 +60,24 @@ export function IndexDetailPage({
         });
     };
 
+    // Component-level Data Freshness Check
+    const globalLatestStr = getLatestDataDate();
+    let isPageStale = false;
+    if (globalLatestStr && latest && latest.Date !== globalLatestStr) {
+        isPageStale = true;
+    }
+
     return (
         <div>
-            <h1 className="text-xl font-bold text-white mb-1">{title} Market Breadth</h1>
+            <div className="flex items-start justify-between mb-1">
+                <h1 className="text-xl font-bold text-white">{title} Market Breadth</h1>
+                {isPageStale && latest && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse">
+                        <span className="inline-block w-1.5 h-1.5 bg-red-400 rounded-full"></span>
+                        Data Sync Error: Showing {latest.Date} (Expected {globalLatestStr})
+                    </div>
+                )}
+            </div>
             <p className="text-sm text-slate-400 mb-4">{description}</p>
 
             {/* Metric Cards */}

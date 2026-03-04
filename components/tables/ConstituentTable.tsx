@@ -112,7 +112,6 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 width: col === "RS (20D)" ? 120 : 110,
                 valueFormatter: returnFormatter,
                 cellClass: returnCellClass,
-                type: "numericColumn",
                 sortable: true,
             });
         }

@@ -133,7 +133,6 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 width: col === "RS (20D)" ? 130 : 110,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
-                type: "numericColumn",
                 sortable: true,
             });
         }

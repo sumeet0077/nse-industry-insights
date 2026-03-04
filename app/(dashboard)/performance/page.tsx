@@ -46,7 +46,7 @@ export default async function PerformancePage() {
                     </p>
                 </div>
             ) : (
-                <PerformanceHeatmap data={data} />
+                <PerformanceHeatmap data={data} globalLatestDate={latestDate} />
             )}
         </div>
     );

@@ -8,13 +8,13 @@ import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-communi
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { Columns, ChevronDown, AlertCircle } from "lucide-react";
-import { getLatestDataDate } from "@/lib/data";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface PerformanceHeatmapProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any[];
+    globalLatestDate?: string | null;
 }
 
 const myTheme = themeQuartz.withParams({
@@ -61,7 +61,7 @@ function returnFormatter(params: ValueFormatterParams): string {
 
 const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
 
-export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
+export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -152,7 +152,7 @@ export function PerformanceHeatmap({ data }: PerformanceHeatmapProps) {
 
     // Data validation check: 
     // Is the first row (Nifty 50) out of sync with the global expected date?
-    const globalLatestStr = getLatestDataDate();
+    const globalLatestStr = globalLatestDate;
 
     // We determine staleness if the global dataset is older than 3 days. 
     // This perfectly mirrors the TopBar banner but places it conspicuously above the specific Performance table.

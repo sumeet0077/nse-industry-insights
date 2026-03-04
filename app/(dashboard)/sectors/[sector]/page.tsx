@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getConfigById, SECTORS } from "@/lib/config";
-import { getBreadthData, getConstituentPerformance, getMarketStatusForIndex } from "@/lib/data";
+import { getBreadthData, getConstituentPerformance, getMarketStatusForIndex, getLatestDataDate } from "@/lib/data";
 import { IndexDetailPage } from "@/components/common/IndexDetailPage";
 
 interface Props {
@@ -54,6 +54,7 @@ export default async function SectorPage({ params }: Props) {
             breadthData={breadthData}
             constituentData={constituents}
             marketStatus={marketStatus}
+            globalLatestDate={getLatestDataDate()}
         />
     );
 }

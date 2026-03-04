@@ -7,7 +7,6 @@ import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
 import { useState, useEffect } from "react";
 import { makeTradingViewUrl } from "@/lib/utils";
-import { getLatestDataDate } from "@/lib/data";
 
 interface IndexDetailPageProps {
     title: string;
@@ -16,6 +15,7 @@ interface IndexDetailPageProps {
     constituentData?: Array<{ ticker: string;[k: string]: number | string | null | undefined }>;
     marketStatus?: MarketStatusEntry | null;
     isIndustry?: boolean;
+    globalLatestDate?: string | null;
 }
 
 export function IndexDetailPage({
@@ -25,6 +25,7 @@ export function IndexDetailPage({
     constituentData,
     marketStatus,
     isIndustry = false,
+    globalLatestDate,
 }: IndexDetailPageProps) {
     const [activeTab, setActiveTab] = useState<"chart" | "constituents">("chart");
     const [showCagr, setShowCagr] = useState(false);
@@ -61,7 +62,7 @@ export function IndexDetailPage({
     };
 
     // Component-level Data Freshness Check
-    const globalLatestStr = getLatestDataDate();
+    const globalLatestStr = globalLatestDate;
     let isPageStale = false;
     if (globalLatestStr && latest && latest.Date !== globalLatestStr) {
         isPageStale = true;

@@ -20,7 +20,19 @@ interface ConstituentTableProps {
     showCagr?: boolean; // Keep for interface compatibility if used elsewhere
 }
 
-const returnCols = ["1D", "1W", "1M", "3M", "6M", "1Y", "3Y", "5Y", "RS (20D)"];
+const returnCols = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
+
+const fieldMap: Record<string, string> = {
+    "1 Day": "1D",
+    "1 Week": "1W",
+    "1 Month": "1M",
+    "3 Months": "3M",
+    "6 Months": "6M",
+    "1 Year": "1Y",
+    "3 Years": "3Y",
+    "5 Years": "5Y",
+    "RS (20D)": "RS (20D)"
+};
 
 const myTheme = themeQuartz.withParams({
     backgroundColor: "#111118",
@@ -95,9 +107,9 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         for (const col of returnCols) {
             cols.push({
                 headerName: col,
-                field: col,
+                field: fieldMap[col],
                 hide: !visibleColumns[col],
-                width: col === "RS (20D)" ? 120 : 100,
+                width: col === "RS (20D)" ? 120 : 110,
                 valueFormatter: returnFormatter,
                 cellClass: returnCellClass,
                 type: "numericColumn",

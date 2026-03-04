@@ -2,8 +2,8 @@
 "use client";
 
 import { AgGridReact } from "ag-grid-react";
-import { useMemo, useState, useRef, useEffect } from "react";
-import type { ColDef, ValueFormatterParams, CellClassParams } from "ag-grid-community";
+import { useMemo, useState, useRef, useEffect, useCallback } from "react";
+import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
@@ -63,8 +63,10 @@ const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 
 
 export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
+    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const gridRef = useRef<AgGridReact>(null);
 
     const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
         const initial: Record<string, boolean> = {};
@@ -165,6 +167,26 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
         isStale = diffDays > 3;
     }
 
+    const isExternalFilterPresent = useCallback(() => {
+        return showSelectedOnly;
+    }, [showSelectedOnly]);
+
+    const doesExternalFilterPass = useCallback((node: IRowNode) => {
+        return !!node.isSelected();
+    }, []);
+
+    useEffect(() => {
+        if (gridRef.current?.api) {
+            gridRef.current.api.onFilterChanged();
+        }
+    }, [showSelectedOnly]);
+
+    const onSelectionChanged = useCallback(() => {
+        if (showSelectedOnly && gridRef.current?.api) {
+            gridRef.current.api.onFilterChanged();
+        }
+    }, [showSelectedOnly]);
+
     return (
         <div className="flex flex-col gap-3">
             <div className="flex justify-between pr-2 gap-4 items-center">
@@ -181,14 +203,24 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 </div>
 
                 <div className="flex gap-4 items-center">
-                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer">
+                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap">
+                        <input
+                            type="checkbox"
+                            checked={showSelectedOnly}
+                            onChange={(e) => setShowSelectedOnly(e.target.checked)}
+                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                        />
+                        Show Selected Only
+                    </label>
+
+                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap">
                         <input
                             type="checkbox"
                             checked={showCagr}
                             onChange={(e) => setShowCagr(e.target.checked)}
                             className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
                         />
-                        Annualize Returns (CAGR)
+                        Annualize (CAGR)
                     </label>
 
                     <div className="relative" ref={dropdownRef}>
@@ -237,8 +269,9 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     </div>
                 </div>
             </div>
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden" style={{ height: Math.min(data.length * 35 + 50, 800) }}>
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(displayData.length * 35 + 50, 800), 500) }}>
                 <AgGridReact
+                    ref={gridRef}
                     theme={myTheme}
                     rowData={displayData}
                     columnDefs={columnDefs}
@@ -246,6 +279,10 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"
+                    rowSelection={{ mode: "multiRow", headerCheckbox: true }}
+                    isExternalFilterPresent={isExternalFilterPresent}
+                    doesExternalFilterPass={doesExternalFilterPass}
+                    onSelectionChanged={onSelectionChanged}
                 />
             </div>
         </div>

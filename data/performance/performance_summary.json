@@ -9,7 +9,7 @@
     "1 Year": 36.3,
     "3 Years": 122.65,
     "5 Years": 196.67,
-    "RS (20D)": 3.47
+    "RS (20D)": 5.23
   },
   {
     "Theme/Index": "Nifty Bank",
@@ -21,7 +21,7 @@
     "1 Year": 42.86,
     "3 Years": 80.87,
     "5 Years": 144.31,
-    "RS (20D)": 3.13
+    "RS (20D)": 4.89
   },
   {
     "Theme/Index": "Nifty Consumer Durables",
@@ -33,7 +33,7 @@
     "1 Year": -0.79,
     "3 Years": 76.18,
     "5 Years": 121.82,
-    "RS (20D)": -0.83
+    "RS (20D)": 0.92
   },
   {
     "Theme/Index": "Nifty Financial Services",
@@ -45,7 +45,7 @@
     "1 Year": 26.04,
     "3 Years": 127.46,
     "5 Years": 158.92,
-    "RS (20D)": 0.58
+    "RS (20D)": 2.34
   },
   {
     "Theme/Index": "Nifty FMCG",
@@ -57,7 +57,7 @@
     "1 Year": 6.89,
     "3 Years": 48.37,
     "5 Years": 109.47,
-    "RS (20D)": 0.67
+    "RS (20D)": 2.43
   },
   {
     "Theme/Index": "Nifty Healthcare",
@@ -69,7 +69,7 @@
     "1 Year": 18.1,
     "3 Years": 128.18,
     "5 Years": 140.37,
-    "RS (20D)": 6.5
+    "RS (20D)": 8.25
   },
   {
     "Theme/Index": "Nifty IT",
@@ -81,7 +81,7 @@
     "1 Year": -13.41,
     "3 Years": 39.29,
     "5 Years": 90.92,
-    "RS (20D)": -12.74
+    "RS (20D)": -10.99
   },
   {
     "Theme/Index": "Nifty Media",
@@ -93,7 +93,7 @@
     "1 Year": 11.61,
     "3 Years": 52.52,
     "5 Years": 108.69,
-    "RS (20D)": -3.88
+    "RS (20D)": -2.13
   },
   {
     "Theme/Index": "Nifty Metal",
@@ -105,7 +105,7 @@
     "1 Year": 56.61,
     "3 Years": 185.55,
     "5 Years": 394.26,
-    "RS (20D)": 2.8
+    "RS (20D)": 4.56
   },
   {
     "Theme/Index": "Nifty Oil & Gas",
@@ -117,7 +117,7 @@
     "1 Year": 19.13,
     "3 Years": 80.45,
     "5 Years": 116.78,
-    "RS (20D)": 0.74
+    "RS (20D)": 2.49
   },
   {
     "Theme/Index": "Nifty Pharma",
@@ -129,7 +129,7 @@
     "1 Year": 20.93,
     "3 Years": 151.68,
     "5 Years": 129.52,
-    "RS (20D)": 5.92
+    "RS (20D)": 7.67
   },
   {
     "Theme/Index": "Nifty PSU Bank",
@@ -141,7 +141,7 @@
     "1 Year": 36.52,
     "3 Years": 115.86,
     "5 Years": 270.58,
-    "RS (20D)": 6.42
+    "RS (20D)": 8.17
   },
   {
     "Theme/Index": "Nifty Private Bank",
@@ -153,7 +153,7 @@
     "1 Year": 29.72,
     "3 Years": 41.83,
     "5 Years": 49.98,
-    "RS (20D)": 1.56
+    "RS (20D)": 3.31
   },
   {
     "Theme/Index": "Nifty Realty",
@@ -165,7 +165,7 @@
     "1 Year": 0.46,
     "3 Years": 151.87,
     "5 Years": 300.04,
-    "RS (20D)": -5.79
+    "RS (20D)": -4.04
   },
   {
     "Theme/Index": "Agrochemicals & Fertilisers",
@@ -177,7 +177,7 @@
     "1 Year": 8.39,
     "3 Years": 59.17,
     "5 Years": 106.39,
-    "RS (20D)": -4.84
+    "RS (20D)": -3.08
   },
   {
     "Theme/Index": "Alcohols & Breweries",
@@ -189,7 +189,7 @@
     "1 Year": 1.51,
     "3 Years": 81.41,
     "5 Years": 302.72,
-    "RS (20D)": -5.87
+    "RS (20D)": -4.12
   },
   {
     "Theme/Index": "AMC",
@@ -201,7 +201,7 @@
     "1 Year": 50.98,
     "3 Years": 204.11,
     "5 Years": 137.17,
-    "RS (20D)": 0.61
+    "RS (20D)": 2.37
   },
   {
     "Theme/Index": "Auto Passenger & CV",
@@ -213,7 +213,7 @@
     "1 Year": 38.37,
     "3 Years": 127.45,
     "5 Years": 195.21,
-    "RS (20D)": 2.32
+    "RS (20D)": 4.08
   },
   {
     "Theme/Index": "Aviation",
@@ -225,7 +225,7 @@
     "1 Year": 14.3,
     "3 Years": 105.63,
     "5 Years": 239.98,
-    "RS (20D)": -1.82
+    "RS (20D)": -0.07
   },
   {
     "Theme/Index": "Capital Market",
@@ -237,7 +237,7 @@
     "1 Year": 24.52,
     "3 Years": 229.07,
     "5 Years": 402.0,
-    "RS (20D)": -7.15
+    "RS (20D)": -5.4
   },
   {
     "Theme/Index": "Cement",
@@ -249,7 +249,7 @@
     "1 Year": 13.1,
     "3 Years": 35.45,
     "5 Years": 50.78,
-    "RS (20D)": -3.0
+    "RS (20D)": -1.25
   },
   {
     "Theme/Index": "Copper",
@@ -261,7 +261,7 @@
     "1 Year": 98.62,
     "3 Years": 272.77,
     "5 Years": 244.06,
-    "RS (20D)": 0.51
+    "RS (20D)": 2.27
   },
   {
     "Theme/Index": "Critical Minerals",
@@ -273,7 +273,7 @@
     "1 Year": 44.62,
     "3 Years": 191.34,
     "5 Years": 277.2,
-    "RS (20D)": 0.72
+    "RS (20D)": 2.48
   },
   {
     "Theme/Index": "Data Centres",
@@ -285,7 +285,7 @@
     "1 Year": 26.61,
     "3 Years": 231.74,
     "5 Years": 479.33,
-    "RS (20D)": -3.02
+    "RS (20D)": -1.26
   },
   {
     "Theme/Index": "Defence & Aerospace",
@@ -297,7 +297,7 @@
     "1 Year": 61.28,
     "3 Years": 262.9,
     "5 Years": 776.05,
-    "RS (20D)": 3.65
+    "RS (20D)": 5.41
   },
   {
     "Theme/Index": "EV Ecosystem",
@@ -309,7 +309,7 @@
     "1 Year": 27.79,
     "3 Years": 141.22,
     "5 Years": 230.46,
-    "RS (20D)": -0.3
+    "RS (20D)": 1.45
   },
   {
     "Theme/Index": "Fintech",
@@ -321,7 +321,7 @@
     "1 Year": 5.58,
     "3 Years": 130.69,
     "5 Years": 189.56,
-    "RS (20D)": -9.59
+    "RS (20D)": -7.84
   },
   {
     "Theme/Index": "FMCG Staples",
@@ -333,7 +333,7 @@
     "1 Year": 10.7,
     "3 Years": 30.3,
     "5 Years": 67.54,
-    "RS (20D)": 1.9
+    "RS (20D)": 3.66
   },
   {
     "Theme/Index": "General Insurance",
@@ -345,7 +345,7 @@
     "1 Year": 6.53,
     "3 Years": 76.78,
     "5 Years": 27.34,
-    "RS (20D)": -2.35
+    "RS (20D)": -0.6
   },
   {
     "Theme/Index": "Green Hydrogen",
@@ -357,7 +357,7 @@
     "1 Year": 14.51,
     "3 Years": 108.46,
     "5 Years": 225.58,
-    "RS (20D)": 2.04
+    "RS (20D)": 3.79
   },
   {
     "Theme/Index": "Hospitals",
@@ -369,7 +369,7 @@
     "1 Year": 27.61,
     "3 Years": 166.29,
     "5 Years": 419.04,
-    "RS (20D)": 7.79
+    "RS (20D)": 9.55
   },
   {
     "Theme/Index": "Housing Finance",
@@ -381,7 +381,7 @@
     "1 Year": 8.16,
     "3 Years": 82.56,
     "5 Years": 78.11,
-    "RS (20D)": -2.88
+    "RS (20D)": -1.13
   },
   {
     "Theme/Index": "Infrastructure & EPC",
@@ -393,7 +393,7 @@
     "1 Year": -0.61,
     "3 Years": 58.59,
     "5 Years": 126.8,
-    "RS (20D)": -3.98
+    "RS (20D)": -2.23
   },
   {
     "Theme/Index": "IT Services",
@@ -405,7 +405,7 @@
     "1 Year": -15.15,
     "3 Years": 23.14,
     "5 Years": 101.21,
-    "RS (20D)": -14.52
+    "RS (20D)": -12.77
   },
   {
     "Theme/Index": "Jewellery & Gold",
@@ -417,7 +417,7 @@
     "1 Year": 32.55,
     "3 Years": 166.61,
     "5 Years": 268.66,
-    "RS (20D)": -6.26
+    "RS (20D)": -4.51
   },
   {
     "Theme/Index": "Life Insurance",
@@ -429,7 +429,7 @@
     "1 Year": 33.96,
     "3 Years": 81.46,
     "5 Years": 51.08,
-    "RS (20D)": 3.23
+    "RS (20D)": 4.99
   },
   {
     "Theme/Index": "Logistics",
@@ -441,7 +441,7 @@
     "1 Year": -0.7,
     "3 Years": -3.61,
     "5 Years": 26.41,
-    "RS (20D)": -4.65
+    "RS (20D)": -2.89
   },
   {
     "Theme/Index": "Luxury",
@@ -453,7 +453,7 @@
     "1 Year": -18.65,
     "3 Years": 38.2,
     "5 Years": 91.21,
-    "RS (20D)": -4.62
+    "RS (20D)": -2.86
   },
   {
     "Theme/Index": "Media & Broadcasting",
@@ -465,7 +465,7 @@
     "1 Year": -8.38,
     "3 Years": -16.48,
     "5 Years": -27.38,
-    "RS (20D)": -6.1
+    "RS (20D)": -4.35
   },
   {
     "Theme/Index": "Metals & Mining",
@@ -477,7 +477,7 @@
     "1 Year": 49.42,
     "3 Years": 145.45,
     "5 Years": 306.96,
-    "RS (20D)": 4.22
+    "RS (20D)": 5.98
   },
   {
     "Theme/Index": "Music & Content",
@@ -489,7 +489,7 @@
     "1 Year": -14.88,
     "3 Years": 118.07,
     "5 Years": 627.4,
-    "RS (20D)": -3.37
+    "RS (20D)": -1.62
   },
   {
     "Theme/Index": "NBFC",
@@ -501,7 +501,7 @@
     "1 Year": 31.04,
     "3 Years": 137.22,
     "5 Years": 193.12,
-    "RS (20D)": -0.96
+    "RS (20D)": 0.8
   },
   {
     "Theme/Index": "Oil & Gas Downstream",
@@ -513,7 +513,7 @@
     "1 Year": 68.35,
     "3 Years": 229.87,
     "5 Years": 273.95,
-    "RS (20D)": -0.26
+    "RS (20D)": 1.49
   },
   {
     "Theme/Index": "Oil & Gas Upstream",
@@ -525,7 +525,7 @@
     "1 Year": 26.13,
     "3 Years": 108.34,
     "5 Years": 223.78,
-    "RS (20D)": 3.32
+    "RS (20D)": 5.08
   },
   {
     "Theme/Index": "Paints",
@@ -537,7 +537,7 @@
     "1 Year": -2.0,
     "3 Years": 1.89,
     "5 Years": -3.51,
-    "RS (20D)": -1.28
+    "RS (20D)": 0.47
   },
   {
     "Theme/Index": "Pharma Formulations",
@@ -549,7 +549,7 @@
     "1 Year": 16.5,
     "3 Years": 121.76,
     "5 Years": 133.04,
-    "RS (20D)": 7.59
+    "RS (20D)": 9.34
   },
   {
     "Theme/Index": "Power T&D",
@@ -561,7 +561,7 @@
     "1 Year": 48.48,
     "3 Years": 265.28,
     "5 Years": 749.55,
-    "RS (20D)": 10.65
+    "RS (20D)": 12.41
   },
   {
     "Theme/Index": "Private Banking",
@@ -573,7 +573,7 @@
     "1 Year": 29.72,
     "3 Years": 41.83,
     "5 Years": 49.98,
-    "RS (20D)": 1.56
+    "RS (20D)": 3.31
   },
   {
     "Theme/Index": "PSU Banking",
@@ -585,7 +585,7 @@
     "1 Year": 36.52,
     "3 Years": 115.86,
     "5 Years": 270.58,
-    "RS (20D)": 6.42
+    "RS (20D)": 8.17
   },
   {
     "Theme/Index": "QSR",
@@ -597,7 +597,7 @@
     "1 Year": -17.05,
     "3 Years": -20.92,
     "5 Years": -7.94,
-    "RS (20D)": -4.86
+    "RS (20D)": -3.1
   },
   {
     "Theme/Index": "Railways & Infrastructure",
@@ -609,7 +609,7 @@
     "1 Year": -1.74,
     "3 Years": 155.06,
     "5 Years": 373.14,
-    "RS (20D)": -8.89
+    "RS (20D)": -7.13
   },
   {
     "Theme/Index": "Renewable Energy",
@@ -621,7 +621,7 @@
     "1 Year": -0.62,
     "3 Years": 206.76,
     "5 Years": 601.36,
-    "RS (20D)": -3.36
+    "RS (20D)": -1.61
   },
   {
     "Theme/Index": "Retail & E-Commerce",
@@ -633,7 +633,7 @@
     "1 Year": -1.86,
     "3 Years": 62.64,
     "5 Years": 105.84,
-    "RS (20D)": -6.27
+    "RS (20D)": -4.51
   },
   {
     "Theme/Index": "Semiconductors & EMS",
@@ -645,7 +645,7 @@
     "1 Year": 27.56,
     "3 Years": 205.47,
     "5 Years": 632.01,
-    "RS (20D)": -4.22
+    "RS (20D)": -2.47
   },
   {
     "Theme/Index": "Silver",
@@ -657,7 +657,7 @@
     "1 Year": 47.67,
     "3 Years": 326.1,
     "5 Years": 682.69,
-    "RS (20D)": 0.33
+    "RS (20D)": 2.08
   },
   {
     "Theme/Index": "Solar Manufacturing",
@@ -669,7 +669,7 @@
     "1 Year": -22.56,
     "3 Years": 503.09,
     "5 Years": 1465.77,
-    "RS (20D)": -15.0
+    "RS (20D)": -13.25
   },
   {
     "Theme/Index": "Specialty Chemicals",
@@ -681,7 +681,7 @@
     "1 Year": 15.25,
     "3 Years": 10.84,
     "5 Years": 59.19,
-    "RS (20D)": -2.09
+    "RS (20D)": -0.34
   },
   {
     "Theme/Index": "Telecom Infra",
@@ -693,7 +693,7 @@
     "1 Year": -2.87,
     "3 Years": 49.11,
     "5 Years": 176.52,
-    "RS (20D)": 12.01
+    "RS (20D)": 13.76
   },
   {
     "Theme/Index": "Telecom Services",
@@ -705,7 +705,7 @@
     "1 Year": 28.56,
     "3 Years": 90.79,
     "5 Years": 103.49,
-    "RS (20D)": -5.21
+    "RS (20D)": -3.45
   },
   {
     "Theme/Index": "Textiles",
@@ -717,7 +717,7 @@
     "1 Year": -14.5,
     "3 Years": 7.84,
     "5 Years": 87.37,
-    "RS (20D)": -6.34
+    "RS (20D)": -4.58
   },
   {
     "Theme/Index": "Two & Three Wheelers",
@@ -729,7 +729,7 @@
     "1 Year": 55.85,
     "3 Years": 194.88,
     "5 Years": 244.94,
-    "RS (20D)": 5.05
+    "RS (20D)": 6.8
   },
   {
     "Theme/Index": "Wealth Management",
@@ -741,42 +741,42 @@
     "1 Year": 31.78,
     "3 Years": 340.92,
     "5 Years": 726.64,
-    "RS (20D)": -4.46
+    "RS (20D)": -2.71
   },
   {
     "Theme/Index": "Nifty 50",
-    "1 Day": -1.22,
-    "1 Week": -2.6,
-    "1 Month": -0.12,
-    "3 Months": -1.45,
-    "6 Months": 1.96,
-    "1 Year": 18.47,
-    "3 Years": 87.8,
-    "5 Years": 153.55,
+    "1 Day": -2.0,
+    "1 Week": -4.3,
+    "1 Month": -1.05,
+    "3 Months": -3.23,
+    "6 Months": -0.13,
+    "1 Year": 15.67,
+    "3 Years": 84.33,
+    "5 Years": 152.74,
     "RS (20D)": 0.0
   },
   {
     "Theme/Index": "Nifty 500",
-    "1 Day": -1.93,
-    "1 Week": -2.75,
-    "1 Month": -0.68,
-    "3 Months": -5.32,
-    "6 Months": -5.35,
-    "1 Year": 17.14,
-    "3 Years": 117.66,
-    "5 Years": 231.63,
-    "RS (20D)": -1.48
+    "1 Day": -2.18,
+    "1 Week": -4.73,
+    "1 Month": -1.7,
+    "3 Months": -6.74,
+    "6 Months": -6.92,
+    "1 Year": 13.9,
+    "3 Years": 112.91,
+    "5 Years": 227.56,
+    "RS (20D)": -1.09
   },
   {
     "Theme/Index": "Nifty Smallcap 250",
-    "1 Day": -2.17,
-    "1 Week": -3.15,
-    "1 Month": -1.51,
-    "3 Months": -7.51,
-    "6 Months": -10.28,
-    "1 Year": 13.77,
-    "3 Years": 118.96,
-    "5 Years": 254.36,
-    "RS (20D)": -2.63
+    "1 Day": -2.07,
+    "1 Week": -4.78,
+    "1 Month": -2.36,
+    "3 Months": -8.91,
+    "6 Months": -11.67,
+    "1 Year": 10.62,
+    "3 Years": 114.47,
+    "5 Years": 249.51,
+    "RS (20D)": -1.85
   }
 ]

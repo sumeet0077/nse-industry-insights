@@ -29,6 +29,12 @@ export function getBreadthData(indexId: string): BreadthDataPoint[] {
     return readJson<BreadthDataPoint[]>(`breadth/${indexId}.json`) ?? [];
 }
 
+export function getLatestDataDate(): string | null {
+    const data = getBreadthData("market_breadth_nifty500");
+    if (data.length === 0) return null;
+    return data[data.length - 1].Date;
+}
+
 export function getPerformanceSummary(): PerformanceRow[] {
     return readJson<PerformanceRow[]>("performance/performance_summary.json") ?? [];
 }

@@ -3,6 +3,7 @@
 
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
+import { DataFreshnessBanner } from "@/components/layout/DataFreshnessBanner";
 
 export default function DashboardLayout({
     children,
@@ -14,6 +15,7 @@ export default function DashboardLayout({
             <Sidebar />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <TopBar />
+                <DataFreshnessBanner />
                 <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
             </div>
         </div>

@@ -1448,11 +1448,12 @@
             "TITAN.NS"
         ],
         "below": [
-            "PAGEIND.NS",
-            "ABFRL.NS",
+            "TRENT.NS",
+            "KALYANKJIL.NS",
             "ETHOSLTD.NS",
-            "LUXIND.NS",
-            "KALYANKJIL.NS"
+            "SULA.NS",
+            "LANDMARK.NS",
+            "SJVN.NS"
         ],
         "new_stock": []
     },
@@ -1712,6 +1713,25 @@
             "DEEPAKNTR.NS",
             "PIIND.NS",
             "FINEORG.NS"
+        ],
+        "new_stock": []
+    },
+    "Sugar": {
+        "above": [
+            "TRIVENI.NS",
+            "DBOL.NS"
+        ],
+        "below": [
+            "EIDPARRY.NS",
+            "BALRAMCHIN.NS",
+            "RENUKA.NS",
+            "DALMIASUG.NS",
+            "DHAMPURSUG.NS",
+            "AVADHSUGAR.NS",
+            "UGARSUGAR.NS",
+            "DCMNVL.NS",
+            "UTTAMSUGAR.NS",
+            "BAJAJHIND.NS"
         ],
         "new_stock": []
     },

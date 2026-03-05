@@ -457,15 +457,15 @@
   },
   {
     "Theme/Index": "Luxury",
-    "1 Day": 1.04,
-    "1 Week": -3.11,
-    "1 Month": -3.08,
-    "3 Months": -14.43,
-    "6 Months": -16.37,
-    "1 Year": -11.14,
-    "3 Years": 67.04,
-    "5 Years": 131.74,
-    "RS (20D)": -4.01
+    "1 Day": 1.1,
+    "1 Week": -3.64,
+    "1 Month": -2.52,
+    "3 Months": -13.62,
+    "6 Months": -20.18,
+    "1 Year": -10.18,
+    "3 Years": 89.84,
+    "5 Years": 207.29,
+    "RS (20D)": -3.98
   },
   {
     "Theme/Index": "Media & Broadcasting",
@@ -509,10 +509,10 @@
     "1 Week": 9.35,
     "1 Month": 67.5,
     "3 Months": 502.36,
-    "6 Months": 3846.76,
-    "1 Year": 321997.7,
-    "3 Years": 17467453549.62,
-    "5 Years": 1.0457200180445891e+17,
+    "6 Months": 3745.08,
+    "1 Year": 238818.85,
+    "3 Years": 6418866738.25,
+    "5 Years": 1.2528503956491768e+16,
     "RS (20D)": 76.46
   },
   {
@@ -694,6 +694,18 @@
     "3 Years": 10.42,
     "5 Years": 63.34,
     "RS (20D)": -0.8
+  },
+  {
+    "Theme/Index": "Sugar",
+    "1 Day": -1.61,
+    "1 Week": 4.13,
+    "1 Month": 3.32,
+    "3 Months": 1.69,
+    "6 Months": -11.52,
+    "1 Year": 5.63,
+    "3 Years": 0.37,
+    "5 Years": 157.14,
+    "RS (20D)": 4.89
   },
   {
     "Theme/Index": "Telecom Infra",

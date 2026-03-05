@@ -1161,6 +1161,33 @@
             "ICICIAMC.NS"
         ]
     },
+    "Auto Ancillary": {
+        "above": [
+            "MOTHERSON.NS",
+            "BHARATFORG.NS",
+            "SCHAEFFLER.NS",
+            "SONACOMS.NS",
+            "CIEINDIA.NS",
+            "ZFCVINDIA.NS",
+            "CRAFTSMAN.NS",
+            "LUMAXTECH.NS",
+            "SANSERA.NS"
+        ],
+        "below": [
+            "BOSCHLTD.NS",
+            "UNOMINDA.NS",
+            "TIINDIA.NS",
+            "ENDURANCE.NS",
+            "MSUMI.NS",
+            "SUNDRMFAST.NS",
+            "EXIDEIND.NS",
+            "ARE&M.NS",
+            "GABRIEL.NS",
+            "SUPRAJIT.NS",
+            "MINDACORP.NS"
+        ],
+        "new_stock": []
+    },
     "Auto Passenger & CV": {
         "above": [
             "EICHERMOT.NS",
@@ -1758,6 +1785,21 @@
             "EICHERMOT.NS"
         ],
         "below": [],
+        "new_stock": []
+    },
+    "Tyres & Rubber Products": {
+        "above": [
+            "JKTYRE.NS",
+            "TVSSRICHAK.NS"
+        ],
+        "below": [
+            "MRF.NS",
+            "BALKRISIND.NS",
+            "APOLLOTYRE.NS",
+            "CEATLTD.NS",
+            "TOLINS.NS",
+            "MODIRUBBER.NS"
+        ],
         "new_stock": []
     },
     "Wealth Management": {

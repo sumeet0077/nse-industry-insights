@@ -204,6 +204,18 @@
     "RS (20D)": -1.53
   },
   {
+    "Theme/Index": "AMC",
+    "1 Day": 1.39,
+    "1 Week": -5.28,
+    "1 Month": 0.49,
+    "3 Months": 0.81,
+    "6 Months": 5.18,
+    "1 Year": 36.12,
+    "3 Years": 111.47,
+    "5 Years": 253.42,
+    "RS (20D)": 0.13
+  },
+  {
     "Theme/Index": "Auto Passenger & CV",
     "1 Day": 1.75,
     "1 Week": -5.03,
@@ -730,6 +742,18 @@
     "3 Years": 191.3,
     "5 Years": 246.06,
     "RS (20D)": 1.25
+  },
+  {
+    "Theme/Index": "Two & Three Wheelers",
+    "1 Day": 1.94,
+    "1 Week": -6.48,
+    "1 Month": -9.18,
+    "3 Months": -9.45,
+    "6 Months": -0.5,
+    "1 Year": 24.29,
+    "3 Years": 69.58,
+    "5 Years": 84.24,
+    "RS (20D)": -9.89
   },
   {
     "Theme/Index": "Wealth Management",

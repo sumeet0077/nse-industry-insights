@@ -69,6 +69,8 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
         "renewable energy": "renewable energy generation",
         "nifty oil & gas": "nifty oil and gas",
         "jewellery & gold": "jewellery (gold)",
+        "tyres & rubber": "tyres & rubber products",
+        "auto ancillary": "auto ancillary",
     };
 
     // Direct match

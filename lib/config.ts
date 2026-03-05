@@ -76,8 +76,8 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_it_services", title: "IT Services", description: "IT Services Companies", dataFile: "breadth_theme_it_services", category: "industries" },
     { id: "breadth_theme_auto_passenger_and_cv", title: "Auto Passenger & CV", description: "Passenger Vehicles & Commercial Vehicles", dataFile: "breadth_theme_auto_passenger_and_cv", category: "industries" },
     { id: "breadth_theme_two_and_three_wheelers", title: "Two & Three Wheelers", description: "Two & Three Wheeler Manufacturers", dataFile: "breadth_theme_two_and_three_wheelers", category: "industries" },
-    { id: "breadth_theme_auto_ancillary", title: "Auto Ancillary", description: "Auto Component Manufacturers", dataFile: "breadth_theme_auto_ancillary", category: "industries" },
-    { id: "breadth_theme_tyres_and_rubber_products", title: "Tyres & Rubber", description: "Tyre & Rubber Manufacturers", dataFile: "breadth_theme_tyres_and_rubber_products", category: "industries" },
+    { id: "breadth_theme_auto_ancillary", title: "Auto Ancillary", description: "Companies manufacturing automotive components", dataFile: "breadth_theme_auto_ancillary", category: "industries" },
+    { id: "breadth_theme_tyres_and_rubber_products", title: "Tyres & Rubber", description: "Tyre and Rubber manufacturers", dataFile: "breadth_theme_tyres_and_rubber_products", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];

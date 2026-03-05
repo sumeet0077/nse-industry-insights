@@ -1507,7 +1507,9 @@
             "POONAWALLA.NS",
             "CGCL.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "PIRAMALFIN.NS"
+        ]
     },
     "Oil & Gas Downstream": {
         "above": [

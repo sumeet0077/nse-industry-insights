@@ -50,15 +50,19 @@ const STATIC_GROUPS = [
 export function Sidebar() {
     const pathname = usePathname();
     const [query, setQuery] = useState("");
+    const [sortMode, setSortMode] = useState<"asc" | "desc">("asc");
 
-    // Filter Industries based on search query
+    // Filter + sort Industries
     const filteredIndustries = useMemo(() => {
         const q = query.trim().toLowerCase();
-        if (!q) return INDUSTRIES_SORTED;
-        return INDUSTRIES_SORTED.filter((c) =>
-            c.title.toLowerCase().includes(q)
-        );
-    }, [query]);
+        const list = q
+            ? INDUSTRIES_SORTED.filter((c) => c.title.toLowerCase().includes(q))
+            : INDUSTRIES_SORTED;
+        // INDUSTRIES_SORTED is already A-Z; only re-sort if Z-A is active
+        return sortMode === "asc"
+            ? list
+            : [...list].sort((a, b) => b.title.localeCompare(a.title));
+    }, [query, sortMode]);
 
     return (
         <aside className="hidden lg:flex flex-col w-60 min-h-screen bg-[#0d0d14] border-r border-[#1e1e2e] overflow-y-auto">
@@ -108,9 +112,14 @@ export function Sidebar() {
                         <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                             Industries
                         </span>
-                        <span className="ml-auto text-[9px] text-slate-600 font-medium">
-                            A–Z
-                        </span>
+                        <button
+                            onClick={() => setSortMode(prev => prev === "asc" ? "desc" : "asc")}
+                            className={`ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${"bg-blue-500/20 text-blue-400 border-blue-500/30"
+                                }`}
+                            title="Toggle sort order"
+                        >
+                            {sortMode === "asc" ? "A–Z" : "Z–A"}
+                        </button>
                     </div>
 
                     {/* Search input */}

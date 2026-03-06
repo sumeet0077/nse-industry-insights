@@ -188,7 +188,6 @@
             "SBILIFE.NS",
             "SBIN.NS",
             "SCHAEFFLER.NS",
-            "SCHNEIDER.NS",
             "SCI.NS",
             "SHRIRAMFIN.NS",
             "SIEMENS.NS",
@@ -451,7 +450,6 @@
             "NUVOCO.NS",
             "OBEROIRLTY.NS",
             "OFSS.NS",
-            "OLAELEC.NS",
             "OLECTRA.NS",
             "ONESOURCE.NS",
             "PAGEIND.NS",
@@ -481,11 +479,9 @@
             "RECLTD.NS",
             "REDINGTON.NS",
             "RELIANCE.NS",
-            "RELINFRA.NS",
             "RHIM.NS",
             "RITES.NS",
             "RKFORGE.NS",
-            "RPOWER.NS",
             "RVNL.NS",
             "SAGILITY.NS",
             "SAPPHIRE.NS",
@@ -524,7 +520,6 @@
             "TRENT.NS",
             "TRIDENT.NS",
             "TRITURBINE.NS",
-            "TTML.NS",
             "UBL.NS",
             "UCOBANK.NS",
             "UNOMINDA.NS",
@@ -550,7 +545,10 @@
         "new_stock": [
             "JSWCEMENT.NS",
             "LTM.NS",
-            "SWANCORP.NS"
+            "OLAELEC.NS",
+            "RPOWER.NS",
+            "SWANCORP.NS",
+            "TTML.NS"
         ]
     },
     "Nifty Smallcap 250": {
@@ -604,7 +602,6 @@
             "SAILIFE.NS",
             "SAMMAANCAP.NS",
             "SARDAEN.NS",
-            "SCHNEIDER.NS",
             "SCI.NS",
             "STARHEALTH.NS",
             "SUNTV.NS",
@@ -746,7 +743,6 @@
             "NSLNISP.NS",
             "NUVAMA.NS",
             "NUVOCO.NS",
-            "OLAELEC.NS",
             "OLECTRA.NS",
             "ONESOURCE.NS",
             "PCBL.NS",
@@ -763,11 +759,9 @@
             "RAINBOW.NS",
             "RCF.NS",
             "REDINGTON.NS",
-            "RELINFRA.NS",
             "RHIM.NS",
             "RITES.NS",
             "RKFORGE.NS",
-            "RPOWER.NS",
             "SAGILITY.NS",
             "SAPPHIRE.NS",
             "SAREGAMA.NS",
@@ -786,7 +780,6 @@
             "TITAGARH.NS",
             "TRIDENT.NS",
             "TRITURBINE.NS",
-            "TTML.NS",
             "UTIAMC.NS",
             "VENTIVE.NS",
             "VGUARD.NS",
@@ -801,7 +794,10 @@
         ],
         "new_stock": [
             "JSWCEMENT.NS",
-            "SWANCORP.NS"
+            "OLAELEC.NS",
+            "RPOWER.NS",
+            "SWANCORP.NS",
+            "TTML.NS"
         ]
     },
     "NIFTY AUTO": {
@@ -1224,8 +1220,7 @@
         "above": [
             "HINDCOPPER.NS",
             "VEDL.NS",
-            "HINDALCO.NS",
-            "MCL.NS"
+            "HINDALCO.NS"
         ],
         "below": [],
         "new_stock": []
@@ -1246,8 +1241,7 @@
         "above": [],
         "below": [
             "RELIANCE.NS",
-            "TATACOMM.NS",
-            "E2E.NS"
+            "TATACOMM.NS"
         ],
         "new_stock": []
     },
@@ -1412,7 +1406,6 @@
         ],
         "below": [
             "KALYANKJIL.NS",
-            "RAJESHEXPO.NS",
             "GOLDIAM.NS",
             "MANAPPURAM.NS"
         ],
@@ -1581,8 +1574,7 @@
             "POWERGRID.NS",
             "SIEMENS.NS",
             "CGPOWER.NS",
-            "POWERINDIA.NS",
-            "SCHNEIDER.NS"
+            "POWERINDIA.NS"
         ],
         "below": [],
         "new_stock": []
@@ -1788,11 +1780,10 @@
             "BALKRISIND.NS",
             "APOLLOTYRE.NS",
             "CEATLTD.NS",
-            "TOLINS.NS",
-            "MODIRUBBER.NS"
+            "TOLINS.NS"
         ],
         "new_stock": [
-            "VIAZ.NS"
+            "MODIRUBBER.NS"
         ]
     },
     "Wealth Management": {

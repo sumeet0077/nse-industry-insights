@@ -1555,6 +1555,21 @@
         ],
         "new_stock": []
     },
+    "Paper": {
+        "above": [],
+        "below": [
+            "JKPAPER.NS",
+            "WSTCSTPAPR.NS",
+            "TNPL.NS",
+            "ANDHRAPAP.NS",
+            "ORIENTPPR.NS",
+            "SESHAPAPER.NS",
+            "KUANTUM.NS",
+            "STARPAPER.NS",
+            "EMAMIPAP.NS"
+        ],
+        "new_stock": []
+    },
     "Pharma Formulations": {
         "above": [
             "SUNPHARMA.NS",
@@ -1794,6 +1809,21 @@
             "360ONE.NS",
             "NUVAMA.NS",
             "PRUDENT.NS"
+        ],
+        "new_stock": []
+    },
+    "Wires and Cables": {
+        "above": [
+            "POLYCAB.NS",
+            "KEI.NS",
+            "APARINDS.NS",
+            "FINCABLES.NS",
+            "RRKABEL.NS"
+        ],
+        "below": [
+            "VGUARD.NS",
+            "BPL.NS",
+            "DIAMINESQ.NS"
         ],
         "new_stock": []
     }

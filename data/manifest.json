@@ -46,6 +46,7 @@
     "breadth_theme_oil_and_gas_downstream",
     "breadth_theme_oil_and_gas_upstream",
     "breadth_theme_paints",
+    "breadth_theme_paper",
     "breadth_theme_pharma_formulations",
     "breadth_theme_power_tandd",
     "breadth_theme_private_banking",
@@ -65,6 +66,7 @@
     "breadth_theme_two_and_three_wheelers",
     "breadth_theme_tyres_and_rubber_products",
     "breadth_theme_wealth_management",
+    "breadth_theme_wires_and_cables",
     "market_breadth_nifty50",
     "market_breadth_nifty500",
     "market_breadth_smallcap"

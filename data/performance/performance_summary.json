@@ -552,6 +552,18 @@
     "RS (20D)":-1.68
   },
   {
+    "Theme\/Index":"Paper",
+    "1 Day":-0.68,
+    "1 Week":-4.88,
+    "1 Month":-4.61,
+    "3 Months":-8.13,
+    "6 Months":-19.29,
+    "1 Year":-9.15,
+    "3 Years":-17.39,
+    "5 Years":56.46,
+    "RS (20D)":-3.4
+  },
+  {
     "Theme\/Index":"Pharma Formulations",
     "1 Day":-0.42,
     "1 Week":0.06,
@@ -778,6 +790,18 @@
     "3 Years":359.78,
     "5 Years":628.38,
     "RS (20D)":-1.78
+  },
+  {
+    "Theme\/Index":"Wires & Cables",
+    "1 Day":1.16,
+    "1 Week":-2.19,
+    "1 Month":4.54,
+    "3 Months":7.35,
+    "6 Months":0.45,
+    "1 Year":22.18,
+    "3 Years":98.9,
+    "5 Years":438.31,
+    "RS (20D)":8.59
   },
   {
     "Theme\/Index":"Nifty 50",

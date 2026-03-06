@@ -118,15 +118,16 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
                     
             # RS (20D)
             row["RS (20D)"] = None
-            if current_price > 0:
+            if current_price > 0 and nifty_latest_price > 0 and nifty_20d_price > 0:
                 target_date = current_date - timedelta(days=20)
                 mask = df['Date'] <= target_date
                 if mask.any():
                     asset_20d_price = df[mask].iloc[-1]['Index_Close']
-                    if asset_20d_price > 0 and nifty_rs_base != 0:
-                        asset_rs_base = (current_price - asset_20d_price) / asset_20d_price
-                        rs_20d = (asset_rs_base - nifty_rs_base) * 100
-                        row["RS (20D)"] = round(rs_20d, 2)
+                    if asset_20d_price > 0:
+                        current_ratio = current_price / nifty_latest_price
+                        past_ratio = asset_20d_price / nifty_20d_price
+                        rs_val = ((current_ratio - past_ratio) / past_ratio) * 100
+                        row["RS (20D)"] = None if pd.isna(rs_val) else round(rs_val, 2)
                         
             summary_data.append(row)
             
@@ -135,8 +136,15 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
             
     if summary_data:
         out_path = perf_dir / "performance_summary.json"
-        with open(out_path, "w") as f:
-            json.dump(summary_data, f, indent=2)
+        
+        # We must serialize via Pandas to guarantee strictly compliant JSON (NaN -> null). 
+        # Python's built-in json.dump writes literal 'NaN' which breaks JS parsers.
+        df_summary = pd.DataFrame(summary_data)
+        
+        # Replace python NaNs to None for safe serialization just in case
+        df_summary = df_summary.where(pd.notna(df_summary), None)
+        df_summary.to_json(out_path, orient="records", date_format="iso", indent=2)
+        
         print(f"  OK   performance_summary.json ({len(summary_data)} rows)")
     else:
         print("  ERR  Could not generate performance_summary.json")

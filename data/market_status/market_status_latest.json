@@ -1186,6 +1186,21 @@
         ],
         "new_stock": []
     },
+    "Building Materials": {
+        "above": [],
+        "below": [
+            "KAJARIACER.NS",
+            "AGI.NS",
+            "CARYSIL.NS",
+            "CERA.NS",
+            "CENTURYPLY.NS",
+            "GREENPLY.NS",
+            "GREENPANEL.NS",
+            "SOMANYCERA.NS",
+            "RUSHIL.NS"
+        ],
+        "new_stock": []
+    },
     "Capital Market": {
         "above": [
             "BSE.NS",
@@ -1262,7 +1277,19 @@
             "BDL.NS",
             "GRSE.NS",
             "IDEAFORGE.NS",
-            "ZENTEC.NS"
+            "ZENTEC.NS",
+            "ZENITHEXPO.NS"
+        ],
+        "new_stock": []
+    },
+    "Diagnostics & Pathology": {
+        "above": [],
+        "below": [
+            "LALPATHLAB.NS",
+            "THYROCARE.NS",
+            "VIJAYA.NS",
+            "METROPOLIS.NS",
+            "KRSNAA.NS"
         ],
         "new_stock": []
     },
@@ -1310,6 +1337,20 @@
         ],
         "new_stock": []
     },
+    "Footwear": {
+        "above": [],
+        "below": [
+            "BATAINDIA.NS",
+            "METROBRAND.NS",
+            "CAMPUS.NS",
+            "RELAXO.NS",
+            "KHADIM.NS",
+            "MIRZAINT.NS"
+        ],
+        "new_stock": [
+            "LIBERTSHOE.NS"
+        ]
+    },
     "General Insurance": {
         "above": [
             "STARHEALTH.NS"
@@ -1348,6 +1389,22 @@
             "MEDANTA.NS"
         ],
         "new_stock": []
+    },
+    "Hotels & Hospitality": {
+        "above": [],
+        "below": [
+            "INDHOTEL.NS",
+            "LEMONTREE.NS",
+            "EIHOTEL.NS",
+            "CHALET.NS",
+            "TAJGVK.NS",
+            "ORISSAMINE.NS",
+            "MHRIL.NS",
+            "HLVLTD.NS"
+        ],
+        "new_stock": [
+            "BYKE.NS"
+        ]
     },
     "Housing Finance": {
         "above": [],
@@ -1545,6 +1602,36 @@
         ],
         "new_stock": []
     },
+    "PVC Pipes & Plumbing": {
+        "above": [
+            "ASTRAL.NS",
+            "JINDALPOLY.NS"
+        ],
+        "below": [
+            "SUPREMEIND.NS",
+            "FINPIPE.NS",
+            "APOLLOPIPE.NS",
+            "PRAKASH.NS",
+            "PRINCEPIPE.NS"
+        ],
+        "new_stock": []
+    },
+    "Packaging Solutions": {
+        "above": [
+            "JINDALPOLY.NS"
+        ],
+        "below": [
+            "EPL.NS",
+            "POLYPLEX.NS",
+            "GARFIBRES.NS",
+            "MOLDTKPAC.NS",
+            "HUHTAMAKI.NS",
+            "TCPLPACK.NS",
+            "UFLEX.NS",
+            "HINDCOMPOS.NS"
+        ],
+        "new_stock": []
+    },
     "Paints": {
         "above": [],
         "below": [
@@ -1685,6 +1772,17 @@
         ],
         "new_stock": []
     },
+    "Shipbuilding": {
+        "above": [
+            "SCI.NS"
+        ],
+        "below": [
+            "MAZDOCK.NS",
+            "GRSE.NS",
+            "COCHINSHIP.NS"
+        ],
+        "new_stock": []
+    },
     "Silver": {
         "above": [
             "HINDZINC.NS",
@@ -1809,6 +1907,24 @@
             "360ONE.NS",
             "NUVAMA.NS",
             "PRUDENT.NS"
+        ],
+        "new_stock": []
+    },
+    "White Goods & Durables": {
+        "above": [
+            "VOLTAS.NS",
+            "BLUESTARCO.NS"
+        ],
+        "below": [
+            "DIXON.NS",
+            "HAVELLS.NS",
+            "CROMPTON.NS",
+            "WHIRLPOOL.NS",
+            "BAJAJELEC.NS",
+            "VGUARD.NS",
+            "SYMPHONY.NS",
+            "EUREKAFORB.NS",
+            "TTKPRESTIG.NS"
         ],
         "new_stock": []
     },

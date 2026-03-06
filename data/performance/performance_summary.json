@@ -240,6 +240,18 @@
     "RS (20D)":-1.52
   },
   {
+    "Theme\/Index":"Building Materials",
+    "1 Day":-1.1,
+    "1 Week":-5.35,
+    "1 Month":-11.14,
+    "3 Months":-17.55,
+    "6 Months":-24.89,
+    "1 Year":-8.59,
+    "3 Years":13.59,
+    "5 Years":66.53,
+    "RS (20D)":-6.99
+  },
+  {
     "Theme\/Index":"Capital Market",
     "1 Day":-1.05,
     "1 Week":-2.7,
@@ -301,15 +313,27 @@
   },
   {
     "Theme\/Index":"Defence & Aerospace",
-    "1 Day":3.48,
-    "1 Week":6.78,
-    "1 Month":7.32,
-    "3 Months":8.29,
-    "6 Months":13.05,
-    "1 Year":62.12,
-    "3 Years":309.52,
-    "5 Years":885.19,
-    "RS (20D)":12.87
+    "1 Day":3.24,
+    "1 Week":5.86,
+    "1 Month":5.83,
+    "3 Months":6.25,
+    "6 Months":8.77,
+    "1 Year":61.29,
+    "3 Years":342.7,
+    "5 Years":1064.98,
+    "RS (20D)":11.54
+  },
+  {
+    "Theme\/Index":"Diagnostics",
+    "1 Day":-0.09,
+    "1 Week":-4.69,
+    "1 Month":-6.76,
+    "3 Months":-9.84,
+    "6 Months":-17.19,
+    "1 Year":11.06,
+    "3 Years":106.95,
+    "5 Years":57.61,
+    "RS (20D)":-2.97
   },
   {
     "Theme\/Index":"EV Ecosystem",
@@ -348,6 +372,18 @@
     "RS (20D)":1.66
   },
   {
+    "Theme\/Index":"Footwear",
+    "1 Day":-0.87,
+    "1 Week":-7.48,
+    "1 Month":-16.88,
+    "3 Months":-21.38,
+    "6 Months":-29.7,
+    "1 Year":-21.59,
+    "3 Years":-7.69,
+    "5 Years":67.29,
+    "RS (20D)":-11.53
+  },
+  {
     "Theme\/Index":"General Insurance",
     "1 Day":-0.54,
     "1 Week":-4.48,
@@ -382,6 +418,18 @@
     "3 Years":157.51,
     "5 Years":410.48,
     "RS (20D)":3.01
+  },
+  {
+    "Theme\/Index":"Hotels & Hospitality",
+    "1 Day":-0.6,
+    "1 Week":-3.6,
+    "1 Month":-11.45,
+    "3 Months":-16.76,
+    "6 Months":-27.01,
+    "1 Year":-17.32,
+    "3 Years":78.72,
+    "5 Years":284.31,
+    "RS (20D)":-7.05
   },
   {
     "Theme\/Index":"Housing Finance",
@@ -540,6 +588,18 @@
     "RS (20D)":6.01
   },
   {
+    "Theme\/Index":"Packaging",
+    "1 Day":0.88,
+    "1 Week":-0.2,
+    "1 Month":3.68,
+    "3 Months":0.07,
+    "6 Months":-13.82,
+    "1 Year":-7.41,
+    "3 Years":25.77,
+    "5 Years":75.39,
+    "RS (20D)":4.52
+  },
+  {
     "Theme\/Index":"Paints",
     "1 Day":-0.85,
     "1 Week":-5.0,
@@ -612,6 +672,18 @@
     "RS (20D)":4.03
   },
   {
+    "Theme\/Index":"PVC Pipes & Plumbing",
+    "1 Day":0.8,
+    "1 Week":1.74,
+    "1 Month":17.17,
+    "3 Months":14.76,
+    "6 Months":-5.62,
+    "1 Year":7.52,
+    "3 Years":23.02,
+    "5 Years":74.46,
+    "RS (20D)":11.9
+  },
+  {
     "Theme\/Index":"QSR",
     "1 Day":0.89,
     "1 Week":-4.06,
@@ -670,6 +742,18 @@
     "3 Years":195.65,
     "5 Years":512.96,
     "RS (20D)":-2.98
+  },
+  {
+    "Theme\/Index":"Shipbuilding",
+    "1 Day":3.13,
+    "1 Week":1.42,
+    "1 Month":2.7,
+    "3 Months":-1.2,
+    "6 Months":2.73,
+    "1 Year":47.55,
+    "3 Years":500.35,
+    "5 Years":1044.47,
+    "RS (20D)":4.08
   },
   {
     "Theme\/Index":"Silver",
@@ -790,6 +874,18 @@
     "3 Years":359.78,
     "5 Years":628.38,
     "RS (20D)":-1.78
+  },
+  {
+    "Theme\/Index":"White Goods",
+    "1 Day":-0.69,
+    "1 Week":-4.31,
+    "1 Month":-6.22,
+    "3 Months":-12.08,
+    "6 Months":-22.6,
+    "1 Year":-16.4,
+    "3 Years":19.14,
+    "5 Years":21.14,
+    "RS (20D)":-4.79
   },
   {
     "Theme\/Index":"Wires & Cables",

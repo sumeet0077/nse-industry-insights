@@ -243,13 +243,13 @@
     "Theme/Index": "Capital Market",
     "1 Day": 2.56,
     "1 Week": -3.74,
-    "1 Month": -15.53,
-    "3 Months": -16.95,
-    "6 Months": -12.2,
-    "1 Year": 11.65,
-    "3 Years": 198.38,
-    "5 Years": 338.46,
-    "RS (20D)": -12.47
+    "1 Month": -7.19,
+    "3 Months": -8.73,
+    "6 Months": -3.52,
+    "1 Year": 22.73,
+    "3 Years": 227.95,
+    "5 Years": 426.44,
+    "RS (20D)": -4.07
   },
   {
     "Theme/Index": "Cement",
@@ -795,24 +795,24 @@
     "Theme/Index": "Nifty 500",
     "1 Day": 1.19,
     "1 Week": -3.78,
-    "1 Month": -3.31,
-    "3 Months": -5.31,
-    "6 Months": -5.38,
-    "1 Year": 13.19,
-    "3 Years": 112.34,
-    "5 Years": 227.17,
-    "RS (20D)": -1.11
+    "1 Month": -3.14,
+    "3 Months": -5.14,
+    "6 Months": -5.21,
+    "1 Year": 13.4,
+    "3 Years": 112.73,
+    "5 Years": 228.77,
+    "RS (20D)": -0.94
   },
   {
     "Theme/Index": "Nifty Smallcap 250",
     "1 Day": 1.03,
     "1 Week": -3.88,
-    "1 Month": -4.15,
-    "3 Months": -7.19,
-    "6 Months": -10.09,
-    "1 Year": 10.12,
-    "3 Years": 112.95,
-    "5 Years": 243.22,
-    "RS (20D)": -2.17
+    "1 Month": -3.79,
+    "3 Months": -6.85,
+    "6 Months": -9.75,
+    "1 Year": 10.53,
+    "3 Years": 113.73,
+    "5 Years": 246.79,
+    "RS (20D)": -1.82
   }
 ]

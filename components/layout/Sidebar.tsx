@@ -3,24 +3,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { BROAD_MARKET, SECTORS, INDUSTRIES } from "@/lib/config";
 import {
     BarChart3,
     TrendingUp,
-    Building2,
     Factory,
     LayoutGrid,
+    Search,
+    X,
 } from "lucide-react";
 
-const NAV_GROUPS = [
+// Industries sorted A-Z by default
+const INDUSTRIES_SORTED = [...INDUSTRIES].sort((a, b) =>
+    a.title.localeCompare(b.title)
+);
+
+const STATIC_GROUPS = [
     {
         label: "Overview",
         icon: LayoutGrid,
         items: [
             { label: "Performance", href: "/performance" },
-            { label: "Sector Rotation", href: "/sector-rotation" }
+            { label: "Sector Rotation", href: "/sector-rotation" },
         ],
     },
     {
@@ -39,32 +45,20 @@ const NAV_GROUPS = [
             href: `/sectors/${c.id}`,
         })),
     },
-    {
-        label: "Industries",
-        icon: Factory,
-        items: INDUSTRIES.map((c) => ({
-            label: c.title,
-            href: `/industries/${c.id}`,
-        })),
-    },
 ];
 
 export function Sidebar() {
     const pathname = usePathname();
-    const [sortMode, setSortMode] = useState<"default" | "asc" | "desc">("default");
+    const [query, setQuery] = useState("");
 
-    const navGroups = NAV_GROUPS.map(group => {
-        if (group.label === "Industries" && sortMode !== "default") {
-            return {
-                ...group,
-                items: [...group.items].sort((a, b) => {
-                    const cmp = a.label.localeCompare(b.label);
-                    return sortMode === "asc" ? cmp : -cmp;
-                })
-            };
-        }
-        return group;
-    });
+    // Filter Industries based on search query
+    const filteredIndustries = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) return INDUSTRIES_SORTED;
+        return INDUSTRIES_SORTED.filter((c) =>
+            c.title.toLowerCase().includes(q)
+        );
+    }, [query]);
 
     return (
         <aside className="hidden lg:flex flex-col w-60 min-h-screen bg-[#0d0d14] border-r border-[#1e1e2e] overflow-y-auto">
@@ -78,28 +72,14 @@ export function Sidebar() {
 
             {/* Nav groups */}
             <nav className="flex-1 px-2 py-4 space-y-6">
-                {navGroups.map((group) => (
+                {/* Static groups: Overview, Broad Market, Sectoral Indices */}
+                {STATIC_GROUPS.map((group) => (
                     <div key={group.label}>
-                        <div className="flex items-center justify-between px-2 mb-2">
-                            <div className="flex items-center gap-2">
-                                <group.icon className="h-3.5 w-3.5 text-slate-500" />
-                                <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                                    {group.label}
-                                </span>
-                            </div>
-                            {group.label === "Industries" && (
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setSortMode(prev => prev === "default" ? "asc" : prev === "asc" ? "desc" : "default");
-                                    }}
-                                    className={`text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${sortMode !== "default" ? "bg-blue-500/20 text-blue-400 border-blue-500/30" : "bg-transparent text-slate-500 border-slate-700 hover:text-slate-300"}`}
-                                    title="Toggle Sorting"
-                                >
-                                    {sortMode === "asc" ? "A-Z" : sortMode === "desc" ? "Z-A" : "Sort"}
-                                </button>
-                            )}
+                        <div className="flex items-center gap-2 px-2 mb-2">
+                            <group.icon className="h-3.5 w-3.5 text-slate-500" />
+                            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                                {group.label}
+                            </span>
                         </div>
                         <ul className="space-y-0.5">
                             {group.items.map((item) => (
@@ -120,6 +100,63 @@ export function Sidebar() {
                         </ul>
                     </div>
                 ))}
+
+                {/* Industries group with search */}
+                <div>
+                    <div className="flex items-center gap-2 px-2 mb-2">
+                        <Factory className="h-3.5 w-3.5 text-slate-500" />
+                        <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+                            Industries
+                        </span>
+                        <span className="ml-auto text-[9px] text-slate-600 font-medium">
+                            A–Z
+                        </span>
+                    </div>
+
+                    {/* Search input */}
+                    <div className="relative mb-2 px-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-500 pointer-events-none" />
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-md pl-7 pr-7 py-1.5 text-[12px] text-slate-300 placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-colors"
+                        />
+                        {query && (
+                            <button
+                                onClick={() => setQuery("")}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                            >
+                                <X className="h-3 w-3" />
+                            </button>
+                        )}
+                    </div>
+
+                    <ul className="space-y-0.5">
+                        {filteredIndustries.length === 0 ? (
+                            <li className="px-3 py-2 text-[12px] text-slate-600 italic">
+                                No results for &ldquo;{query}&rdquo;
+                            </li>
+                        ) : (
+                            filteredIndustries.map((c) => (
+                                <li key={c.id}>
+                                    <Link
+                                        href={`/industries/${c.id}`}
+                                        className={cn(
+                                            "block px-3 py-1.5 rounded-md text-[13px] transition-colors",
+                                            pathname === `/industries/${c.id}`
+                                                ? "bg-blue-500/10 text-blue-400 font-medium"
+                                                : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                                        )}
+                                    >
+                                        {c.title}
+                                    </Link>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
             </nav>
 
             {/* Data freshness indicator */}

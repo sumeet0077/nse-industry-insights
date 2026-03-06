@@ -71,6 +71,8 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
         "jewellery & gold": "jewellery (gold)",
         "tyres & rubber": "tyres & rubber products",
         "auto ancillary": "auto ancillary",
+        "white goods": "white goods & durables",
+        "wires & cables": "wires and cables",
     };
 
     // Direct match

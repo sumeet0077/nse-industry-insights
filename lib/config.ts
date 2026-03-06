@@ -1,6 +1,11 @@
 // lib/config.ts
 // Central registry of all indices, sectors, and industries
 // File names match the actual Streamlit project CSV→JSON output from export_json.py
+//
+// IMPORTANT NAMING RULE: The `title` field MUST exactly match the key used in
+// market_status_latest.json (case-insensitive). If they mismatch, the Constituent
+// tab on that theme's page will silently disappear. Always check data.ts ALIASES
+// or add a new alias there if an exact match is not possible.
 
 import type { IndexConfig } from "@/types";
 
@@ -86,8 +91,8 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_building_materials", title: "Building Materials", description: "Ceramics, Tiles and Plywood", dataFile: "breadth_theme_building_materials", category: "industries" },
     { id: "breadth_theme_white_goods_and_durables", title: "White Goods", description: "Consumer Electronics and Appliances", dataFile: "breadth_theme_white_goods_and_durables", category: "industries" },
     { id: "breadth_theme_footwear", title: "Footwear", description: "Footwear and Leather Products", dataFile: "breadth_theme_footwear", category: "industries" },
-    { id: "breadth_theme_diagnostics_and_pathology", title: "Diagnostics", description: "Diagnostic Clinics and Pathology Labs", dataFile: "breadth_theme_diagnostics_and_pathology", category: "industries" },
-    { id: "breadth_theme_packaging_solutions", title: "Packaging", description: "Specialty Packaging Solutions", dataFile: "breadth_theme_packaging_solutions", category: "industries" },
+    { id: "breadth_theme_diagnostics_and_pathology", title: "Diagnostics & Pathology", description: "Diagnostic Clinics and Pathology Labs", dataFile: "breadth_theme_diagnostics_and_pathology", category: "industries" },
+    { id: "breadth_theme_packaging_solutions", title: "Packaging Solutions", description: "Specialty Packaging Solutions", dataFile: "breadth_theme_packaging_solutions", category: "industries" },
     { id: "breadth_theme_shipbuilding", title: "Shipbuilding", description: "Commercial and Defence Shipbuilding", dataFile: "breadth_theme_shipbuilding", category: "industries" },
 ];
 

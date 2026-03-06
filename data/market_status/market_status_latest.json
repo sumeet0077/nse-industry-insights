@@ -1280,7 +1280,9 @@
             "ZENTEC.NS",
             "ZENITHEXPO.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "KRISHNADEF.NS"
+        ]
     },
     "Diagnostics & Pathology": {
         "above": [],

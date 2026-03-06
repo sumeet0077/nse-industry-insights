@@ -72,23 +72,33 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     csv_files = sorted(set(csv_files))
     summary_data = []
     
+    # ── Build id→title lookup map ONCE before the loop ──────────────────
+    # Reading config.ts inside every CSV iteration was slow & caused a
+    # critical bug: if 'title' was never matched for a row, the variable
+    # leaked from the previous iteration, silently mislabelling rows.
+    import re
+    id_to_title: dict = {}
+    try:
+        config_path = Path(__file__).parent.parent / "lib" / "config.ts"
+        if config_path.exists():
+            content = config_path.read_text()
+            for match in re.finditer(r'id:\s*"([^"]+)",\s*title:\s*"([^"]+)"', content):
+                id_to_title[match.group(1)] = match.group(2)
+    except Exception as e:
+        print(f"Warning: Could not parse config.ts for title mapping: {e}")
+    # ────────────────────────────────────────────────────────────────────
+    
     for csv_path in csv_files:
         basename = os.path.basename(csv_path)
         key = basename.replace(".csv", "")
-        # Parse titles safely from the Next.js config.ts
-        try:
-            config_path = Path(__file__).parent.parent / "lib" / "config.ts"
-            import re
-            if config_path.exists():
-                with open(config_path, "r") as f:
-                    content = f.read()
-                matches = re.finditer(r'id:\s*"([^"]+)",\s*title:\s*"([^"]+)"', content)
-                for match in matches:
-                    if match.group(1) == key:
-                        title = match.group(2)
-                        break
-        except Exception as e:
-            print(f"Warning mapping {key}: {e}")
+        
+        # Reset title each iteration — critical to prevent bleed-over between rows
+        title = id_to_title.get(key)
+        
+        # Skip CSVs with no matching config entry (e.g. stale/deleted themes)
+        if not title:
+            print(f"    SKIP {key} (no config.ts mapping found)")
+            continue
             
         try:
             df = pd.read_csv(csv_path)

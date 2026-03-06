@@ -79,6 +79,16 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_auto_ancillary", title: "Auto Ancillary", description: "Companies manufacturing automotive components", dataFile: "breadth_theme_auto_ancillary", category: "industries" },
     { id: "breadth_theme_tyres_and_rubber_products", title: "Tyres & Rubber", description: "Tyre and Rubber manufacturers", dataFile: "breadth_theme_tyres_and_rubber_products", category: "industries" },
     { id: "breadth_theme_sugar", title: "Sugar", description: "Sugar and Bio-organics Manufacturers", dataFile: "breadth_theme_sugar", category: "industries" },
+    { id: "breadth_theme_paper", title: "Paper", description: "Paper and Packaging Manufacturers", dataFile: "breadth_theme_paper", category: "industries" },
+    { id: "breadth_theme_wires_and_cables", title: "Wires & Cables", description: "Cables, Wires & Electrical Equipment", dataFile: "breadth_theme_wires_and_cables", category: "industries" },
+    { id: "breadth_theme_hotels_and_hospitality", title: "Hotels & Hospitality", description: "Hotels, Resorts, and Tourism", dataFile: "breadth_theme_hotels_and_hospitality", category: "industries" },
+    { id: "breadth_theme_pvc_pipes_and_plumbing", title: "PVC Pipes & Plumbing", description: "PVC Pipes & Sanitaryware", dataFile: "breadth_theme_pvc_pipes_and_plumbing", category: "industries" },
+    { id: "breadth_theme_building_materials", title: "Building Materials", description: "Ceramics, Tiles and Plywood", dataFile: "breadth_theme_building_materials", category: "industries" },
+    { id: "breadth_theme_white_goods_and_durables", title: "White Goods", description: "Consumer Electronics and Appliances", dataFile: "breadth_theme_white_goods_and_durables", category: "industries" },
+    { id: "breadth_theme_footwear", title: "Footwear", description: "Footwear and Leather Products", dataFile: "breadth_theme_footwear", category: "industries" },
+    { id: "breadth_theme_diagnostics_and_pathology", title: "Diagnostics", description: "Diagnostic Clinics and Pathology Labs", dataFile: "breadth_theme_diagnostics_and_pathology", category: "industries" },
+    { id: "breadth_theme_packaging_solutions", title: "Packaging", description: "Specialty Packaging Solutions", dataFile: "breadth_theme_packaging_solutions", category: "industries" },
+    { id: "breadth_theme_shipbuilding", title: "Shipbuilding", description: "Commercial and Defence Shipbuilding", dataFile: "breadth_theme_shipbuilding", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];

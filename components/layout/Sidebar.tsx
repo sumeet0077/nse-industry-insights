@@ -15,8 +15,8 @@ import {
     X,
 } from "lucide-react";
 
-// Industries sorted A-Z by default
-const INDUSTRIES_SORTED = [...INDUSTRIES].sort((a, b) =>
+// Industries pre-sorted A-Z at module load time (zero runtime cost)
+const INDUSTRIES_AZ = [...INDUSTRIES].sort((a, b) =>
     a.title.localeCompare(b.title)
 );
 
@@ -32,37 +32,28 @@ const STATIC_GROUPS = [
     {
         label: "Broad Market",
         icon: BarChart3,
-        items: BROAD_MARKET.map((c) => ({
-            label: c.title,
-            href: `/broad-market/${c.id}`,
-        })),
+        items: BROAD_MARKET.map((c) => ({ label: c.title, href: `/broad-market/${c.id}` })),
     },
     {
         label: "Sectoral Indices",
         icon: TrendingUp,
-        items: SECTORS.map((c) => ({
-            label: c.title,
-            href: `/sectors/${c.id}`,
-        })),
+        items: SECTORS.map((c) => ({ label: c.title, href: `/sectors/${c.id}` })),
     },
 ];
 
 export function Sidebar() {
     const pathname = usePathname();
     const [query, setQuery] = useState("");
-    const [sortMode, setSortMode] = useState<"asc" | "desc">("asc");
+    const [sortDesc, setSortDesc] = useState(false);
 
-    // Filter + sort Industries
     const filteredIndustries = useMemo(() => {
         const q = query.trim().toLowerCase();
-        const list = q
-            ? INDUSTRIES_SORTED.filter((c) => c.title.toLowerCase().includes(q))
-            : INDUSTRIES_SORTED;
-        // INDUSTRIES_SORTED is already A-Z; only re-sort if Z-A is active
-        return sortMode === "asc"
-            ? list
-            : [...list].sort((a, b) => b.title.localeCompare(a.title));
-    }, [query, sortMode]);
+        const base = sortDesc
+            ? [...INDUSTRIES_AZ].reverse()
+            : INDUSTRIES_AZ;
+        if (!q) return base;
+        return base.filter((c) => c.title.toLowerCase().includes(q));
+    }, [query, sortDesc]);
 
     return (
         <aside className="hidden lg:flex flex-col w-60 min-h-screen bg-[#0d0d14] border-r border-[#1e1e2e] overflow-y-auto">
@@ -74,9 +65,8 @@ export function Sidebar() {
                 </Link>
             </div>
 
-            {/* Nav groups */}
             <nav className="flex-1 px-2 py-4 space-y-6">
-                {/* Static groups: Overview, Broad Market, Sectoral Indices */}
+                {/* Overview, Broad Market, Sectoral Indices */}
                 {STATIC_GROUPS.map((group) => (
                     <div key={group.label}>
                         <div className="flex items-center gap-2 px-2 mb-2">
@@ -105,7 +95,7 @@ export function Sidebar() {
                     </div>
                 ))}
 
-                {/* Industries group with search */}
+                {/* Industries — with search + sort toggle */}
                 <div>
                     <div className="flex items-center gap-2 px-2 mb-2">
                         <Factory className="h-3.5 w-3.5 text-slate-500" />
@@ -113,16 +103,21 @@ export function Sidebar() {
                             Industries
                         </span>
                         <button
-                            onClick={() => setSortMode(prev => prev === "asc" ? "desc" : "asc")}
-                            className={`ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors ${"bg-blue-500/20 text-blue-400 border-blue-500/30"
-                                }`}
+                            type="button"
+                            onClick={() => setSortDesc((prev) => !prev)}
+                            className={cn(
+                                "ml-auto text-[9px] font-bold px-1.5 py-0.5 rounded border transition-colors",
+                                sortDesc
+                                    ? "bg-slate-700/50 text-slate-300 border-slate-600"
+                                    : "bg-blue-500/20 text-blue-400 border-blue-500/30"
+                            )}
                             title="Toggle sort order"
                         >
-                            {sortMode === "asc" ? "A–Z" : "Z–A"}
+                            {sortDesc ? "Z–A" : "A–Z"}
                         </button>
                     </div>
 
-                    {/* Search input */}
+                    {/* Search */}
                     <div className="relative mb-2 px-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-500 pointer-events-none" />
                         <input
@@ -134,6 +129,7 @@ export function Sidebar() {
                         />
                         {query && (
                             <button
+                                type="button"
                                 onClick={() => setQuery("")}
                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
                             >
@@ -168,7 +164,6 @@ export function Sidebar() {
                 </div>
             </nav>
 
-            {/* Data freshness indicator */}
             <div className="p-3 border-t border-[#1e1e2e]">
                 <p className="text-[11px] text-slate-500 text-center">
                     Data updates daily at 6:30 PM IST

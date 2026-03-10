@@ -1252,11 +1252,14 @@
         ],
         "new_stock": []
     },
-    "Data Centres": {
-        "above": [],
+    "Data Centre and AI": {
+        "above": [
+            "NETWEB.NS"
+        ],
         "below": [
-            "RELIANCE.NS",
-            "TATACOMM.NS"
+            "TATACOMM.NS",
+            "ANANTRAJ.NS",
+            "AURIONPRO.NS"
         ],
         "new_stock": []
     },
@@ -1763,13 +1766,15 @@
             "BEL.NS",
             "CGPOWER.NS",
             "AVALON.NS",
-            "SYRMA.NS"
+            "SYRMA.NS",
+            "AMBER.NS"
         ],
         "below": [
             "DIXON.NS",
             "KAYNES.NS",
             "MOSCHIP.NS",
-            "TATAELXSI.NS"
+            "TATAELXSI.NS",
+            "PGEL.NS"
         ],
         "new_stock": []
     },

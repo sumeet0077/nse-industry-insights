@@ -58,7 +58,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_ev_ecosystem", title: "EV Ecosystem", description: "Electric Vehicle Ecosystem", dataFile: "breadth_theme_ev_ecosystem", category: "industries" },
     { id: "breadth_theme_renewable_energy_generation", title: "Renewable Energy", description: "Renewable Energy Generation", dataFile: "breadth_theme_renewable_energy_generation", category: "industries" },
     { id: "breadth_theme_green_hydrogen", title: "Green Hydrogen", description: "Green Hydrogen Companies", dataFile: "breadth_theme_green_hydrogen", category: "industries" },
-    { id: "breadth_theme_data_centres", title: "Data Centres", description: "Data Centre Companies", dataFile: "breadth_theme_data_centres", category: "industries" },
+    { id: "breadth_theme_data_centre_and_ai", title: "Data Centre and AI", description: "Data Centre & Artificial Intelligence", dataFile: "breadth_theme_data_centre_and_ai", category: "industries" },
     { id: "breadth_theme_aviation", title: "Aviation", description: "Airlines & Aviation", dataFile: "breadth_theme_aviation", category: "industries" },
     { id: "breadth_theme_logistics", title: "Logistics", description: "Logistics & Supply Chain", dataFile: "breadth_theme_logistics", category: "industries" },
     { id: "breadth_theme_hospitals", title: "Hospitals", description: "Hospital Chains", dataFile: "breadth_theme_hospitals", category: "industries" },

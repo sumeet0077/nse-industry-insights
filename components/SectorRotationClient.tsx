@@ -1,7 +1,7 @@
 // components/SectorRotationClient.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
@@ -12,9 +12,25 @@ interface SectorRotationClientProps {
     dataM: RRGDataPoint[];
 }
 
+/**
+ * Permanent fix: converts a raw data-file ID like "breadth_theme_data_centre_and_ai"
+ * into a human-readable title like "Data Centre And AI".
+ * Used as a fallback when no config.ts entry matches.
+ */
+function humanizeTickerId(raw: string): string {
+    return raw
+        .replace(/^breadth_theme_/, "")    // strip theme prefix
+        .replace(/^breadth_/, "")          // strip sector prefix
+        .replace(/^market_breadth_/, "")   // strip broad market prefix
+        .replace(/_and_/g, " & ")          // underscored "and" → &
+        .replace(/_/g, " ")               // remaining underscores → spaces
+        .replace(/\b\w/g, c => c.toUpperCase()); // Title Case
+}
+
 export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
     const [timeframe, setTimeframe] = useState<"D" | "W" | "M">("W");
     const [tailLength, setTailLength] = useState(5);
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Filter defaults (same as Streamlit's implicit defaults)
     const defaults = ["Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty FMCG", "Nifty Metal", "Nifty Pharma"];
@@ -29,11 +45,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
 
-    // Map raw tickers (like "breadth_auto") to human readable titles (like "Nifty Auto")
-    const currentData = currentDataRaw.map(d => {
-        const config = ALL_CONFIGS.find(c => c.dataFile === d.Ticker || c.id === d.Ticker);
-        return config ? { ...d, Ticker: config.title } : d;
-    });
+    // Build a lookup map ONCE from ALL_CONFIGS for O(1) matching
+    const tickerLookup = useMemo(() => {
+        const map = new Map<string, string>();
+        for (const c of ALL_CONFIGS) {
+            map.set(c.dataFile, c.title);
+            map.set(c.id, c.title);
+        }
+        return map;
+    }, []);
+
+    // Map raw tickers to human readable titles with robust fallback
+    const currentData = useMemo(() => {
+        return currentDataRaw.map(d => {
+            const title = tickerLookup.get(d.Ticker);
+            return title ? { ...d, Ticker: title } : { ...d, Ticker: humanizeTickerId(d.Ticker) };
+        });
+    }, [currentDataRaw, tickerLookup]);
 
     // Determine the latest point for each ticker to find its current quadrant
     const latestPoints: Record<string, RRGDataPoint> = {};
@@ -76,6 +104,11 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         selectedTickers.includes(d.Ticker) &&
         selectedQuadrants.includes(tickerQuadrants[d.Ticker])
     );
+
+    // Search-filtered tickers for the selector panel
+    const filteredAllTickers = searchQuery.trim()
+        ? allTickers.filter(t => t.toLowerCase().includes(searchQuery.toLowerCase()))
+        : allTickers;
 
     const toggleTicker = (ticker: string) => {
         if (selectedTickers.includes(ticker)) {
@@ -192,25 +225,56 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                     </div>
 
                     {isSelecting && (
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto px-2 pb-2 custom-scrollbar">
-                            {allTickers.map(ticker => {
-                                const q = tickerQuadrants[ticker];
-                                const dotColor = q === "Leading" ? "bg-emerald-400" : q === "Weakening" ? "bg-yellow-400" : q === "Lagging" ? "bg-red-400" : "bg-blue-400";
-                                return (
-                                    <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedTickers.includes(ticker)}
-                                            onChange={() => toggleTicker(ticker)}
-                                            className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
-                                        />
-                                        <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} title={q} />
-                                        <span className={`text-[13px] truncate transition-colors ${selectedTickers.includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
-                                            {ticker}
-                                        </span>
-                                    </label>
-                                );
-                            })}
+                        <div>
+                            {/* Search Input */}
+                            <div className="relative mb-3">
+                                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search themes..."
+                                    className="w-full bg-[#1a1a2e] border border-slate-700 rounded-lg pl-9 pr-8 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                />
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => setSearchQuery("")}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto px-2 pb-2 custom-scrollbar">
+                                {filteredAllTickers.map(ticker => {
+                                    const q = tickerQuadrants[ticker];
+                                    const dotColor = q === "Leading" ? "bg-emerald-400" : q === "Weakening" ? "bg-yellow-400" : q === "Lagging" ? "bg-red-400" : "bg-blue-400";
+                                    return (
+                                        <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedTickers.includes(ticker)}
+                                                onChange={() => toggleTicker(ticker)}
+                                                className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
+                                            />
+                                            <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} title={q} />
+                                            <span className={`text-[13px] truncate transition-colors ${selectedTickers.includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
+                                                {ticker}
+                                            </span>
+                                        </label>
+                                    );
+                                })}
+                                {filteredAllTickers.length === 0 && (
+                                    <p className="col-span-full text-center text-sm text-slate-500 py-4">
+                                        No themes matching &ldquo;{searchQuery}&rdquo;
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

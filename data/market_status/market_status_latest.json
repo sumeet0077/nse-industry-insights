@@ -177,6 +177,7 @@
             "SBILIFE.NS",
             "SBIN.NS",
             "SCHAEFFLER.NS",
+            "SCHNEIDER.NS",
             "SCI.NS",
             "SHRIRAMFIN.NS",
             "SIEMENS.NS",
@@ -447,6 +448,7 @@
             "NUVOCO.NS",
             "OBEROIRLTY.NS",
             "OFSS.NS",
+            "OLAELEC.NS",
             "OLECTRA.NS",
             "ONESOURCE.NS",
             "PAGEIND.NS",
@@ -477,9 +479,11 @@
             "RECLTD.NS",
             "REDINGTON.NS",
             "RELIANCE.NS",
+            "RELINFRA.NS",
             "RHIM.NS",
             "RITES.NS",
             "RKFORGE.NS",
+            "RPOWER.NS",
             "RVNL.NS",
             "SAGILITY.NS",
             "SAPPHIRE.NS",
@@ -519,6 +523,7 @@
             "TRENT.NS",
             "TRIDENT.NS",
             "TRITURBINE.NS",
+            "TTML.NS",
             "UBL.NS",
             "UCOBANK.NS",
             "ULTRACEMCO.NS",
@@ -545,10 +550,7 @@
         "new_stock": [
             "JSWCEMENT.NS",
             "LTM.NS",
-            "OLAELEC.NS",
-            "RPOWER.NS",
-            "SWANCORP.NS",
-            "TTML.NS"
+            "SWANCORP.NS"
         ]
     },
     "Nifty Smallcap 250": {
@@ -596,6 +598,7 @@
             "SAILIFE.NS",
             "SAMMAANCAP.NS",
             "SARDAEN.NS",
+            "SCHNEIDER.NS",
             "SCI.NS",
             "SUNTV.NS",
             "SYRMA.NS",
@@ -741,6 +744,7 @@
             "NSLNISP.NS",
             "NUVAMA.NS",
             "NUVOCO.NS",
+            "OLAELEC.NS",
             "OLECTRA.NS",
             "ONESOURCE.NS",
             "PCBL.NS",
@@ -758,9 +762,11 @@
             "RAMCOCEM.NS",
             "RCF.NS",
             "REDINGTON.NS",
+            "RELINFRA.NS",
             "RHIM.NS",
             "RITES.NS",
             "RKFORGE.NS",
+            "RPOWER.NS",
             "SAGILITY.NS",
             "SAPPHIRE.NS",
             "SAREGAMA.NS",
@@ -780,6 +786,7 @@
             "TITAGARH.NS",
             "TRIDENT.NS",
             "TRITURBINE.NS",
+            "TTML.NS",
             "UTIAMC.NS",
             "VENTIVE.NS",
             "VGUARD.NS",
@@ -794,10 +801,7 @@
         ],
         "new_stock": [
             "JSWCEMENT.NS",
-            "OLAELEC.NS",
-            "RPOWER.NS",
-            "SWANCORP.NS",
-            "TTML.NS"
+            "SWANCORP.NS"
         ]
     },
     "NIFTY AUTO": {
@@ -1235,7 +1239,8 @@
         "above": [
             "HINDCOPPER.NS",
             "VEDL.NS",
-            "HINDALCO.NS"
+            "HINDALCO.NS",
+            "MCL.NS"
         ],
         "below": [],
         "new_stock": []
@@ -1254,9 +1259,11 @@
     },
     "Data Centre and AI": {
         "above": [
-            "NETWEB.NS"
+            "NETWEB.NS",
+            "SCHNEIDER.NS"
         ],
         "below": [
+            "E2E.NS",
             "TATACOMM.NS",
             "TECHNOE.NS",
             "ANANTRAJ.NS",
@@ -1350,11 +1357,10 @@
             "CAMPUS.NS",
             "RELAXO.NS",
             "KHADIM.NS",
-            "MIRZAINT.NS"
-        ],
-        "new_stock": [
+            "MIRZAINT.NS",
             "LIBERTSHOE.NS"
-        ]
+        ],
+        "new_stock": []
     },
     "General Insurance": {
         "above": [],
@@ -1404,11 +1410,10 @@
             "TAJGVK.NS",
             "ORISSAMINE.NS",
             "MHRIL.NS",
+            "BYKE.NS",
             "HLVLTD.NS"
         ],
-        "new_stock": [
-            "BYKE.NS"
-        ]
+        "new_stock": []
     },
     "Housing Finance": {
         "above": [
@@ -1681,7 +1686,8 @@
             "POWERGRID.NS",
             "SIEMENS.NS",
             "CGPOWER.NS",
-            "POWERINDIA.NS"
+            "POWERINDIA.NS",
+            "SCHNEIDER.NS"
         ],
         "below": [],
         "new_stock": []
@@ -1900,11 +1906,10 @@
             "BALKRISIND.NS",
             "APOLLOTYRE.NS",
             "CEATLTD.NS",
-            "TOLINS.NS"
-        ],
-        "new_stock": [
+            "TOLINS.NS",
             "MODIRUBBER.NS"
-        ]
+        ],
+        "new_stock": []
     },
     "Wealth Management": {
         "above": [

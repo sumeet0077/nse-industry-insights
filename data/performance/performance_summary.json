@@ -73,15 +73,15 @@
   },
   {
     "Theme\/Index":"Nifty IT",
-    "1 Day":-1.07,
-    "1 Week":-1.67,
-    "1 Month":-16.61,
-    "3 Months":-24.92,
-    "6 Months":-21.57,
-    "1 Year":-17.55,
-    "3 Years":33.41,
-    "5 Years":78.75,
-    "RS (20D)":-2.96
+    "1 Day":-1.04,
+    "1 Week":-1.63,
+    "1 Month":-17.13,
+    "3 Months":-22.35,
+    "6 Months":-17.84,
+    "1 Year":-12.75,
+    "3 Years":35.43,
+    "5 Years":80.04,
+    "RS (20D)":-3.3
   },
   {
     "Theme\/Index":"Nifty Media",
@@ -913,15 +913,15 @@
   },
   {
     "Theme\/Index":"Nifty 500",
-    "1 Day":-0.55,
+    "1 Day":-0.54,
     "1 Week":-0.16,
-    "1 Month":-6.26,
-    "3 Months":-4.89,
-    "6 Months":-7.82,
-    "1 Year":11.98,
-    "3 Years":110.23,
-    "5 Years":218.8,
-    "RS (20D)":0.65
+    "1 Month":-6.3,
+    "3 Months":-0.58,
+    "6 Months":-3.61,
+    "1 Year":17.09,
+    "3 Years":119.56,
+    "5 Years":232.83,
+    "RS (20D)":0.64
   },
   {
     "Theme\/Index":"Nifty Smallcap 250",

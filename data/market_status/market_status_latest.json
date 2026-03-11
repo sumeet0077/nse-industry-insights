@@ -549,7 +549,6 @@
         ],
         "new_stock": [
             "JSWCEMENT.NS",
-            "LTM.NS",
             "SWANCORP.NS"
         ]
     },
@@ -934,9 +933,7 @@
             "TECHM.NS",
             "WIPRO.NS"
         ],
-        "new_stock": [
-            "LTM.NS"
-        ]
+        "new_stock": []
     },
     "NIFTY MEDIA": {
         "above": [

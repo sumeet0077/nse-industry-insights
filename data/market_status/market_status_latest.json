@@ -120,6 +120,7 @@
             "HINDALCO.NS",
             "HINDCOPPER.NS",
             "HINDZINC.NS",
+            "HONASA.NS",
             "IDBI.NS",
             "IDEA.NS",
             "INDIANB.NS",
@@ -130,6 +131,7 @@
             "IPCALAB.NS",
             "J&KBANK.NS",
             "JBCHEPHARM.NS",
+            "JINDALSAW.NS",
             "JINDALSTEL.NS",
             "JKTYRE.NS",
             "JSWSTEEL.NS",
@@ -148,7 +150,6 @@
             "MFSL.NS",
             "MOTHERSON.NS",
             "MRPL.NS",
-            "MUTHOOTFIN.NS",
             "NAM-INDIA.NS",
             "NATCOPHARM.NS",
             "NATIONALUM.NS",
@@ -186,6 +187,7 @@
             "SUNDARMFIN.NS",
             "SUNPHARMA.NS",
             "SUNTV.NS",
+            "SUPREMEIND.NS",
             "SYRMA.NS",
             "TATASTEEL.NS",
             "THELEELA.NS",
@@ -347,7 +349,6 @@
             "HINDPETRO.NS",
             "HINDUNILVR.NS",
             "HOMEFIRST.NS",
-            "HONASA.NS",
             "HONAUT.NS",
             "HSCL.NS",
             "HUDCO.NS",
@@ -380,7 +381,6 @@
             "ITCHOTELS.NS",
             "ITI.NS",
             "JBMA.NS",
-            "JINDALSAW.NS",
             "JIOFIN.NS",
             "JKCEMENT.NS",
             "JMFINANCIL.NS",
@@ -432,6 +432,7 @@
             "MPHASIS.NS",
             "MRF.NS",
             "MSUMI.NS",
+            "MUTHOOTFIN.NS",
             "NAUKRI.NS",
             "NAVA.NS",
             "NBCC.NS",
@@ -500,7 +501,6 @@
             "STARHEALTH.NS",
             "SUMICHEM.NS",
             "SUNDRMFAST.NS",
-            "SUPREMEIND.NS",
             "SUZLON.NS",
             "SWIGGY.NS",
             "SYNGENE.NS",
@@ -580,9 +580,11 @@
             "GRANULES.NS",
             "GRAPHITE.NS",
             "HINDCOPPER.NS",
+            "HONASA.NS",
             "INOXINDIA.NS",
             "J&KBANK.NS",
             "JBCHEPHARM.NS",
+            "JINDALSAW.NS",
             "JKTYRE.NS",
             "KARURVYSYA.NS",
             "KIRLOSENG.NS",
@@ -691,7 +693,6 @@
             "HEG.NS",
             "HFCL.NS",
             "HOMEFIRST.NS",
-            "HONASA.NS",
             "HSCL.NS",
             "IEX.NS",
             "IFCI.NS",
@@ -706,7 +707,6 @@
             "IRCON.NS",
             "ITI.NS",
             "JBMA.NS",
-            "JINDALSAW.NS",
             "JMFINANCIL.NS",
             "JPPOWER.NS",
             "JUBLINGREA.NS",
@@ -850,7 +850,6 @@
         "above": [
             "AXISBANK.NS",
             "BSE.NS",
-            "MUTHOOTFIN.NS",
             "PFC.NS",
             "SBILIFE.NS",
             "SBIN.NS",
@@ -868,6 +867,7 @@
             "JIOFIN.NS",
             "KOTAKBANK.NS",
             "LICHSGFIN.NS",
+            "MUTHOOTFIN.NS",
             "RECLTD.NS",
             "SBICARD.NS"
         ],
@@ -1468,12 +1468,12 @@
     "Jewellery (Gold)": {
         "above": [
             "TITAN.NS",
-            "THANGAMAYL.NS",
-            "MUTHOOTFIN.NS"
+            "THANGAMAYL.NS"
         ],
         "below": [
             "KALYANKJIL.NS",
             "GOLDIAM.NS",
+            "MUTHOOTFIN.NS",
             "MANAPPURAM.NS"
         ],
         "new_stock": []
@@ -1553,7 +1553,6 @@
     "NBFC": {
         "above": [
             "SHRIRAMFIN.NS",
-            "MUTHOOTFIN.NS",
             "PFC.NS",
             "M&MFIN.NS",
             "SUNDARMFIN.NS"
@@ -1561,6 +1560,7 @@
         "below": [
             "BAJFINANCE.NS",
             "CHOLAFIN.NS",
+            "MUTHOOTFIN.NS",
             "RECLTD.NS",
             "LICHSGFIN.NS",
             "MANAPPURAM.NS",
@@ -1614,12 +1614,12 @@
     },
     "PVC Pipes & Plumbing": {
         "above": [
+            "SUPREMEIND.NS",
             "ASTRAL.NS",
             "JINDALPOLY.NS",
             "APOLLOPIPE.NS"
         ],
         "below": [
-            "SUPREMEIND.NS",
             "FINPIPE.NS",
             "PRAKASH.NS",
             "PRINCEPIPE.NS"
@@ -1898,14 +1898,14 @@
     },
     "Tyres & Rubber Products": {
         "above": [
-            "JKTYRE.NS",
-            "TVSSRICHAK.NS"
+            "JKTYRE.NS"
         ],
         "below": [
             "MRF.NS",
             "BALKRISIND.NS",
             "APOLLOTYRE.NS",
             "CEATLTD.NS",
+            "TVSSRICHAK.NS",
             "TOLINS.NS",
             "MODIRUBBER.NS"
         ],

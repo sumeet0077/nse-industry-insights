@@ -1172,13 +1172,13 @@
     "Auto Passenger & CV": {
         "above": [
             "EICHERMOT.NS",
-            "ASHOKLEY.NS"
+            "ASHOKLEY.NS",
+            "TMCV.NS"
         ],
         "below": [
             "MARUTI.NS",
             "M&M.NS",
-            "TMPV.NS",
-            "TMCV.NS"
+            "TMPV.NS"
         ],
         "new_stock": []
     },
@@ -1313,14 +1313,14 @@
             "BAJAJ-AUTO.NS",
             "SONACOMS.NS",
             "MOTHERSON.NS",
-            "ATHERENERG.NS"
+            "ATHERENERG.NS",
+            "TMCV.NS"
         ],
         "below": [
             "OLECTRA.NS",
             "JBMA.NS",
             "EXIDEIND.NS",
-            "TMPV.NS",
-            "TMCV.NS"
+            "TMPV.NS"
         ],
         "new_stock": []
     },

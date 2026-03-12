@@ -49,6 +49,7 @@
             "TATACONSUM.NS",
             "TCS.NS",
             "TECHM.NS",
+            "TMPV.NS",
             "TRENT.NS",
             "ULTRACEMCO.NS",
             "WIPRO.NS"
@@ -520,6 +521,7 @@
             "THERMAX.NS",
             "TIINDIA.NS",
             "TITAGARH.NS",
+            "TMPV.NS",
             "TRENT.NS",
             "TRIDENT.NS",
             "TRITURBINE.NS",
@@ -821,6 +823,7 @@
             "M&M.NS",
             "MARUTI.NS",
             "TIINDIA.NS",
+            "TMPV.NS",
             "UNOMINDA.NS"
         ],
         "new_stock": []
@@ -1173,7 +1176,8 @@
         ],
         "below": [
             "MARUTI.NS",
-            "M&M.NS"
+            "M&M.NS",
+            "TMPV.NS"
         ],
         "new_stock": [
             "TMCV.NS"
@@ -1315,7 +1319,8 @@
         "below": [
             "OLECTRA.NS",
             "JBMA.NS",
-            "EXIDEIND.NS"
+            "EXIDEIND.NS",
+            "TMPV.NS"
         ],
         "new_stock": [
             "TMCV.NS"

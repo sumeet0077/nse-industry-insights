@@ -1172,15 +1172,16 @@
     "Auto Passenger & CV": {
         "above": [
             "EICHERMOT.NS",
-            "ASHOKLEY.NS",
-            "TMCV.NS"
+            "ASHOKLEY.NS"
         ],
         "below": [
             "MARUTI.NS",
             "M&M.NS",
             "TMPV.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "TMCV.NS"
+        ]
     },
     "Aviation": {
         "above": [],
@@ -1313,8 +1314,7 @@
             "BAJAJ-AUTO.NS",
             "SONACOMS.NS",
             "MOTHERSON.NS",
-            "ATHERENERG.NS",
-            "TMCV.NS"
+            "ATHERENERG.NS"
         ],
         "below": [
             "OLECTRA.NS",
@@ -1322,7 +1322,9 @@
             "EXIDEIND.NS",
             "TMPV.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "TMCV.NS"
+        ]
     },
     "FMCG Staples": {
         "above": [

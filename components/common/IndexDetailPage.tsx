@@ -143,15 +143,6 @@ export function IndexDetailPage({
             {/* Tabs */}
             <div className="flex items-center justify-between mb-4 border-b border-[#1e1e2e]">
                 <div className="flex gap-1">
-                    <button
-                        onClick={() => setActiveTab("chart")}
-                        className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "chart"
-                            ? "text-blue-400 border-b-2 border-blue-400"
-                            : "text-slate-400 hover:text-white"
-                            }`}
-                    >
-                        📊 Breadth Chart
-                    </button>
                     {constituentData && constituentData.length > 0 && (
                         <button
                             onClick={() => setActiveTab("constituents")}
@@ -163,6 +154,15 @@ export function IndexDetailPage({
                             📋 Constituents
                         </button>
                     )}
+                    <button
+                        onClick={() => setActiveTab("chart")}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "chart"
+                            ? "text-blue-400 border-b-2 border-blue-400"
+                            : "text-slate-400 hover:text-white"
+                            }`}
+                    >
+                        📊 Breadth Chart
+                    </button>
                 </div>
 
                 {/* CAGR Toggle was removed here as requested; using the one in performance trend */}

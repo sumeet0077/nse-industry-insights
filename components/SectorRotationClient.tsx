@@ -1,10 +1,11 @@
 // components/SectorRotationClient.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
+import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 interface SectorRotationClientProps {
     dataD: RRGDataPoint[];
@@ -126,12 +127,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         }
     };
 
+    const contentRef = useRef<HTMLDivElement>(null);
+
     return (
-        <div>
-            <h1 className="text-xl font-bold text-white mb-1">Relative Rotation Graph (RRG)</h1>
-            <p className="text-sm text-slate-400 mb-6 font-medium">
-                Cycle analysis of themes vs Nifty 50
-            </p>
+        <div ref={contentRef}>
+            <div className="flex items-start justify-between mb-4">
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold text-white mb-1">Relative Rotation Graph (RRG)</h1>
+                    <p className="text-sm text-slate-400 font-medium">
+                        Cycle analysis of themes vs Nifty 50
+                    </p>
+                </div>
+                <CaptureScreenshot 
+                    targetRef={contentRef}
+                    filename="Sector_Rotation_RRG"
+                    label="Capture RRG"
+                />
+            </div>
 
             <div className="flex flex-col gap-6 mb-6 bg-[#111118] border border-[#1e1e2e] p-4 rounded-lg">
                 <div className="flex flex-col md:flex-row gap-6">

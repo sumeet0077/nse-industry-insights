@@ -1,4 +1,3 @@
-// components/tables/PerformanceHeatmap.tsx 
 "use client";
 
 import { AgGridReact } from "ag-grid-react";
@@ -7,7 +6,7 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode } from "ag
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
-import { Columns, ChevronDown, AlertCircle } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X } from "lucide-react";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -63,8 +62,9 @@ const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 
 
 export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
-    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
 
@@ -106,6 +106,7 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 field: "Theme/Index",
                 pinned: "left",
                 width: 200,
+                filter: true,
                 cellRenderer: (params: { value: string }) => {
                     if (!params.value) return null;
                     const config = ALL_CONFIGS.find((c) => c.title === params.value);
@@ -134,6 +135,7 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
                 sortable: true,
+                filter: true,
             });
         }
         return cols;
@@ -141,8 +143,10 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
-            resizable: false,
+            resizable: true,
             suppressMovable: true,
+            flex: 1,
+            minWidth: 100,
         }),
         []
     );
@@ -151,12 +155,38 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
         setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
     };
 
-    // Data validation check: 
-    // Is the first row (Nifty 50) out of sync with the global expected date?
-    const globalLatestStr = globalLatestDate;
+    const isExternalFilterPresent = useCallback(() => {
+        return searchQuery !== "";
+    }, [searchQuery]);
 
-    // We determine staleness if the global dataset is older than 3 days. 
-    // This perfectly mirrors the TopBar banner but places it conspicuously above the specific Performance table.
+    const doesExternalFilterPass = useCallback((node: IRowNode) => {
+        const rowData = node.data;
+        if (searchQuery !== "") {
+            const theme = (rowData["Theme/Index"] || "").toLowerCase();
+            if (!theme.includes(searchQuery.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (gridRef.current?.api) {
+            gridRef.current.api.onFilterChanged();
+        }
+    }, [searchQuery]);
+
+    const clearFilters = () => {
+        setSearchQuery("");
+        if (gridRef.current?.api) {
+            gridRef.current.api.setFilterModel(null);
+        }
+    };
+
+    const isFiltered = searchQuery !== "";
+
+    // Data validation check
+    const globalLatestStr = globalLatestDate;
     let isStale = false;
     if (globalLatestStr) {
         const d = new Date(globalLatestStr + "T00:00:00");
@@ -166,53 +196,39 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
         isStale = diffDays > 3;
     }
 
-    const isExternalFilterPresent = useCallback(() => {
-        return showSelectedOnly;
-    }, [showSelectedOnly]);
-
-    const doesExternalFilterPass = useCallback((node: IRowNode) => {
-        return !!node.isSelected();
-    }, []);
-
-    useEffect(() => {
-        if (gridRef.current?.api) {
-            gridRef.current.api.onFilterChanged();
-        }
-    }, [showSelectedOnly]);
-
-    const onSelectionChanged = useCallback(() => {
-        if (showSelectedOnly && gridRef.current?.api) {
-            gridRef.current.api.onFilterChanged();
-        }
-    }, [showSelectedOnly]);
-
     return (
         <div className="flex flex-col gap-3">
-            <div className="flex justify-between pr-2 gap-4 items-center">
-                <div className="flex-1 flex items-center">
-                    {isStale && (
-                        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs px-3 py-1.5 rounded flex items-center gap-2">
-                            <AlertCircle size={14} className="animate-pulse" />
-                            <span>
-                                <strong>Warning:</strong> Some themes may be missing data for {globalLatestStr}.
-                                The pipeline is currently syncing.
-                            </span>
-                        </div>
-                    )}
+            <div className="flex flex-wrap justify-between pr-2 gap-y-3 gap-x-6 items-center">
+                <div className="flex items-center gap-3 flex-1 min-w-[240px] max-w-sm">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                        <input
+                            type="text"
+                            placeholder="Search themes/indices..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-slate-900/50 border border-slate-700/50 rounded-md py-1.5 pl-9 pr-8 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500/50 placeholder:text-slate-600 transition-all font-medium"
+                        />
+                        {searchQuery && (
+                            <button 
+                                onClick={() => setSearchQuery("")}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                            >
+                                <X size={12} />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                <div className="flex gap-4 items-center">
-                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap">
-                        <input
-                            type="checkbox"
-                            checked={showSelectedOnly}
-                            onChange={(e) => setShowSelectedOnly(e.target.checked)}
-                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                        />
-                        Show Selected Only
-                    </label>
+                <div className="flex flex-wrap gap-4 items-center">
+                    {isStale && (
+                        <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] px-2 py-1 rounded flex items-center gap-1.5">
+                            <AlertCircle size={12} className="animate-pulse" />
+                            <span>Syncing...</span>
+                        </div>
+                    )}
 
-                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap">
+                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap select-none hover:text-slate-300 transition-colors">
                         <input
                             type="checkbox"
                             checked={showCagr}
@@ -222,21 +238,31 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                         Annualize (CAGR)
                     </label>
 
+                    {isFiltered && (
+                        <button 
+                            onClick={clearFilters}
+                            className="text-[11px] text-slate-400 hover:text-blue-400 transition-colors font-medium px-1 flex items-center gap-1 bg-slate-800/50 py-1 px-2 rounded border border-slate-700/50"
+                        >
+                            <X size={12} />
+                            Clear
+                        </button>
+                    )}
+
                     <div className="relative" ref={dropdownRef}>
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors"
+                            className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors shadow-sm"
                         >
-                            <Columns size={14} />
+                            <Columns size={14} className="text-blue-400" />
                             Columns
                             <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
                         </button>
 
                         {isDropdownOpen && (
-                            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-xl overflow-hidden z-50">
+                            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-2xl overflow-hidden z-50">
                                 <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
                                     <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
-                                        <span className="text-[10px] font-semibold text-slate-500 uppercase">Columns</span>
+                                        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Columns</span>
                                         <div className="flex gap-2">
                                             <button onClick={() => {
                                                 const allSelected: Record<string, boolean> = {};
@@ -252,7 +278,7 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                                         </div>
                                     </div>
                                     {returnColumns.map(col => (
-                                        <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-slate-800/80 rounded cursor-pointer text-xs text-slate-300">
+                                        <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer text-xs text-slate-300 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 checked={visibleColumns[col]}
@@ -268,7 +294,8 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     </div>
                 </div>
             </div>
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(displayData.length * 35 + 50, 800), 500) }}>
+            
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(displayData.length * 35 + 80, 800), 500) }}>
                 <AgGridReact
                     ref={gridRef}
                     theme={myTheme}
@@ -278,10 +305,8 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"
-                    rowSelection={{ mode: "multiRow", headerCheckbox: true }}
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
-                    onSelectionChanged={onSelectionChanged}
                 />
             </div>
         </div>

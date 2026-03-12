@@ -123,7 +123,6 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             resizable: true,
             suppressMovable: true,
             filter: true,
-            floatingFilter: true,
             flex: 1,
             minWidth: 100,
         }),

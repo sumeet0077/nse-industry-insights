@@ -154,18 +154,7 @@ export function IndexDetailPage({
                     )}
                 </div>
 
-                {/* CAGR Toggle for constituents tab */}
-                {activeTab === "constituents" && (
-                    <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer mr-2">
-                        <input
-                            type="checkbox"
-                            checked={showCagr}
-                            onChange={(e) => setShowCagr(e.target.checked)}
-                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                        />
-                        Annualize (CAGR)
-                    </label>
-                )}
+                {/* CAGR Toggle was removed here as requested; using the one in performance trend */}
             </div>
 
             {/* Tab content */}

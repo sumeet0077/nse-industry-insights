@@ -1177,11 +1177,10 @@
         "below": [
             "MARUTI.NS",
             "M&M.NS",
-            "TMPV.NS"
-        ],
-        "new_stock": [
+            "TMPV.NS",
             "TMCV.NS"
-        ]
+        ],
+        "new_stock": []
     },
     "Aviation": {
         "above": [],
@@ -1320,11 +1319,10 @@
             "OLECTRA.NS",
             "JBMA.NS",
             "EXIDEIND.NS",
-            "TMPV.NS"
-        ],
-        "new_stock": [
+            "TMPV.NS",
             "TMCV.NS"
-        ]
+        ],
+        "new_stock": []
     },
     "FMCG Staples": {
         "above": [

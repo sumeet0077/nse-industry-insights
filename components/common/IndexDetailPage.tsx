@@ -27,7 +27,7 @@ export function IndexDetailPage({
     isIndustry = false,
     globalLatestDate,
 }: IndexDetailPageProps) {
-    const [activeTab, setActiveTab] = useState<"chart" | "constituents">("chart");
+    const [activeTab, setActiveTab] = useState<"chart" | "constituents">("constituents");
     const [showCagr, setShowCagr] = useState(false);
 
     // Latest + previous data points for metric cards

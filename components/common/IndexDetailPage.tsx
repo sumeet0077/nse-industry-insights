@@ -5,14 +5,15 @@ import { BreadthChart, ParticipationChart } from "@/components/charts/BreadthCha
 import { MetricCardsRow } from "@/components/common/MetricCard";
 import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
-import { useState, useEffect } from "react";
+import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { useState, useRef, useEffect } from "react";
 import { makeTradingViewUrl } from "@/lib/utils";
 
 interface IndexDetailPageProps {
     title: string;
     description: string;
     breadthData: BreadthDataPoint[];
-    constituentData?: Array<{ ticker: string;[k: string]: number | string | null | undefined }>;
+    constituentData?: Array<{ ticker: string; [k: string]: number | string | null | undefined }>;
     marketStatus?: MarketStatusEntry | null;
     isIndustry?: boolean;
     globalLatestDate?: string | null;
@@ -29,6 +30,7 @@ export function IndexDetailPage({
 }: IndexDetailPageProps) {
     const [activeTab, setActiveTab] = useState<"chart" | "constituents">("constituents");
     const [showCagr, setShowCagr] = useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     // Latest + previous data points for metric cards
     const latest = breadthData.length > 0 ? breadthData[breadthData.length - 1] : null;
@@ -69,17 +71,26 @@ export function IndexDetailPage({
     }
 
     return (
-        <div>
+        <div id="index-detail-capture-root" ref={contentRef} className="p-1">
             <div className="flex items-start justify-between mb-1">
-                <h1 className="text-xl font-bold text-white">{title} Market Breadth</h1>
-                {isPageStale && latest && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-3 py-1 rounded-full flex items-center gap-1.5 animate-pulse">
-                        <span className="inline-block w-1.5 h-1.5 bg-red-400 rounded-full"></span>
-                        Data Sync Error: Showing {latest.Date} (Expected {globalLatestStr})
-                    </div>
-                )}
+                <div className="flex flex-col">
+                    <h1 className="text-xl font-bold text-white">{title} Market Breadth</h1>
+                    <p className="text-sm text-slate-400 mt-1">{description}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <CaptureScreenshot 
+                        targetRef={contentRef} 
+                        filename={`${title.replace(/\s+/g, '_')}_Dashboard`}
+                        label="Capture Page"
+                    />
+                    {isPageStale && latest && (
+                        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 animate-pulse">
+                            <span className="inline-block w-1.5 h-1.5 bg-red-400 rounded-full"></span>
+                            Sync Error: {latest.Date}
+                        </div>
+                    )}
+                </div>
             </div>
-            <p className="text-sm text-slate-400 mb-4">{description}</p>
 
             {/* Metric Cards */}
             {latest && prev && (

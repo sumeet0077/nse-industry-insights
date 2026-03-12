@@ -7,6 +7,7 @@ import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-communi
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { Columns, ChevronDown, AlertCircle, Search, X } from "lucide-react";
+import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -67,6 +68,7 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
+    const tableRef = useRef<HTMLDivElement>(null);
 
     const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
         const initial: Record<string, boolean> = {};
@@ -248,54 +250,62 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                         </button>
                     )}
 
-                    <div className="relative" ref={dropdownRef}>
-                        <button
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors shadow-sm"
-                        >
-                            <Columns size={14} className="text-blue-400" />
-                            Columns
-                            <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
-                        </button>
+                    <div className="flex items-center gap-2">
+                        <CaptureScreenshot 
+                            targetRef={tableRef}
+                            filename="Performance_Heatmap"
+                            label="Capture Heatmap"
+                        />
+                        
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="flex items-center gap-2 text-xs font-medium text-slate-300 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-md transition-colors shadow-sm"
+                            >
+                                <Columns size={14} className="text-blue-400" />
+                                Columns
+                                <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                            </button>
 
-                        {isDropdownOpen && (
-                            <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-2xl overflow-hidden z-50">
-                                <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
-                                    <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
-                                        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Columns</span>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => {
-                                                const allSelected: Record<string, boolean> = {};
-                                                returnColumns.forEach(c => allSelected[c] = true);
-                                                setVisibleColumns(allSelected);
-                                            }} className="text-[10px] text-blue-400 hover:text-blue-300 font-medium">All</button>
-                                            <span className="text-slate-600 text-[10px]">|</span>
-                                            <button onClick={() => {
-                                                const noneSelected: Record<string, boolean> = {};
-                                                returnColumns.forEach(c => noneSelected[c] = false);
-                                                setVisibleColumns(noneSelected);
-                                            }} className="text-[10px] text-red-400 hover:text-red-300 font-medium">None</button>
+                            {isDropdownOpen && (
+                                <div className="absolute right-0 top-full mt-2 w-52 bg-[#111118] border border-slate-700 rounded-md shadow-2xl overflow-hidden z-50">
+                                    <div className="p-2 flex flex-col gap-1 max-h-64 overflow-y-auto">
+                                        <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-slate-700/50">
+                                            <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Columns</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => {
+                                                    const allSelected: Record<string, boolean> = {};
+                                                    returnColumns.forEach(c => allSelected[c] = true);
+                                                    setVisibleColumns(allSelected);
+                                                }} className="text-[10px] text-blue-400 hover:text-blue-300 font-medium">All</button>
+                                                <span className="text-slate-600 text-[10px]">|</span>
+                                                <button onClick={() => {
+                                                    const noneSelected: Record<string, boolean> = {};
+                                                    returnColumns.forEach(c => noneSelected[c] = false);
+                                                    setVisibleColumns(noneSelected);
+                                                }} className="text-[10px] text-red-400 hover:text-red-300 font-medium">None</button>
+                                            </div>
                                         </div>
+                                        {returnColumns.map(col => (
+                                            <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer text-xs text-slate-300 transition-colors">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={visibleColumns[col]}
+                                                    onChange={() => toggleColumn(col)}
+                                                    className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                                                />
+                                                {col}
+                                            </label>
+                                        ))}
                                     </div>
-                                    {returnColumns.map(col => (
-                                        <label key={col} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer text-xs text-slate-300 transition-colors">
-                                            <input
-                                                type="checkbox"
-                                                checked={visibleColumns[col]}
-                                                onChange={() => toggleColumn(col)}
-                                                className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                                            />
-                                            {col}
-                                        </label>
-                                    ))}
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(displayData.length * 35 + 80, 800), 500) }}>
+            <div ref={tableRef} className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(displayData.length * 35 + 80, 800), 500) }}>
                 <AgGridReact
                     ref={gridRef}
                     theme={myTheme}

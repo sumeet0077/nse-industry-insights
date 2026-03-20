@@ -1,9 +1,9 @@
 import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
-import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode } from "ag-grid-community";
+import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl } from "@/lib/utils";
-import { Columns, ChevronDown, Search, X, Filter } from "lucide-react";
+import { Columns, ChevronDown, Search, X, CheckSquare } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -15,7 +15,7 @@ interface ConstituentRow {
 
 interface ConstituentTableProps {
     data: ConstituentRow[];
-    showCagr?: boolean; // Keep for interface compatibility if used elsewhere
+    showCagr?: boolean;
 }
 
 const returnCols = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
@@ -64,11 +64,12 @@ function returnCellClass(params: CellClassParams): string {
 export function ConstituentTable({ data, showCagr = false }: ConstituentTableProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
-    const [positiveRSOnly, setPositiveRSOnly] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedTickers, setSelectedTickers] = useState<Set<string>>(new Set());
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
+    const tableRef = useRef<HTMLDivElement>(null);
 
     const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
         const initial: Record<string, boolean> = {};
@@ -86,8 +87,27 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const onSelectionChanged = useCallback((event: SelectionChangedEvent) => {
+        const selected = event.api.getSelectedRows() as ConstituentRow[];
+        setSelectedTickers(new Set(selected.map(r => r.ticker)));
+    }, []);
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
+            {
+                headerName: "",
+                field: "checkbox",
+                headerCheckboxSelection: true,
+                checkboxSelection: true,
+                pinned: "left",
+                width: 48,
+                maxWidth: 48,
+                suppressHeaderMenuButton: true,
+                resizable: false,
+                sortable: false,
+                filter: false,
+                flex: 0,
+            },
             {
                 headerName: "Ticker",
                 field: "ticker",
@@ -135,11 +155,16 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     };
 
     const isExternalFilterPresent = useCallback(() => {
-        return searchQuery !== "";
-    }, [searchQuery]);
+        return searchQuery !== "" || showSelectedOnly;
+    }, [searchQuery, showSelectedOnly]);
 
     const doesExternalFilterPass = useCallback((node: IRowNode) => {
         const rowData = node.data as ConstituentRow;
+        
+        // Show Selected Only filter
+        if (showSelectedOnly && !selectedTickers.has(rowData.ticker)) {
+            return false;
+        }
         
         // Search Filter
         if (searchQuery !== "") {
@@ -150,24 +175,32 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         }
         
         return true;
-    }, [searchQuery]);
+    }, [searchQuery, showSelectedOnly, selectedTickers]);
 
     useEffect(() => {
         if (gridRef.current?.api) {
             gridRef.current.api.onFilterChanged();
         }
-    }, [searchQuery]);
+    }, [searchQuery, showSelectedOnly, selectedTickers]);
 
     const clearFilters = () => {
         setSearchQuery("");
+        setShowSelectedOnly(false);
         if (gridRef.current?.api) {
             gridRef.current.api.setFilterModel(null);
         }
     };
 
-    const isFiltered = searchQuery !== "";
+    const clearSelection = () => {
+        setSelectedTickers(new Set());
+        setShowSelectedOnly(false);
+        if (gridRef.current?.api) {
+            gridRef.current.api.deselectAll();
+        }
+    };
 
-    const tableRef = useRef<HTMLDivElement>(null);
+    const isFiltered = searchQuery !== "" || showSelectedOnly;
+    const selectionCount = selectedTickers.size;
 
     return (
         <div className="flex flex-col gap-3">
@@ -193,14 +226,42 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex flex-wrap gap-3 items-center">
+                    {selectionCount > 0 && (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowSelectedOnly(!showSelectedOnly)}
+                                className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md border transition-all ${
+                                    showSelectedOnly 
+                                        ? "bg-blue-500/20 border-blue-500/40 text-blue-300 shadow-sm shadow-blue-500/10" 
+                                        : "bg-slate-800/50 border-slate-700 text-slate-300 hover:bg-slate-700"
+                                }`}
+                            >
+                                <CheckSquare size={13} />
+                                Show Selected
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                                    showSelectedOnly ? "bg-blue-500/30 text-blue-200" : "bg-slate-700 text-slate-400"
+                                }`}>
+                                    {selectionCount}
+                                </span>
+                            </button>
+                            <button
+                                onClick={clearSelection}
+                                className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+                                title="Clear selection"
+                            >
+                                <X size={12} />
+                            </button>
+                        </div>
+                    )}
+
                     {isFiltered && (
                         <button 
                             onClick={clearFilters}
-                            className="text-[11px] text-slate-400 hover:text-blue-400 transition-colors font-medium px-1 flex items-center gap-1 bg-slate-800/50 py-1 px-2 rounded border border-slate-700/50"
+                            className="text-[11px] text-slate-400 hover:text-blue-400 transition-colors font-medium flex items-center gap-1 bg-slate-800/50 py-1 px-2 rounded border border-slate-700/50"
                         >
                             <X size={12} />
-                            Clear Search
+                            Clear All
                         </button>
                     )}
 
@@ -268,8 +329,11 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"
+                    rowSelection="multiple"
+                    suppressRowClickSelection={true}
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
+                    onSelectionChanged={onSelectionChanged}
                 />
             </div>
         </div>

@@ -2,11 +2,11 @@
 
 import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
-import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode } from "ag-grid-community";
+import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
-import { Columns, ChevronDown, AlertCircle, Search, X } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -65,6 +65,8 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
     const [showCagr, setShowCagr] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+    const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
@@ -87,6 +89,12 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const onSelectionChanged = useCallback((event: SelectionChangedEvent) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const selected = event.api.getSelectedRows() as any[];
+        setSelectedThemes(new Set(selected.map(r => r["Theme/Index"])));
+    }, []);
+
     const displayData = useMemo(() => {
         if (!showCagr) return data;
         return data.map((row) => {
@@ -103,6 +111,20 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
 
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
+            {
+                headerName: "",
+                field: "checkbox",
+                headerCheckboxSelection: true,
+                checkboxSelection: true,
+                pinned: "left",
+                width: 48,
+                maxWidth: 48,
+                suppressHeaderMenuButton: true,
+                resizable: false,
+                sortable: false,
+                filter: false,
+                flex: 0,
+            },
             {
                 headerName: "Theme / Index",
                 field: "Theme/Index",
@@ -158,11 +180,17 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
     };
 
     const isExternalFilterPresent = useCallback(() => {
-        return searchQuery !== "";
-    }, [searchQuery]);
+        return searchQuery !== "" || showSelectedOnly;
+    }, [searchQuery, showSelectedOnly]);
 
     const doesExternalFilterPass = useCallback((node: IRowNode) => {
         const rowData = node.data;
+
+        // Show Selected Only filter
+        if (showSelectedOnly && !selectedThemes.has(rowData["Theme/Index"])) {
+            return false;
+        }
+
         if (searchQuery !== "") {
             const theme = (rowData["Theme/Index"] || "").toLowerCase();
             if (!theme.includes(searchQuery.toLowerCase())) {
@@ -170,22 +198,32 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
             }
         }
         return true;
-    }, [searchQuery]);
+    }, [searchQuery, showSelectedOnly, selectedThemes]);
 
     useEffect(() => {
         if (gridRef.current?.api) {
             gridRef.current.api.onFilterChanged();
         }
-    }, [searchQuery]);
+    }, [searchQuery, showSelectedOnly, selectedThemes]);
 
     const clearFilters = () => {
         setSearchQuery("");
+        setShowSelectedOnly(false);
         if (gridRef.current?.api) {
             gridRef.current.api.setFilterModel(null);
         }
     };
 
-    const isFiltered = searchQuery !== "";
+    const clearSelection = () => {
+        setSelectedThemes(new Set());
+        setShowSelectedOnly(false);
+        if (gridRef.current?.api) {
+            gridRef.current.api.deselectAll();
+        }
+    };
+
+    const isFiltered = searchQuery !== "" || showSelectedOnly;
+    const selectionCount = selectedThemes.size;
 
     // Data validation check
     const globalLatestStr = globalLatestDate;
@@ -222,11 +260,39 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     </div>
                 </div>
 
-                <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex flex-wrap gap-3 items-center">
                     {isStale && (
                         <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] px-2 py-1 rounded flex items-center gap-1.5">
                             <AlertCircle size={12} className="animate-pulse" />
                             <span>Syncing...</span>
+                        </div>
+                    )}
+
+                    {selectionCount > 0 && (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setShowSelectedOnly(!showSelectedOnly)}
+                                className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md border transition-all ${
+                                    showSelectedOnly 
+                                        ? "bg-blue-500/20 border-blue-500/40 text-blue-300 shadow-sm shadow-blue-500/10" 
+                                        : "bg-slate-800/50 border-slate-700 text-slate-300 hover:bg-slate-700"
+                                }`}
+                            >
+                                <CheckSquare size={13} />
+                                Show Selected
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                                    showSelectedOnly ? "bg-blue-500/30 text-blue-200" : "bg-slate-700 text-slate-400"
+                                }`}>
+                                    {selectionCount}
+                                </span>
+                            </button>
+                            <button
+                                onClick={clearSelection}
+                                className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+                                title="Clear selection"
+                            >
+                                <X size={12} />
+                            </button>
                         </div>
                     )}
 
@@ -243,10 +309,10 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     {isFiltered && (
                         <button 
                             onClick={clearFilters}
-                            className="text-[11px] text-slate-400 hover:text-blue-400 transition-colors font-medium px-1 flex items-center gap-1 bg-slate-800/50 py-1 px-2 rounded border border-slate-700/50"
+                            className="text-[11px] text-slate-400 hover:text-blue-400 transition-colors font-medium flex items-center gap-1 bg-slate-800/50 py-1 px-2 rounded border border-slate-700/50"
                         >
                             <X size={12} />
-                            Clear
+                            Clear All
                         </button>
                     )}
 
@@ -315,8 +381,11 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"
+                    rowSelection="multiple"
+                    suppressRowClickSelection={true}
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
+                    onSelectionChanged={onSelectionChanged}
                 />
             </div>
         </div>

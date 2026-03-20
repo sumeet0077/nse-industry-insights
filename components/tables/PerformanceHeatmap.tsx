@@ -2,7 +2,7 @@
 
 import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
-import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent } from "ag-grid-community";
+import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import type { PerformanceRow } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
@@ -321,6 +321,12 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                             targetRef={tableRef}
                             filename="Performance_Heatmap"
                             label="Capture Heatmap"
+                            onBeforeCapture={() => {
+                                const api = gridRef.current?.api;
+                                if (!api) return () => {};
+                                api.setGridOption('domLayout', 'autoHeight');
+                                return () => { api.setGridOption('domLayout', 'normal'); };
+                            }}
                         />
                         
                         <div className="relative" ref={dropdownRef}>

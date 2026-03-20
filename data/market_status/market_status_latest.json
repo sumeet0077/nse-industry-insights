@@ -1153,11 +1153,11 @@
         "below": [
             "HDFCAMC.NS",
             "NAM-INDIA.NS",
-            "UTIAMC.NS"
+            "UTIAMC.NS",
+            "CAMS.NS",
+            "KFINTECH.NS"
         ],
-        "new_stock": [
-            "ICICIAMC.NS"
-        ]
+        "new_stock": []
     },
     "Auto Ancillary": {
         "above": [
@@ -1864,10 +1864,7 @@
             "BORORENEW.NS",
             "WEBELSOLAR.NS"
         ],
-        "new_stock": [
-            "VIKRAMSOLR.NS",
-            "EMMVEE.NS"
-        ]
+        "new_stock": []
     },
     "Specialty Chemicals": {
         "above": [

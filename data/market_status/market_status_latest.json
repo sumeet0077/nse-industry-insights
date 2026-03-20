@@ -1224,6 +1224,35 @@
         ],
         "new_stock": []
     },
+    "Capital Goods": {
+        "above": [
+            "BHEL.NS",
+            "ABB.NS",
+            "THERMAX.NS",
+            "CUMMINSIND.NS",
+            "KIRLOSENG.NS",
+            "PTCIL.NS",
+            "APARINDS.NS",
+            "TIMKEN.NS",
+            "SCHAEFFLER.NS",
+            "BEL.NS"
+        ],
+        "below": [
+            "LT.NS",
+            "SIEMENS.NS",
+            "CGPOWER.NS",
+            "ELGIEQUIP.NS",
+            "JYOTICNC.NS",
+            "AIAENG.NS",
+            "CARBORUNIV.NS",
+            "HONAUT.NS",
+            "ISGEC.NS",
+            "TRITURBINE.NS",
+            "GRINDWELL.NS",
+            "SKFINDIA.NS"
+        ],
+        "new_stock": []
+    },
     "Capital Market": {
         "above": [
             "BSE.NS",

@@ -59,7 +59,7 @@ function returnFormatter(params: ValueFormatterParams): string {
     return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
 }
 
-const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)"];
+const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)", "RS (50D)"];
 
 export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
@@ -155,11 +155,12 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 headerName: col,
                 field: col,
                 hide: !visibleColumns[col],
-                width: col === "RS (20D)" ? 130 : 110,
+                width: (col === "RS (20D)" || col === "RS (50D)") ? 130 : 110,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
                 sortable: true,
                 filter: true,
+                headerTooltip: col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : (col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined)
             });
         }
         return cols;

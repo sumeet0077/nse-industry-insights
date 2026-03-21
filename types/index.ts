@@ -22,6 +22,7 @@ export interface PerformanceRow {
     "3 Years"?: number | null;
     "5 Years"?: number | null;
     "RS (20D)"?: number | null;
+    "RS (50D)"?: number | null;
 }
 
 export interface ConstituentPerformance {
@@ -35,6 +36,7 @@ export interface ConstituentPerformance {
     "3Y"?: number | null;
     "5Y"?: number | null;
     "RS (20D)"?: number | null;
+    "RS (50D)"?: number | null;
 }
 
 export interface MarketStatusEntry {

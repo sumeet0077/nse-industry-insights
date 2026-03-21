@@ -1714,6 +1714,20 @@
         ],
         "new_stock": []
     },
+    "Personal Care & Wellness": {
+        "above": [
+            "CUPID.NS",
+            "BAJAJCON.NS"
+        ],
+        "below": [
+            "PGHH.NS",
+            "GILLETTE.NS",
+            "ZYDUSWELL.NS",
+            "EMAMILTD.NS",
+            "JHS.NS"
+        ],
+        "new_stock": []
+    },
     "Pharma Formulations": {
         "above": [
             "SUNPHARMA.NS",

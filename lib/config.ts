@@ -48,6 +48,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_wealth_management", title: "Wealth Management", description: "Wealth Management Firms", dataFile: "breadth_theme_wealth_management", category: "industries" },
     { id: "breadth_theme_capital_market", title: "Capital Market", description: "Capital Market Intermediaries", dataFile: "breadth_theme_capital_market", category: "industries" },
     { id: "breadth_theme_capital_goods", title: "Capital Goods", description: "Heavy Engineering & Industrial Equipment", dataFile: "breadth_theme_capital_goods", category: "industries" },
+    { id: "breadth_theme_personal_care_and_wellness", title: "Personal Care & Wellness", description: "Health, Hygiene & Consumer Wellness", dataFile: "breadth_theme_personal_care_and_wellness", category: "industries" },
     { id: "breadth_theme_alcohols_and_breweries", title: "Alcohols & Breweries", description: "Alcohol & Brewery Companies", dataFile: "breadth_theme_alcohols_and_breweries", category: "industries" },
     { id: "breadth_theme_oil_and_gas_downstream", title: "Oil & Gas Downstream", description: "Oil Refining & Marketing", dataFile: "breadth_theme_oil_and_gas_downstream", category: "industries" },
     { id: "breadth_theme_oil_and_gas_upstream", title: "Oil & Gas Upstream", description: "Oil Exploration & Production", dataFile: "breadth_theme_oil_and_gas_upstream", category: "industries" },

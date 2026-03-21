@@ -636,6 +636,18 @@
     "RS (20D)":-1.35
   },
   {
+    "Theme\/Index":"Personal Care & Wellness",
+    "1 Day":1.02,
+    "1 Week":0.21,
+    "1 Month":-9.39,
+    "3 Months":-3.73,
+    "6 Months":-2.81,
+    "1 Year":38.4,
+    "3 Years":130.89,
+    "5 Years":107.72,
+    "RS (20D)":1.25
+  },
+  {
     "Theme\/Index":"Pharma Formulations",
     "1 Day":1.69,
     "1 Week":-1.97,

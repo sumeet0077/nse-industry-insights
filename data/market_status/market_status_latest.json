@@ -1323,7 +1323,8 @@
         "above": [
             "BEL.NS",
             "DATAPATTNS.NS",
-            "MTARTECH.NS"
+            "MTARTECH.NS",
+            "KRISHNADEF.NS"
         ],
         "below": [
             "HAL.NS",
@@ -1338,9 +1339,7 @@
             "ZENTEC.NS",
             "DCXINDIA.NS"
         ],
-        "new_stock": [
-            "KRISHNADEF.NS"
-        ]
+        "new_stock": []
     },
     "Diagnostics & Pathology": {
         "above": [],
@@ -1724,9 +1723,12 @@
             "GILLETTE.NS",
             "ZYDUSWELL.NS",
             "EMAMILTD.NS",
-            "JHS.NS"
+            "JHS.NS",
+            "TTKHLT.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "ANONDITA.NS"
+        ]
     },
     "Pharma Formulations": {
         "above": [

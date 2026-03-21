@@ -320,7 +320,7 @@
     "6 Months":-17.65,
     "1 Year":11.59,
     "3 Years":452.76,
-    "5 Years":933.29,
+    "5 Years":1137.3,
     "RS (20D)":-1.85
   },
   {
@@ -328,11 +328,11 @@
     "1 Day":-0.76,
     "1 Week":-2.65,
     "1 Month":-4.62,
-    "3 Months":3.95,
-    "6 Months":-9.97,
-    "1 Year":26.88,
-    "3 Years":245.98,
-    "5 Years":760.06,
+    "3 Months":4.54,
+    "6 Months":-9.18,
+    "1 Year":27.63,
+    "3 Years":265.84,
+    "5 Years":823.57,
     "RS (20D)":4.27
   },
   {
@@ -637,15 +637,15 @@
   },
   {
     "Theme\/Index":"Personal Care & Wellness",
-    "1 Day":1.02,
-    "1 Week":0.21,
-    "1 Month":-9.39,
-    "3 Months":-3.73,
-    "6 Months":-2.81,
-    "1 Year":38.4,
-    "3 Years":130.89,
-    "5 Years":107.72,
-    "RS (20D)":1.25
+    "1 Day":0.51,
+    "1 Week":-0.69,
+    "1 Month":-10.2,
+    "3 Months":-4.83,
+    "6 Months":3.58,
+    "1 Year":44.48,
+    "3 Years":136.22,
+    "5 Years":135.59,
+    "RS (20D)":0.51
   },
   {
     "Theme\/Index":"Pharma Formulations",
@@ -878,14 +878,14 @@
   {
     "Theme\/Index":"Tyres & Rubber",
     "1 Day":0.04,
-    "1 Week":-0.48,
-    "1 Month":-15.68,
-    "3 Months":-10.97,
-    "6 Months":-7.19,
-    "1 Year":18.05,
-    "3 Years":74.76,
-    "5 Years":101.9,
-    "RS (20D)":-1.16
+    "1 Week":-0.42,
+    "1 Month":-14.86,
+    "3 Months":-11.87,
+    "6 Months":-8.83,
+    "1 Year":18.39,
+    "3 Years":85.79,
+    "5 Years":109.51,
+    "RS (20D)":-0.7
   },
   {
     "Theme\/Index":"Wealth Management",

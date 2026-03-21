@@ -1723,12 +1723,9 @@
             "GILLETTE.NS",
             "ZYDUSWELL.NS",
             "EMAMILTD.NS",
-            "JHS.NS",
-            "TTKHLT.NS"
+            "JHS.NS"
         ],
-        "new_stock": [
-            "ANONDITA.NS"
-        ]
+        "new_stock": []
     },
     "Pharma Formulations": {
         "above": [

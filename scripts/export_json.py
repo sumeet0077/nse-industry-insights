@@ -27,25 +27,23 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     
     print("  Calculating Performance Summary...")
     
-    # First, find the Nifty 50 baseline for RS (20D) calculation
+    # First, find the Nifty 50 baseline for RS (20D) and RS (50D) calculation
     baseline_file = source_dir / "market_breadth_nifty50.csv"
     nifty_latest_price = 0
     nifty_20d_price = 0
-    nifty_rs_base = 0
+    nifty_50d_price = 0
     
     if baseline_file.exists():
         try:
             b_df = pd.read_csv(baseline_file)
             if not b_df.empty and 'Index_Close' in b_df.columns:
                 b_df['Date'] = pd.to_datetime(b_df['Date'])
-                latest = b_df.iloc[-1]
-                nifty_latest_price = latest['Index_Close']
-                target_date = latest['Date'] - timedelta(days=20)
-                mask = b_df['Date'] <= target_date
-                if mask.any():
-                    nifty_20d_price = b_df[mask].iloc[-1]['Index_Close']
-                    if nifty_20d_price > 0:
-                        nifty_rs_base = (nifty_latest_price - nifty_20d_price) / nifty_20d_price
+                if len(b_df) >= 1:
+                    nifty_latest_price = b_df.iloc[-1]['Index_Close']
+                if len(b_df) >= 21:
+                    nifty_20d_price = b_df.iloc[-21]['Index_Close']
+                if len(b_df) >= 51:
+                    nifty_50d_price = b_df.iloc[-51]['Index_Close']
         except Exception as e:
             print(f"    Warning: Could not process Nifty 50 baseline for RS: {e}")
 
@@ -129,15 +127,24 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
             # RS (20D)
             row["RS (20D)"] = None
             if current_price > 0 and nifty_latest_price > 0 and nifty_20d_price > 0:
-                target_date = current_date - timedelta(days=20)
-                mask = df['Date'] <= target_date
-                if mask.any():
-                    asset_20d_price = df[mask].iloc[-1]['Index_Close']
+                if len(df) >= 21:
+                    asset_20d_price = df.iloc[-21]['Index_Close']
                     if asset_20d_price > 0:
                         current_ratio = current_price / nifty_latest_price
                         past_ratio = asset_20d_price / nifty_20d_price
                         rs_val = ((current_ratio - past_ratio) / past_ratio) * 100
                         row["RS (20D)"] = None if pd.isna(rs_val) else round(rs_val, 2)
+                        
+            # RS (50D)
+            row["RS (50D)"] = None
+            if current_price > 0 and nifty_latest_price > 0 and nifty_50d_price > 0:
+                if len(df) >= 51:
+                    asset_50d_price = df.iloc[-51]['Index_Close']
+                    if asset_50d_price > 0:
+                        current_ratio = current_price / nifty_latest_price
+                        past_ratio = asset_50d_price / nifty_50d_price
+                        rs_val = ((current_ratio - past_ratio) / past_ratio) * 100
+                        row["RS (50D)"] = None if pd.isna(rs_val) else round(rs_val, 2)
                         
             summary_data.append(row)
             

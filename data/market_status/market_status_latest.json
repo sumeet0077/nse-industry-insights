@@ -1371,7 +1371,9 @@
         ]
     },
     "FMCG Staples": {
-        "above": [],
+        "above": [
+            "CCL.NS"
+        ],
         "below": [
             "HINDUNILVR.NS",
             "ITC.NS",
@@ -1380,7 +1382,10 @@
             "GODREJCP.NS",
             "DABUR.NS",
             "COLPAL.NS",
-            "MARICO.NS"
+            "MARICO.NS",
+            "TATACONSUM.NS",
+            "COFFEEDAY.NS",
+            "VINCOFE.NS"
         ],
         "new_stock": []
     },

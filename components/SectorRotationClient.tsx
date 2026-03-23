@@ -33,8 +33,8 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [tailLength, setTailLength] = useState(5);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Filter defaults (same as Streamlit's implicit defaults)
-    const defaults = ["Nifty 50", "Nifty Bank", "Nifty IT", "Nifty Auto", "Nifty FMCG", "Nifty Metal", "Nifty Pharma"];
+    // Filter defaults (Set to empty as per user preference for manual selection)
+    const defaults: string[] = [];
     const [selectedTickers, setSelectedTickers] = useState<string[]>(defaults);
     const [isSelecting, setIsSelecting] = useState(false);
 

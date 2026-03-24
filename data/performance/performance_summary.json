@@ -716,16 +716,16 @@
   },
   {
     "Theme\/Index":"Power T&D",
-    "1 Day":1.28,
-    "1 Week":-1.81,
-    "1 Month":-2.09,
-    "3 Months":15.85,
-    "6 Months":7.91,
-    "1 Year":34.65,
-    "3 Years":277.38,
-    "5 Years":803.46,
-    "RS (20D)":7.63,
-    "RS (50D)":35.49
+    "1 Day":2.34,
+    "1 Week":0.01,
+    "1 Month":-3.13,
+    "3 Months":7.0,
+    "6 Months":-0.59,
+    "1 Year":35.07,
+    "3 Years":395.15,
+    "5 Years":1165.39,
+    "RS (20D)":6.47,
+    "RS (50D)":24.39
   },
   {
     "Theme\/Index":"Private Banking",

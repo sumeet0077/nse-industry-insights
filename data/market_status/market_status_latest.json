@@ -1753,11 +1753,16 @@
         "above": [
             "POWERGRID.NS",
             "POWERINDIA.NS",
-            "SCHNEIDER.NS"
+            "SCHNEIDER.NS",
+            "QPOWER.NS",
+            "VOLTAMP.NS",
+            "APARINDS.NS"
         ],
         "below": [
             "SIEMENS.NS",
-            "CGPOWER.NS"
+            "CGPOWER.NS",
+            "KEC.NS",
+            "KPIL.NS"
         ],
         "new_stock": []
     },

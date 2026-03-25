@@ -1575,13 +1575,17 @@
     },
     "Media & Broadcasting": {
         "above": [
-            "SUNTV.NS"
+            "SUNTV.NS",
+            "PFOCUS.NS"
         ],
         "below": [
             "ZEEL.NS",
             "NETWORK18.NS",
             "DEN.NS",
-            "HATHWAY.NS"
+            "HATHWAY.NS",
+            "NDTV.NS",
+            "DISHTV.NS",
+            "PVRINOX.NS"
         ],
         "new_stock": []
     },
@@ -1602,7 +1606,9 @@
         "above": [],
         "below": [
             "SAREGAMA.NS",
-            "TIPSMUSIC.NS"
+            "TIPSMUSIC.NS",
+            "SHEMAROO.NS",
+            "NAZARA.NS"
         ],
         "new_stock": []
     },

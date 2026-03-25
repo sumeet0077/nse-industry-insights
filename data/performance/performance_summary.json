@@ -573,16 +573,16 @@
   },
   {
     "Theme\/Index":"Media & Broadcasting",
-    "1 Day":2.45,
-    "1 Week":-1.95,
-    "1 Month":-9.48,
-    "3 Months":-16.03,
-    "6 Months":-22.93,
-    "1 Year":-20.15,
-    "3 Years":-15.9,
-    "5 Years":-22.31,
-    "RS (20D)":-0.3,
-    "RS (50D)":-5.44
+    "1 Day":2.75,
+    "1 Week":-0.74,
+    "1 Month":-9.1,
+    "3 Months":-14.69,
+    "6 Months":-20.75,
+    "1 Year":-9.38,
+    "3 Years":-13.96,
+    "5 Years":13.12,
+    "RS (20D)":-0.44,
+    "RS (50D)":-5.41
   },
   {
     "Theme\/Index":"Metals & Mining",
@@ -599,16 +599,16 @@
   },
   {
     "Theme\/Index":"Music & Content",
-    "1 Day":-1.38,
-    "1 Week":-4.35,
-    "1 Month":-5.78,
-    "3 Months":-3.84,
-    "6 Months":-20.52,
-    "1 Year":-27.59,
-    "3 Years":39.66,
-    "5 Years":196.03,
-    "RS (20D)":4.27,
-    "RS (50D)":4.28
+    "1 Day":-1.07,
+    "1 Week":-7.04,
+    "1 Month":-8.75,
+    "3 Months":-6.15,
+    "6 Months":-18.39,
+    "1 Year":-15.92,
+    "3 Years":19.39,
+    "5 Years":72.09,
+    "RS (20D)":0.57,
+    "RS (50D)":-0.02
   },
   {
     "Theme\/Index":"NBFC",

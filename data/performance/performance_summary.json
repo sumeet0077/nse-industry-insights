@@ -572,6 +572,19 @@
     "RS (50D)":-5.4
   },
   {
+    "Theme\/Index":"Marine & Offshore Services",
+    "1 Day":1.15,
+    "1 Week":-2.05,
+    "1 Month":0.05,
+    "3 Months":14.52,
+    "6 Months":51.64,
+    "1 Year":59.31,
+    "3 Years":191.65,
+    "5 Years":334.81,
+    "RS (20D)":7.84,
+    "RS (50D)":20.34
+  },
+  {
     "Theme\/Index":"Media & Broadcasting",
     "1 Day":2.75,
     "1 Week":-0.74,
@@ -716,16 +729,16 @@
   },
   {
     "Theme\/Index":"Power T&D",
-    "1 Day":1.93,
-    "1 Week":0.33,
-    "1 Month":-2.5,
-    "3 Months":9.07,
-    "6 Months":3.27,
-    "1 Year":39.26,
-    "3 Years":404.72,
-    "5 Years":1182.19,
-    "RS (20D)":4.52,
-    "RS (50D)":27.63
+    "1 Day":1.49,
+    "1 Week":-0.26,
+    "1 Month":-3.6,
+    "3 Months":6.2,
+    "6 Months":-0.76,
+    "1 Year":35.41,
+    "3 Years":400.37,
+    "5 Years":1171.12,
+    "RS (20D)":3.46,
+    "RS (50D)":25.64
   },
   {
     "Theme\/Index":"Private Banking",

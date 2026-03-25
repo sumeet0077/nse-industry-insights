@@ -1573,6 +1573,17 @@
         ],
         "new_stock": []
     },
+    "Marine & Offshore Services": {
+        "above": [
+            "SEAMECLTD.NS",
+            "DREDGECORP.NS",
+            "GESHIP.NS"
+        ],
+        "below": [],
+        "new_stock": [
+            "SHREEJISPG.NS"
+        ]
+    },
     "Media & Broadcasting": {
         "above": [
             "SUNTV.NS",
@@ -1770,7 +1781,8 @@
         "below": [
             "SIEMENS.NS",
             "KEC.NS",
-            "KPIL.NS"
+            "KPIL.NS",
+            "TRANSRAILL.NS"
         ],
         "new_stock": []
     },

@@ -1,7 +1,7 @@
 // components/SectorRotationClient.tsx
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
@@ -28,6 +28,9 @@ function humanizeTickerId(raw: string): string {
         .replace(/\b\w/g, c => c.toUpperCase()); // Title Case
 }
 
+type TrendDirection = "off" | "rising" | "falling";
+type TrendMetric = "momentum" | "ratio";
+
 export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
     const [timeframe, setTimeframe] = useState<"D" | "W" | "M">("W");
     const [tailLength, setTailLength] = useState(5);
@@ -42,6 +45,11 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const allQuadrants = ["Leading", "Weakening", "Lagging", "Improving"];
     const [selectedQuadrants, setSelectedQuadrants] = useState<string[]>(allQuadrants);
     const [expandedQuadrant, setExpandedQuadrant] = useState<string | null>(null);
+
+    // Trend Scanner state
+    const [trendDirection, setTrendDirection] = useState<TrendDirection>("off");
+    const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
+    const [trendLookback, setTrendLookback] = useState(2);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
@@ -63,6 +71,20 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
             return title ? { ...d, Ticker: title } : { ...d, Ticker: humanizeTickerId(d.Ticker) };
         });
     }, [currentDataRaw, tickerLookup]);
+
+    // Group data by ticker for trend analysis
+    const groupedByTicker = useMemo(() => {
+        const grouped: Record<string, RRGDataPoint[]> = {};
+        for (const pt of currentData) {
+            if (!grouped[pt.Ticker]) grouped[pt.Ticker] = [];
+            grouped[pt.Ticker].push(pt);
+        }
+        // Sort each group by date
+        for (const ticker of Object.keys(grouped)) {
+            grouped[ticker].sort((a, b) => a.Date.localeCompare(b.Date));
+        }
+        return grouped;
+    }, [currentData]);
 
     // Determine the latest point for each ticker to find its current quadrant
     const latestPoints: Record<string, RRGDataPoint> = {};
@@ -100,6 +122,67 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         Improving: ((quadrantCounts.Improving / totalCount) * 100).toFixed(1),
     };
 
+    // Trend Scanner: compute which tickers match the trend criteria
+    const trendMatchingTickers = useMemo(() => {
+        if (trendDirection === "off") return null; // null = scanner disabled
+
+        const matches: string[] = [];
+        for (const ticker of allTickers) {
+            const points = groupedByTicker[ticker];
+            if (!points || points.length < trendLookback + 1) continue;
+
+            // Take the last (trendLookback + 1) points
+            const tail = points.slice(-(trendLookback + 1));
+            const metric = trendMetric === "momentum" ? "RS_Momentum" : "RS_Ratio";
+
+            let isMatch = true;
+            for (let i = 1; i < tail.length; i++) {
+                const curr = tail[i][metric];
+                const prev = tail[i - 1][metric];
+
+                if (trendDirection === "rising") {
+                    if (curr <= prev) { isMatch = false; break; }
+                } else {
+                    // "falling" — decrease OR flat counts as falling
+                    if (curr > prev) { isMatch = false; break; }
+                }
+            }
+
+            if (isMatch) matches.push(ticker);
+        }
+        return matches;
+    }, [trendDirection, trendMetric, trendLookback, allTickers, groupedByTicker]);
+
+    // Apply the trend scanner: auto-select matching tickers
+    const applyTrendScanner = useCallback(() => {
+        if (trendMatchingTickers) {
+            setSelectedTickers(trendMatchingTickers);
+        }
+    }, [trendMatchingTickers]);
+
+    // Handler for direction change that auto-applies the scanner
+    const handleDirectionChange = useCallback((dir: TrendDirection) => {
+        setTrendDirection(dir);
+        if (dir === "off") return; // Don't change selection when turning off
+        // We need to compute matches manually here since state updates are async
+        // The effect below will handle auto-applying
+    }, []);
+
+    // Auto-apply scanner when direction, metric, or lookback changes
+    // Using useMemo to determine if we should auto-apply
+    const prevScannerRef = useRef({ direction: trendDirection, metric: trendMetric, lookback: trendLookback });
+    if (
+        trendDirection !== "off" &&
+        trendMatchingTickers &&
+        (prevScannerRef.current.direction !== trendDirection ||
+         prevScannerRef.current.metric !== trendMetric ||
+         prevScannerRef.current.lookback !== trendLookback)
+    ) {
+        prevScannerRef.current = { direction: trendDirection, metric: trendMetric, lookback: trendLookback };
+        // Schedule update for next render cycle
+        setTimeout(() => applyTrendScanner(), 0);
+    }
+
     // Filter by BOTH active tickers and active quadrants
     const filteredData = currentData.filter(d =>
         selectedTickers.includes(d.Ticker) &&
@@ -112,6 +195,8 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         : allTickers;
 
     const toggleTicker = (ticker: string) => {
+        // Manual toggle disables the scanner
+        if (trendDirection !== "off") setTrendDirection("off");
         if (selectedTickers.includes(ticker)) {
             setSelectedTickers(selectedTickers.filter(t => t !== ticker));
         } else {
@@ -128,6 +213,9 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     };
 
     const contentRef = useRef<HTMLDivElement>(null);
+
+    const scannerIsActive = trendDirection !== "off";
+    const matchCount = trendMatchingTickers?.length ?? 0;
 
     return (
         <div ref={contentRef}>
@@ -178,6 +266,95 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                     </div>
                 </div>
 
+                {/* ────────── Trend Scanner ────────── */}
+                <div className="border-t border-[#1e1e2e] pt-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Trend Scanner</h3>
+                        {scannerIsActive && (
+                            <span className="text-[11px] font-bold bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full animate-pulse">
+                                {matchCount} match{matchCount !== 1 ? "es" : ""}
+                            </span>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* Direction Toggle */}
+                        <div className="flex-1">
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">Direction</label>
+                            <div className="flex gap-1">
+                                {([
+                                    { value: "off", label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "rising", label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
+                                    { value: "falling", label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
+                                ] as const).map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => {
+                                            handleDirectionChange(opt.value);
+                                            if (opt.value !== "off") {
+                                                // Compute and apply immediately
+                                                setTimeout(() => applyTrendScanner(), 0);
+                                            }
+                                        }}
+                                        className={`flex-1 text-[12px] font-semibold py-1.5 px-2 rounded border transition-all duration-200 ${
+                                            trendDirection === opt.value ? opt.activeColor : opt.color
+                                        } hover:brightness-110`}
+                                    >
+                                        <span className="mr-1">{opt.icon}</span>{opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Metric Toggle */}
+                        <div className={`flex-1 transition-opacity duration-200 ${scannerIsActive ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">Metric</label>
+                            <div className="flex gap-1">
+                                {([
+                                    { value: "momentum", label: "Momentum", desc: "RS-Momentum (ROC)" },
+                                    { value: "ratio", label: "RS Ratio", desc: "RS-Ratio (Trend)" },
+                                ] as const).map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => {
+                                            setTrendMetric(opt.value);
+                                            setTimeout(() => applyTrendScanner(), 0);
+                                        }}
+                                        title={opt.desc}
+                                        className={`flex-1 text-[12px] font-semibold py-1.5 px-2 rounded border transition-all duration-200 ${
+                                            trendMetric === opt.value
+                                                ? "text-violet-300 bg-violet-500/20 border-violet-500/40"
+                                                : "text-slate-500 border-slate-700 bg-[#1a1a2e]"
+                                        } hover:brightness-110`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Lookback Slider */}
+                        <div className={`flex-1 transition-opacity duration-200 ${scannerIsActive ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold flex justify-between">
+                                <span>Lookback Periods</span>
+                                <span className="text-violet-400">{trendLookback}</span>
+                            </label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="6"
+                                value={trendLookback}
+                                onChange={(e) => {
+                                    setTrendLookback(parseInt(e.target.value));
+                                    setTimeout(() => applyTrendScanner(), 0);
+                                }}
+                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-violet-500 mt-1.5"
+                            />
+                        </div>
+                    </div>
+                </div>
+                {/* ────────── End Trend Scanner ────────── */}
+
                 <div className="border-t border-[#1e1e2e] pt-4">
                     <div className="mb-4 flex flex-wrap gap-4">
                         {allQuadrants.map(q => {
@@ -214,21 +391,21 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                         </label>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => setSelectedTickers(allTickers)}
+                                onClick={() => { setTrendDirection("off"); setSelectedTickers(allTickers); }}
                                 className="text-[10px] uppercase font-bold text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 Select All
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => setSelectedTickers([])}
+                                onClick={() => { setTrendDirection("off"); setSelectedTickers([]); }}
                                 className="text-[10px] uppercase font-bold text-red-400 hover:text-red-300 transition-colors"
                             >
                                 Clear
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => setSelectedTickers(defaults)}
+                                onClick={() => { setTrendDirection("off"); setSelectedTickers(defaults); }}
                                 className="text-[10px] uppercase font-bold text-slate-400 hover:text-slate-300 transition-colors"
                             >
                                 Reset

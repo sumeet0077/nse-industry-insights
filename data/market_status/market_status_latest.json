@@ -1268,6 +1268,17 @@
         ],
         "new_stock": []
     },
+    "Carbon and Graphite": {
+        "above": [
+            "GRAPHITE.NS",
+            "HEG.NS"
+        ],
+        "below": [
+            "PCBL.NS",
+            "GOACARBON.NS"
+        ],
+        "new_stock": []
+    },
     "Cement": {
         "above": [],
         "below": [

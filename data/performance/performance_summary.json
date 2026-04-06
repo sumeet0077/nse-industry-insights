@@ -299,6 +299,19 @@
     "RS (50D)":0.04
   },
   {
+    "Theme\/Index":"Carbon and Graphite",
+    "1 Day":0.28,
+    "1 Week":5.89,
+    "1 Month":-3.8,
+    "3 Months":-14.47,
+    "6 Months":-13.04,
+    "1 Year":-7.6,
+    "3 Years":112.38,
+    "5 Years":61.92,
+    "RS (20D)":-0.21,
+    "RS (50D)":2.39
+  },
+  {
     "Theme\/Index":"Cement",
     "1 Day":2.93,
     "1 Week":4.76,

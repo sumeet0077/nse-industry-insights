@@ -98,6 +98,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_shipbuilding", title: "Shipbuilding", description: "Commercial and Defence Shipbuilding", dataFile: "breadth_theme_shipbuilding", category: "industries" },
     { id: "breadth_theme_marine_and_offshore_services", title: "Marine & Offshore Services", description: "Offshore Support, Diving & Port Services", dataFile: "breadth_theme_marine_and_offshore_services", category: "industries" },
     { id: "breadth_theme_power_generation", title: "Power Generation", description: "Thermal, Hydro & Integrated Power Utilities", dataFile: "breadth_theme_power_generation", category: "industries" },
+    { id: "breadth_theme_carbon_and_graphite", title: "Carbon and Graphite", description: "Carbon and Graphite Manufacturers", dataFile: "breadth_theme_carbon_and_graphite", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];

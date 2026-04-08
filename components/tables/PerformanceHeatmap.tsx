@@ -59,7 +59,7 @@ function returnFormatter(params: ValueFormatterParams): string {
     return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
 }
 
-const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)", "RS (50D)"];
+const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (5D)", "RS (10D)", "RS (20D)", "RS (50D)"];
 
 export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
@@ -155,12 +155,12 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                 headerName: col,
                 field: col,
                 hide: !visibleColumns[col],
-                width: (col === "RS (20D)" || col === "RS (50D)") ? 130 : 110,
+                width: (col.startsWith("RS")) ? 130 : 110,
                 valueFormatter: returnFormatter,
                 cellStyle: getHeatmapStyle,
                 sortable: true,
                 filter: true,
-                headerTooltip: col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : (col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined)
+                headerTooltip: col === "RS (5D)" ? "Relative Strength against Nifty 50 over 5 Trading Days" : col === "RS (10D)" ? "Relative Strength against Nifty 50 over 10 Trading Days" : col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined
             });
         }
         return cols;

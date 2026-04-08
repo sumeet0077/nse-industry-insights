@@ -18,7 +18,7 @@ interface ConstituentTableProps {
     showCagr?: boolean;
 }
 
-const returnCols = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (20D)", "RS (50D)"];
+const returnCols = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (5D)", "RS (10D)", "RS (20D)", "RS (50D)"];
 
 const fieldMap: Record<string, string> = {
     "1 Day": "1D",
@@ -29,6 +29,8 @@ const fieldMap: Record<string, string> = {
     "1 Year": "1Y",
     "3 Years": "3Y",
     "5 Years": "5Y",
+    "RS (5D)": "RS (5D)",
+    "RS (10D)": "RS (10D)",
     "RS (20D)": "RS (20D)",
     "RS (50D)": "RS (50D)"
 };
@@ -131,7 +133,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 headerName: col,
                 field: fieldMap[col],
                 hide: !visibleColumns[col],
-                width: col === "RS (20D)" ? 120 : 110,
+                width: col.startsWith("RS") ? 120 : 110,
                 valueFormatter: returnFormatter,
                 cellClass: returnCellClass,
                 sortable: true,

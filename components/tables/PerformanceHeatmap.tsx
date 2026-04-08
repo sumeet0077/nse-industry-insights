@@ -4,17 +4,17 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import type { PerformanceRow } from "@/types";
+import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface PerformanceHeatmapProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any[];
+    data: PerformanceRow[];
     globalLatestDate?: string | null;
+    marketStatus?: MarketStatus;
 }
 
 const myTheme = themeQuartz.withParams({
@@ -61,12 +61,13 @@ function returnFormatter(params: ValueFormatterParams): string {
 
 const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (5D)", "RS (10D)", "RS (20D)", "RS (50D)"];
 
-export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatmapProps) {
+export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
     const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
+    const [isCopied, setIsCopied] = useState(false);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
@@ -94,6 +95,73 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
         const selected = event.api.getSelectedRows() as any[];
         setSelectedThemes(new Set(selected.map(r => r["Theme/Index"])));
     }, []);
+
+    const handleCopyWatchlist = useCallback(() => {
+        if (!marketStatus) return;
+
+        // Use selected themes if any, otherwise use all in displayData
+        const themesToProcess = selectedThemes.size > 0 
+            ? Array.from(selectedThemes) 
+            : data.map(r => r["Theme/Index"]);
+
+        if (themesToProcess.length === 0) return;
+
+        const allTickers = new Set<string>();
+        
+        // Match theme titles to marketStatus keys (similar to lib/data.ts logic)
+        const ALIASES: Record<string, string> = {
+            "amc": "asset management",
+            "renewable energy": "renewable energy generation",
+            "nifty oil & gas": "nifty oil and gas",
+            "jewellery & gold": "jewellery (gold)",
+            "tyres & rubber": "tyres & rubber products",
+            "auto ancillary": "auto ancillary",
+            "white goods": "white goods & durables",
+            "wires & cables": "wires and cables",
+        };
+
+        themesToProcess.forEach(title => {
+            let statusKey = "";
+            const lowerTitle = title.toLowerCase();
+            const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+
+            // Direct match or insensitive
+            for (const key of Object.keys(marketStatus)) {
+                if (key.toLowerCase() === resolvedTitle) {
+                    statusKey = key;
+                    break;
+                }
+            }
+
+            // Fallback: NIFTY/Uppercase
+            if (!statusKey) {
+                const upperKey = title.toUpperCase();
+                if (marketStatus[upperKey]) statusKey = upperKey;
+                else if (title.startsWith("Nifty ")) {
+                    const niftyUpper = "NIFTY " + title.slice(6).toUpperCase();
+                    if (marketStatus[niftyUpper]) statusKey = niftyUpper;
+                }
+            }
+
+            if (statusKey && marketStatus[statusKey]) {
+                const s = marketStatus[statusKey];
+                [...(s.above || []), ...(s.below || []), ...(s.new_stock || [])].forEach(t => allTickers.add(t));
+            }
+        });
+
+        if (allTickers.size === 0) return;
+
+        const formatted = Array.from(allTickers).map(t => {
+            const clean = t.replace(".NS", "").replace(".BO", "");
+            const prefix = t.includes(".BO") ? "BSE" : "NSE";
+            return `${prefix}:${clean}`;
+        }).join(", ");
+
+        navigator.clipboard.writeText(formatted).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    }, [selectedThemes, data, marketStatus]);
 
     const displayData = useMemo(() => {
         if (!showCagr) return data;
@@ -318,6 +386,19 @@ export function PerformanceHeatmap({ data, globalLatestDate }: PerformanceHeatma
                     )}
 
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleCopyWatchlist}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
+                                isCopied 
+                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
+                                : "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50"
+                            }`}
+                            title={selectedThemes.size > 0 ? `Copy ${selectedThemes.size} themes to Watchlist` : "Copy all visible to Watchlist"}
+                        >
+                            {isCopied ? <Check size={14} /> : <Copy size={14} />}
+                            {isCopied ? "Watchlist Copied!" : "Copy TradingView Watchlist"}
+                        </button>
+
                         <CaptureScreenshot 
                             targetRef={tableRef}
                             filename="Performance_Heatmap"

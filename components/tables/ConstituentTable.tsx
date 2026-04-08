@@ -3,7 +3,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl } from "@/lib/utils";
-import { Columns, ChevronDown, Search, X, CheckSquare } from "lucide-react";
+import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -69,6 +69,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedTickers, setSelectedTickers] = useState<Set<string>>(new Set());
+    const [isCopied, setIsCopied] = useState(false);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
@@ -94,6 +95,26 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         const selected = event.api.getSelectedRows() as ConstituentRow[];
         setSelectedTickers(new Set(selected.map(r => r.ticker)));
     }, []);
+
+    const handleCopyWatchlist = useCallback(() => {
+        // Use selected tickers if any, otherwise use all data tickers
+        const tickersToCopy = selectedTickers.size > 0 
+            ? Array.from(selectedTickers) 
+            : data.map(r => r.ticker);
+
+        if (tickersToCopy.length === 0) return;
+
+        const formatted = tickersToCopy.map(t => {
+            const clean = t.replace(".NS", "").replace(".BO", "");
+            const prefix = t.includes(".BO") ? "BSE" : "NSE";
+            return `${prefix}:${clean}`;
+        }).join(", ");
+
+        navigator.clipboard.writeText(formatted).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000);
+        });
+    }, [selectedTickers, data]);
 
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
@@ -269,6 +290,19 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     )}
 
                     <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleCopyWatchlist}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
+                                isCopied 
+                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
+                                : "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50"
+                            }`}
+                            title={selectedTickers.size > 0 ? `Copy ${selectedTickers.size} selected to Watchlist` : "Copy all in view to Watchlist"}
+                        >
+                            {isCopied ? <Check size={14} /> : <Copy size={14} />}
+                            {isCopied ? "Watchlist Copied!" : "Copy TradingView Watchlist"}
+                        </button>
+
                         <CaptureScreenshot 
                             targetRef={tableRef}
                             filename="Constituent_Table"

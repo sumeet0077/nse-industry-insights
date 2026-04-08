@@ -54,14 +54,6 @@ export function IndexDetailPage({
         })
         : constituentData;
 
-    // Open All in TradingView handler
-    const handleOpenAll = () => {
-        if (!constituentData) return;
-        constituentData.forEach((row) => {
-            const url = makeTradingViewUrl(row.ticker);
-            window.open(url, "_blank");
-        });
-    };
 
     // Component-level Data Freshness Check
     const globalLatestStr = globalLatestDate;
@@ -257,17 +249,6 @@ export function IndexDetailPage({
 
             {activeTab === "constituents" && displayConstituents && (
                 <div>
-                    {/* Open All in TradingView button for industries */}
-                    {isIndustry && displayConstituents.length > 0 && (
-                        <div className="flex justify-end mb-3">
-                            <button
-                                onClick={handleOpenAll}
-                                className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded transition-colors"
-                            >
-                                ↗️ Open All in TradingView
-                            </button>
-                        </div>
-                    )}
                     <ConstituentTable data={displayConstituents} showCagr={showCagr} />
                 </div>
             )}

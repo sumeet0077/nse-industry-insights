@@ -3,7 +3,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl } from "@/lib/utils";
-import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check } from "lucide-react";
+import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -113,6 +113,22 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         navigator.clipboard.writeText(formatted).then(() => {
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
+        });
+    }, [selectedTickers, data]);
+
+    const handleOpenTabs = useCallback(() => {
+        const tickersToOpen = selectedTickers.size > 0 
+            ? Array.from(selectedTickers) 
+            : data.map(r => r.ticker);
+
+        if (tickersToOpen.length === 0) return;
+
+        // Open tabs with a staggered delay to help browser process popups
+        tickersToOpen.forEach((ticker, index) => {
+            setTimeout(() => {
+                const url = makeTradingViewUrl(ticker);
+                window.open(url, "_blank");
+            }, index * 150); // 150ms stagger
         });
     }, [selectedTickers, data]);
 
@@ -290,6 +306,17 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     )}
 
                     <div className="flex items-center gap-2">
+                        {/* Open Tabs Button */}
+                        <button
+                            onClick={handleOpenTabs}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-200"
+                            title={selectedTickers.size > 0 ? `Open ${selectedTickers.size} tabs in TradingView` : "Open all visible in TradingView tabs"}
+                        >
+                            <ExternalLink size={14} />
+                            Open in TradingView
+                        </button>
+
+                        {/* Watchlist Copy Button */}
                         <button
                             onClick={handleCopyWatchlist}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
@@ -300,7 +327,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                             title={selectedTickers.size > 0 ? `Copy ${selectedTickers.size} selected to Watchlist` : "Copy all in view to Watchlist"}
                         >
                             {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                            {isCopied ? "Watchlist Copied!" : "Copy TradingView Watchlist"}
+                            {isCopied ? "Watchlist Copied!" : "Copy Watchlist"}
                         </button>
 
                         <CaptureScreenshot 

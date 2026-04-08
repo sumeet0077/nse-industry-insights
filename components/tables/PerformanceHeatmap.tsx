@@ -6,7 +6,8 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check } from "lucide-react";
+import { makeTradingViewUrl } from "@/lib/utils";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -160,6 +161,66 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         navigator.clipboard.writeText(formatted).then(() => {
             setIsCopied(true);
             setTimeout(() => setIsCopied(false), 2000);
+        });
+    }, [selectedThemes, data, marketStatus]);
+
+    const handleOpenTabs = useCallback(() => {
+        if (!marketStatus) return;
+
+        const themesToProcess = selectedThemes.size > 0 
+            ? Array.from(selectedThemes) 
+            : data.map(r => r["Theme/Index"]);
+
+        if (themesToProcess.length === 0) return;
+
+        const allTickers = new Set<string>();
+        
+        const ALIASES: Record<string, string> = {
+            "amc": "asset management",
+            "renewable energy": "renewable energy generation",
+            "nifty oil & gas": "nifty oil and gas",
+            "jewellery & gold": "jewellery (gold)",
+            "tyres & rubber": "tyres & rubber products",
+            "auto ancillary": "auto ancillary",
+            "white goods": "white goods & durables",
+            "wires & cables": "wires and cables",
+        };
+
+        themesToProcess.forEach(title => {
+            let statusKey = "";
+            const lowerTitle = title.toLowerCase();
+            const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+
+            for (const key of Object.keys(marketStatus)) {
+                if (key.toLowerCase() === resolvedTitle) {
+                    statusKey = key;
+                    break;
+                }
+            }
+
+            if (!statusKey) {
+                const upperKey = title.toUpperCase();
+                if (marketStatus[upperKey]) statusKey = upperKey;
+                else if (title.startsWith("Nifty ")) {
+                    const niftyUpper = "NIFTY " + title.slice(6).toUpperCase();
+                    if (marketStatus[niftyUpper]) statusKey = niftyUpper;
+                }
+            }
+
+            if (statusKey && marketStatus[statusKey]) {
+                const s = marketStatus[statusKey];
+                [...(s.above || []), ...(s.below || []), ...(s.new_stock || [])].forEach(t => allTickers.add(t));
+            }
+        });
+
+        const tickersToOpen = Array.from(allTickers);
+        if (tickersToOpen.length === 0) return;
+
+        tickersToOpen.forEach((ticker, index) => {
+            setTimeout(() => {
+                const url = makeTradingViewUrl(ticker);
+                window.open(url, "_blank");
+            }, index * 150);
         });
     }, [selectedThemes, data, marketStatus]);
 
@@ -386,6 +447,16 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     )}
 
                     <div className="flex items-center gap-2">
+                        {/* Open Tabs Button */}
+                        <button
+                            onClick={handleOpenTabs}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 transition-all duration-200"
+                            title={selectedThemes.size > 0 ? `Open ${selectedThemes.size} themes in TradingView` : "Open all visible in TradingView tabs"}
+                        >
+                            <ExternalLink size={14} />
+                            Open in TradingView
+                        </button>
+
                         <button
                             onClick={handleCopyWatchlist}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
@@ -396,7 +467,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                             title={selectedThemes.size > 0 ? `Copy ${selectedThemes.size} themes to Watchlist` : "Copy all visible to Watchlist"}
                         >
                             {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                            {isCopied ? "Watchlist Copied!" : "Copy TradingView Watchlist"}
+                            {isCopied ? "Watchlist Copied!" : "Copy Watchlist"}
                         </button>
 
                         <CaptureScreenshot 

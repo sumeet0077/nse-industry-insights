@@ -30,6 +30,8 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     # First, find the Nifty 50 baseline for RS (20D) and RS (50D) calculation
     baseline_file = source_dir / "market_breadth_nifty50.csv"
     nifty_latest_price = 0
+    nifty_5d_price = 0
+    nifty_10d_price = 0
     nifty_20d_price = 0
     nifty_50d_price = 0
     
@@ -40,6 +42,10 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
                 b_df['Date'] = pd.to_datetime(b_df['Date'])
                 if len(b_df) >= 1:
                     nifty_latest_price = b_df.iloc[-1]['Index_Close']
+                if len(b_df) >= 6:
+                    nifty_5d_price = b_df.iloc[-6]['Index_Close']
+                if len(b_df) >= 11:
+                    nifty_10d_price = b_df.iloc[-11]['Index_Close']
                 if len(b_df) >= 21:
                     nifty_20d_price = b_df.iloc[-21]['Index_Close']
                 if len(b_df) >= 51:
@@ -124,6 +130,28 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
                 else:
                     row[p_name] = None
                     
+            # RS (5D)
+            row["RS (5D)"] = None
+            if current_price > 0 and nifty_latest_price > 0 and nifty_5d_price > 0:
+                if len(df) >= 6:
+                    asset_5d_price = df.iloc[-6]['Index_Close']
+                    if asset_5d_price > 0:
+                        current_ratio = current_price / nifty_latest_price
+                        past_ratio = asset_5d_price / nifty_5d_price
+                        rs_val = ((current_ratio - past_ratio) / past_ratio) * 100
+                        row["RS (5D)"] = None if pd.isna(rs_val) else round(rs_val, 2)
+
+            # RS (10D)
+            row["RS (10D)"] = None
+            if current_price > 0 and nifty_latest_price > 0 and nifty_10d_price > 0:
+                if len(df) >= 11:
+                    asset_10d_price = df.iloc[-11]['Index_Close']
+                    if asset_10d_price > 0:
+                        current_ratio = current_price / nifty_latest_price
+                        past_ratio = asset_10d_price / nifty_10d_price
+                        rs_val = ((current_ratio - past_ratio) / past_ratio) * 100
+                        row["RS (10D)"] = None if pd.isna(rs_val) else round(rs_val, 2)
+
             # RS (20D)
             row["RS (20D)"] = None
             if current_price > 0 and nifty_latest_price > 0 and nifty_20d_price > 0:

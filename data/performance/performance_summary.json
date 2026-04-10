@@ -765,6 +765,21 @@
     "RS (50D)":-3.72
   },
   {
+    "Theme\/Index":"Oil & Gas Midstream",
+    "1 Day":2.42,
+    "1 Week":7.61,
+    "1 Month":-0.15,
+    "3 Months":-4.88,
+    "6 Months":-12.93,
+    "1 Year":-3.88,
+    "3 Years":26.23,
+    "5 Years":78.85,
+    "RS (5D)":1.31,
+    "RS (10D)":3.42,
+    "RS (20D)":3.34,
+    "RS (50D)":1.99
+  },
+  {
     "Theme\/Index":"Oil & Gas Upstream",
     "1 Day":0.3,
     "1 Week":-0.63,

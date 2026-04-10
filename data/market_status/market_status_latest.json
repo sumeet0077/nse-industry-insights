@@ -1671,13 +1671,27 @@
         ],
         "new_stock": []
     },
+    "Oil & Gas Midstream": {
+        "above": [
+            "DEEPINDS.NS"
+        ],
+        "below": [
+            "GAIL.NS",
+            "PETRONET.NS",
+            "GSPL.NS",
+            "IGL.NS",
+            "MGL.NS",
+            "GUJGASLTD.NS",
+            "ATGL.NS"
+        ],
+        "new_stock": []
+    },
     "Oil & Gas Upstream": {
         "above": [
             "ONGC.NS",
             "OIL.NS"
         ],
         "below": [
-            "GAIL.NS",
             "RELIANCE.NS"
         ],
         "new_stock": []

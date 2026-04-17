@@ -260,7 +260,12 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             min="1"
                             max="12"
                             value={tailLength}
-                            onChange={(e) => setTailLength(parseInt(e.target.value))}
+                            onChange={(e) => {
+                                const newTail = parseInt(e.target.value);
+                                setTailLength(newTail);
+                                // Clamp lookback so it never exceeds tail length
+                                if (trendLookback > newTail) setTrendLookback(newTail);
+                            }}
                             className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 mt-2"
                         />
                     </div>
@@ -337,12 +342,12 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                         <div className={`flex-1 transition-opacity duration-200 ${scannerIsActive ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
                             <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold flex justify-between">
                                 <span>Lookback Periods</span>
-                                <span className="text-violet-400">{trendLookback}</span>
+                                <span className="text-violet-400">{trendLookback} <span className="text-slate-600">(max {Math.min(tailLength, 10)})</span></span>
                             </label>
                             <input
                                 type="range"
                                 min="1"
-                                max="15"
+                                max={Math.min(tailLength, 10)}
                                 value={trendLookback}
                                 onChange={(e) => {
                                     setTrendLookback(parseInt(e.target.value));

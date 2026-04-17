@@ -33,7 +33,7 @@ type TrendMetric = "momentum" | "ratio";
 
 export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
     const [timeframe, setTimeframe] = useState<"D" | "W" | "M">("W");
-    const [tailLength, setTailLength] = useState(5);
+    const [tailLength, setTailLength] = useState(12);
     const [searchQuery, setSearchQuery] = useState("");
 
     // Filter defaults (Set to empty as per user preference for manual selection)
@@ -49,7 +49,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useState<TrendDirection>("off");
     const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
-    const [trendLookback, setTrendLookback] = useState(2);
+    const [trendLookback, setTrendLookback] = useState(10);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";

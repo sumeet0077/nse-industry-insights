@@ -49,7 +49,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useState<TrendDirection>("off");
     const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
-    const [trendLookback, setTrendLookback] = useState(2);
+    const [trendLookback, setTrendLookback] = useState(10);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
@@ -342,7 +342,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             <input
                                 type="range"
                                 min="1"
-                                max="6"
+                                max="15"
                                 value={trendLookback}
                                 onChange={(e) => {
                                     setTrendLookback(parseInt(e.target.value));

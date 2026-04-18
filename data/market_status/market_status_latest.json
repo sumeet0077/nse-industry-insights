@@ -1303,9 +1303,8 @@
     "Copper": {
         "above": [
             "HINDCOPPER.NS",
-            "VEDL.NS",
             "HINDALCO.NS",
-            "MCL.NS"
+            "PRECWIRE.NS"
         ],
         "below": [],
         "new_stock": []
@@ -1947,12 +1946,9 @@
         "above": [
             "HINDZINC.NS",
             "VEDL.NS",
-            "THANGAMAYL.NS",
-            "GOLDIAM.NS"
+            "NMDC.NS"
         ],
-        "below": [
-            "KALYANKJIL.NS"
-        ],
+        "below": [],
         "new_stock": []
     },
     "Solar Manufacturing": {

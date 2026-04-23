@@ -1253,7 +1253,8 @@
             "JYOTICNC.NS",
             "PTCIL.NS",
             "HONAUT.NS",
-            "SKFINDIA.NS"
+            "SKFINDIA.NS",
+            "GENUSPOWER.NS"
         ],
         "new_stock": []
     },
@@ -1835,7 +1836,8 @@
         ],
         "below": [
             "KEC.NS",
-            "TRANSRAILL.NS"
+            "TRANSRAILL.NS",
+            "GENUSPOWER.NS"
         ],
         "new_stock": []
     },

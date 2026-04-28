@@ -12,6 +12,7 @@ import type {
     ConstituentPerformanceMap,
     RRGDataPoint,
 } from "@/types";
+import { INDUSTRIES } from "@/lib/config";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -102,3 +103,35 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
 export function getRRGData(timeframe: "D" | "W" | "M"): RRGDataPoint[] {
     return readJson<RRGDataPoint[]>(`rrg/rrg_${timeframe}.json`) ?? [];
 }
+
+export interface ThemeBreadthSummary {
+    id: string;
+    title: string;
+    data: { Date: string; Index_Close: number }[];
+}
+
+/**
+ * Load trimmed Index_Close time series for every industry theme.
+ * Runs at build time (SSG). Returns last `trailingDays` trading days
+ * per theme to keep the client payload small.
+ */
+export function getAllThemeBreadthData(trailingDays: number = 252): ThemeBreadthSummary[] {
+    const results: ThemeBreadthSummary[] = [];
+
+    for (const config of INDUSTRIES) {
+        const raw = getBreadthData(config.dataFile);
+        if (!raw || raw.length === 0) continue;
+
+        const sliced = raw.slice(-trailingDays);
+        const trimmed = sliced
+            .filter((d) => d.Index_Close != null)
+            .map((d) => ({ Date: d.Date, Index_Close: d.Index_Close! }));
+
+        if (trimmed.length > 0) {
+            results.push({ id: config.id, title: config.title, data: trimmed });
+        }
+    }
+
+    return results;
+}
+

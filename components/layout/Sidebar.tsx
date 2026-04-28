@@ -27,6 +27,7 @@ const STATIC_GROUPS = [
         items: [
             { label: "Performance", href: "/performance" },
             { label: "Sector Rotation", href: "/sector-rotation" },
+            { label: "Theme Overview", href: "/theme-overview" },
         ],
     },
     {

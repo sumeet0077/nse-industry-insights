@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ThemeOverviewPage() {
-    const themes = getAllThemeBreadthData(252);
+    const themes = getAllThemeBreadthData();
     const performanceData = getPerformanceSummary();
     const latestDate = getLatestDataDate();
 

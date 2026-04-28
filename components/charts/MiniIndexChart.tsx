@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), {
     ssr: false,
     loading: () => (
-        <div className="w-full h-[120px] bg-slate-900/30 rounded animate-pulse" />
+        <div className="w-full h-[140px] bg-slate-900/30 rounded animate-pulse" />
     ),
 });
 
@@ -48,7 +48,7 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
                         type: "scatter",
                         mode: "lines",
                         line: { color: lineColor, width: 1.5 },
-                        hoverinfo: "skip" as const,
+                        hovertemplate: "<b>%{x|%d %b %Y}</b><br>Index: %{y:.1f}<extra></extra>",
                         fill: "tozeroy",
                         fillcolor: isPositive
                             ? "rgba(34,197,94,0.05)"
@@ -68,18 +68,18 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
                         visible: false,
                         fixedrange: true,
                     },
-                    hovermode: false as const,
+                    hovermode: "x unified" as const,
                     showlegend: false,
                     autosize: true,
-                    height: 80,
+                    height: 100,
                     dragmode: false as const,
                 }}
                 config={{
-                    staticPlot: true,
+                    staticPlot: false,
                     responsive: true,
                     displayModeBar: false,
                 }}
-                style={{ width: "100%", height: "80px" }}
+                style={{ width: "100%", height: "100px" }}
             />
         </div>
     );

@@ -111,19 +111,17 @@ export interface ThemeBreadthSummary {
 }
 
 /**
- * Load trimmed Index_Close time series for every industry theme.
- * Runs at build time (SSG). Returns last `trailingDays` trading days
- * per theme to keep the client payload small.
+ * Load Index_Close time series for every industry theme.
+ * Runs at build time (SSG). Returns full history so client can slice dynamically.
  */
-export function getAllThemeBreadthData(trailingDays: number = 252): ThemeBreadthSummary[] {
+export function getAllThemeBreadthData(): ThemeBreadthSummary[] {
     const results: ThemeBreadthSummary[] = [];
 
     for (const config of INDUSTRIES) {
         const raw = getBreadthData(config.dataFile);
         if (!raw || raw.length === 0) continue;
 
-        const sliced = raw.slice(-trailingDays);
-        const trimmed = sliced
+        const trimmed = raw
             .filter((d) => d.Index_Close != null)
             .map((d) => ({ Date: d.Date, Index_Close: d.Index_Close! }));
 

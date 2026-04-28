@@ -8,12 +8,16 @@ import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
 import { ArrowUpDown, Calendar } from "lucide-react";
 
-type TimeRange = "3M" | "6M" | "1Y" | "ALL";
+type TimeRange = "1W" | "1M" | "3M" | "6M" | "1Y" | "3Y" | "5Y" | "ALL";
 
 const TRADING_DAYS: Record<TimeRange, number> = {
+    "1W": 5,
+    "1M": 21,
     "3M": 63,
     "6M": 126,
     "1Y": 252,
+    "3Y": 756,
+    "5Y": 1260,
     ALL: 99999,
 };
 
@@ -89,13 +93,13 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
 
                 <div className="flex items-center gap-2">
                     {/* Time Range Selector */}
-                    <div className="flex items-center gap-0.5 bg-[#111118] border border-[#1e1e2e] rounded-lg p-0.5">
-                        <Calendar className="h-3 w-3 text-slate-500 ml-1.5 mr-0.5" />
-                        {(["3M", "6M", "1Y", "ALL"] as TimeRange[]).map((range) => (
+                    <div className="flex items-center gap-0.5 bg-[#111118] border border-[#1e1e2e] rounded-lg p-0.5 overflow-x-auto max-w-[280px] sm:max-w-none no-scrollbar">
+                        <Calendar className="h-3 w-3 text-slate-500 ml-1.5 mr-0.5 shrink-0" />
+                        {(["1W", "1M", "3M", "6M", "1Y", "3Y", "5Y", "ALL"] as TimeRange[]).map((range) => (
                             <button
                                 key={range}
                                 onClick={() => setTimeRange(range)}
-                                className={`px-2 py-1 text-[10px] font-semibold rounded-md transition-colors ${
+                                className={`px-2 py-1 text-[10px] font-semibold rounded-md transition-colors shrink-0 ${
                                     timeRange === range
                                         ? "bg-blue-500/20 text-blue-400"
                                         : "text-slate-500 hover:text-slate-300"
@@ -120,7 +124,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
             </div>
 
             {/* Chart Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {processedThemes.map((theme) => (
                     <Link
                         key={theme.id}

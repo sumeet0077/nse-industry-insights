@@ -25,6 +25,20 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
     const badgeBg = isPositive ? "bg-emerald-500/10" : "bg-red-500/10";
     const sign = isPositive ? "+" : "";
 
+    // Normalize data to Base 100 (like a Mutual Fund NAV)
+    const baseValue = data[0].Index_Close;
+    const normalizedData = data.map((d) => ({
+        Date: d.Date,
+        Value: baseValue > 0 ? (d.Index_Close / baseValue) * 100 : 100,
+        Original: d.Index_Close,
+    }));
+
+    // Calculate tight Y-axis range to prevent flat-line scaling
+    const yValues = normalizedData.map((d) => d.Value);
+    const yMin = Math.min(...yValues);
+    const yMax = Math.max(...yValues);
+    const yPadding = (yMax - yMin) * 0.1 || 1; // 10% padding
+
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 hover:border-[#2a2a3e] transition-colors group">
             {/* Header */}
@@ -43,12 +57,13 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
             <Plot
                 data={[
                     {
-                        x: data.map((d) => d.Date),
-                        y: data.map((d) => d.Index_Close),
+                        x: normalizedData.map((d) => d.Date),
+                        y: normalizedData.map((d) => d.Value),
+                        customdata: normalizedData.map((d) => d.Original),
                         type: "scatter",
                         mode: "lines",
                         line: { color: lineColor, width: 1.5 },
-                        hovertemplate: "<b>%{x|%d %b %Y}</b><br>Index: %{y:.1f}<extra></extra>",
+                        hovertemplate: "<b>%{x|%d %b %Y}</b><br>Base 100: <b>%{y:.1f}</b><br>Index: %{customdata:.1f}<extra></extra>",
                         fill: "tozeroy",
                         fillcolor: isPositive
                             ? "rgba(34,197,94,0.05)"
@@ -67,6 +82,7 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
                     yaxis: {
                         visible: false,
                         fixedrange: true,
+                        range: [yMin - yPadding, yMax + yPadding],
                     },
                     hovermode: "x unified" as const,
                     showlegend: false,

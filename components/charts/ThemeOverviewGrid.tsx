@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MiniIndexChart } from "@/components/charts/MiniIndexChart";
 import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
-import { ArrowUpDown, Calendar } from "lucide-react";
+import { ArrowUpDown, Calendar, Search, X, Check } from "lucide-react";
 
 type TimeRange = "1W" | "1M" | "3M" | "6M" | "1Y" | "3Y" | "5Y" | "ALL";
 
@@ -21,14 +21,14 @@ const PERFORMANCE_MAPPING: Record<TimeRange, keyof PerformanceRow | null> = {
     ALL: null,
 };
 
-const TRADING_DAYS: Record<TimeRange, number> = {
-    "1W": 5,
-    "1M": 21,
-    "3M": 63,
-    "6M": 126,
-    "1Y": 252,
-    "3Y": 756,
-    "5Y": 1260,
+const CALENDAR_DAYS: Record<TimeRange, number> = {
+    "1W": 7,
+    "1M": 30,
+    "3M": 90,
+    "6M": 180,
+    "1Y": 365,
+    "3Y": 365 * 3,
+    "5Y": 365 * 5,
     ALL: 99999,
 };
 
@@ -40,6 +40,9 @@ interface ThemeOverviewGridProps {
 export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGridProps) {
     const [sortBy, setSortBy] = useState<"alpha" | "perf">("alpha");
     const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     // Build a lookup from performance summary: title → PerformanceRow
     const perfLookup = useMemo(() => {
@@ -64,12 +67,33 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
 
     // Process themes: trim to time range, compute change, sort
     const processedThemes = useMemo(() => {
-        const maxDays = TRADING_DAYS[timeRange];
+        const maxDays = CALENDAR_DAYS[timeRange];
 
-        return themes
+        let filtered = themes;
+
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase();
+            filtered = filtered.filter((t) => t.title.toLowerCase().includes(q));
+        }
+
+        if (selectedThemes.size > 0) {
+            filtered = filtered.filter((t) => selectedThemes.has(t.id));
+        }
+
+        return filtered
             .map((theme) => {
-                // Slice -(maxDays + 1) to ensure we have the base day to calculate the return from.
-                const trimmed = theme.data.slice(-(maxDays + 1));
+                let trimmed = theme.data;
+                if (timeRange !== "ALL" && theme.data.length > 0) {
+                    const latestDateStr = theme.data[theme.data.length - 1].Date;
+                    const latestDate = new Date(latestDateStr);
+                    latestDate.setDate(latestDate.getDate() - maxDays);
+                    const targetDateStr = latestDate.toISOString().split("T")[0];
+                    
+                    const startIndex = theme.data.findIndex((d) => d.Date >= targetDateStr);
+                    if (startIndex !== -1) {
+                        trimmed = theme.data.slice(startIndex);
+                    }
+                }
                 
                 // Fallback to client-side compute if backend data is missing or if ALL is selected
                 let change = computeChange(trimmed);
@@ -90,7 +114,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                 }
                 return a.title.localeCompare(b.title);
             });
-    }, [themes, timeRange, sortBy]);
+    }, [themes, timeRange, sortBy, searchQuery, selectedThemes, perfLookup]);
 
     const totalThemes = processedThemes.length;
     const gainers = processedThemes.filter((t) => t.change >= 0).length;
@@ -98,6 +122,97 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
 
     return (
         <div>
+            {/* Search and Filter Bar */}
+            <div className="relative mb-6 z-10">
+                <div className="flex flex-col gap-2">
+                    <div className="relative flex items-center">
+                        <Search className="absolute left-3 h-4 w-4 text-slate-500" />
+                        <input
+                            type="text"
+                            placeholder="Search themes or select from dropdown..."
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setIsDropdownOpen(true);
+                            }}
+                            onFocus={() => setIsDropdownOpen(true)}
+                            className="w-full bg-[#111118] border border-[#1e1e2e] rounded-lg pl-9 pr-10 py-2.5 text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-colors"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery("")}
+                                className="absolute right-3 p-1 rounded-md hover:bg-[#1e1e2e] text-slate-500 hover:text-slate-300 transition-colors"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        )}
+                    </div>
+                    
+                    {/* Selected Pills */}
+                    {selectedThemes.size > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-1">
+                            {Array.from(selectedThemes).map(id => {
+                                const theme = themes.find(t => t.id === id);
+                                if (!theme) return null;
+                                return (
+                                    <div key={id} className="flex items-center gap-1.5 px-2.5 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-xs font-medium">
+                                        {theme.title}
+                                        <button 
+                                            onClick={() => {
+                                                const newSet = new Set(selectedThemes);
+                                                newSet.delete(id);
+                                                setSelectedThemes(newSet);
+                                            }}
+                                            className="hover:text-white"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                            <button 
+                                onClick={() => setSelectedThemes(new Set())}
+                                className="px-2.5 py-1 text-xs text-slate-500 hover:text-slate-300 underline"
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                    <>
+                        <div className="fixed inset-0" onClick={() => setIsDropdownOpen(false)} />
+                        <div className="absolute top-full left-0 mt-2 w-full max-h-[300px] overflow-y-auto bg-[#111118] border border-[#1e1e2e] rounded-lg shadow-xl py-2 scrollbar-thin scrollbar-thumb-[#2a2a3e] scrollbar-track-transparent">
+                            {themes
+                                .filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()))
+                                .map(theme => {
+                                    const isSelected = selectedThemes.has(theme.id);
+                                    return (
+                                        <button
+                                            key={theme.id}
+                                            onClick={() => {
+                                                const newSet = new Set(selectedThemes);
+                                                if (isSelected) newSet.delete(theme.id);
+                                                else newSet.add(theme.id);
+                                                setSelectedThemes(newSet);
+                                            }}
+                                            className="w-full flex items-center justify-between px-4 py-2 hover:bg-[#1e1e2e] transition-colors text-left"
+                                        >
+                                            <span className={`text-sm ${isSelected ? 'text-blue-400 font-medium' : 'text-slate-300'}`}>
+                                                {theme.title}
+                                            </span>
+                                            {isSelected && <Check className="h-4 w-4 text-blue-400" />}
+                                        </button>
+                                    );
+                                })
+                            }
+                        </div>
+                    </>
+                )}
+            </div>
+
             {/* Controls Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
                 {/* Summary badges */}

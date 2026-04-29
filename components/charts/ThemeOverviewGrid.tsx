@@ -129,7 +129,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                         <Search className="absolute left-3 h-4 w-4 text-slate-500" />
                         <input
                             type="text"
-                            placeholder="Search themes or select from dropdown..."
+                            placeholder="Search sectors & themes..."
                             value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
@@ -218,7 +218,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                 {/* Summary badges */}
                 <div className="flex items-center gap-2 text-xs">
                     <span className="text-slate-500">
-                        {totalThemes} themes
+                        {totalThemes} sectors & themes
                     </span>
                     <span className="text-emerald-500 font-medium">
                         ▲ {gainers} up

@@ -6,7 +6,7 @@ import { ThemeOverviewGrid } from "@/components/charts/ThemeOverviewGrid";
 export const metadata: Metadata = {
     title: "Theme Overview | NSE Industry Insights",
     description:
-        "At-a-glance view of all custom industry themes — see which sectors are trending and which are lagging.",
+        "At-a-glance view of all sectors and custom industry themes — see what's trending and what's lagging.",
 };
 
 export default async function ThemeOverviewPage() {
@@ -35,7 +35,7 @@ export default async function ThemeOverviewPage() {
                 )}
             </div>
             <p className="text-sm text-slate-400 mb-6">
-                Equal-Weighted Index charts for all custom industry themes — spot trends at a glance
+                Equal-Weighted Index charts for all sectors and custom industry themes — spot trends at a glance
             </p>
 
             <ThemeOverviewGrid themes={themes} performanceData={performanceData} />

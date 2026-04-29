@@ -10,6 +10,17 @@ import { ArrowUpDown, Calendar } from "lucide-react";
 
 type TimeRange = "1W" | "1M" | "3M" | "6M" | "1Y" | "3Y" | "5Y" | "ALL";
 
+const PERFORMANCE_MAPPING: Record<TimeRange, keyof PerformanceRow | null> = {
+    "1W": "1 Week",
+    "1M": "1 Month",
+    "3M": "3 Months",
+    "6M": "6 Months",
+    "1Y": "1 Year",
+    "3Y": "3 Years",
+    "5Y": "5 Years",
+    ALL: null,
+};
+
 const TRADING_DAYS: Record<TimeRange, number> = {
     "1W": 5,
     "1M": 21,
@@ -30,14 +41,13 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
     const [sortBy, setSortBy] = useState<"alpha" | "perf">("alpha");
     const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
 
-    // Build a lookup from performance summary: title → 1 Month return
+    // Build a lookup from performance summary: title → PerformanceRow
     const perfLookup = useMemo(() => {
-        const map: Record<string, number> = {};
+        const map: Record<string, PerformanceRow> = {};
         for (const row of performanceData) {
             const key = row["Theme/Index"];
-            const val = row["1 Month"];
-            if (key && val != null) {
-                map[key] = val;
+            if (key) {
+                map[key] = row;
             }
         }
         return map;
@@ -58,8 +68,20 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
 
         return themes
             .map((theme) => {
-                const trimmed = theme.data.slice(-maxDays);
-                const change = computeChange(trimmed);
+                // Slice -(maxDays + 1) to ensure we have the base day to calculate the return from.
+                const trimmed = theme.data.slice(-(maxDays + 1));
+                
+                // Fallback to client-side compute if backend data is missing or if ALL is selected
+                let change = computeChange(trimmed);
+                
+                const colName = PERFORMANCE_MAPPING[timeRange];
+                if (colName) {
+                    const backendVal = perfLookup[theme.title]?.[colName];
+                    if (backendVal != null) {
+                        change = backendVal as number;
+                    }
+                }
+
                 return { ...theme, trimmedData: trimmed, change };
             })
             .sort((a, b) => {

@@ -1977,7 +1977,8 @@
         "below": [
             "SRF.NS",
             "PIDILITIND.NS",
-            "PIIND.NS"
+            "PIIND.NS",
+            "DIAMINESQ.NS"
         ],
         "new_stock": []
     },
@@ -2085,7 +2086,8 @@
             "VGUARD.NS",
             "SYMPHONY.NS",
             "EUREKAFORB.NS",
-            "TTKPRESTIG.NS"
+            "TTKPRESTIG.NS",
+            "BPL.NS"
         ],
         "new_stock": []
     },
@@ -2098,9 +2100,7 @@
             "RRKABEL.NS"
         ],
         "below": [
-            "VGUARD.NS",
-            "BPL.NS",
-            "DIAMINESQ.NS"
+            "VGUARD.NS"
         ],
         "new_stock": []
     }

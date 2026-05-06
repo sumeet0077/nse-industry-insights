@@ -77,7 +77,7 @@ export function MiniIndexChart({ title, data, changePercent, href }: MiniIndexCh
                         type: "scatter",
                         mode: "lines",
                         line: { color: lineColor, width: 1.5 },
-                        hovertemplate: "<b>%{x|%d %b %Y}</b><br>Base 100: <b>%{y:.1f}</b><br>Index: %{customdata:.1f}<extra></extra>",
+                        hovertemplate: "Base 100: <b>%{y:.1f}</b><br>Index: %{customdata:.1f}<extra></extra>",
                         fill: "tozeroy",
                         fillcolor: isPositive
                             ? "rgba(34,197,94,0.05)"
@@ -88,6 +88,11 @@ export function MiniIndexChart({ title, data, changePercent, href }: MiniIndexCh
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#64748b", family: "Inter, sans-serif", size: 9 },
+                    hoverlabel: {
+                        bgcolor: "#1e1e2e",
+                        font: { color: "#f8fafc", size: 10, family: "Inter, sans-serif" },
+                        bordercolor: "#334155",
+                    },
                     margin: { l: 0, r: 0, t: 0, b: 0 },
                     xaxis: {
                         visible: false,

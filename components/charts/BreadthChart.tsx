@@ -42,13 +42,18 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                         mode: "lines",
                         name: "% Above 200 SMA",
                         line: { color: "#3b82f6", width: 2 },
-                        hovertemplate: "<b>%{x|%d %b %Y}</b><br>%{y:.2f}%<extra></extra>",
+                        hovertemplate: "%{y:.2f}%<extra></extra>",
                     },
                 ]}
                 layout={{
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#94a3b8", family: "Inter, sans-serif", size: 11 },
+                    hoverlabel: {
+                        bgcolor: "#1e1e2e",
+                        font: { color: "#f8fafc", size: 12, family: "Inter, sans-serif" },
+                        bordercolor: "#334155",
+                    },
                     margin: { l: 40, r: 15, t: 10, b: 40 },
                     xaxis: {
                         gridcolor: "#1e1e2e",
@@ -130,6 +135,11 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#94a3b8", family: "Inter, sans-serif", size: 11 },
+                    hoverlabel: {
+                        bgcolor: "#1e1e2e",
+                        font: { color: "#f8fafc", size: 12, family: "Inter, sans-serif" },
+                        bordercolor: "#334155",
+                    },
                     margin: { l: 40, r: 15, t: 10, b: 40 },
                     xaxis: { gridcolor: "#1e1e2e", tickformat: "%b '%y", title: { text: "Date", standoff: 10 } },
                     yaxis: { gridcolor: "#1e1e2e", title: { text: "Stocks", standoff: 10 } },

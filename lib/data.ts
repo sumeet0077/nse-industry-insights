@@ -107,6 +107,7 @@ export function getRRGData(timeframe: "D" | "W" | "M"): RRGDataPoint[] {
 export interface ThemeBreadthSummary {
     id: string;
     title: string;
+    category: string;
     data: { Date: string; Index_Close: number }[];
 }
 
@@ -127,7 +128,7 @@ export function getAllThemeBreadthData(): ThemeBreadthSummary[] {
             .map((d) => ({ Date: d.Date, Index_Close: d.Index_Close! }));
 
         if (trimmed.length > 0) {
-            results.push({ id: config.id, title: config.title, data: trimmed });
+            results.push({ id: config.id, title: config.title, category: config.category, data: trimmed });
         }
     }
 

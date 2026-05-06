@@ -265,7 +265,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                 {processedThemes.map((theme) => (
                     <Link
                         key={theme.id}
-                        href={`/industries/${theme.id}`}
+                        href={`/${theme.category}/${theme.id}`}
                         className="block transition-transform hover:scale-[1.02]"
                     >
                         <MiniIndexChart

@@ -39,6 +39,7 @@ export function TopBar() {
             items: [
                 { label: "Performance Overview", href: "/performance" },
                 { label: "Sector Rotation", href: "/sector-rotation" },
+                { label: "Theme Overview", href: "/theme-overview" },
             ],
         },
         {

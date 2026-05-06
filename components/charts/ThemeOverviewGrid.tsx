@@ -263,17 +263,17 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
             {/* Chart Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {processedThemes.map((theme) => (
-                    <Link
+                    <div
                         key={theme.id}
-                        href={`/${theme.category}/${theme.id}`}
                         className="block transition-transform hover:scale-[1.02]"
                     >
                         <MiniIndexChart
                             title={theme.title}
                             data={theme.trimmedData}
                             changePercent={theme.change}
+                            href={`/${theme.category}/${theme.id}`}
                         />
-                    </Link>
+                    </div>
                 ))}
             </div>
         </div>

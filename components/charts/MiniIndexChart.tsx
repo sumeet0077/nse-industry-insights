@@ -3,6 +3,9 @@
 
 import dynamic from "next/dynamic";
 
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+
 const Plot = dynamic(() => import("react-plotly.js"), {
     ssr: false,
     loading: () => (
@@ -14,9 +17,10 @@ interface MiniIndexChartProps {
     title: string;
     data: { Date: string; Index_Close: number }[];
     changePercent: number;
+    href?: string;
 }
 
-export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartProps) {
+export function MiniIndexChart({ title, data, changePercent, href }: MiniIndexChartProps) {
     if (!data || data.length < 2) return null;
 
     const isPositive = changePercent >= 0;
@@ -43,9 +47,18 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 hover:border-[#2a2a3e] transition-colors group">
             {/* Header */}
             <div className="flex items-start justify-between mb-1">
-                <h4 className="text-[12px] font-semibold text-slate-300 leading-tight truncate pr-2 group-hover:text-white transition-colors">
-                    {title}
-                </h4>
+                {href ? (
+                    <Link href={href} className="flex items-center gap-1 group/link">
+                        <h4 className="text-[12px] font-semibold text-slate-300 leading-tight truncate pr-1 group-hover/link:text-blue-400 transition-colors">
+                            {title}
+                        </h4>
+                        <ChevronRight className="h-3 w-3 text-slate-500 group-hover/link:text-blue-400 transition-colors" />
+                    </Link>
+                ) : (
+                    <h4 className="text-[12px] font-semibold text-slate-300 leading-tight truncate pr-2 group-hover:text-white transition-colors">
+                        {title}
+                    </h4>
+                )}
                 <span
                     className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${badgeBg} ${badgeColor} whitespace-nowrap`}
                 >

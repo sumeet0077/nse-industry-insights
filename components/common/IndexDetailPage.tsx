@@ -64,7 +64,7 @@ export function IndexDetailPage({
 
     return (
         <div id="index-detail-capture-root" ref={contentRef} className="p-1">
-            <div className="flex items-start justify-between mb-1">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
                 <div className="flex flex-col">
                     <h1 className="text-xl font-bold text-white">{title} Market Breadth</h1>
                     <p className="text-sm text-slate-400 mt-1">{description}</p>

@@ -131,6 +131,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3">
             <Plot
+                useResizeHandler={true}
                 data={chartData.traces}
                 layout={{
                     title: { text: `Sector Rotation (vs Nifty 50) - ${timeframe}` },

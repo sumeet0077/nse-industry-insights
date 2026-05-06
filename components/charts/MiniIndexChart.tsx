@@ -55,6 +55,7 @@ export function MiniIndexChart({ title, data, changePercent }: MiniIndexChartPro
 
             {/* Chart */}
             <Plot
+                useResizeHandler={true}
                 data={[
                     {
                         x: normalizedData.map((d) => d.Date),

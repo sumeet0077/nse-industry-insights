@@ -33,6 +33,7 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                 </span>
             </h3>
             <Plot
+                useResizeHandler={true}
                 data={[
                     {
                         x: data.map((d) => d.Date),
@@ -102,6 +103,7 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 mt-4">
             <h3 className="text-sm font-semibold text-white mb-2">Market Participation</h3>
             <Plot
+                useResizeHandler={true}
                 data={[
                     {
                         x: data.map((d) => d.Date),

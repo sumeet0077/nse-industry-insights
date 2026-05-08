@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback } from "react";
+import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
@@ -60,6 +61,15 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         for (const c of ALL_CONFIGS) {
             map.set(c.dataFile, c.title);
             map.set(c.id, c.title);
+        }
+        return map;
+    }, []);
+
+    // Build a lookup from Title → {id, category} for navigation
+    const titleToConfig = useMemo(() => {
+        const map = new Map<string, { id: string; category: string }>();
+        for (const c of ALL_CONFIGS) {
+            map.set(c.title, { id: c.id, category: c.category });
         }
         return map;
     }, []);
@@ -533,11 +543,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                                         </div>
                                         <div className="p-6 overflow-y-auto custom-scrollbar bg-[#111118]/40">
                                             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
-                                                {activeTickersInQuadrant.map(ticker => (
-                                                    <li key={ticker} className="text-sm font-medium text-slate-200 border-b border-white/5 pb-2 last:border-0">
-                                                        {ticker}
-                                                    </li>
-                                                ))}
+                                                {activeTickersInQuadrant.map(ticker => {
+                                                    const config = titleToConfig.get(ticker);
+                                                    return (
+                                                        <li key={ticker} className="text-sm font-medium border-b border-white/5 pb-2 last:border-0">
+                                                            {config ? (
+                                                                <Link 
+                                                                    href={`/${config.category}/${config.id}`}
+                                                                    className="text-slate-200 hover:text-blue-400 transition-colors"
+                                                                >
+                                                                    {ticker}
+                                                                </Link>
+                                                            ) : (
+                                                                <span className="text-slate-200">{ticker}</span>
+                                                            )}
+                                                        </li>
+                                                    );
+                                                })}
                                             </ul>
                                         </div>
                                     </div>
@@ -545,11 +567,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             ) : (
                                 // Normal inline view
                                 <ul className="flex flex-col gap-2 max-h-72 overflow-y-auto custom-scrollbar pr-2">
-                                    {activeTickersInQuadrant.map(ticker => (
-                                        <li key={ticker} className="text-[13px] leading-relaxed text-slate-300 hover:text-white transition-colors cursor-default border-b border-white/5 pb-1 last:border-0" title={ticker}>
-                                            {ticker}
-                                        </li>
-                                    ))}
+                                    {activeTickersInQuadrant.map(ticker => {
+                                        const config = titleToConfig.get(ticker);
+                                        return (
+                                            <li key={ticker} className="text-[13px] leading-relaxed border-b border-white/5 pb-1 last:border-0" title={ticker}>
+                                                {config ? (
+                                                    <Link 
+                                                        href={`/${config.category}/${config.id}`}
+                                                        className="text-slate-300 hover:text-blue-400 transition-colors block w-full"
+                                                    >
+                                                        {ticker}
+                                                    </Link>
+                                                ) : (
+                                                    <span className="text-slate-300">{ticker}</span>
+                                                )}
+                                            </li>
+                                        );
+                                    })}
                                 </ul>
                             )}
                         </div>

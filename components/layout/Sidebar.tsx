@@ -14,6 +14,7 @@ import {
     Search,
     X,
 } from "lucide-react";
+import { SidebarSearchTrigger } from "./StockSearchProvider";
 
 // Industries pre-sorted A-Z at module load time (zero runtime cost)
 const INDUSTRIES_AZ = [...INDUSTRIES].sort((a, b) =>
@@ -58,12 +59,12 @@ export function Sidebar() {
 
     return (
         <aside className="hidden lg:flex flex-col w-60 min-h-screen bg-[#0d0d14] border-r border-[#1e1e2e] overflow-y-auto">
-            {/* Logo */}
             <div className="px-4 py-5 border-b border-[#1e1e2e]">
-                <Link href="/performance" className="flex items-center gap-2">
+                <Link href="/performance" className="flex items-center gap-2 mb-3">
                     <BarChart3 className="h-5 w-5 text-blue-400" />
                     <span className="font-bold text-sm text-white">NSE Industry Insights</span>
                 </Link>
+                <SidebarSearchTrigger />
             </div>
 
             <nav className="flex-1 px-2 py-4 space-y-6">

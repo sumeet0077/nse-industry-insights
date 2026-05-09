@@ -6,7 +6,7 @@ import Link from "next/link";
 import { MiniIndexChart } from "@/components/charts/MiniIndexChart";
 import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
-import { ArrowUpDown, Calendar, Search, X, Check } from "lucide-react";
+import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ, TrendingUp, TrendingDown, Calendar, Search, X, Check } from "lucide-react";
 
 type TimeRange = "1W" | "1M" | "3M" | "6M" | "1Y" | "3Y" | "5Y" | "ALL";
 
@@ -38,7 +38,7 @@ interface ThemeOverviewGridProps {
 }
 
 export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGridProps) {
-    const [sortBy, setSortBy] = useState<"alpha" | "perf">("alpha");
+    const [sortBy, setSortBy] = useState<"alpha-asc" | "alpha-desc" | "perf-desc" | "perf-asc">("alpha-asc");
     const [timeRange, setTimeRange] = useState<TimeRange>("1Y");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
@@ -109,10 +109,18 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                 return { ...theme, trimmedData: trimmed, change };
             })
             .sort((a, b) => {
-                if (sortBy === "perf") {
-                    return b.change - a.change; // Best performers first
+                switch (sortBy) {
+                    case "alpha-asc":
+                        return a.title.localeCompare(b.title);
+                    case "alpha-desc":
+                        return b.title.localeCompare(a.title);
+                    case "perf-desc":
+                        return b.change - a.change; // Best performers first
+                    case "perf-asc":
+                        return a.change - b.change; // Worst performers first
+                    default:
+                        return a.title.localeCompare(b.title);
                 }
-                return a.title.localeCompare(b.title);
             });
     }, [themes, timeRange, sortBy, searchQuery, selectedThemes, perfLookup]);
 
@@ -247,15 +255,21 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                         ))}
                     </div>
 
-                    {/* Sort Toggle */}
+                    {/* Sort Toggle — 4-state cycle */}
                     <button
                         onClick={() =>
-                            setSortBy((prev) => (prev === "alpha" ? "perf" : "alpha"))
+                            setSortBy((prev) => {
+                                const cycle = ["alpha-asc", "alpha-desc", "perf-desc", "perf-asc"] as const;
+                                const idx = cycle.indexOf(prev);
+                                return cycle[(idx + 1) % cycle.length];
+                            })
                         }
                         className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-semibold bg-[#111118] border border-[#1e1e2e] rounded-lg text-slate-400 hover:text-slate-200 transition-colors"
                     >
-                        <ArrowUpDown className="h-3 w-3" />
-                        {sortBy === "alpha" ? "A–Z" : "Performance"}
+                        {sortBy === "alpha-asc" && <><ArrowDownAZ className="h-3 w-3" />A→Z</>}
+                        {sortBy === "alpha-desc" && <><ArrowUpAZ className="h-3 w-3" />Z→A</>}
+                        {sortBy === "perf-desc" && <><TrendingUp className="h-3 w-3" />Best ▼</>}
+                        {sortBy === "perf-asc" && <><TrendingDown className="h-3 w-3" />Worst ▲</>}
                     </button>
                 </div>
             </div>

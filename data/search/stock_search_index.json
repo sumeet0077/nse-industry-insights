@@ -1,0 +1,8628 @@
+{
+  "360ONE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wealth_management",
+      "title": "Wealth Management",
+      "category": "industries"
+    }
+  ],
+  "3MINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "5PAISA": [
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "AADHARHFC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "AARTIIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "AAVAS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "ABB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "ABBOTINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "ABCAPITAL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ABDL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ABFRL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
+  "ABLBL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ABREL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "ABSLAMC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ACC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "ACE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ACMESOLAR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ACUTAAS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ADANIENSOL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ADANIENT": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_aviation",
+      "title": "Aviation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_copper",
+      "title": "Copper",
+      "category": "industries"
+    }
+  ],
+  "ADANIGREEN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_green_hydrogen",
+      "title": "Green Hydrogen",
+      "category": "industries"
+    }
+  ],
+  "ADANIPORTS": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "ADANIPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "AEGISLOG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "AEGISVOPAK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "AFCONS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "AFFLE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "AGI": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "AIAENG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "AIIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "AJANTPHARM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "ALKEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "ALLCARGO": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "AMBER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "AMBUJACEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "ANANDRATHI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wealth_management",
+      "title": "Wealth Management",
+      "category": "industries"
+    }
+  ],
+  "ANANTRAJ": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    }
+  ],
+  "ANDHRAPAP": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "ANGELONE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "ANTHEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ANURAS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "APARINDS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "APLAPOLLO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
+  "APOLLOHOSP": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "APOLLOPIPE": [
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "APOLLOTYRE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "APTUS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "ARE&M": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "ASAHIINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ASALCBR": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "ASHOKLEY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    }
+  ],
+  "ASIANPAINT": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "ASTERDM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "ASTRAL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "ASTRAMICRO": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "ATGL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "ATHERENERG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "ATUL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "AUBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    }
+  ],
+  "AURIONPRO": [
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    }
+  ],
+  "AUROPHARMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "AVADHSUGAR": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "AVALON": [
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "AWL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "AXISBANK": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "BAJAJ-AUTO": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_two_and_three_wheelers",
+      "title": "Two & Three Wheelers",
+      "category": "industries"
+    }
+  ],
+  "BAJAJCON": [
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "BAJAJFINSV": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    }
+  ],
+  "BAJAJHFL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "BAJAJHIND": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "BAJAJHLDNG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "BAJFINANCE": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "BALKRISIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "BALRAMCHIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "BANDHANBNK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "BANKBARODA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "BANKINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "BATAINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "BAYERCROP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "BBTC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BDL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "BEL": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "BELRISE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BEML": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "BERGEPAINT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "BHAGYANGR": [
+    {
+      "id": "breadth_theme_copper",
+      "title": "Copper",
+      "category": "industries"
+    }
+  ],
+  "BHARATFORG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "BHARTIARTL": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_services",
+      "title": "Telecom Services",
+      "category": "industries"
+    }
+  ],
+  "BHARTIHEXA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "BHEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "BIKAJI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BIOCON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "BLS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BLUEDART": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BLUEJET": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BLUESTARCO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "BORORENEW": [
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "BOSCHLTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "BPCL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "BRIGADE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "BRITANNIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "BSE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "BSOFT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "BYKE": [
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "CAMPUS": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "CAMS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
+  "CANBK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "CANFINHOME": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "CANHLIFE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CAPLIPOINT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CARBORUNIV": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "CARTRADE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CARYSIL": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "CASTROLIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CCL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "CDSL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
+  "CEATLTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CEMPRO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CENTRALBK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "CENTURYPLY": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "CERA": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "CESC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "CGCL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "CGPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "CHALET": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "CHAMBLFERT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CHENNPETRO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CHOICEIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CHOLAFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "CHOLAHLDNG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CIEINDIA": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "CIPLA": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "CLEAN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "COALINDIA": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "COCHINSHIP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_shipbuilding",
+      "title": "Shipbuilding",
+      "category": "industries"
+    }
+  ],
+  "COFFEEDAY": [
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "COFORGE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "COHANCE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "COLPAL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "CONCOR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "CONCORDBIO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CONFIPET": [
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "COROMANDEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "CPPLUS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CRAFTSMAN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "CREDITACC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CRISIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "CROMPTON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "CUB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "CUMMINSIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "CUPID": [
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "CYIENT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "CYIENTDLM": [
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "DABUR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "DALBHARAT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "DALMIASUG": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "DATAPATTNS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "DBCORP": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    }
+  ],
+  "DBOL": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "DCMNVL": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "DCMSHRIRAM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "DCXINDIA": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "DEEPAKFERT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "DEEPAKNTR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "DEEPINDS": [
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "DELHIVERY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "DEN": [
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "DEVYANI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
+  "DHAMPURSUG": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "DHANUKA": [
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "DIAMINESQ": [
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "DISHTV": [
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "DIVISLAB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "DIXON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "DLF": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "DMART": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "DOMS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "DREDGECORP": [
+    {
+      "id": "breadth_theme_marine_and_offshore_services",
+      "title": "Marine & Offshore Services",
+      "category": "industries"
+    }
+  ],
+  "DRREDDY": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "E2E": [
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    }
+  ],
+  "ECLERX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "EICHERMOT": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_two_and_three_wheelers",
+      "title": "Two & Three Wheelers",
+      "category": "industries"
+    }
+  ],
+  "EIDPARRY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "EIHOTEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "ELECON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ELGIEQUIP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "EMAMILTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "EMAMIPAP": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "EMCURE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "EMMVEE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "ENDURANCE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "ENGINERSIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ENRIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "EPL": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "ERIS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ESCORTS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ETERNAL": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "ETHOSLTD": [
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    }
+  ],
+  "EXIDEIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "FACT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "FEDERALBNK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "FINCABLES": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "FINEORG": [
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "FINPIPE": [
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "FIRSTCRY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "FIVESTAR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "FLUOROCHEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "FORCEMOT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "FORTIS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "FSL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
+  "GABRIEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "GAIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_green_hydrogen",
+      "title": "Green Hydrogen",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "GALLANTT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "GARFIBRES": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "GATEWAY": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "GENUSPOWER": [
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "GEOJITFSL": [
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "GESHIP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_marine_and_offshore_services",
+      "title": "Marine & Offshore Services",
+      "category": "industries"
+    }
+  ],
+  "GICRE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "GILLETTE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "GLAND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "GLAXO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "GLENMARK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "GLOBUSSPR": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "GMDCLTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "GMRAIRPORT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_aviation",
+      "title": "Aviation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "GOACARBON": [
+    {
+      "id": "breadth_theme_carbon_and_graphite",
+      "title": "Carbon and Graphite",
+      "category": "industries"
+    }
+  ],
+  "GODFRYPHLP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "GODIGIT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "GODREJCP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "GODREJIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "GODREJPROP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "GPIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "GRANULES": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "GRAPHITE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_carbon_and_graphite",
+      "title": "Carbon and Graphite",
+      "category": "industries"
+    }
+  ],
+  "GRASIM": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "GRAVITA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "GREENPANEL": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "GREENPLY": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "GRINDWELL": [
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "GROWW": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "GRSE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_shipbuilding",
+      "title": "Shipbuilding",
+      "category": "industries"
+    }
+  ],
+  "GSFC": [
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "GSPL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "GUJGASLTD": [
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "GVT&D": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "HAL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "HATHWAY": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "HAVELLS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "HBLENGINE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "HCLTECH": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "HDBFS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "HDFCAMC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "HDFCBANK": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "HDFCLIFE": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_life_insurance",
+      "title": "Life Insurance",
+      "category": "industries"
+    }
+  ],
+  "HEG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_carbon_and_graphite",
+      "title": "Carbon and Graphite",
+      "category": "industries"
+    }
+  ],
+  "HEROMOTOCO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_two_and_three_wheelers",
+      "title": "Two & Three Wheelers",
+      "category": "industries"
+    }
+  ],
+  "HEXT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "HFCL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
+    }
+  ],
+  "HINDALCO": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_copper",
+      "title": "Copper",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "HINDCOMPOS": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "HINDCOPPER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_copper",
+      "title": "Copper",
+      "category": "industries"
+    }
+  ],
+  "HINDPETRO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "HINDUNILVR": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "HINDZINC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_silver",
+      "title": "Silver",
+      "category": "industries"
+    }
+  ],
+  "HLVLTD": [
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "HOMEFIRST": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "HONASA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "HONAUT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "HSCL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "HUDCO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "HUHTAMAKI": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "HYUNDAI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ICICIAMC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "ICICIBANK": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "ICICIGI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "ICICIPRULI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_life_insurance",
+      "title": "Life Insurance",
+      "category": "industries"
+    }
+  ],
+  "IDBI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "IDEA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_services",
+      "title": "Telecom Services",
+      "category": "industries"
+    }
+  ],
+  "IDEAFORGE": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "IDFCFIRSTB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "IEX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "IFCI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "IGIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "IGL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "IIFL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "IIFLCAPS": [
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "IKS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "INDGN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "INDHOTEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "INDIACEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "INDIAMART": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "INDIANB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "INDIASHLTR": [
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "INDIGO": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_aviation",
+      "title": "Aviation",
+      "category": "industries"
+    }
+  ],
+  "INDIGOPNTS": [
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "INDUSINDBK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "INDUSTOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
+    }
+  ],
+  "INFY": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "INOXWIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "INTELLECT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "IOB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "IOC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "IPCALAB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "IRB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "IRCON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "IRCTC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "IREDA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "IRFC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "ISGEC": [
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "ITC": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "ITCHOTELS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "ITI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "J&KBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JAINREC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JBCHEPHARM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "JBMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "JHS": [
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "JINDALPOLY": [
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "JINDALSAW": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JINDALSTEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "JIOFIN": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    }
+  ],
+  "JKCEMENT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "JKPAPER": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "JKTYRE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JMFINANCIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JPPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JSL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
+  "JSWCEMENT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JSWDULUX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JSWENERGY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_green_hydrogen",
+      "title": "Green Hydrogen",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "JSWINFRA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "JSWSTEEL": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "JUBLFOOD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
+  "JUBLINGREA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JUBLPHARMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "JWL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "JYOTICNC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "KAJARIACER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "KALYANKJIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    }
+  ],
+  "KAMOPAINTS": [
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "KANSAINER": [
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "KARURVYSYA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "KAYNES": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "KEC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "KEI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "KFINTECH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "KHADIM": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "KIMS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "KIRLOSENG": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "KNRCON": [
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "KOTAKBANK": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "KPIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "KPITTECH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "KPRMILL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
+  "KRISHNADEF": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "KRSNAA": [
+    {
+      "id": "breadth_theme_diagnostics_and_pathology",
+      "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "KUANTUM": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "LALPATHLAB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_diagnostics_and_pathology",
+      "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "LANDMARK": [
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    }
+  ],
+  "LATENTVIEW": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "LAURUSLABS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "LEMONTREE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "LENSKART": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "LGEINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "LIBERTSHOE": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "LICHSGFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "LICI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_life_insurance",
+      "title": "Life Insurance",
+      "category": "industries"
+    }
+  ],
+  "LINDEINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "LLOYDSME": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
+  "LODHA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "LT": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "LTF": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "LTFOODS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "LTIM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "LTTS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "LUMAXTECH": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "LUPIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "M&M": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    }
+  ],
+  "M&MFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "MAHABANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "MAHLOG": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "MANAPPURAM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "MANKIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "MAPMYINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "MARICO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "MARUTI": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    }
+  ],
+  "MAXHEALTH": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "MAZDOCK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_shipbuilding",
+      "title": "Shipbuilding",
+      "category": "industries"
+    }
+  ],
+  "MCX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "MEDANTA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "MEDIASSIST": [
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "MEESHO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "METROBRAND": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "METROPOLIS": [
+    {
+      "id": "breadth_theme_diagnostics_and_pathology",
+      "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "MFSL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_life_insurance",
+      "title": "Life Insurance",
+      "category": "industries"
+    }
+  ],
+  "MGL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "MHRIL": [
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "MINDACORP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "MIRZAINT": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "MMTC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "MOIL": [
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    }
+  ],
+  "MOLDTKPAC": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "MOSCHIP": [
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "MOTHERSON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "MOTILALOFS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_market",
+      "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "MPHASIS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "MRF": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "MRPL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "MSUMI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "MTARTECH": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "MUTHOOTFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "NAM-INDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "NATCOPHARM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NATIONALUM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    }
+  ],
+  "NAUKRI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "NAVA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NAVINFLUOR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "NAZARA": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_music_and_content",
+      "title": "Music & Content",
+      "category": "industries"
+    }
+  ],
+  "NBCC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NCC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "NDTV": [
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "NESTLEIND": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "NETWEB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    }
+  ],
+  "NETWORK18": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "NEULANDLAB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NEWGEN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "NHPC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "NIACL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "NIVABUPA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "NLCINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "NMDC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "NSLNISP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NTPC": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_green_hydrogen",
+      "title": "Green Hydrogen",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "NTPCGREEN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "NUVAMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wealth_management",
+      "title": "Wealth Management",
+      "category": "industries"
+    }
+  ],
+  "NUVOCO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "NYKAA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "OBEROIRLTY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "OFSS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    }
+  ],
+  "OIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_upstream",
+      "title": "Oil & Gas Upstream",
+      "category": "industries"
+    }
+  ],
+  "OLAELEC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "OLECTRA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "ONESOURCE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ONGC": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_upstream",
+      "title": "Oil & Gas Upstream",
+      "category": "industries"
+    }
+  ],
+  "ORIENTHOT": [
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "ORIENTPPR": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "PAGEIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
+  "PARADEEP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "PARAS": [
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "PATANJALI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    }
+  ],
+  "PAYTM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
+  "PCBL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_carbon_and_graphite",
+      "title": "Carbon and Graphite",
+      "category": "industries"
+    }
+  ],
+  "PERSISTENT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "PETRONET": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_midstream",
+      "title": "Oil & Gas Midstream",
+      "category": "industries"
+    }
+  ],
+  "PFC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "PFIZER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "PFOCUS": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "PGEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "PGHH": [
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ],
+  "PHOENIXLTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "PICCADIL": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "PIDILITIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "PIIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "PINELABS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "PIRAMALFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "PNB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "PNBHOUSING": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "PNCINFRA": [
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
+  "POLICYBZR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
+  "POLYCAB": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "POLYMED": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "POLYPLEX": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "POONAWALLA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "POWERGRID": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "POWERINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "PPLPHARMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "PRAKASH": [
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "PRECWIRE": [
+    {
+      "id": "breadth_theme_copper",
+      "title": "Copper",
+      "category": "industries"
+    }
+  ],
+  "PREMIERENE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "PRESTIGE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "PRINCEPIPE": [
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "PRUDENT": [
+    {
+      "id": "breadth_theme_wealth_management",
+      "title": "Wealth Management",
+      "category": "industries"
+    }
+  ],
+  "PSB": [
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "PTCIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "PVRINOX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "PWL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "QPOWER": [
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "RADICO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "RAILTEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "RAINBOW": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "RALLIS": [
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "RAMCOCEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "RBA": [
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
+  "RBLBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "RECLTD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "REDINGTON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "RELAXO": [
+    {
+      "id": "breadth_theme_footwear",
+      "title": "Footwear",
+      "category": "industries"
+    }
+  ],
+  "RELIANCE": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_upstream",
+      "title": "Oil & Gas Upstream",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "RENUKA": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "REPCOHOME": [
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "RHIM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "RITES": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "RKFORGE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "RPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "RRKABEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "RUSHIL": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "RVNL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "SAGILITY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SAIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
+  "SAILIFE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SAMMAANCAP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_housing_finance",
+      "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "SANSERA": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "SAPPHIRE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
+  "SARDAEN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SAREGAMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_music_and_content",
+      "title": "Music & Content",
+      "category": "industries"
+    }
+  ],
+  "SBFC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SBICARD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    }
+  ],
+  "SBILIFE": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_life_insurance",
+      "title": "Life Insurance",
+      "category": "industries"
+    }
+  ],
+  "SBIN": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "SCHAEFFLER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "SCHNEIDER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "SCI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_shipbuilding",
+      "title": "Shipbuilding",
+      "category": "industries"
+    }
+  ],
+  "SDBL": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "SEAMECLTD": [
+    {
+      "id": "breadth_theme_marine_and_offshore_services",
+      "title": "Marine & Offshore Services",
+      "category": "industries"
+    }
+  ],
+  "SESHAPAPER": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "SHALBY": [
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "SHALPAINTS": [
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "SHEMAROO": [
+    {
+      "id": "breadth_theme_music_and_content",
+      "title": "Music & Content",
+      "category": "industries"
+    }
+  ],
+  "SHREECEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "SHREEJISPG": [
+    {
+      "id": "breadth_theme_marine_and_offshore_services",
+      "title": "Marine & Offshore Services",
+      "category": "industries"
+    }
+  ],
+  "SHRIRAMFIN": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "SHYAMMETL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SIEMENS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "SIGNATURE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SIRCA": [
+    {
+      "id": "breadth_theme_paints",
+      "title": "Paints",
+      "category": "industries"
+    }
+  ],
+  "SJVN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "SKFINDIA": [
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "SOBHA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_realty",
+      "title": "Nifty Realty",
+      "category": "sectors"
+    }
+  ],
+  "SOLARINDS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "SOMANYCERA": [
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
+    }
+  ],
+  "SONACOMS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "SONATSOFTW": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SPLPETRO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SRF": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_specialty_chemicals",
+      "title": "Specialty Chemicals",
+      "category": "industries"
+    }
+  ],
+  "STARHEALTH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_general_insurance",
+      "title": "General Insurance",
+      "category": "industries"
+    }
+  ],
+  "STARPAPER": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "SULA": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    }
+  ],
+  "SUMICHEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SUNDARMFIN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
+    }
+  ],
+  "SUNDRMFAST": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "SUNPHARMA": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "SUNTV": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "SUPRAJIT": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "SUPREMEIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pvc_pipes_and_plumbing",
+      "title": "PVC Pipes & Plumbing",
+      "category": "industries"
+    }
+  ],
+  "SUZLON": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "SWANCORP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "SWIGGY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "SYNGENE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    }
+  ],
+  "SYRMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "TAJGVK": [
+    {
+      "id": "breadth_theme_hotels_and_hospitality",
+      "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "TARIL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TATACAP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "TATACHEM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TATACOMM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_telecom_services",
+      "title": "Telecom Services",
+      "category": "industries"
+    }
+  ],
+  "TATACONSUM": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "TATAELXSI": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
+      "category": "industries"
+    }
+  ],
+  "TATAINVEST": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "TATAPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_green_hydrogen",
+      "title": "Green Hydrogen",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "TATASTEEL": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    }
+  ],
+  "TATATECH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TBOTEK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TCPLPACK": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "TCS": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "TDPOWERSYS": [
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "TECHM": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "TECHNOE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_data_centre_and_ai",
+      "title": "Data Centre and AI",
+      "category": "industries"
+    }
+  ],
+  "TEGA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TEJASNET": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
+    }
+  ],
+  "TENNIND": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TEXRAIL": [
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "THELEELA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "THERMAX": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "THYROCARE": [
+    {
+      "id": "breadth_theme_diagnostics_and_pathology",
+      "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "TI": [
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "TIINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "TIMKEN": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "TIPSMUSIC": [
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_music_and_content",
+      "title": "Music & Content",
+      "category": "industries"
+    }
+  ],
+  "TITAGARH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_railways_and_infrastructure",
+      "title": "Railways & Infrastructure",
+      "category": "industries"
+    }
+  ],
+  "TITAN": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    }
+  ],
+  "TMCV": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "TMPV": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
+  "TNPL": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "TORNTPHARM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
+  "TORNTPOWER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    }
+  ],
+  "TRANSRAILL": [
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "TRAVELFOOD": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TRENT": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "TRIDENT": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
+  "TRITURBINE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_capital_goods",
+      "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "TRIVENI": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "TTML": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "TVSMOTOR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_two_and_three_wheelers",
+      "title": "Two & Three Wheelers",
+      "category": "industries"
+    }
+  ],
+  "UBL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
+    }
+  ],
+  "UCOBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "UFLEX": [
+    {
+      "id": "breadth_theme_packaging_solutions",
+      "title": "Packaging Solutions",
+      "category": "industries"
+    }
+  ],
+  "UGARSUGAR": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "ULTRACEMCO": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
+    }
+  ],
+  "UNIONBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_psu_banking",
+      "title": "PSU Banking",
+      "category": "industries"
+    }
+  ],
+  "UNITDSPR": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    }
+  ],
+  "UNOMINDA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_auto",
+      "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "UPL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_agrochemicals_and_fertilisers",
+      "title": "Agrochemicals & Fertilisers",
+      "category": "industries"
+    }
+  ],
+  "URBANCO": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "USHAMART": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "UTIAMC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "UTTAMSUGAR": [
+    {
+      "id": "breadth_theme_sugar",
+      "title": "Sugar",
+      "category": "industries"
+    }
+  ],
+  "VBL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_fmcg",
+      "title": "Nifty FMCG",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "VEDL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_silver",
+      "title": "Silver",
+      "category": "industries"
+    }
+  ],
+  "VIJAYA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_diagnostics_and_pathology",
+      "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "VIKRAMSOLR": [
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "VINCOFE": [
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "VMM": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    }
+  ],
+  "VOLTAMP": [
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
+  "VOLTAS": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "VTL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "WAAREEENER": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "WEBELSOLAR": [
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "WELCORP": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
+  "WELSPUNLIV": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
+  "WESTLIFE": [
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
+  "WHIRLPOOL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_consumer",
+      "title": "Nifty Consumer Durables",
+      "category": "sectors"
+    }
+  ],
+  "WIPRO": [
+    {
+      "id": "market_breadth_nifty50",
+      "title": "Nifty 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
+    }
+  ],
+  "WOCKPHARMA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "WSTCSTPAPR": [
+    {
+      "id": "breadth_theme_paper",
+      "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "YATHARTH": [
+    {
+      "id": "breadth_theme_hospitals",
+      "title": "Hospitals",
+      "category": "industries"
+    }
+  ],
+  "YESBANK": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_bank",
+      "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pvtbank",
+      "title": "Nifty Private Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
+    }
+  ],
+  "ZEEL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_media",
+      "title": "Nifty Media",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
+    }
+  ],
+  "ZENSARTECH": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
+  "ZENTEC": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_defence_and_aerospace",
+      "title": "Defence & Aerospace",
+      "category": "industries"
+    }
+  ],
+  "ZFCVINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
+      "category": "industries"
+    }
+  ],
+  "ZYDUSLIFE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_healthcare",
+      "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
+    }
+  ],
+  "ZYDUSWELL": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_personal_care_and_wellness",
+      "title": "Personal Care & Wellness",
+      "category": "industries"
+    }
+  ]
+}

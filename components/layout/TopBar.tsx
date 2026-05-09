@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BROAD_MARKET, SECTORS, INDUSTRIES } from "@/lib/config";
+import { MobileSearchTrigger } from "./StockSearchProvider";
 
 // Pre-sorted A-Z at module load
 const INDUSTRIES_AZ = [...INDUSTRIES].sort((a, b) => a.title.localeCompare(b.title));
@@ -65,13 +66,16 @@ export function TopBar() {
                     <BarChart3 className="h-4 w-4 text-blue-400" />
                     <span className="font-bold text-sm text-white">NSE Industry Insights</span>
                 </Link>
-                <button
-                    onClick={() => setOpen(true)}
-                    className="p-2 text-slate-400 hover:text-white"
-                    aria-label="Open navigation"
-                >
-                    <Menu className="h-5 w-5" />
-                </button>
+                <div className="flex items-center gap-1">
+                    <MobileSearchTrigger />
+                    <button
+                        onClick={() => setOpen(true)}
+                        className="p-2 text-slate-400 hover:text-white"
+                        aria-label="Open navigation"
+                    >
+                        <Menu className="h-5 w-5" />
+                    </button>
+                </div>
             </header>
 
             {/* Backdrop overlay */}

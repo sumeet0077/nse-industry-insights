@@ -4,12 +4,16 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { DataFreshnessBanner } from "@/components/layout/DataFreshnessBanner";
+import { StockSearchProvider } from "@/components/layout/StockSearchProvider";
+import { getStockSearchIndex } from "@/lib/data";
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const searchIndex = getStockSearchIndex();
+
     return (
         <div className="flex h-screen bg-[#0a0a0f]">
             <Sidebar />
@@ -18,6 +22,7 @@ export default function DashboardLayout({
                 <DataFreshnessBanner />
                 <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
             </div>
+            <StockSearchProvider searchIndex={searchIndex} />
         </div>
     );
 }

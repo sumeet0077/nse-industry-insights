@@ -329,6 +329,84 @@ def generate_manifest(output_dir: Path):
     print(f"  OK   manifest.json ({len(manifest['breadth'])} breadth files)")
 
 
+def export_stock_search_index(output_dir: Path):
+    """Build a reverse index: ticker → [themes/sectors it belongs to].
+    
+    Reads market_status_latest.json (already exported) and config.ts (for id/category mapping)
+    to produce a compact JSON that powers the global stock search on the frontend.
+    """
+    import re
+    
+    search_dir = output_dir / "search"
+    search_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 1. Load market status
+    ms_path = output_dir / "market_status" / "market_status_latest.json"
+    if not ms_path.exists():
+        print("  SKIP stock_search_index.json (market_status not found)")
+        return
+    
+    with open(ms_path) as f:
+        market_status = json.load(f)
+    
+    # 2. Build id→{title, category} from config.ts
+    config_path = Path(__file__).parent.parent / "lib" / "config.ts"
+    id_to_meta: dict = {}
+    if config_path.exists():
+        content = config_path.read_text()
+        # Match patterns like: id: "breadth_theme_paints", title: "Paints", ... category: "industries"
+        for match in re.finditer(
+            r'id:\s*"([^"]+)",\s*title:\s*"([^"]+)",\s*description:\s*"[^"]*",\s*dataFile:\s*"[^"]*",\s*category:\s*"([^"]+)"',
+            content
+        ):
+            id_to_meta[match.group(2)] = {
+                "id": match.group(1),
+                "title": match.group(2),
+                "category": match.group(3),
+            }
+    
+    # 3. Also try case-insensitive matching for sector names like "NIFTY AUTO" → "Nifty Auto"
+    title_lower_map = {k.lower(): v for k, v in id_to_meta.items()}
+    
+    # 4. Build reverse index: ticker → [theme entries]
+    reverse_index: dict = {}  # ticker_clean → [{id, title, category}]
+    
+    for theme_name, entry in market_status.items():
+        # Resolve theme_name to config meta
+        meta = id_to_meta.get(theme_name)
+        if not meta:
+            meta = title_lower_map.get(theme_name.lower())
+        if not meta:
+            # Try partial matches for sectors (e.g. "NIFTY AUTO" → find "Nifty Auto")
+            for config_title, config_meta in id_to_meta.items():
+                if config_title.upper() == theme_name.upper():
+                    meta = config_meta
+                    break
+        
+        if not meta:
+            continue  # Skip themes with no config mapping
+        
+        theme_entry = {"id": meta["id"], "title": meta["title"], "category": meta["category"]}
+        
+        all_tickers = entry.get("above", []) + entry.get("below", []) + entry.get("new_stock", [])
+        for ticker in all_tickers:
+            clean = ticker.replace(".NS", "").replace(".BO", "")
+            if clean not in reverse_index:
+                reverse_index[clean] = []
+            # Avoid duplicate entries
+            if theme_entry not in reverse_index[clean]:
+                reverse_index[clean].append(theme_entry)
+    
+    # 5. Sort tickers alphabetically and write
+    sorted_index = dict(sorted(reverse_index.items()))
+    
+    out_path = search_dir / "stock_search_index.json"
+    with open(out_path, "w") as f:
+        json.dump(sorted_index, f, indent=2)
+    
+    print(f"  OK   stock_search_index.json ({len(sorted_index)} tickers)")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Export CSVs to JSON for nse-industry-insights")
     parser.add_argument("--output", required=True, help="Path to nse-industry-insights/data directory")
@@ -361,6 +439,9 @@ def main():
 
     print("\nGenerating manifest...")
     generate_manifest(output_dir)
+
+    print("\nGenerating stock search index...")
+    export_stock_search_index(output_dir)
 
     print(f"\n✓ Export complete → {output_dir.resolve()}")
 

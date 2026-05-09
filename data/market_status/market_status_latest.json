@@ -1758,7 +1758,11 @@
             "BERGEPAINT.NS"
         ],
         "below": [
-            "KANSAINER.NS"
+            "KANSAINER.NS",
+            "INDIGOPNTS.NS",
+            "SIRCA.NS",
+            "SHALPAINTS.NS",
+            "KAMOPAINTS.NS"
         ],
         "new_stock": []
     },

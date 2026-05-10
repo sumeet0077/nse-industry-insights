@@ -1796,12 +1796,13 @@
         ],
         "new_stock": []
     },
-    "Pharma CDMO and API": {
+    "Pharma CDMO & API": {
         "above": [
             "DIVISLAB.NS",
             "LAURUSLABS.NS",
             "GLAND.NS",
             "BIOCON.NS",
+            "PPLPHARMA.NS",
             "NEULANDLAB.NS"
         ],
         "below": [

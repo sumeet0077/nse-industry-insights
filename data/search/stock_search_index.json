@@ -59,6 +59,13 @@
       "category": "industries"
     }
   ],
+  "AARTIPHARM": [
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
+    }
+  ],
   "AAVAS": [
     {
       "id": "market_breadth_nifty500",
@@ -1286,6 +1293,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "BLS": [
@@ -1979,6 +1991,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "CONFIPET": [
@@ -2333,6 +2350,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "DIXON": [
@@ -2974,6 +2996,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "GLAXO": [
@@ -4539,6 +4566,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "JWL": [
@@ -4896,6 +4928,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "LEMONTREE": [
@@ -5754,6 +5791,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "NEWGEN": [
@@ -6448,6 +6490,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "PRAKASH": [
@@ -7519,6 +7566,11 @@
       "id": "breadth_healthcare",
       "title": "Nifty Healthcare",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "SYRMA": [

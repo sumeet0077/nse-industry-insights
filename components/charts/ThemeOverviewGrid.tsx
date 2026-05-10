@@ -4,6 +4,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { MiniIndexChart } from "@/components/charts/MiniIndexChart";
+import { CategoryFilter } from "@/components/common/CategoryFilter";
 import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
 import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ, TrendingUp, TrendingDown, Calendar, Search, X, Check } from "lucide-react";
@@ -43,6 +44,11 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    
+    // Category Filters
+    const [showBroadMarket, setShowBroadMarket] = useState(true);
+    const [showSectors, setShowSectors] = useState(true);
+    const [showIndustries, setShowIndustries] = useState(true);
 
     // Build a lookup from performance summary: title → PerformanceRow
     const perfLookup = useMemo(() => {
@@ -75,6 +81,14 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
             const q = searchQuery.toLowerCase();
             filtered = filtered.filter((t) => t.title.toLowerCase().includes(q));
         }
+
+        // Filter by category
+        filtered = filtered.filter((theme) => {
+            if (theme.category === "broad-market" && !showBroadMarket) return false;
+            if (theme.category === "sectors" && !showSectors) return false;
+            if (theme.category === "industries" && !showIndustries) return false;
+            return true;
+        });
 
         if (selectedThemes.size > 0) {
             filtered = filtered.filter((t) => selectedThemes.has(t.id));
@@ -122,7 +136,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                         return a.title.localeCompare(b.title);
                 }
             });
-    }, [themes, timeRange, sortBy, searchQuery, selectedThemes, perfLookup]);
+    }, [themes, timeRange, sortBy, searchQuery, selectedThemes, perfLookup, showBroadMarket, showSectors, showIndustries]);
 
     const totalThemes = processedThemes.length;
     const gainers = processedThemes.filter((t) => t.change >= 0).length;
@@ -219,6 +233,18 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                         </div>
                     </>
                 )}
+            </div>
+
+            {/* Category Filters */}
+            <div className="mb-4">
+                <CategoryFilter
+                    showBroadMarket={showBroadMarket}
+                    showSectors={showSectors}
+                    showIndustries={showIndustries}
+                    onToggleBroadMarket={() => setShowBroadMarket(!showBroadMarket)}
+                    onToggleSectors={() => setShowSectors(!showSectors)}
+                    onToggleIndustries={() => setShowIndustries(!showIndustries)}
+                />
             </div>
 
             {/* Controls Bar */}

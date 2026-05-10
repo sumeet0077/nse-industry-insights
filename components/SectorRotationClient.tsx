@@ -7,6 +7,7 @@ import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 
 interface SectorRotationClientProps {
     dataD: RRGDataPoint[];
@@ -52,6 +53,11 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
     const [trendLookback, setTrendLookback] = useState(10);
 
+    // Category filters
+    const [showBroadMarket, setShowBroadMarket] = useState(true);
+    const [showSectors, setShowSectors] = useState(true);
+    const [showIndustries, setShowIndustries] = useState(true);
+
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
 
@@ -76,11 +82,20 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
     // Map raw tickers to human readable titles with robust fallback
     const currentData = useMemo(() => {
-        return currentDataRaw.map(d => {
-            const title = tickerLookup.get(d.Ticker);
-            return title ? { ...d, Ticker: title } : { ...d, Ticker: humanizeTickerId(d.Ticker) };
-        });
-    }, [currentDataRaw, tickerLookup]);
+        return currentDataRaw
+            .map(d => {
+                const title = tickerLookup.get(d.Ticker);
+                return title ? { ...d, Ticker: title } : { ...d, Ticker: humanizeTickerId(d.Ticker) };
+            })
+            .filter(d => {
+                // Filter by category
+                const category = getCategoryForTitle(d.Ticker, ALL_CONFIGS);
+                if (category === "broad-market" && !showBroadMarket) return false;
+                if (category === "sectors" && !showSectors) return false;
+                if (category === "industries" && !showIndustries) return false;
+                return true;
+            });
+    }, [currentDataRaw, tickerLookup, showBroadMarket, showSectors, showIndustries]);
 
     // Group data by ticker for trend analysis
     const groupedByTicker = useMemo(() => {
@@ -240,6 +255,18 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                     targetRef={contentRef}
                     filename="Sector_Rotation_RRG"
                     label="Capture RRG"
+                />
+            </div>
+
+            {/* Category Filters */}
+            <div className="mb-4">
+                <CategoryFilter
+                    showBroadMarket={showBroadMarket}
+                    showSectors={showSectors}
+                    showIndustries={showIndustries}
+                    onToggleBroadMarket={() => setShowBroadMarket(!showBroadMarket)}
+                    onToggleSectors={() => setShowSectors(!showSectors)}
+                    onToggleIndustries={() => setShowIndustries(!showIndustries)}
                 />
             </div>
 

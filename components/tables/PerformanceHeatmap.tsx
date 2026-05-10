@@ -7,6 +7,7 @@ import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-communi
 import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { makeTradingViewUrl } from "@/lib/utils";
+import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
@@ -69,6 +70,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     const [showSelectedOnly, setShowSelectedOnly] = useState(false);
     const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
     const [isCopied, setIsCopied] = useState(false);
+
+    // Category filters
+    const [showBroadMarket, setShowBroadMarket] = useState(true);
+    const [showSectors, setShowSectors] = useState(true);
+    const [showIndustries, setShowIndustries] = useState(true);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
@@ -310,35 +316,44 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     };
 
     const isExternalFilterPresent = useCallback(() => {
-        return searchQuery !== "" || showSelectedOnly;
-    }, [searchQuery, showSelectedOnly]);
+        return searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries;
+    }, [searchQuery, showSelectedOnly, showBroadMarket, showSectors, showIndustries]);
 
     const doesExternalFilterPass = useCallback((node: IRowNode) => {
         const rowData = node.data;
+        const title = rowData["Theme/Index"] || "";
+
+        // Category filter
+        const category = getCategoryForTitle(title, ALL_CONFIGS);
+        if (category === "broad-market" && !showBroadMarket) return false;
+        if (category === "sectors" && !showSectors) return false;
+        if (category === "industries" && !showIndustries) return false;
 
         // Show Selected Only filter
-        if (showSelectedOnly && !selectedThemes.has(rowData["Theme/Index"])) {
+        if (showSelectedOnly && !selectedThemes.has(title)) {
             return false;
         }
 
         if (searchQuery !== "") {
-            const theme = (rowData["Theme/Index"] || "").toLowerCase();
-            if (!theme.includes(searchQuery.toLowerCase())) {
+            if (!title.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return false;
             }
         }
         return true;
-    }, [searchQuery, showSelectedOnly, selectedThemes]);
+    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries]);
 
     useEffect(() => {
         if (gridRef.current?.api) {
             gridRef.current.api.onFilterChanged();
         }
-    }, [searchQuery, showSelectedOnly, selectedThemes]);
+    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries]);
 
     const clearFilters = () => {
         setSearchQuery("");
         setShowSelectedOnly(false);
+        setShowBroadMarket(true);
+        setShowSectors(true);
+        setShowIndustries(true);
         if (gridRef.current?.api) {
             gridRef.current.api.setFilterModel(null);
         }
@@ -352,7 +367,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         }
     };
 
-    const isFiltered = searchQuery !== "" || showSelectedOnly;
+    const isFiltered = searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries;
     const selectionCount = selectedThemes.size;
 
     // Data validation check
@@ -368,6 +383,18 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
 
     return (
         <div className="flex flex-col gap-3">
+            {/* Category Filters */}
+            <div className="mb-1">
+                <CategoryFilter
+                    showBroadMarket={showBroadMarket}
+                    showSectors={showSectors}
+                    showIndustries={showIndustries}
+                    onToggleBroadMarket={() => setShowBroadMarket(!showBroadMarket)}
+                    onToggleSectors={() => setShowSectors(!showSectors)}
+                    onToggleIndustries={() => setShowIndustries(!showIndustries)}
+                />
+            </div>
+
             <div className="flex flex-wrap justify-between pr-2 gap-y-3 gap-x-6 items-center">
                 <div className="flex items-center gap-3 flex-1 min-w-[240px] max-w-sm">
                     <div className="relative flex-1">

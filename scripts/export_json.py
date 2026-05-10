@@ -223,6 +223,7 @@ def export_rrg_data(output_dir: Path, source_dir: Path):
     # Load all themes
     patterns = [
         str(source_dir / "breadth_*.csv"),
+        str(source_dir / "market_breadth_*.csv"),
     ]
     csv_files = []
     for pattern in patterns:

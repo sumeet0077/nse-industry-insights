@@ -12,7 +12,7 @@ import type {
     ConstituentPerformanceMap,
     RRGDataPoint,
 } from "@/types";
-import { INDUSTRIES, SECTORS } from "@/lib/config";
+import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -117,7 +117,7 @@ export interface ThemeBreadthSummary {
  */
 export function getAllThemeBreadthData(): ThemeBreadthSummary[] {
     const results: ThemeBreadthSummary[] = [];
-    const configs = [...SECTORS, ...INDUSTRIES];
+    const configs = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
 
     for (const config of configs) {
         const raw = getBreadthData(config.dataFile);

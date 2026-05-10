@@ -65,6 +65,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_logistics", title: "Logistics", description: "Logistics & Supply Chain", dataFile: "breadth_theme_logistics", category: "industries" },
     { id: "breadth_theme_hospitals", title: "Hospitals", description: "Hospital Chains", dataFile: "breadth_theme_hospitals", category: "industries" },
     { id: "breadth_theme_pharma_formulations", title: "Pharma Formulations", description: "Pharma Formulation Companies", dataFile: "breadth_theme_pharma_formulations", category: "industries" },
+    { id: "breadth_theme_pharma_cdmo_and_api", title: "Pharma CDMO & API", description: "Contract Manufacturing & API Players", dataFile: "breadth_theme_pharma_cdmo_and_api", category: "industries" },
     { id: "breadth_theme_specialty_chemicals", title: "Specialty Chemicals", description: "Specialty Chemical Companies", dataFile: "breadth_theme_specialty_chemicals", category: "industries" },
     { id: "breadth_theme_agrochemicals_and_fertilisers", title: "Agrochemicals & Fertilisers", description: "Agrochemicals & Fertiliser Companies", dataFile: "breadth_theme_agrochemicals_and_fertilisers", category: "industries" },
     { id: "breadth_theme_textiles", title: "Textiles", description: "Textile Companies", dataFile: "breadth_theme_textiles", category: "industries" },

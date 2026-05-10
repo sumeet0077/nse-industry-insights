@@ -103,6 +103,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "ABCAPITAL": [
@@ -399,6 +404,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "ALKEM": [
@@ -416,6 +426,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "ALLCARGO": [
@@ -809,6 +824,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "AVADHSUGAR": [
@@ -2313,11 +2333,6 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
-    },
-    {
-      "id": "breadth_theme_pharma_formulations",
-      "title": "Pharma Formulations",
-      "category": "industries"
     }
   ],
   "DIXON": [
@@ -2622,6 +2637,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "ESCORTS": [
@@ -2961,6 +2981,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "GLENMARK": [
@@ -2978,6 +3003,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "GLOBUSSPR": [
@@ -3105,6 +3135,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "GRAPHITE": [
@@ -4070,6 +4105,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "IRB": [
@@ -4229,6 +4269,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "JBMA": [
@@ -5540,6 +5585,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "NATIONALUM": [
@@ -6128,6 +6178,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "PFOCUS": [
@@ -6827,6 +6882,13 @@
     {
       "id": "breadth_theme_housing_finance",
       "title": "Housing Finance",
+      "category": "industries"
+    }
+  ],
+  "SANOFI": [
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
       "category": "industries"
     }
   ],
@@ -8606,6 +8668,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "ZYDUSWELL": [

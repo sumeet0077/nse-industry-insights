@@ -1796,17 +1796,46 @@
         ],
         "new_stock": []
     },
+    "Pharma CDMO and API": {
+        "above": [
+            "DIVISLAB.NS",
+            "LAURUSLABS.NS",
+            "GLAND.NS",
+            "BIOCON.NS",
+            "NEULANDLAB.NS"
+        ],
+        "below": [
+            "SYNGENE.NS",
+            "JUBLPHARMA.NS",
+            "CONCORDBIO.NS",
+            "AARTIPHARM.NS"
+        ],
+        "new_stock": []
+    },
     "Pharma Formulations": {
         "above": [
             "SUNPHARMA.NS",
             "DRREDDY.NS",
-            "DIVISLAB.NS",
             "TORNTPHARM.NS",
             "MANKIND.NS",
-            "LUPIN.NS"
+            "LUPIN.NS",
+            "AUROPHARMA.NS",
+            "ALKEM.NS",
+            "GLENMARK.NS",
+            "IPCALAB.NS",
+            "AJANTPHARM.NS",
+            "NATCOPHARM.NS",
+            "GRANULES.NS",
+            "JBCHEPHARM.NS"
         ],
         "below": [
-            "CIPLA.NS"
+            "CIPLA.NS",
+            "ZYDUSLIFE.NS",
+            "ABBOTINDIA.NS",
+            "PFIZER.NS",
+            "ERIS.NS",
+            "SANOFI.NS",
+            "GLAXO.NS"
         ],
         "new_stock": []
     },

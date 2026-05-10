@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BROAD_MARKET, SECTORS, INDUSTRIES } from "@/lib/config";
-import { MobileSearchTrigger } from "./StockSearchProvider";
+import { MobileSearchTrigger, DrawerSearchTrigger } from "./StockSearchProvider";
 
 // Pre-sorted A-Z at module load
 const INDUSTRIES_AZ = [...INDUSTRIES].sort((a, b) => a.title.localeCompare(b.title));
@@ -109,7 +109,8 @@ export function TopBar() {
                 </div>
 
                 {/* Scrollable nav content */}
-                <div className="flex-1 overflow-y-auto py-3 px-2 space-y-1">
+                <div className="flex-1 overflow-y-auto py-3 px-3 space-y-1">
+                    <DrawerSearchTrigger onClick={close} />
 
                     {/* Overview, Broad Market, Sectoral Indices — collapsible sections */}
                     {groups.map((group) => {

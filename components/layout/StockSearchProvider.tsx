@@ -28,10 +28,7 @@ export function StockSearchProvider({ searchIndex }: { searchIndex: StockSearchI
  */
 export function SidebarSearchTrigger() {
     const openSearch = useCallback(() => {
-        // Dispatch a synthetic ⌘K event to trigger the global search
-        document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
-        );
+        window.dispatchEvent(new CustomEvent("open-stock-search"));
     }, []);
 
     return (
@@ -50,13 +47,31 @@ export function SidebarSearchTrigger() {
 }
 
 /**
+ * Trigger button specifically styled for the mobile menu (drawer).
+ */
+export function DrawerSearchTrigger({ onClick }: { onClick?: () => void }) {
+    const openSearch = useCallback(() => {
+        if (onClick) onClick();
+        window.dispatchEvent(new CustomEvent("open-stock-search"));
+    }, [onClick]);
+
+    return (
+        <button
+            onClick={openSearch}
+            className="flex items-center gap-2 w-full px-3 py-2.5 bg-[#111118] border border-[#1e1e2e] rounded-lg text-slate-400 hover:text-slate-200 transition-colors mb-4"
+        >
+            <Search className="h-4 w-4 text-slate-500" />
+            <span className="text-[13px] text-left flex-1 font-medium">Search stock tickers...</span>
+        </button>
+    );
+}
+
+/**
  * Compact trigger for the mobile TopBar — just a search icon.
  */
 export function MobileSearchTrigger() {
     const openSearch = useCallback(() => {
-        document.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
-        );
+        window.dispatchEvent(new CustomEvent("open-stock-search"));
     }, []);
 
     return (

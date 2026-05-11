@@ -5012,6 +5012,13 @@
       "category": "industries"
     }
   ],
+  "LINCOLN": [
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
+    }
+  ],
   "LINDEINDIA": [
     {
       "id": "market_breadth_nifty500",

@@ -1830,7 +1830,8 @@
             "AJANTPHARM.NS",
             "NATCOPHARM.NS",
             "GRANULES.NS",
-            "JBCHEPHARM.NS"
+            "JBCHEPHARM.NS",
+            "LINCOLN.NS"
         ],
         "below": [
             "CIPLA.NS",

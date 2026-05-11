@@ -34,7 +34,5 @@ export function makeTradingViewUrl(ticker: string): string {
 }
 
 export function getTickerLabel(ticker: string): string {
-    const clean = ticker.replace(".NS", "").replace(".BO", "");
-    if (clean === "IDEA") return "Vodafone Idea";
-    return clean;
+    return ticker.replace(".NS", "").replace(".BO", "");
 }

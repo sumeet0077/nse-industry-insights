@@ -222,6 +222,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         const tickersToOpen = Array.from(allTickers);
         if (tickersToOpen.length === 0) return;
 
+        // Limit opening tabs to 25 to prevent browser hanging
+        if (tickersToOpen.length > 25) {
+            alert(`Opening ${tickersToOpen.length} tabs might slow down your browser. Please use the "Copy Watchlist" button instead and paste it directly into TradingView.`);
+            return;
+        }
+
         tickersToOpen.forEach((ticker, index) => {
             setTimeout(() => {
                 const url = makeTradingViewUrl(ticker);

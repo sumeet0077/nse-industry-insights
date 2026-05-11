@@ -7,7 +7,7 @@ import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useState, useRef, useEffect } from "react";
-import { makeTradingViewUrl } from "@/lib/utils";
+import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
 
 interface IndexDetailPageProps {
     title: string;
@@ -185,7 +185,7 @@ export function IndexDetailPage({
                                                     rel="noopener noreferrer"
                                                     className="text-xs bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded hover:bg-emerald-500/20 transition-colors font-mono"
                                                 >
-                                                    {ticker.replace(".NS", "").replace(".BO", "")}
+                                                    {getTickerLabel(ticker)}
                                                 </a>
                                             ))}
                                         </div>
@@ -209,7 +209,7 @@ export function IndexDetailPage({
                                                     rel="noopener noreferrer"
                                                     className="text-xs bg-red-500/10 text-red-300 px-2 py-1 rounded hover:bg-red-500/20 transition-colors font-mono"
                                                 >
-                                                    {ticker.replace(".NS", "").replace(".BO", "")}
+                                                    {getTickerLabel(ticker)}
                                                 </a>
                                             ))}
                                         </div>
@@ -234,7 +234,7 @@ export function IndexDetailPage({
                                                 rel="noopener noreferrer"
                                                 className="text-xs bg-amber-500/10 text-amber-300 px-2 py-1 rounded hover:bg-amber-500/20 transition-colors font-mono"
                                             >
-                                                {ticker.replace(".NS", "").replace(".BO", "")}
+                                                {getTickerLabel(ticker)}
                                             </a>
                                         ))}
                                     </div>

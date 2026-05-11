@@ -32,3 +32,9 @@ export function makeTradingViewUrl(ticker: string): string {
     const exchange = ticker.includes(".BO") ? "BSE" : "NSE";
     return `https://www.tradingview.com/chart/?symbol=${exchange}:${tvSymbol}`;
 }
+
+export function getTickerLabel(ticker: string): string {
+    const clean = ticker.replace(".NS", "").replace(".BO", "");
+    if (clean === "IDEA") return "Vodafone Idea";
+    return clean;
+}

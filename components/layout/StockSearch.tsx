@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X, ArrowRight, Command } from "lucide-react";
+import { getTickerLabel } from "@/lib/utils";
 
 interface ThemeEntry {
     id: string;
@@ -214,7 +215,7 @@ export function StockSearch({ searchIndex }: StockSearchProps) {
                                         <div className="flex items-center justify-between gap-3">
                                             <div className="flex-1 min-w-0">
                                                 <span className="text-sm font-semibold text-slate-200">
-                                                    {ticker}
+                                                    {getTickerLabel(ticker)}
                                                 </span>
                                                 <div className="flex flex-wrap gap-1.5 mt-1.5">
                                                     {themes.map((theme) => (

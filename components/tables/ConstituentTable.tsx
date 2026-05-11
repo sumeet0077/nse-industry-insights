@@ -2,7 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { makeTradingViewUrl } from "@/lib/utils";
+import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
@@ -123,6 +123,12 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
 
         if (tickersToOpen.length === 0) return;
 
+        // Limit opening tabs to 25 to prevent browser hanging
+        if (tickersToOpen.length > 25) {
+            alert(`Opening ${tickersToOpen.length} tabs might slow down your browser. Please use the "Copy Watchlist" button instead and paste it directly into TradingView.`);
+            return;
+        }
+
         // Open tabs with a staggered delay to help browser process popups
         tickersToOpen.forEach((ticker, index) => {
             setTimeout(() => {
@@ -156,7 +162,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 cellRenderer: (params: { value: string }) => {
                     if (!params.value) return null;
                     const url = makeTradingViewUrl(params.value);
-                    const label = params.value.replace(".NS", "").replace(".BO", "");
+                    const label = getTickerLabel(params.value);
                     return (
                         <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
                             {label}

@@ -51,7 +51,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useState<TrendDirection>("off");
     const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
-    const [trendLookback, setTrendLookback] = useState(10);
+    const [trendLookback, setTrendLookback] = useState(12);
 
     // Category filters
     const [showBroadMarket, setShowBroadMarket] = useState(true);
@@ -300,8 +300,8 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             onChange={(e) => {
                                 const newTail = parseInt(e.target.value);
                                 setTailLength(newTail);
-                                // Clamp lookback so it never exceeds tail length
-                                if (trendLookback > newTail) setTrendLookback(newTail);
+                                // Make lookback equal to tail length as requested
+                                setTrendLookback(newTail);
                             }}
                             className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 mt-2"
                         />

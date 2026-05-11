@@ -190,8 +190,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             resizable: true,
             suppressMovable: true,
             filter: true,
-            flex: 1,
-            minWidth: 100,
+            minWidth: 80,
         }),
         []
     );
@@ -199,6 +198,17 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     const toggleColumn = (col: string) => {
         setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
     };
+
+    // Auto-fit columns whenever visible columns change
+    useEffect(() => {
+        const api = gridRef.current?.api;
+        if (api) {
+            // Use a small timeout to ensure AG Grid has processed the column visibility change
+            setTimeout(() => {
+                api.autoSizeAllColumns(false);
+            }, 50);
+        }
+    }, [visibleColumns]);
 
     const isExternalFilterPresent = useCallback(() => {
         return searchQuery !== "" || showSelectedOnly;
@@ -395,7 +405,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     </div>
                 </div>
             </div>
-            <div ref={tableRef} className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px]" style={{ height: Math.max(Math.min(data.length * 35 + 80, 800), 500) }}>
+            <div ref={tableRef} className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px] w-fit max-w-full" style={{ height: Math.max(Math.min(data.length * 35 + 80, 800), 500) }}>
                 <AgGridReact
                     ref={gridRef}
                     theme={myTheme}

@@ -70,7 +70,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_agrochemicals_and_fertilisers", title: "Agrochemicals & Fertilisers", description: "Agrochemicals & Fertiliser Companies", dataFile: "breadth_theme_agrochemicals_and_fertilisers", category: "industries" },
     { id: "breadth_theme_textiles", title: "Textiles", description: "Textile Companies", dataFile: "breadth_theme_textiles", category: "industries" },
     { id: "breadth_theme_paints", title: "Paints", description: "Paint Companies", dataFile: "breadth_theme_paints", category: "industries" },
-    { id: "breadth_theme_jewellery_gold", title: "Jewellery & Gold", description: "Jewellery & Gold Retailers", dataFile: "breadth_theme_jewellery_gold", category: "industries" },
+    { id: "breadth_theme_jewellery_and_gold", title: "Jewellery & Gold", description: "Jewellery & Gold Retailers", dataFile: "breadth_theme_jewellery_and_gold", category: "industries" },
     { id: "breadth_theme_silver", title: "Silver", description: "Silver Producers", dataFile: "breadth_theme_silver", category: "industries" },
     { id: "breadth_theme_critical_minerals", title: "Critical Minerals", description: "Critical Mineral Companies", dataFile: "breadth_theme_critical_minerals", category: "industries" },
     { id: "breadth_theme_metals_and_mining", title: "Metals & Mining", description: "Metals & Mining Companies", dataFile: "breadth_theme_metals_and_mining", category: "industries" },

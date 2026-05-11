@@ -3140,6 +3140,13 @@
       "category": "sectors"
     }
   ],
+  "GOLDIAM": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
+    }
+  ],
   "GPIL": [
     {
       "id": "market_breadth_nifty500",
@@ -4639,6 +4646,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
     },
     {
       "id": "breadth_theme_luxury",
@@ -6393,6 +6405,13 @@
       "category": "industries"
     }
   ],
+  "PNGJL": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
+    }
+  ],
   "POLICYBZR": [
     {
       "id": "market_breadth_nifty500",
@@ -7152,6 +7171,13 @@
       "category": "industries"
     }
   ],
+  "SENCO": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
+    }
+  ],
   "SESHAPAPER": [
     {
       "id": "breadth_theme_paper",
@@ -7290,6 +7316,13 @@
     {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "SKYGOLD": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
       "category": "industries"
     }
   ],
@@ -7879,6 +7912,13 @@
       "category": "industries"
     }
   ],
+  "THANGAMAYL": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
+    }
+  ],
   "THELEELA": [
     {
       "id": "market_breadth_nifty500",
@@ -7995,6 +8035,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
+      "category": "industries"
     },
     {
       "id": "breadth_theme_luxury",

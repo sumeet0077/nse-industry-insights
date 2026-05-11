@@ -1545,13 +1545,14 @@
         ],
         "new_stock": []
     },
-    "Jewellery (Gold)": {
+    "Jewellery & Gold": {
         "above": [
             "TITAN.NS",
+            "SENCO.NS",
+            "PNGJL.NS",
+            "SKYGOLD.NS",
             "GOLDIAM.NS",
-            "THANGAMAYL.NS",
-            "MUTHOOTFIN.NS",
-            "MANAPPURAM.NS"
+            "THANGAMAYL.NS"
         ],
         "below": [
             "KALYANKJIL.NS"

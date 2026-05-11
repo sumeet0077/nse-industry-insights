@@ -405,7 +405,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     </div>
                 </div>
             </div>
-            <div ref={tableRef} className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px] w-fit max-w-full" style={{ height: Math.max(Math.min(data.length * 35 + 80, 800), 500) }}>
+            <div ref={tableRef} className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px] w-full" style={{ height: Math.max(Math.min(data.length * 35 + 80, 800), 500) }}>
                 <AgGridReact
                     ref={gridRef}
                     theme={myTheme}

@@ -197,6 +197,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_asset_management",
+      "title": "Asset Management",
+      "category": "industries"
     }
   ],
   "ACC": [
@@ -290,6 +295,11 @@
     {
       "id": "breadth_theme_green_hydrogen",
       "title": "Green Hydrogen",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
       "category": "industries"
     }
   ],
@@ -578,6 +588,11 @@
       "id": "breadth_theme_power_tandd",
       "title": "Power T&D",
       "category": "industries"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
     }
   ],
   "APLAPOLLO": [
@@ -626,6 +641,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
     }
   ],
   "APTUS": [
@@ -925,6 +945,13 @@
       "category": "industries"
     }
   ],
+  "BAJAJELEC": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
   "BAJAJFINSV": [
     {
       "id": "market_breadth_nifty50",
@@ -995,6 +1022,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
     }
   ],
   "BALRAMCHIN": [
@@ -1346,6 +1378,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "BORORENEW": [
@@ -1381,6 +1418,13 @@
     {
       "id": "breadth_theme_oil_and_gas_downstream",
       "title": "Oil & Gas Downstream",
+      "category": "industries"
+    }
+  ],
+  "BPL": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],
@@ -1643,6 +1687,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
     }
   ],
   "CEMPRO": [
@@ -1832,6 +1881,16 @@
     }
   ],
   "CIEINDIA": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
     {
       "id": "breadth_theme_auto_ancillary",
       "title": "Auto Ancillary",
@@ -2080,6 +2139,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "CUB": [
@@ -2371,6 +2435,11 @@
     {
       "id": "breadth_theme_semiconductors_and_ems",
       "title": "Semiconductors & EMS",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],
@@ -2697,6 +2766,13 @@
       "category": "industries"
     }
   ],
+  "EUREKAFORB": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
   "EXIDEIND": [
     {
       "id": "market_breadth_nifty500",
@@ -2763,6 +2839,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
     }
   ],
   "FINEORG": [
@@ -3147,6 +3228,13 @@
       "category": "industries"
     }
   ],
+  "GOODYEAR": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
+    }
+  ],
   "GPIL": [
     {
       "id": "market_breadth_nifty500",
@@ -3274,23 +3362,6 @@
       "category": "industries"
     }
   ],
-  "GSPL": [
-    {
-      "id": "market_breadth_nifty500",
-      "title": "Nifty 500",
-      "category": "broad-market"
-    },
-    {
-      "id": "market_breadth_smallcap",
-      "title": "Nifty Smallcap 250",
-      "category": "broad-market"
-    },
-    {
-      "id": "breadth_theme_oil_and_gas_midstream",
-      "title": "Oil & Gas Midstream",
-      "category": "industries"
-    }
-  ],
   "GUJGASLTD": [
     {
       "id": "breadth_theme_oil_and_gas_midstream",
@@ -3339,6 +3410,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "HBLENGINE": [
@@ -3387,6 +3463,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_asset_management",
+      "title": "Asset Management",
+      "category": "industries"
     }
   ],
   "HDFCBANK": [
@@ -3709,6 +3790,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_asset_management",
+      "title": "Asset Management",
+      "category": "industries"
     }
   ],
   "ICICIBANK": [
@@ -4076,6 +4162,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
+      "category": "industries"
     }
   ],
   "INTELLECT": [
@@ -4421,6 +4512,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
     }
   ],
   "JMFINANCIL": [
@@ -4497,6 +4593,11 @@
     {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
       "category": "industries"
     }
   ],
@@ -4728,6 +4829,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
     }
   ],
   "KFINTECH": [
@@ -5487,6 +5593,13 @@
       "category": "broad-market"
     }
   ],
+  "MODIRUBBER": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
+    }
+  ],
   "MOIL": [
     {
       "id": "breadth_theme_critical_minerals",
@@ -5564,6 +5677,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
     }
   ],
   "MRPL": [
@@ -5629,6 +5747,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_asset_management",
+      "title": "Asset Management",
+      "category": "industries"
     }
   ],
   "NATCOPHARM": [
@@ -5856,6 +5979,11 @@
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
+      "category": "industries"
     }
   ],
   "NIACL": [
@@ -5952,6 +6080,11 @@
     {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
       "category": "industries"
     }
   ],
@@ -6429,6 +6562,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
     }
   ],
   "POLYMED": [
@@ -6884,6 +7022,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
     }
   ],
   "RUSHIL": [
@@ -7310,6 +7453,11 @@
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
+      "category": "industries"
     }
   ],
   "SKFINDIA": [
@@ -7565,6 +7713,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
+      "category": "industries"
     }
   ],
   "SWANCORP": [
@@ -7588,6 +7741,13 @@
     {
       "id": "breadth_theme_retail_and_e_commerce",
       "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
+  "SYMPHONY": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],
@@ -7740,6 +7900,11 @@
     {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
       "category": "industries"
     }
   ],
@@ -8098,6 +8263,13 @@
       "category": "industries"
     }
   ],
+  "TOLINS": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
+    }
+  ],
   "TORNTPHARM": [
     {
       "id": "market_breadth_nifty500",
@@ -8214,6 +8386,13 @@
       "category": "industries"
     }
   ],
+  "TTKPRESTIG": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
   "TTML": [
     {
       "id": "market_breadth_nifty500",
@@ -8245,6 +8424,13 @@
     {
       "id": "breadth_theme_two_and_three_wheelers",
       "title": "Two & Three Wheelers",
+      "category": "industries"
+    }
+  ],
+  "TVSSRICHAK": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
       "category": "industries"
     }
   ],
@@ -8415,6 +8601,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_asset_management",
+      "title": "Asset Management",
+      "category": "industries"
     }
   ],
   "UTTAMSUGAR": [
@@ -8465,6 +8656,18 @@
     {
       "id": "breadth_theme_silver",
       "title": "Silver",
+      "category": "industries"
+    }
+  ],
+  "VGUARD": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
       "category": "industries"
     }
   ],
@@ -8523,6 +8726,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "VTL": [
@@ -8612,6 +8820,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "WIPRO": [

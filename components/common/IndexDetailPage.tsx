@@ -2,6 +2,7 @@
 "use client";
 
 import { BreadthChart, ParticipationChart } from "@/components/charts/BreadthChart";
+import { ThemePriceChart } from "@/components/charts/ThemePriceChart";
 import { MetricCardsRow } from "@/components/common/MetricCard";
 import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
@@ -17,6 +18,7 @@ interface IndexDetailPageProps {
     marketStatus?: MarketStatusEntry | null;
     isIndustry?: boolean;
     globalLatestDate?: string | null;
+    themeId: string;
 }
 
 export function IndexDetailPage({
@@ -27,8 +29,9 @@ export function IndexDetailPage({
     marketStatus,
     isIndustry = false,
     globalLatestDate,
+    themeId,
 }: IndexDetailPageProps) {
-    const [activeTab, setActiveTab] = useState<"chart" | "constituents">("constituents");
+    const [activeTab, setActiveTab] = useState<"chart" | "constituents" | "price">("constituents");
     const [showCagr, setShowCagr] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -153,7 +156,16 @@ export function IndexDetailPage({
                             : "text-slate-400 hover:text-white"
                             }`}
                     >
-                        📊 Breadth Chart
+                        📊 Market Breadth
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("price")}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "price"
+                            ? "text-blue-400 border-b-2 border-blue-400"
+                            : "text-slate-400 hover:text-white"
+                            }`}
+                    >
+                        📈 Chart
                     </button>
                 </div>
 
@@ -251,6 +263,10 @@ export function IndexDetailPage({
                 <div>
                     <ConstituentTable data={displayConstituents} showCagr={showCagr} />
                 </div>
+            )}
+
+            {activeTab === "price" && (
+                <ThemePriceChart primaryData={breadthData} title={title} themeId={themeId} />
             )}
         </div>
     );

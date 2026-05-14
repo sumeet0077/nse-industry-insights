@@ -34,6 +34,7 @@ The dashboard leans heavily on the custom `useLocalStorage` hook (`hooks/useLoca
 
 ## 6. Key Components
 - **`SectorRotationClient.tsx`**: Renders the Relative Rotation Graph (RRG). Includes a complex "Trend Scanner" that can iteratively check if historical tail points are rising/falling based on Momentum, Ratio, or Both.
+- **`ThemePriceChart.tsx`**: A highly interactive price trend chart. Supports timeframe switching (D/W/M), custom technical indicators (SMA/EMA), and cross-theme comparisons normalized to percentage change.
 - **`StocksMasterClient.tsx`**: A stateful master view of all configured themes. Includes granular stock-level filtering where a user can selectively uncheck constituents within a sector to isolate their view.
 - **`PerformanceHeatmap.tsx`**: The main landing page grid aggregating all sectoral performances. Interacts heavily with AG Grid's column state API to save/restore layout changes.
 

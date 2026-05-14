@@ -55,6 +55,7 @@ export default async function BroadMarketPage({ params }: Props) {
             constituentData={constituents}
             marketStatus={marketStatus}
             globalLatestDate={getLatestDataDate()}
+            themeId={config.id}
         />
     );
 }

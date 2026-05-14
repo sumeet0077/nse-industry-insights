@@ -56,6 +56,7 @@ export default async function IndustryPage({ params }: Props) {
             marketStatus={marketStatus}
             isIndustry={true}
             globalLatestDate={getLatestDataDate()}
+            themeId={config.id}
         />
     );
 }

@@ -220,7 +220,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         });
 
         return data;
-    }, [allConfigs, selectedThemeIds, performanceData, marketStatus, constituentPerformance, statusKeys, sectorSortCol, sectorSortDesc, stockSortCol, stockSortDesc]);
+    }, [allConfigs, selectedThemeIds, performanceData, marketStatus, constituentPerformance, statusKeys, sectorSortCol, sectorSortDesc, stockSortCol, stockSortDesc, selectedStocksBySector]);
 
     const formatPct = (val?: number | null) => {
         if (val == null) return "—";
@@ -464,9 +464,9 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     {sectorData.map(group => {
                         const secVal = group.perf ? group.perf[sectorSortCol as keyof PerformanceRow] : null;
                         return (
-                            <div key={group.config.id} className="bg-[#111118] border border-[#1e1e2e] rounded-xl overflow-hidden flex flex-col shadow-lg">
+                            <div key={group.config.id} className="bg-[#111118] border border-[#1e1e2e] rounded-xl flex flex-col shadow-lg">
                                 {/* Sector Header */}
-                                <div className="bg-gradient-to-r from-slate-900 to-[#111118] p-4 border-b border-slate-800">
+                                <div className="bg-gradient-to-r from-slate-900 to-[#111118] p-4 border-b border-slate-800 rounded-t-xl">
                                     <div className="flex justify-between items-start mb-2">
                                         <h2 className="text-base font-bold text-slate-200">{group.config.title}</h2>
                                         <div className="flex items-center gap-2">

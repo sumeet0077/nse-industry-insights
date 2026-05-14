@@ -236,7 +236,8 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                     const price = param.seriesData.get(primarySeries) as any;
                     if (price !== undefined) {
                         const rawVal = price.value !== undefined ? price.value : price;
-                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${currentTitle}</span> <span class="text-white">${rawVal.toFixed(2)}${isComparing ? '%' : ''}</span></div>`;
+                        const titleColorClass = isComparing ? 'text-white' : 'text-blue-400';
+                        html += `<div class="flex justify-between gap-4"><span class="${titleColorClass} font-semibold">${currentTitle}</span> <span class="text-white">${rawVal.toFixed(2)}${isComparing ? '%' : ''}</span></div>`;
                     }
                     
                     // Indicators
@@ -485,6 +486,12 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                         )}
                     </div>
 
+                    {/* Primary Theme Legend */}
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-800/50 border border-slate-700 text-[10px] font-bold text-slate-300">
+                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: comparisons.length > 0 ? '#ffffff' : '#3b82f6' }} />
+                        {title}
+                    </div>
+
                     {comparisons.map(c => (
                         <div key={c.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-300">
                             <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c.color }} />
@@ -501,14 +508,14 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                             type="date" 
                             value={startDate} 
                             onChange={e => setStartDate(e.target.value)} 
-                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[10px] focus:outline-none focus:border-blue-500"
+                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-blue-500 cursor-pointer [color-scheme:dark]"
                         />
                         <span className="text-slate-500 text-[10px]">to</span>
                         <input 
                             type="date" 
                             value={endDate} 
                             onChange={e => setEndDate(e.target.value)} 
-                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[10px] focus:outline-none focus:border-blue-500"
+                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[11px] focus:outline-none focus:border-blue-500 cursor-pointer [color-scheme:dark]"
                         />
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, Check, ChevronDown, ChevronUp, Download, CheckSquare, LayoutGrid, List } from "lucide-react";
+import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2 } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
@@ -44,6 +44,8 @@ const SORT_OPTIONS = [
     { label: "3 Months", value: "3 Months", stockValue: "3M" },
     { label: "6 Months", value: "6 Months", stockValue: "6M" },
     { label: "1 Year", value: "1 Year", stockValue: "1Y" },
+    { label: "3 Years", value: "3 Years", stockValue: "3Y" },
+    { label: "5 Years", value: "5 Years", stockValue: "5Y" },
     { label: "RS (20D)", value: "RS (20D)", stockValue: "RS (20D)" },
     { label: "RS (50D)", value: "RS (50D)", stockValue: "RS (50D)" },
 ];
@@ -52,6 +54,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     const [selectedThemeIds, setSelectedThemeIds] = useState<string[]>([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [activeCategory, setActiveCategory] = useState<string>("all");
     
     const [sectorSortCol, setSectorSortCol] = useState<keyof PerformanceRow>("1 Week");
     const [sectorSortDesc, setSectorSortDesc] = useState(true);
@@ -61,14 +64,21 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
     const [viewMode, setViewMode] = useState<"grid" | "stack">("grid");
 
+    const [visibleColumns, setVisibleColumns] = useState<string[]>(["1D", "1W", "1M", "RS (20D)"]);
+    const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
+
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const columnsDropdownRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
 
-    // Close dropdown on outside click
+    // Close dropdowns on outside click
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setIsDropdownOpen(false);
+            }
+            if (columnsDropdownRef.current && !columnsDropdownRef.current.contains(event.target as Node)) {
+                setIsColumnsDropdownOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -78,10 +88,14 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     const statusKeys = useMemo(() => Object.keys(marketStatus), [marketStatus]);
 
     const filteredConfigs = useMemo(() => {
-        if (!searchQuery) return allConfigs;
+        let base = allConfigs;
+        if (activeCategory !== "all") {
+            base = base.filter(c => c.category === activeCategory);
+        }
+        if (!searchQuery) return base;
         const lowerQ = searchQuery.toLowerCase();
-        return allConfigs.filter(c => c.title.toLowerCase().includes(lowerQ));
-    }, [allConfigs, searchQuery]);
+        return base.filter(c => c.title.toLowerCase().includes(lowerQ));
+    }, [allConfigs, searchQuery, activeCategory]);
 
     const toggleTheme = (id: string) => {
         setSelectedThemeIds(prev => 
@@ -89,8 +103,24 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         );
     };
 
+    const handleSelectAll = () => {
+        const idsToAdd = filteredConfigs.map(c => c.id).filter(id => !selectedThemeIds.includes(id));
+        setSelectedThemeIds(prev => [...prev, ...idsToAdd]);
+    };
+
+    const handleDeselectAll = () => {
+        const idsToRemove = filteredConfigs.map(c => c.id);
+        setSelectedThemeIds(prev => prev.filter(id => !idsToRemove.includes(id)));
+    };
+
     const clearSelection = () => {
         setSelectedThemeIds([]);
+    };
+
+    const toggleColumn = (col: string) => {
+        setVisibleColumns(prev => 
+            prev.includes(col) ? prev.filter(x => x !== col) : [...prev, col]
+        );
     };
 
     // Calculate Sector Data
@@ -114,17 +144,9 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
             // Get Stock Performances
             const stocks = tickers.map(ticker => {
                 let stockPerf: ConstituentPerformance | null = null;
-                // Search constituentPerformance (it's keyed by something, wait... no, it's flat! 
-                // Wait, constituentPerformance is `Record<string, Record<string, ConstituentPerformance>>`?
-                // Actually `Record<string, ConstituentPerformance>` if it's flat ticker->perf. Let's check type:
-                // Types says `Record<string, Record<string, ConstituentPerformance>>`. That means it's grouped. By what?
-                // Wait, let's look at the structure I dumped earlier. 
-                // Ah, my dump was `{"GODREJPROP.NS": {"1D": ...}}`. That's `Record<string, ConstituentPerformance>`.
-                // I will safely traverse it.
                 if ((constituentPerformance as any)[ticker]) {
                     stockPerf = (constituentPerformance as any)[ticker];
                 } else {
-                    // Maybe nested? Let's search keys just in case
                     for (const groupKey of Object.keys(constituentPerformance)) {
                         if ((constituentPerformance as any)[groupKey][ticker]) {
                             stockPerf = (constituentPerformance as any)[groupKey][ticker];
@@ -210,25 +232,48 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     </div>
 
                     {isDropdownOpen && (
-                        <div className="absolute z-50 top-full left-0 w-full mt-2 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl max-h-[350px] flex flex-col overflow-hidden">
-                            <div className="p-2 border-b border-slate-700/50 relative">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
-                                <input 
-                                    type="text" 
-                                    placeholder="Search sectors..." 
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full bg-[#111118] border border-slate-700 rounded py-1.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-blue-500"
-                                />
+                        <div className="absolute z-50 top-full left-0 w-full mt-2 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl max-h-[450px] flex flex-col overflow-hidden">
+                            {/* Category Filters */}
+                            <div className="flex bg-[#111118] p-1 border-b border-slate-700/50 text-[11px] font-medium">
+                                {["all", "broad-market", "sectors", "industries"].map(cat => (
+                                    <button 
+                                        key={cat} 
+                                        onClick={() => setActiveCategory(cat)}
+                                        className={`flex-1 py-1.5 px-2 rounded capitalize transition-colors ${activeCategory === cat ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-slate-300'}`}
+                                    >
+                                        {cat.replace('-', ' ')}
+                                    </button>
+                                ))}
                             </div>
+                            {/* Actions & Search */}
+                            <div className="p-2 border-b border-slate-700/50 bg-[#1a1a2e] flex flex-col gap-2">
+                                <div className="flex justify-between items-center px-1">
+                                    <span className="text-xs text-slate-400">{filteredConfigs.length} available</span>
+                                    <div className="flex gap-2">
+                                        <button onClick={handleSelectAll} className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 bg-blue-500/10 px-2 py-1 rounded transition-colors">Select All</button>
+                                        <button onClick={handleDeselectAll} className="text-[11px] font-semibold text-slate-300 hover:text-white bg-slate-700/50 px-2 py-1 rounded transition-colors">Deselect All</button>
+                                    </div>
+                                </div>
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search..." 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-[#111118] border border-slate-700 rounded py-1.5 pl-8 pr-3 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                                    />
+                                </div>
+                            </div>
+                            {/* List */}
                             <div className="overflow-y-auto flex-1 p-1">
                                 {filteredConfigs.map(config => (
                                     <button
                                         key={config.id}
                                         onClick={() => toggleTheme(config.id)}
-                                        className="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-blue-500/10 hover:text-blue-400 rounded flex items-center justify-between"
+                                        className="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-blue-500/10 hover:text-blue-400 rounded flex items-center justify-between group transition-colors"
                                     >
-                                        {config.title}
+                                        <span>{config.title} <span className="text-[10px] text-slate-600 ml-2 uppercase opacity-0 group-hover:opacity-100 transition-opacity">{config.category.replace('-', ' ')}</span></span>
                                         {selectedThemeIds.includes(config.id) && <Check size={14} className="text-blue-500" />}
                                     </button>
                                 ))}
@@ -238,7 +283,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 </div>
 
                 {/* Sector Sorting */}
-                <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <div className="flex flex-col gap-1.5 min-w-[180px]">
                     <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sort Sectors By</label>
                     <div className="flex bg-[#1a1a2e] border border-slate-700/60 rounded-md">
                         <select 
@@ -261,7 +306,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 </div>
 
                 {/* Stock Sorting */}
-                <div className="flex flex-col gap-1.5 min-w-[200px]">
+                <div className="flex flex-col gap-1.5 min-w-[180px]">
                     <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Sort Stocks By</label>
                     <div className="flex bg-[#1a1a2e] border border-slate-700/60 rounded-md">
                         <select 
@@ -281,6 +326,37 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                             {stockSortDesc ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                         </button>
                     </div>
+                </div>
+
+                {/* Column Selector */}
+                <div className="relative" ref={columnsDropdownRef}>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Columns</label>
+                        <button
+                            onClick={() => setIsColumnsDropdownOpen(!isColumnsDropdownOpen)}
+                            className="bg-[#1a1a2e] border border-slate-700/60 rounded-md px-3 py-2 text-sm text-slate-300 flex items-center gap-2 hover:bg-slate-800 transition-colors"
+                        >
+                            <Settings2 size={16} className="text-slate-400" />
+                            <span>{visibleColumns.length} Selected</span>
+                            <ChevronDown size={14} className="text-slate-500" />
+                        </button>
+                    </div>
+                    {isColumnsDropdownOpen && (
+                        <div className="absolute z-50 top-full right-0 mt-2 w-48 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl p-2 flex flex-col gap-1">
+                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1 mb-1 border-b border-slate-700/50">Visible Metrics</div>
+                            {SORT_OPTIONS.map(opt => (
+                                <label key={opt.stockValue} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer group">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={visibleColumns.includes(opt.stockValue)}
+                                        onChange={() => toggleColumn(opt.stockValue)}
+                                        className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
+                                    />
+                                    <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt.label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Actions */}
@@ -308,7 +384,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                             onClick={clearSelection}
                             className="text-xs text-slate-500 hover:text-red-400 underline transition-colors"
                         >
-                            Clear
+                            Clear All
                         </button>
                     )}
                     <CaptureScreenshot 
@@ -367,19 +443,14 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                         <thead className="text-slate-500 bg-slate-900/50 font-semibold border-b border-slate-800">
                                             <tr>
                                                 <th className="px-4 py-2">Stock</th>
-                                                <th className="px-3 py-2 text-right">1D</th>
-                                                <th className="px-3 py-2 text-right">1W</th>
-                                                <th className="px-3 py-2 text-right">1M</th>
-                                                <th className="px-4 py-2 text-right">RS(20D)</th>
+                                                {/* Dynamic Headers */}
+                                                {SORT_OPTIONS.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => (
+                                                    <th key={opt.stockValue} className="px-3 py-2 text-right">{opt.label}</th>
+                                                ))}
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-800/60 font-mono">
                                             {group.stocks.map((stock) => {
-                                                const d1 = stock.perf?.["1D"];
-                                                const w1 = stock.perf?.["1W"];
-                                                const m1 = stock.perf?.["1M"];
-                                                const rs20 = stock.perf?.["RS (20D)"];
-                                                
                                                 return (
                                                     <tr key={stock.ticker} className="hover:bg-white/[0.02] transition-colors">
                                                         <td className="px-4 py-2">
@@ -387,24 +458,32 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                                 {stock.label}
                                                             </a>
                                                         </td>
-                                                        <td className={`px-3 py-2 text-right ${!d1 ? "text-slate-600" : d1 > 0 ? "text-emerald-400" : d1 < 0 ? "text-red-400" : "text-slate-400"}`}>
-                                                            {formatPct(d1)}
-                                                        </td>
-                                                        <td className={`px-3 py-2 text-right ${!w1 ? "text-slate-600" : w1 > 0 ? "text-emerald-400" : w1 < 0 ? "text-red-400" : "text-slate-400"}`}>
-                                                            {formatPct(w1)}
-                                                        </td>
-                                                        <td className={`px-3 py-2 text-right ${!m1 ? "text-slate-600" : m1 > 0 ? "text-emerald-400" : m1 < 0 ? "text-red-400" : "text-slate-400"}`}>
-                                                            {formatPct(m1)}
-                                                        </td>
-                                                        <td className={`px-4 py-2 text-right ${!rs20 ? "text-slate-600" : rs20 > 100 ? "text-emerald-400" : "text-red-400"}`}>
-                                                            {formatNum(rs20)}
-                                                        </td>
+                                                        {/* Dynamic Cells */}
+                                                        {SORT_OPTIONS.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
+                                                            const val = stock.perf?.[opt.stockValue as keyof ConstituentPerformance] as number;
+                                                            const isRS = opt.stockValue.includes("RS");
+                                                            
+                                                            let colorClass = "text-slate-400";
+                                                            if (!val) {
+                                                                colorClass = "text-slate-600";
+                                                            } else if (isRS) {
+                                                                colorClass = val > 100 ? "text-emerald-400" : "text-red-400";
+                                                            } else {
+                                                                colorClass = val > 0 ? "text-emerald-400" : val < 0 ? "text-red-400" : "text-slate-400";
+                                                            }
+
+                                                            return (
+                                                                <td key={opt.stockValue} className={`px-3 py-2 text-right ${colorClass}`}>
+                                                                    {isRS ? formatNum(val) : formatPct(val)}
+                                                                </td>
+                                                            );
+                                                        })}
                                                     </tr>
                                                 );
                                             })}
                                             {group.stocks.length === 0 && (
                                                 <tr>
-                                                    <td colSpan={5} className="px-4 py-6 text-center text-slate-600 font-sans italic">
+                                                    <td colSpan={visibleColumns.length + 1} className="px-4 py-6 text-center text-slate-600 font-sans italic">
                                                         No constituent data available
                                                     </td>
                                                 </tr>

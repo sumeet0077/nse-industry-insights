@@ -46,24 +46,36 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
     const [isAddingComparison, setIsAddingComparison] = useState(false);
     const [compareSearch, setCompareSearch] = useState("");
     const [showSettings, setShowSettings] = useState(false);
+    
+    const [startDate, setStartDate] = useState<string>("");
+    const [endDate, setEndDate] = useState<string>("");
+
+    // 0. Filter Data by Date
+    const filteredPrimaryData = useMemo(() => {
+        return primaryData.filter(d => {
+            if (startDate && d.Date < startDate) return false;
+            if (endDate && d.Date > endDate) return false;
+            return true;
+        });
+    }, [primaryData, startDate, endDate]);
 
     // 1. Data Aggregation
     const displayData = useMemo(() => {
-        if (timeframe === "D") return primaryData;
+        if (timeframe === "D") return filteredPrimaryData;
 
         const aggregated: BreadthDataPoint[] = [];
         let currentGroup: BreadthDataPoint[] = [];
 
-        primaryData.forEach((d, i) => {
+        filteredPrimaryData.forEach((d, i) => {
             currentGroup.push(d);
             const date = new Date(d.Date);
-            const isLast = i === primaryData.length - 1;
+            const isLast = i === filteredPrimaryData.length - 1;
 
             let shouldFlush = false;
             if (timeframe === "W") {
                 if (date.getDay() === 0 || isLast) shouldFlush = true;
             } else if (timeframe === "M") {
-                const nextDate = i < primaryData.length - 1 ? new Date(primaryData[i+1].Date) : null;
+                const nextDate = i < filteredPrimaryData.length - 1 ? new Date(filteredPrimaryData[i+1].Date) : null;
                 if (!nextDate || nextDate.getMonth() !== date.getMonth()) shouldFlush = true;
             }
 
@@ -74,17 +86,22 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
             }
         });
         return aggregated;
-    }, [primaryData, timeframe]);
+    }, [filteredPrimaryData, timeframe]);
+
+    const hasComparisons = comparisons.length > 0;
 
     // Format data for lightweight-charts
     const lwData = useMemo(() => {
+        const baseValue = displayData[0]?.Index_Close || 1;
         return displayData
             .filter(d => d.Index_Close !== undefined && d.Index_Close !== null)
             .map(d => ({
                 time: d.Date,
-                value: d.Index_Close as number
+                value: hasComparisons 
+                    ? (((d.Index_Close as number) / baseValue) - 1) * 100 
+                    : (d.Index_Close as number)
             }));
-    }, [displayData]);
+    }, [displayData, hasComparisons]);
 
     const indicatorData = useMemo(() => {
         const prices = displayData.map(d => d.Index_Close || 0);
@@ -110,17 +127,24 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
         const result: Record<string, { time: string, value: number }[]> = {};
         
         comparisons.forEach(comp => {
-            const compDisplayData = timeframe === "D" ? comp.data : aggregateData(comp.data, timeframe);
+            const compFiltered = comp.data.filter(d => {
+                if (startDate && d.Date < startDate) return false;
+                if (endDate && d.Date > endDate) return false;
+                return true;
+            });
+            const compDisplayData = timeframe === "D" ? compFiltered : aggregateData(compFiltered, timeframe);
+            const baseValue = compDisplayData[0]?.Index_Close || 1;
+            
             const formatted = compDisplayData
                 .filter(d => d.Index_Close !== undefined && d.Index_Close !== null)
                 .map(d => ({
                     time: d.Date,
-                    value: d.Index_Close as number
+                    value: (((d.Index_Close as number) / baseValue) - 1) * 100
                 }));
             result[comp.id] = formatted;
         });
         return result;
-    }, [comparisons, timeframe]);
+    }, [comparisons, timeframe, startDate, endDate]);
 
     // Refs for latest state to be used inside subscribeCrosshairMove closure
     const latestTitleRef = useRef(title);
@@ -207,14 +231,16 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                     const currentTitle = latestTitleRef.current;
                     const currentIndicators = latestIndicatorsRef.current;
                     const currentComparisons = latestComparisonsRef.current;
+                    const isComparing = currentComparisons.length > 0;
                     
                     const price = param.seriesData.get(primarySeries) as any;
                     if (price !== undefined) {
-                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${currentTitle}</span> <span class="text-white">${price.value !== undefined ? price.value.toFixed(2) : price.toFixed(2)}</span></div>`;
+                        const rawVal = price.value !== undefined ? price.value : price;
+                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${currentTitle}</span> <span class="text-white">${rawVal.toFixed(2)}${isComparing ? '%' : ''}</span></div>`;
                     }
                     
                     // Indicators
-                    if (currentComparisons.length === 0) {
+                    if (!isComparing) {
                         currentIndicators.forEach(ind => {
                             const ref = indicatorSeriesRefs.current[ind.id];
                             if (ref) {
@@ -274,13 +300,11 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
     useEffect(() => {
         if (!chartRef.current || !primarySeriesRef.current) return;
         const chart = chartRef.current;
-
-        // 1. Determine mode
-        const hasComparisons = comparisons.length > 0;
         
+        // Use normal price scale mode. When comparing, the data itself is already converted to percentages.
         chart.applyOptions({
             rightPriceScale: {
-                mode: hasComparisons ? PriceScaleMode.Percentage : PriceScaleMode.Normal,
+                mode: PriceScaleMode.Normal,
             }
         });
 
@@ -318,6 +342,10 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                 topColor: 'rgba(255, 255, 255, 0)',
                 bottomColor: 'rgba(255, 255, 255, 0)',
                 lineWidth: 2,
+                priceFormat: {
+                    type: 'custom',
+                    formatter: (price: number) => price.toFixed(2) + '%',
+                }
             });
 
             comparisons.forEach(comp => {
@@ -325,9 +353,8 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                     color: comp.color,
                     lineWidth: 2,
                     priceFormat: {
-                        type: 'price',
-                        precision: 2,
-                        minMove: 0.01,
+                        type: 'custom',
+                        formatter: (price: number) => price.toFixed(2) + '%',
                     },
                 });
                 series.setData(comparisonDataMap[comp.id] || []);
@@ -340,12 +367,17 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                 topColor: 'rgba(59, 130, 246, 0.4)',
                 bottomColor: 'rgba(59, 130, 246, 0.0)',
                 lineWidth: 2,
+                priceFormat: {
+                    type: 'price',
+                    precision: 2,
+                    minMove: 0.01,
+                }
             });
         }
 
         chart.timeScale().fitContent();
 
-    }, [lwData, indicators, comparisons, indicatorData, comparisonDataMap]);
+    }, [lwData, indicators, comparisons, indicatorData, comparisonDataMap, hasComparisons]);
 
 
     const addComparison = async (config: IndexConfig) => {
@@ -460,9 +492,38 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                             <X size={10} className="cursor-pointer hover:text-white" onClick={() => removeComparison(c.id)} />
                         </div>
                     ))}
+                    
+                    <div className="h-4 w-[1px] bg-slate-800 mx-2" />
+                    
+                    {/* Date Filters */}
+                    <div className="flex items-center gap-1.5">
+                        <input 
+                            type="date" 
+                            value={startDate} 
+                            onChange={e => setStartDate(e.target.value)} 
+                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[10px] focus:outline-none focus:border-blue-500"
+                        />
+                        <span className="text-slate-500 text-[10px]">to</span>
+                        <input 
+                            type="date" 
+                            value={endDate} 
+                            onChange={e => setEndDate(e.target.value)} 
+                            className="bg-[#0a0a0f] border border-[#1e1e2e] text-slate-300 rounded px-2 py-1 text-[10px] focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-2">
+                    <button 
+                        onClick={() => {
+                            setStartDate("");
+                            setEndDate("");
+                            if (chartRef.current) chartRef.current.timeScale().fitContent();
+                        }}
+                        className="px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded text-[10px] transition-colors border border-[#1e1e2e]"
+                    >
+                        Reset View
+                    </button>
                     <button 
                         onClick={() => setShowSettings(!showSettings)}
                         className={`p-1.5 rounded-lg border transition-all ${

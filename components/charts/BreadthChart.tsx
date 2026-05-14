@@ -12,6 +12,7 @@ interface BreadthChartProps {
 export function BreadthChart({ data, title }: BreadthChartProps) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const chartRef = useRef<IChartApi | null>(null);
     
     // Formatting data
     const lwData = data
@@ -50,6 +51,7 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
             },
             autoSize: true,
         });
+        chartRef.current = chart;
 
         // Oversold background (Green)
         const oversoldBg = chart.addSeries(AreaSeries, {
@@ -149,12 +151,20 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3">
-            <h3 className="text-sm font-semibold text-white mb-2">
-                Percentage of Stocks Above 200-Day SMA
-                <span className="text-slate-500 font-normal ml-2 text-xs">
-                    (Latest: {latestDateStr})
-                </span>
-            </h3>
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-semibold text-white">
+                    Percentage of Stocks Above 200-Day SMA
+                    <span className="text-slate-500 font-normal ml-2 text-xs">
+                        (Latest: {latestDateStr})
+                    </span>
+                </h3>
+                <button 
+                    onClick={() => chartRef.current?.timeScale().fitContent()}
+                    className="px-3 py-1 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded text-[10px] transition-colors border border-[#1e1e2e]"
+                >
+                    Reset View
+                </button>
+            </div>
             <div className="relative w-full h-[500px]">
                 <div ref={chartContainerRef} className="absolute inset-0" />
                 <div 
@@ -170,6 +180,7 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
 export function ParticipationChart({ data, title }: BreadthChartProps) {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const chartRef = useRef<IChartApi | null>(null);
 
     const totalData = data.map(d => ({
         time: d.Date,
@@ -210,6 +221,7 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
             },
             autoSize: true,
         });
+        chartRef.current = chart;
 
         // Background / Total (Red layer for Below)
         const totalSeries = chart.addSeries(AreaSeries, {
@@ -289,7 +301,15 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 mt-4">
-            <h3 className="text-sm font-semibold text-white mb-2">Market Participation</h3>
+            <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-semibold text-white">Market Participation</h3>
+                <button 
+                    onClick={() => chartRef.current?.timeScale().fitContent()}
+                    className="px-3 py-1 bg-slate-800/50 hover:bg-slate-700 text-slate-300 rounded text-[10px] transition-colors border border-[#1e1e2e]"
+                >
+                    Reset View
+                </button>
+            </div>
             <div className="relative w-full h-[400px]">
                 <div ref={chartContainerRef} className="absolute inset-0" />
                 <div 

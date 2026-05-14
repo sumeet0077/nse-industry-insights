@@ -26,11 +26,15 @@ export function getReturnColor(value: number | null | undefined): string {
     return "text-gray-300";
 }
 
-export function makeTradingViewUrl(ticker: string): string {
+export function makeTradingViewSymbol(ticker: string): string {
     const clean = ticker.replace(".NS", "").replace(".BO", "");
     const tvSymbol = clean.replace(/-/g, "_").replace(/&/g, "_");
     const exchange = ticker.includes(".BO") ? "BSE" : "NSE";
-    return `https://www.tradingview.com/chart/?symbol=${exchange}:${tvSymbol}`;
+    return `${exchange}:${tvSymbol}`;
+}
+
+export function makeTradingViewUrl(ticker: string): string {
+    return `https://www.tradingview.com/chart/?symbol=${makeTradingViewSymbol(ticker)}`;
 }
 
 export function getTickerLabel(ticker: string): string {

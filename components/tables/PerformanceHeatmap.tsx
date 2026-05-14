@@ -6,7 +6,7 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
-import { makeTradingViewUrl } from "@/lib/utils";
+import { makeTradingViewUrl, makeTradingViewSymbol } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
@@ -163,11 +163,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
 
         if (allTickers.size === 0) return;
 
-        const formatted = Array.from(allTickers).map(t => {
-            const clean = t.replace(".NS", "").replace(".BO", "");
-            const prefix = t.includes(".BO") ? "BSE" : "NSE";
-            return `${prefix}:${clean}`;
-        }).join(", ");
+        const formatted = Array.from(allTickers).map(t => makeTradingViewSymbol(t)).join(", ");
 
         navigator.clipboard.writeText(formatted).then(() => {
             setIsCopied(true);

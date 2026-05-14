@@ -2,7 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
+import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol } from "@/lib/utils";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { METRIC_CONFIG } from "@/lib/config";
@@ -101,11 +101,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
 
         if (tickersToCopy.length === 0) return;
 
-        const formatted = tickersToCopy.map(t => {
-            const clean = t.replace(".NS", "").replace(".BO", "");
-            const prefix = t.includes(".BO") ? "BSE" : "NSE";
-            return `${prefix}:${clean}`;
-        }).join(", ");
+        const formatted = tickersToCopy.map(t => makeTradingViewSymbol(t)).join(", ");
 
         navigator.clipboard.writeText(formatted).then(() => {
             setIsCopied(true);

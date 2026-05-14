@@ -122,6 +122,17 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
         return result;
     }, [comparisons, timeframe]);
 
+    // Refs for latest state to be used inside subscribeCrosshairMove closure
+    const latestTitleRef = useRef(title);
+    const latestIndicatorsRef = useRef(indicators);
+    const latestComparisonsRef = useRef(comparisons);
+
+    useEffect(() => {
+        latestTitleRef.current = title;
+        latestIndicatorsRef.current = indicators;
+        latestComparisonsRef.current = comparisons;
+    }, [title, indicators, comparisons]);
+
     // Chart Initialization and Updates
     useEffect(() => {
         if (!chartContainerRef.current) return;
@@ -193,14 +204,18 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                     const dateStr = param.time as string;
                     let html = `<div class="font-bold mb-1 border-b border-slate-700 pb-1">${dateStr}</div>`;
                     
+                    const currentTitle = latestTitleRef.current;
+                    const currentIndicators = latestIndicatorsRef.current;
+                    const currentComparisons = latestComparisonsRef.current;
+                    
                     const price = param.seriesData.get(primarySeries) as any;
                     if (price !== undefined) {
-                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${title}</span> <span class="text-white">${price.value !== undefined ? price.value.toFixed(2) : price.toFixed(2)}</span></div>`;
+                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${currentTitle}</span> <span class="text-white">${price.value !== undefined ? price.value.toFixed(2) : price.toFixed(2)}</span></div>`;
                     }
                     
                     // Indicators
-                    if (comparisons.length === 0) {
-                        indicators.forEach(ind => {
+                    if (currentComparisons.length === 0) {
+                        currentIndicators.forEach(ind => {
                             const ref = indicatorSeriesRefs.current[ind.id];
                             if (ref) {
                                 const val = param.seriesData.get(ref) as any;
@@ -213,7 +228,7 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                     }
 
                     // Comparisons
-                    comparisons.forEach(comp => {
+                    currentComparisons.forEach(comp => {
                         const ref = comparisonSeriesRefs.current[comp.id];
                         if (ref) {
                             const val = param.seriesData.get(ref) as any;

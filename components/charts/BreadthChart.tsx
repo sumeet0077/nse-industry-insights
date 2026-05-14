@@ -51,6 +51,29 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
             autoSize: true,
         });
 
+        // Oversold background (Green)
+        const oversoldBg = chart.addSeries(AreaSeries, {
+            lineColor: 'transparent',
+            topColor: 'rgba(34,197,94,0.02)', // Very faint green
+            bottomColor: 'rgba(34,197,94,0.15)', // Light green at bottom
+            lineWidth: 1,
+            priceLineVisible: false,
+            crosshairMarkerVisible: false,
+        });
+        oversoldBg.setData(lwData.map(d => ({ time: d.time, value: 20 })));
+
+        // Overbought background (Red)
+        const overboughtBg = chart.addSeries(AreaSeries, {
+            lineColor: 'transparent',
+            topColor: 'rgba(239,68,68,0.15)', // Light red at top
+            bottomColor: 'rgba(239,68,68,0.02)', // Very faint red
+            lineWidth: 1,
+            priceLineVisible: false,
+            crosshairMarkerVisible: false,
+            invertFilledArea: true, // Fills upwards from the baseline!
+        });
+        overboughtBg.setData(lwData.map(d => ({ time: d.time, value: 80 })));
+
         const series = chart.addSeries(LineSeries, {
             color: '#3b82f6',
             lineWidth: 2,

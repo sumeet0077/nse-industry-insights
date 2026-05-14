@@ -317,8 +317,10 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                                 side: "right" as const,
                                 zeroline: true,
                                 zerolinecolor: "#334155",
+                                fixedrange: false,
                             },
                             hovermode: "x unified" as const,
+                            dragmode: "pan",
                             showlegend: comparisons.length > 0,
                             legend: { orientation: "h" as const, y: 1.05, x: 0.5, xanchor: "center" as const },
                             autosize: true,
@@ -328,6 +330,7 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
                             responsive: true,
                             displayModeBar: true,
                             displaylogo: false,
+                            scrollZoom: true,
                             modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
                         }}
                         style={{ width: "100%", height: "650px" }}

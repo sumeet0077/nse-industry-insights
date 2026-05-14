@@ -85,6 +85,7 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                         },
                     ],
                     hovermode: "x unified" as const,
+                    dragmode: "pan",
                     showlegend: false,
                     autosize: true,
                     height: 500,
@@ -93,6 +94,7 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                     responsive: true,
                     displayModeBar: true,
                     displaylogo: false,
+                    scrollZoom: true,
                     modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
                 }}
                 style={{ width: "100%", height: "500px" }}
@@ -142,8 +144,9 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
                     },
                     margin: { l: 40, r: 15, t: 10, b: 40 },
                     xaxis: { gridcolor: "#1e1e2e", tickformat: "%b '%y", title: { text: "Date", standoff: 10 } },
-                    yaxis: { gridcolor: "#1e1e2e", title: { text: "Stocks", standoff: 10 } },
+                    yaxis: { gridcolor: "#1e1e2e", title: { text: "Stocks", standoff: 10 }, fixedrange: false },
                     hovermode: "x unified" as const,
+                    dragmode: "pan",
                     showlegend: true,
                     legend: { orientation: "h" as const, y: 1.12, x: 0.5, xanchor: "center" as const, font: { size: 10 } },
                     autosize: true,
@@ -153,6 +156,7 @@ export function ParticipationChart({ data, title }: BreadthChartProps) {
                     responsive: true,
                     displayModeBar: true,
                     displaylogo: false,
+                    scrollZoom: true,
                     modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
                 }}
                 style={{ width: "100%", height: "400px" }}

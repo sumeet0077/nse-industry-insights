@@ -141,6 +141,17 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         });
     };
 
+    const resetDefaults = () => {
+        setSelectedThemeIds([]);
+        setSelectedStocksBySector({});
+        setSectorSortCol("1 Week");
+        setSectorSortDesc(true);
+        setStockSortCol("1W");
+        setStockSortDesc(true);
+        setVisibleColumns(["1D", "1W", "1M", "RS (20D)"]);
+        setViewMode("grid");
+    };
+
     // Calculate Sector Data
     const sectorData = useMemo(() => {
         const selectedConfigs = allConfigs.filter(c => selectedThemeIds.includes(c.id));
@@ -386,8 +397,15 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
                 {/* Actions */}
                 <div className="flex items-center gap-3 pb-1 ml-auto">
+                    <button
+                        onClick={resetDefaults}
+                        className="text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors bg-[#1a1a2e] border border-slate-700/60 rounded-md px-3 py-2 flex items-center h-[38px] mt-auto"
+                        title="Reset all settings to default"
+                    >
+                        Reset Defaults
+                    </button>
                     {/* View Toggle */}
-                    <div className="flex bg-[#1a1a2e] border border-slate-700/60 rounded-md p-1">
+                    <div className="flex bg-[#1a1a2e] border border-slate-700/60 rounded-md p-1 mt-auto h-[38px]">
                         <button
                             onClick={() => setViewMode("grid")}
                             className={`p-1.5 rounded transition-colors ${viewMode === "grid" ? "bg-blue-500/20 text-blue-400" : "text-slate-500 hover:text-slate-300"}`}
@@ -412,11 +430,14 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                             Clear All
                         </button>
                     )}
-                    <CaptureScreenshot 
-                        targetRef={captureRef}
-                        filename="Stocks_Master"
-                        label="Screenshot"
-                    />
+
+                    <div className="mt-auto h-[38px]">
+                        <CaptureScreenshot 
+                            targetRef={captureRef} 
+                            filename="Stocks_Master"
+                            label="Screenshot"
+                        />
+                    </div>
                 </div>
             </div>
 

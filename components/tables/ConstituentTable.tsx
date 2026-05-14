@@ -6,6 +6,7 @@ import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { METRIC_CONFIG } from "@/lib/config";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -57,16 +58,20 @@ function returnCellClass(params: CellClassParams): string {
 
 export function ConstituentTable({ data, showCagr = false }: ConstituentTableProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+    const [showSelectedOnly, setShowSelectedOnly] = useLocalStorage("ct_showSelectedOnly", false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedTickers, setSelectedTickers] = useState<Set<string>>(new Set());
+    
+    // Store as array since Set isn't easily serializable to JSON for localStorage
+    const [selectedTickersArr, setSelectedTickersArr] = useLocalStorage<string[]>("ct_selectedTickers", []);
+    const selectedTickers = useMemo(() => new Set(selectedTickersArr), [selectedTickersArr]);
+    
     const [isCopied, setIsCopied] = useState(false);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
     const tableRef = useRef<HTMLDivElement>(null);
 
-    const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
+    const [visibleColumns, setVisibleColumns] = useLocalStorage<Record<string, boolean>>("ct_visibleColumns", () => {
         const initial: Record<string, boolean> = {};
         returnCols.forEach(c => initial[c] = true);
         return initial;
@@ -83,9 +88,10 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     }, []);
 
     const onSelectionChanged = useCallback((event: SelectionChangedEvent) => {
-        const selected = event.api.getSelectedRows() as ConstituentRow[];
-        setSelectedTickers(new Set(selected.map(r => r.ticker)));
-    }, []);
+        const selectedNodes = event.api.getSelectedNodes();
+        const selectedIds = selectedNodes.map(node => node.data.ticker);
+        setSelectedTickersArr(selectedIds);
+    }, [setSelectedTickersArr]);
 
     const handleCopyWatchlist = useCallback(() => {
         // Use selected tickers if any, otherwise use all data tickers
@@ -239,8 +245,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     };
 
     const clearSelection = () => {
-        setSelectedTickers(new Set());
-        setShowSelectedOnly(false);
+        setSelectedTickersArr([]);
         if (gridRef.current?.api) {
             gridRef.current.api.deselectAll();
         }
@@ -411,6 +416,23 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
                     onSelectionChanged={onSelectionChanged}
+                    onGridReady={(params: any) => {
+                        const storedState = window.localStorage.getItem("agGridState_constituent");
+                        if (storedState) {
+                            try {
+                                params.api.applyColumnState({ state: JSON.parse(storedState), applyOrder: true });
+                            } catch (e) { console.warn("Failed to apply AG grid state", e); }
+                        }
+                        params.api.forEachNode((node: IRowNode) => {
+                            if (selectedTickers.has(node.data.ticker)) node.setSelected(true);
+                        });
+                    }}
+                    onSortChanged={() => {
+                        if (gridRef.current?.api) {
+                            const state = gridRef.current.api.getColumnState();
+                            window.localStorage.setItem("agGridState_constituent", JSON.stringify(state));
+                        }
+                    }}
                 />
             </div>
         </div>

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2 } from "lucide-react";
+import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2, Filter } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { METRIC_CONFIG } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface StocksMasterClientProps {
     allConfigs: IndexConfig[];
@@ -39,24 +40,29 @@ function resolveMarketStatusKey(configTitle: string, statusKeys: string[]) {
 }
 
 export function StocksMasterClient({ allConfigs, performanceData, marketStatus, constituentPerformance }: StocksMasterClientProps) {
-    const [selectedThemeIds, setSelectedThemeIds] = useState<string[]>([]);
+    const [selectedThemeIds, setSelectedThemeIds] = useLocalStorage<string[]>("sm_themes", []);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [activeCategory, setActiveCategory] = useState<string>("all");
+    const [activeCategory, setActiveCategory] = useLocalStorage<string>("sm_category", "all");
     
-    const [sectorSortCol, setSectorSortCol] = useState<keyof PerformanceRow>("1 Week");
-    const [sectorSortDesc, setSectorSortDesc] = useState(true);
+    const [sectorSortCol, setSectorSortCol] = useLocalStorage<keyof PerformanceRow>("sm_sectorSort", "1 Week");
+    const [sectorSortDesc, setSectorSortDesc] = useLocalStorage("sm_sectorDesc", true);
     
-    const [stockSortCol, setStockSortCol] = useState<keyof ConstituentPerformance>("1W");
-    const [stockSortDesc, setStockSortDesc] = useState(true);
+    const [stockSortCol, setStockSortCol] = useLocalStorage<keyof ConstituentPerformance>("sm_stockSort", "1W");
+    const [stockSortDesc, setStockSortDesc] = useLocalStorage("sm_stockDesc", true);
 
-    const [viewMode, setViewMode] = useState<"grid" | "stack">("grid");
+    const [viewMode, setViewMode] = useLocalStorage<"grid" | "stack">("sm_view", "grid");
 
-    const [visibleColumns, setVisibleColumns] = useState<string[]>(["1D", "1W", "1M", "RS (20D)"]);
+    const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols", ["1D", "1W", "1M", "RS (20D)"]);
     const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
+
+    // Stock Selection per sector
+    const [selectedStocksBySector, setSelectedStocksBySector] = useLocalStorage<Record<string, string[]>>("sm_stocksBySector", {});
+    const [activeSectorDropdown, setActiveSectorDropdown] = useState<string | null>(null);
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const columnsDropdownRef = useRef<HTMLDivElement>(null);
+    const sectorStockDropdownRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
 
     // Close dropdowns on outside click
@@ -67,6 +73,9 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
             }
             if (columnsDropdownRef.current && !columnsDropdownRef.current.contains(event.target as Node)) {
                 setIsColumnsDropdownOpen(false);
+            }
+            if (sectorStockDropdownRef.current && !sectorStockDropdownRef.current.contains(event.target as Node)) {
+                setActiveSectorDropdown(null);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -109,6 +118,27 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         setVisibleColumns(prev => 
             prev.includes(col) ? prev.filter(x => x !== col) : [...prev, col]
         );
+    };
+
+    const toggleStockForSector = (sectorId: string, ticker: string) => {
+        setSelectedStocksBySector(prev => {
+            const currentSelected = prev[sectorId] || [];
+            let newSelected;
+            if (currentSelected.includes(ticker)) {
+                newSelected = currentSelected.filter(t => t !== ticker);
+            } else {
+                newSelected = [...currentSelected, ticker];
+            }
+            return { ...prev, [sectorId]: newSelected };
+        });
+    };
+
+    const clearStocksForSector = (sectorId: string) => {
+        setSelectedStocksBySector(prev => {
+            const copy = { ...prev };
+            delete copy[sectorId];
+            return copy;
+        });
     };
 
     // Calculate Sector Data
@@ -157,10 +187,17 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 return stockSortDesc ? valB - valA : valA - valB;
             });
 
+            // Filter Stocks if specific ones are selected
+            const selectedForThisSector = selectedStocksBySector[config.id] || [];
+            const filteredStocks = selectedForThisSector.length > 0 
+                ? stocks.filter(s => selectedForThisSector.includes(s.ticker))
+                : stocks;
+
             return {
                 config,
                 perf,
-                stocks
+                allStocks: stocks, // Keep all for the dropdown
+                stocks: filteredStocks
             };
         });
 
@@ -411,12 +448,56 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                 <div className="bg-gradient-to-r from-slate-900 to-[#111118] p-4 border-b border-slate-800">
                                     <div className="flex justify-between items-start mb-2">
                                         <h2 className="text-base font-bold text-slate-200">{group.config.title}</h2>
-                                        <div className={`text-sm font-semibold px-2 py-0.5 rounded ${
-                                            (secVal as number) > 0 ? "bg-emerald-500/10 text-emerald-400" : 
-                                            (secVal as number) < 0 ? "bg-red-500/10 text-red-400" : 
-                                            "bg-slate-500/10 text-slate-400"
-                                        }`}>
-                                            {sectorSortCol.includes("RS") ? formatNum(secVal as number) : formatPct(secVal as number)}
+                                        <div className="flex items-center gap-2">
+                                            <div className={`text-sm font-semibold px-2 py-0.5 rounded ${
+                                                (secVal as number) > 0 ? "bg-emerald-500/10 text-emerald-400" : 
+                                                (secVal as number) < 0 ? "bg-red-500/10 text-red-400" : 
+                                                "bg-slate-500/10 text-slate-400"
+                                            }`}>
+                                                {sectorSortCol.includes("RS") ? formatNum(secVal as number) : formatPct(secVal as number)}
+                                            </div>
+                                            <div className="relative">
+                                                <button 
+                                                    onClick={() => setActiveSectorDropdown(activeSectorDropdown === group.config.id ? null : group.config.id)}
+                                                    className={`p-1.5 rounded transition-colors ${
+                                                        (selectedStocksBySector[group.config.id]?.length || 0) > 0 
+                                                        ? "bg-blue-500/20 text-blue-400" 
+                                                        : "bg-slate-800/50 text-slate-400 hover:text-slate-300"
+                                                    }`}
+                                                    title="Filter specific stocks"
+                                                >
+                                                    <Filter size={14} />
+                                                </button>
+                                                {activeSectorDropdown === group.config.id && (
+                                                    <div ref={sectorStockDropdownRef} className="absolute z-50 top-full right-0 mt-1 w-64 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl flex flex-col max-h-[300px]">
+                                                        <div className="p-2 border-b border-slate-700/50 flex justify-between items-center">
+                                                            <span className="text-xs font-semibold text-slate-400">Select Stocks</span>
+                                                            <button 
+                                                                onClick={() => clearStocksForSector(group.config.id)}
+                                                                className="text-[10px] text-blue-400 hover:text-blue-300"
+                                                            >
+                                                                Show All
+                                                            </button>
+                                                        </div>
+                                                        <div className="overflow-y-auto p-1 flex-1">
+                                                            {group.allStocks.map(s => {
+                                                                const isSelected = (selectedStocksBySector[group.config.id] || []).includes(s.ticker);
+                                                                return (
+                                                                    <label key={s.ticker} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer group">
+                                                                        <input 
+                                                                            type="checkbox" 
+                                                                            checked={isSelected}
+                                                                            onChange={() => toggleStockForSector(group.config.id, s.ticker)}
+                                                                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
+                                                                        />
+                                                                        <span className="text-xs text-slate-300 font-mono group-hover:text-white truncate">{s.label}</span>
+                                                                    </label>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between text-xs text-slate-500 font-medium">

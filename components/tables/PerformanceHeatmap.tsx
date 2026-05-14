@@ -10,6 +10,7 @@ import { makeTradingViewUrl } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -64,23 +65,27 @@ function returnFormatter(params: ValueFormatterParams): string {
 const returnColumns = METRIC_CONFIG.map(m => m.label);
 
 export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: PerformanceHeatmapProps) {
-    const [showCagr, setShowCagr] = useState(false);
+    const [showCagr, setShowCagr] = useLocalStorage("ph_showCagr", false);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [showSelectedOnly, setShowSelectedOnly] = useState(false);
-    const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
+    const [showSelectedOnly, setShowSelectedOnly] = useLocalStorage("ph_showSelectedOnly", false);
+    
+    // Set is not serializable for localStorage directly, so we store string[] and convert
+    const [selectedThemesArr, setSelectedThemesArr] = useLocalStorage<string[]>("ph_selectedThemes", []);
+    const selectedThemes = useMemo(() => new Set(selectedThemesArr), [selectedThemesArr]);
+    
     const [isCopied, setIsCopied] = useState(false);
 
     // Category filters
-    const [showBroadMarket, setShowBroadMarket] = useState(true);
-    const [showSectors, setShowSectors] = useState(true);
-    const [showIndustries, setShowIndustries] = useState(true);
+    const [showBroadMarket, setShowBroadMarket] = useLocalStorage("ph_showBroadMarket", true);
+    const [showSectors, setShowSectors] = useLocalStorage("ph_showSectors", true);
+    const [showIndustries, setShowIndustries] = useLocalStorage("ph_showIndustries", true);
     
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
     const tableRef = useRef<HTMLDivElement>(null);
 
-    const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(() => {
+    const [visibleColumns, setVisibleColumns] = useLocalStorage<Record<string, boolean>>("ph_visibleColumns", () => {
         const initial: Record<string, boolean> = {};
         returnColumns.forEach(c => initial[c] = true);
         return initial;
@@ -98,10 +103,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     }, []);
 
     const onSelectionChanged = useCallback((event: SelectionChangedEvent) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const selected = event.api.getSelectedRows() as any[];
-        setSelectedThemes(new Set(selected.map(r => r["Theme/Index"])));
-    }, []);
+        const selectedNodes = event.api.getSelectedNodes();
+        const selectedIds = selectedNodes.map(node => node.data["Theme/Index"]);
+        setSelectedThemesArr(selectedIds);
+    }, [setSelectedThemesArr]);
 
     const handleCopyWatchlist = useCallback(() => {
         if (!marketStatus) return;
@@ -227,6 +232,32 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
             alert(`Opening ${tickersToOpen.length} tabs might slow down your browser. Please use the "Copy Watchlist" button instead and paste it directly into TradingView.`);
             return;
         }
+
+        const onGridReady = useCallback((params: any) => {
+            // Apply persisted state
+            const storedState = window.localStorage.getItem("agGridState_heatmap");
+            if (storedState) {
+                try {
+                    params.api.applyColumnState({ state: JSON.parse(storedState), applyOrder: true });
+                } catch (e) {
+                    console.warn("Failed to apply AG grid state", e);
+                }
+            }
+            
+            // Restore row selection
+            params.api.forEachNode((node: IRowNode) => {
+                if (selectedThemes.has(node.data["Theme/Index"])) {
+                    node.setSelected(true);
+                }
+            });
+        }, [selectedThemes]);
+
+        const onSortChanged = useCallback(() => {
+            if (gridRef.current?.api) {
+                const state = gridRef.current.api.getColumnState();
+                window.localStorage.setItem("agGridState_heatmap", JSON.stringify(state));
+            }
+        }, []);
 
         tickersToOpen.forEach((ticker, index) => {
             setTimeout(() => {
@@ -376,8 +407,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     };
 
     const clearSelection = () => {
-        setSelectedThemes(new Set());
-        setShowSelectedOnly(false);
+        setSelectedThemesArr([]);
         if (gridRef.current?.api) {
             gridRef.current.api.deselectAll();
         }
@@ -588,6 +618,23 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
                     onSelectionChanged={onSelectionChanged}
+                    onGridReady={(params: any) => {
+                        const storedState = window.localStorage.getItem("agGridState_heatmap");
+                        if (storedState) {
+                            try {
+                                params.api.applyColumnState({ state: JSON.parse(storedState), applyOrder: true });
+                            } catch (e) { console.warn("Failed to apply AG grid state", e); }
+                        }
+                        params.api.forEachNode((node: IRowNode) => {
+                            if (selectedThemes.has(node.data["Theme/Index"])) node.setSelected(true);
+                        });
+                    }}
+                    onSortChanged={() => {
+                        if (gridRef.current?.api) {
+                            const state = gridRef.current.api.getColumnState();
+                            window.localStorage.setItem("agGridState_heatmap", JSON.stringify(state));
+                        }
+                    }}
                 />
             </div>
         </div>

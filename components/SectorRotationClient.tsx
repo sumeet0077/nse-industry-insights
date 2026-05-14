@@ -4,9 +4,10 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
-import type { RRGDataPoint } from "@/types";
+import { IndexConfig, RRGDataPoint } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 
 interface SectorRotationClientProps {
@@ -34,29 +35,27 @@ type TrendDirection = "off" | "rising" | "falling";
 type TrendMetric = "momentum" | "ratio";
 
 export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
-    const [timeframe, setTimeframe] = useState<"D" | "W" | "M">("W");
-    const [tailLength, setTailLength] = useState(12);
+    const [timeframe, setTimeframe] = useLocalStorage<"D" | "W" | "M">("sr_timeframe", "W");
+    const [tailLength, setTailLength] = useLocalStorage("sr_tailLength", 12);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Filter defaults (Set to empty as per user preference for manual selection)
-    const defaults: string[] = [];
-    const [selectedTickers, setSelectedTickers] = useState<string[]>(defaults);
+    const [selectedTickers, setSelectedTickers] = useLocalStorage<string[]>("sr_selectedTickers", []);
     const [isSelecting, setIsSelecting] = useState(false);
 
     // Quadrant filters
     const allQuadrants = ["Leading", "Weakening", "Lagging", "Improving"];
-    const [selectedQuadrants, setSelectedQuadrants] = useState<string[]>(allQuadrants);
+    const [selectedQuadrants, setSelectedQuadrants] = useLocalStorage<string[]>("sr_selectedQuadrants", allQuadrants);
     const [expandedQuadrant, setExpandedQuadrant] = useState<string | null>(null);
 
     // Trend Scanner state
-    const [trendDirection, setTrendDirection] = useState<TrendDirection>("off");
-    const [trendMetric, setTrendMetric] = useState<TrendMetric>("momentum");
-    const [trendLookback, setTrendLookback] = useState(12);
+    const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirection>("sr_trendDirection", "off");
+    const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetric>("sr_trendMetric", "momentum");
+    const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 12);
 
     // Category filters
-    const [showBroadMarket, setShowBroadMarket] = useState(true);
-    const [showSectors, setShowSectors] = useState(true);
-    const [showIndustries, setShowIndustries] = useState(true);
+    const [showBroadMarket, setShowBroadMarket] = useLocalStorage("sr_showBroadMarket", true);
+    const [showSectors, setShowSectors] = useLocalStorage("sr_showSectors", true);
+    const [showIndustries, setShowIndustries] = useLocalStorage("sr_showIndustries", true);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
     const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
@@ -449,7 +448,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => { setTrendDirection("off"); setSelectedTickers(defaults); }}
+                                onClick={() => { setTrendDirection("off"); setSelectedTickers([]); }}
                                 className="text-[10px] uppercase font-bold text-slate-400 hover:text-slate-300 transition-colors"
                             >
                                 Reset

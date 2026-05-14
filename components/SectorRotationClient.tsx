@@ -4,8 +4,8 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
-import { IndexConfig, RRGDataPoint } from "@/types";
-import { ALL_CONFIGS } from "@/lib/config";
+import { IndexConfig, RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
+import { ALL_CONFIGS, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
@@ -31,11 +31,8 @@ function humanizeTickerId(raw: string): string {
         .replace(/\b\w/g, c => c.toUpperCase()); // Title Case
 }
 
-type TrendDirection = "off" | "rising" | "falling";
-type TrendMetric = "momentum" | "ratio";
-
 export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
-    const [timeframe, setTimeframe] = useLocalStorage<"D" | "W" | "M">("sr_timeframe", "W");
+    const [timeframe, setTimeframe] = useLocalStorage<TimeframeType>("sr_timeframe", "W");
     const [tailLength, setTailLength] = useLocalStorage("sr_tailLength", 12);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -43,13 +40,12 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [isSelecting, setIsSelecting] = useState(false);
 
     // Quadrant filters
-    const allQuadrants = ["Leading", "Weakening", "Lagging", "Improving"];
-    const [selectedQuadrants, setSelectedQuadrants] = useLocalStorage<string[]>("sr_selectedQuadrants", allQuadrants);
-    const [expandedQuadrant, setExpandedQuadrant] = useState<string | null>(null);
+    const [selectedQuadrants, setSelectedQuadrants] = useLocalStorage<QuadrantType[]>("sr_selectedQuadrants", [...QUADRANTS]);
+    const [expandedQuadrant, setExpandedQuadrant] = useState<QuadrantType | null>(null);
 
     // Trend Scanner state
-    const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirection>("sr_trendDirection", "off");
-    const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetric>("sr_trendMetric", "momentum");
+    const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirectionType>("sr_trendDirection", "off");
+    const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetricType>("sr_trendMetric", "momentum");
     const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 12);
 
     // Category filters
@@ -58,7 +54,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [showIndustries, setShowIndustries] = useLocalStorage("sr_showIndustries", true);
 
     const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
-    const timeframeLabel = timeframe === "D" ? "Daily" : timeframe === "W" ? "Weekly" : "Monthly";
+    const timeframeLabel = TIMEFRAMES[timeframe];
 
     // Build a lookup map ONCE from ALL_CONFIGS for O(1) matching
     const tickerLookup = useMemo(() => {
@@ -118,7 +114,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         }
     }
 
-    const getQuadrant = (pt?: RRGDataPoint) => {
+    const getQuadrant = (pt?: RRGDataPoint): QuadrantType | "Unknown" => {
         if (!pt) return "Unknown";
         if (pt.RS_Ratio > 100 && pt.RS_Momentum > 100) return "Leading";
         if (pt.RS_Ratio > 100 && pt.RS_Momentum <= 100) return "Weakening";
@@ -126,8 +122,8 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         return "Improving";
     };
 
-    const tickerQuadrants: Record<string, string> = {};
-    const quadrantCounts: Record<string, number> = { Leading: 0, Weakening: 0, Lagging: 0, Improving: 0 };
+    const tickerQuadrants: Record<string, QuadrantType | "Unknown"> = {};
+    const quadrantCounts: Record<QuadrantType, number> = { Leading: 0, Weakening: 0, Lagging: 0, Improving: 0 };
 
     // Extract unique titles and assign quadrants
     const allTickers = Array.from(new Set(currentData.map(d => d.Ticker))).sort();
@@ -135,7 +131,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     for (const t of allTickers) {
         const q = getQuadrant(latestPoints[t]);
         tickerQuadrants[t] = q;
-        if (quadrantCounts[q] !== undefined) quadrantCounts[q]++;
+        if (q !== "Unknown" && quadrantCounts[q] !== undefined) quadrantCounts[q]++;
     }
 
     const totalCount = allTickers.length || 1;
@@ -157,18 +153,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
             // Take the last (trendLookback + 1) points
             const tail = points.slice(-(trendLookback + 1));
-            const metric = trendMetric === "momentum" ? "RS_Momentum" : "RS_Ratio";
 
             let isMatch = true;
             for (let i = 1; i < tail.length; i++) {
-                const curr = tail[i][metric];
-                const prev = tail[i - 1][metric];
+                const currM = tail[i].RS_Momentum;
+                const prevM = tail[i - 1].RS_Momentum;
+                const currR = tail[i].RS_Ratio;
+                const prevR = tail[i - 1].RS_Ratio;
 
                 if (trendDirection === "rising") {
-                    if (curr <= prev) { isMatch = false; break; }
+                    if (trendMetric === "momentum" && currM <= prevM) { isMatch = false; break; }
+                    if (trendMetric === "ratio" && currR <= prevR) { isMatch = false; break; }
+                    if (trendMetric === "both" && (currM <= prevM || currR <= prevR)) { isMatch = false; break; }
                 } else {
                     // "falling" — decrease OR flat counts as falling
-                    if (curr > prev) { isMatch = false; break; }
+                    if (trendMetric === "momentum" && currM > prevM) { isMatch = false; break; }
+                    if (trendMetric === "ratio" && currR > prevR) { isMatch = false; break; }
+                    if (trendMetric === "both" && (currM > prevM || currR > prevR)) { isMatch = false; break; }
                 }
             }
 
@@ -185,7 +186,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     }, [trendMatchingTickers]);
 
     // Handler for direction change that auto-applies the scanner
-    const handleDirectionChange = useCallback((dir: TrendDirection) => {
+    const handleDirectionChange = useCallback((dir: TrendDirectionType) => {
         setTrendDirection(dir);
         if (dir === "off") return; // Don't change selection when turning off
         // We need to compute matches manually here since state updates are async
@@ -210,7 +211,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     // Filter by BOTH active tickers and active quadrants
     const filteredData = currentData.filter(d =>
         selectedTickers.includes(d.Ticker) &&
-        selectedQuadrants.includes(tickerQuadrants[d.Ticker])
+        selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType)
     );
 
     // Search-filtered tickers for the selector panel
@@ -228,7 +229,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
         }
     };
 
-    const toggleQuadrant = (quadrant: string) => {
+    const toggleQuadrant = (quadrant: QuadrantType) => {
         if (selectedQuadrants.includes(quadrant)) {
             setSelectedQuadrants(selectedQuadrants.filter(q => q !== quadrant));
         } else {
@@ -356,6 +357,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                                 {([
                                     { value: "momentum", label: "Momentum", desc: "RS-Momentum (ROC)" },
                                     { value: "ratio", label: "RS Ratio", desc: "RS-Ratio (Trend)" },
+                                    { value: "both", label: "Both", desc: "Both Momentum & Ratio" },
                                 ] as const).map(opt => (
                                     <button
                                         key={opt.value}
@@ -400,13 +402,8 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
                 <div className="border-t border-[#1e1e2e] pt-4">
                     <div className="mb-4 flex flex-wrap gap-4">
-                        {allQuadrants.map(q => {
-                            const colors: Record<string, string> = {
-                                Leading: "text-emerald-400",
-                                Weakening: "text-yellow-400",
-                                Lagging: "text-red-400",
-                                Improving: "text-blue-400",
-                            };
+                        {QUADRANTS.map(q => {
+                            const colorClass = `text-${QUADRANT_COLORS[q]}-400`;
                             return (
                                 <label key={q} className="flex items-center gap-1.5 cursor-pointer group">
                                     <input
@@ -415,7 +412,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                                         onChange={() => toggleQuadrant(q)}
                                         className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
                                     />
-                                    <span className={`text-[13px] font-semibold ${colors[q]}`}>
+                                    <span className={`text-[13px] font-semibold ${colorClass}`}>
                                         {q}
                                     </span>
                                     <span className="text-[11px] text-slate-500 font-medium bg-[#1a1a2e] px-1.5 py-0.5 rounded ml-1">
@@ -485,7 +482,9 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto px-2 pb-2 custom-scrollbar">
                                 {filteredAllTickers.map(ticker => {
                                     const q = tickerQuadrants[ticker];
-                                    const dotColor = q === "Leading" ? "bg-emerald-400" : q === "Weakening" ? "bg-yellow-400" : q === "Lagging" ? "bg-red-400" : "bg-blue-400";
+                                    const qColor = q !== "Unknown" ? QUADRANT_COLORS[q as QuadrantType] : "slate";
+                                    const dotColor = `bg-${qColor}-400`;
+                                    
                                     return (
                                         <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
                                             <input
@@ -516,7 +515,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
             {/* Selected Indices Listed by Quadrant Below Graph */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {allQuadrants.map(q => {
+                {QUADRANTS.map(q => {
                     if (!selectedQuadrants.includes(q)) return null;
 
                     // Show tickers that are both selected by user AND in this quadrant
@@ -524,14 +523,14 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
                     if (activeTickersInQuadrant.length === 0) return null;
 
-                    const colors: Record<string, string> = {
+                    const qColor = QUADRANT_COLORS[q];
+                    const tabStyles: Record<string, string> = {
                         Leading: "border-emerald-500/20 bg-emerald-500/5",
                         Weakening: "border-yellow-500/20 bg-yellow-500/5",
                         Lagging: "border-red-500/20 bg-red-500/5",
                         Improving: "border-blue-500/20 bg-blue-500/5",
                     };
-
-                    const textColors: Record<string, string> = {
+                    const textStyles: Record<string, string> = {
                         Leading: "text-emerald-400",
                         Weakening: "text-yellow-400",
                         Lagging: "text-red-400",
@@ -539,9 +538,9 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                     };
 
                     return (
-                        <div key={q} className={`border rounded-lg p-3 ${colors[q]}`}>
+                        <div key={q} className={`border rounded-lg p-3 ${tabStyles[q]}`}>
                             <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2">
-                                <h3 className={`text-sm font-bold flex items-center gap-2 ${textColors[q]}`}>
+                                <h3 className={`text-sm font-bold flex items-center gap-2 ${textStyles[q]}`}>
                                     {q}
                                     <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-white">{activeTickersInQuadrant.length}</span>
                                 </h3>
@@ -556,9 +555,9 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             {expandedQuadrant === q ? (
                                 // Full overlay view for screenshots
                                 <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
-                                    <div className={`w-full max-w-4xl max-h-[90vh] flex flex-col border rounded-xl shadow-2xl ${colors[q]}`}>
+                                    <div className={`w-full max-w-4xl max-h-[90vh] flex flex-col border rounded-xl shadow-2xl ${tabStyles[q]}`}>
                                         <div className="flex justify-between items-center p-4 border-b border-white/10 bg-[#111118]/80">
-                                            <h3 className={`text-xl font-bold flex items-center gap-3 ${textColors[q]}`}>
+                                            <h3 className={`text-xl font-bold flex items-center gap-3 ${textStyles[q]}`}>
                                                 {q} Quadrant Themes
                                                 <span className="text-xs bg-white/10 px-2 py-1 rounded text-white">{activeTickersInQuadrant.length} Themes</span>
                                             </h3>

@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2, Filter } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
-import { METRIC_CONFIG } from "@/lib/config";
+import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -271,7 +271,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                         <div className="absolute z-50 top-full left-0 w-full mt-2 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl max-h-[450px] flex flex-col overflow-hidden">
                             {/* Category Filters */}
                             <div className="flex bg-[#111118] p-1 border-b border-slate-700/50 text-[11px] font-medium">
-                                {["all", "broad-market", "sectors", "industries"].map(cat => (
+                                {["all", ...CATEGORIES].map(cat => (
                                     <button 
                                         key={cat} 
                                         onClick={() => setActiveCategory(cat)}

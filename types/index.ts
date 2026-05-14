@@ -53,12 +53,18 @@ export type MarketStatus = Record<string, MarketStatusEntry>;
 
 export type ConstituentPerformanceMap = Record<string, Record<string, ConstituentPerformance>>;
 
+export type ThemeCategory = "broad-market" | "sectors" | "industries";
+export type QuadrantType = "Leading" | "Weakening" | "Lagging" | "Improving";
+export type TimeframeType = "D" | "W" | "M";
+export type TrendMetricType = "momentum" | "ratio" | "both";
+export type TrendDirectionType = "off" | "rising" | "falling";
+
 export interface IndexConfig {
     id: string;
     title: string;
     description: string;
     dataFile: string;
-    category: "broad-market" | "sectors" | "industries";
+    category: ThemeCategory;
 }
 
 export interface MetricOption {

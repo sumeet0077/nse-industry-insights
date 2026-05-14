@@ -7,7 +7,20 @@
 // tab on that theme's page will silently disappear. Always check data.ts ALIASES
 // or add a new alias there if an exact match is not possible.
 
-import type { IndexConfig, MetricOption } from "@/types";
+import type { IndexConfig, MetricOption, ThemeCategory, QuadrantType, TimeframeType } from "@/types";
+
+// Global Constants
+export const CATEGORIES: ThemeCategory[] = ["broad-market", "sectors", "industries"];
+export const QUADRANTS: QuadrantType[] = ["Leading", "Weakening", "Lagging", "Improving"];
+export const TIMEFRAMES: Record<TimeframeType, string> = { D: "Daily", W: "Weekly", M: "Monthly" };
+
+// Quadrant UI Colors
+export const QUADRANT_COLORS: Record<QuadrantType, string> = {
+    Leading: "emerald",
+    Weakening: "yellow",
+    Lagging: "red",
+    Improving: "blue"
+};
 
 export const METRIC_CONFIG: MetricOption[] = [
     { label: "1 Day", value: "1 Day", stockValue: "1D" },

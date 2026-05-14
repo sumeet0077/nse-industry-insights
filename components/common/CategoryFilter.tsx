@@ -54,11 +54,13 @@ export function CategoryFilter({
     );
 }
 
+import type { ThemeCategory } from "@/types";
+
 /**
  * Given a theme/index title, resolve its category by looking it up in ALL_CONFIGS.
- * Returns "broad-market", "sectors", or "industries".
+ * Returns a ThemeCategory.
  */
-export function getCategoryForTitle(title: string, configs: { title: string; category: string }[]): string {
+export function getCategoryForTitle(title: string, configs: { title: string; category: ThemeCategory }[]): ThemeCategory {
     const lowerTitle = title.toLowerCase();
     const match = configs.find((c) => c.title.toLowerCase() === lowerTitle);
     return match?.category || "industries";

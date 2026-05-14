@@ -5,6 +5,7 @@ import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-communi
 import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { METRIC_CONFIG } from "@/lib/config";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -18,22 +19,12 @@ interface ConstituentTableProps {
     showCagr?: boolean;
 }
 
-const returnCols = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (5D)", "RS (10D)", "RS (20D)", "RS (50D)"];
+const returnCols = METRIC_CONFIG.map(m => m.label);
 
-const fieldMap: Record<string, string> = {
-    "1 Day": "1D",
-    "1 Week": "1W",
-    "1 Month": "1M",
-    "3 Months": "3M",
-    "6 Months": "6M",
-    "1 Year": "1Y",
-    "3 Years": "3Y",
-    "5 Years": "5Y",
-    "RS (5D)": "RS (5D)",
-    "RS (10D)": "RS (10D)",
-    "RS (20D)": "RS (20D)",
-    "RS (50D)": "RS (50D)"
-};
+const fieldMap: Record<string, string> = {};
+METRIC_CONFIG.forEach(m => {
+    fieldMap[m.label] = m.stockValue;
+});
 
 const myTheme = themeQuartz.withParams({
     backgroundColor: "#111118",

@@ -7,7 +7,22 @@
 // tab on that theme's page will silently disappear. Always check data.ts ALIASES
 // or add a new alias there if an exact match is not possible.
 
-import type { IndexConfig } from "@/types";
+import type { IndexConfig, MetricOption } from "@/types";
+
+export const METRIC_CONFIG: MetricOption[] = [
+    { label: "1 Day", value: "1 Day", stockValue: "1D" },
+    { label: "1 Week", value: "1 Week", stockValue: "1W" },
+    { label: "1 Month", value: "1 Month", stockValue: "1M" },
+    { label: "3 Months", value: "3 Months", stockValue: "3M" },
+    { label: "6 Months", value: "6 Months", stockValue: "6M" },
+    { label: "1 Year", value: "1 Year", stockValue: "1Y" },
+    { label: "3 Years", value: "3 Years", stockValue: "3Y" },
+    { label: "5 Years", value: "5 Years", stockValue: "5Y" },
+    { label: "RS (5D)", value: "RS (5D)", stockValue: "RS (5D)" },
+    { label: "RS (10D)", value: "RS (10D)", stockValue: "RS (10D)" },
+    { label: "RS (20D)", value: "RS (20D)", stockValue: "RS (20D)" },
+    { label: "RS (50D)", value: "RS (50D)", stockValue: "RS (50D)" },
+];
 
 export const BROAD_MARKET: IndexConfig[] = [
     { id: "market_breadth_nifty50", title: "Nifty 50", description: "Top 50 Blue-chip Companies", dataFile: "market_breadth_nifty50", category: "broad-market" },

@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2 } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
+import { METRIC_CONFIG } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 
@@ -36,19 +37,6 @@ function resolveMarketStatusKey(configTitle: string, statusKeys: string[]) {
     const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
     return statusKeys.find(k => k.toLowerCase() === resolvedTitle) || null;
 }
-
-const SORT_OPTIONS = [
-    { label: "1 Day", value: "1 Day", stockValue: "1D" },
-    { label: "1 Week", value: "1 Week", stockValue: "1W" },
-    { label: "1 Month", value: "1 Month", stockValue: "1M" },
-    { label: "3 Months", value: "3 Months", stockValue: "3M" },
-    { label: "6 Months", value: "6 Months", stockValue: "6M" },
-    { label: "1 Year", value: "1 Year", stockValue: "1Y" },
-    { label: "3 Years", value: "3 Years", stockValue: "3Y" },
-    { label: "5 Years", value: "5 Years", stockValue: "5Y" },
-    { label: "RS (20D)", value: "RS (20D)", stockValue: "RS (20D)" },
-    { label: "RS (50D)", value: "RS (50D)", stockValue: "RS (50D)" },
-];
 
 export function StocksMasterClient({ allConfigs, performanceData, marketStatus, constituentPerformance }: StocksMasterClientProps) {
     const [selectedThemeIds, setSelectedThemeIds] = useState<string[]>([]);
@@ -291,7 +279,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                             onChange={(e) => setSectorSortCol(e.target.value as keyof PerformanceRow)}
                             className="bg-transparent text-sm text-slate-200 px-3 py-2 flex-1 focus:outline-none appearance-none cursor-pointer"
                         >
-                            {SORT_OPTIONS.map(opt => (
+                            {METRIC_CONFIG.map(opt => (
                                 <option key={opt.value} value={opt.value} className="bg-[#111118]">{opt.label}</option>
                             ))}
                         </select>
@@ -314,7 +302,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                             onChange={(e) => setStockSortCol(e.target.value as keyof ConstituentPerformance)}
                             className="bg-transparent text-sm text-slate-200 px-3 py-2 flex-1 focus:outline-none appearance-none cursor-pointer"
                         >
-                            {SORT_OPTIONS.map(opt => (
+                            {METRIC_CONFIG.map(opt => (
                                 <option key={opt.stockValue} value={opt.stockValue} className="bg-[#111118]">{opt.label}</option>
                             ))}
                         </select>
@@ -344,7 +332,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     {isColumnsDropdownOpen && (
                         <div className="absolute z-50 top-full right-0 mt-2 w-48 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl p-2 flex flex-col gap-1">
                             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1 mb-1 border-b border-slate-700/50">Visible Metrics</div>
-                            {SORT_OPTIONS.map(opt => (
+                            {METRIC_CONFIG.map(opt => (
                                 <label key={opt.stockValue} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer group">
                                     <input 
                                         type="checkbox" 
@@ -444,7 +432,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                             <tr>
                                                 <th className="px-4 py-2">Stock</th>
                                                 {/* Dynamic Headers */}
-                                                {SORT_OPTIONS.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => (
+                                                {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => (
                                                     <th key={opt.stockValue} className="px-3 py-2 text-right">{opt.label}</th>
                                                 ))}
                                             </tr>
@@ -459,7 +447,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                             </a>
                                                         </td>
                                                         {/* Dynamic Cells */}
-                                                        {SORT_OPTIONS.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
+                                                        {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
                                                             const val = stock.perf?.[opt.stockValue as keyof ConstituentPerformance] as number;
                                                             const isRS = opt.stockValue.includes("RS");
                                                             

@@ -21,6 +21,8 @@ export interface PerformanceRow {
     "1 Year"?: number | null;
     "3 Years"?: number | null;
     "5 Years"?: number | null;
+    "RS (5D)"?: number | null;
+    "RS (10D)"?: number | null;
     "RS (20D)"?: number | null;
     "RS (50D)"?: number | null;
 }
@@ -35,6 +37,8 @@ export interface ConstituentPerformance {
     "1Y"?: number | null;
     "3Y"?: number | null;
     "5Y"?: number | null;
+    "RS (5D)"?: number | null;
+    "RS (10D)"?: number | null;
     "RS (20D)"?: number | null;
     "RS (50D)"?: number | null;
 }
@@ -55,6 +59,12 @@ export interface IndexConfig {
     description: string;
     dataFile: string;
     category: "broad-market" | "sectors" | "industries";
+}
+
+export interface MetricOption {
+    label: string;
+    value: string;
+    stockValue: string;
 }
 
 export interface RRGDataPoint {

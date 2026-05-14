@@ -5,7 +5,7 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { PerformanceRow, MarketStatus } from "@/types";
-import { ALL_CONFIGS } from "@/lib/config";
+import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
 import { makeTradingViewUrl } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
@@ -61,7 +61,7 @@ function returnFormatter(params: ValueFormatterParams): string {
     return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
 }
 
-const returnColumns = ["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year", "3 Years", "5 Years", "RS (5D)", "RS (10D)", "RS (20D)", "RS (50D)"];
+const returnColumns = METRIC_CONFIG.map(m => m.label);
 
 export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useState(false);

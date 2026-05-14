@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, Check, ChevronDown, ChevronUp, Download, CheckSquare } from "lucide-react";
+import { Search, X, Check, ChevronDown, ChevronUp, Download, CheckSquare, LayoutGrid, List } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
@@ -58,6 +58,8 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     
     const [stockSortCol, setStockSortCol] = useState<keyof ConstituentPerformance>("1W");
     const [stockSortDesc, setStockSortDesc] = useState(true);
+
+    const [viewMode, setViewMode] = useState<"grid" | "stack">("grid");
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
@@ -282,7 +284,25 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-3 pb-1">
+                <div className="flex items-center gap-3 pb-1 ml-auto">
+                    {/* View Toggle */}
+                    <div className="flex bg-[#1a1a2e] border border-slate-700/60 rounded-md p-1">
+                        <button
+                            onClick={() => setViewMode("grid")}
+                            className={`p-1.5 rounded transition-colors ${viewMode === "grid" ? "bg-blue-500/20 text-blue-400" : "text-slate-500 hover:text-slate-300"}`}
+                            title="Grid View"
+                        >
+                            <LayoutGrid size={16} />
+                        </button>
+                        <button
+                            onClick={() => setViewMode("stack")}
+                            className={`p-1.5 rounded transition-colors ${viewMode === "stack" ? "bg-blue-500/20 text-blue-400" : "text-slate-500 hover:text-slate-300"}`}
+                            title="Vertical Stack View"
+                        >
+                            <List size={16} />
+                        </button>
+                    </div>
+
                     {selectedThemeIds.length > 0 && (
                         <button
                             onClick={clearSelection}
@@ -313,7 +333,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
             ) : (
                 <div 
                     ref={captureRef} 
-                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 bg-[#0a0a0f] p-2 rounded-xl"
+                    className={`bg-[#0a0a0f] p-2 rounded-xl transition-all ${
+                        viewMode === "grid" 
+                            ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" 
+                            : "flex flex-col gap-6"
+                    }`}
                 >
                     {sectorData.map(group => {
                         const secVal = group.perf ? group.perf[sectorSortCol as keyof PerformanceRow] : null;

@@ -1,17 +1,8 @@
-// components/charts/BreadthChart.tsx
 "use client";
 
-import dynamic from "next/dynamic";
+import { useEffect, useRef } from "react";
+import { createChart, ColorType, CrosshairMode, IChartApi, ISeriesApi, LineSeries, AreaSeries } from "lightweight-charts";
 import type { BreadthDataPoint } from "@/types";
-
-const Plot = dynamic(() => import("react-plotly.js"), {
-    ssr: false,
-    loading: () => (
-        <div className="w-full h-[500px] flex items-center justify-center bg-slate-900/20 text-slate-400 rounded-lg animate-pulse">
-            Loading Chart...
-        </div>
-    ),
-});
 
 interface BreadthChartProps {
     data: BreadthDataPoint[];
@@ -19,7 +10,116 @@ interface BreadthChartProps {
 }
 
 export function BreadthChart({ data, title }: BreadthChartProps) {
-    if (!data || data.length === 0) return null;
+    const chartContainerRef = useRef<HTMLDivElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Formatting data
+    const lwData = data
+        .filter(d => d.Percentage !== undefined && d.Percentage !== null)
+        .map(d => ({
+            time: d.Date,
+            value: d.Percentage
+        }));
+
+    useEffect(() => {
+        if (!chartContainerRef.current || lwData.length === 0) return;
+
+        const chart = createChart(chartContainerRef.current, {
+            layout: {
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#94a3b8',
+                fontFamily: 'Inter, sans-serif',
+            },
+            grid: {
+                vertLines: { color: '#1e1e2e', style: 1 },
+                horzLines: { color: '#1e1e2e', style: 1 },
+            },
+            rightPriceScale: {
+                borderVisible: false,
+                scaleMargins: { top: 0.1, bottom: 0.1 },
+            },
+            timeScale: {
+                borderVisible: false,
+                timeVisible: true,
+                rightOffset: 5,
+            },
+            crosshair: {
+                mode: CrosshairMode.Normal,
+                vertLine: { width: 1, color: '#334155', style: 3 },
+                horzLine: { width: 1, color: '#334155', style: 3 },
+            },
+            autoSize: true,
+        });
+
+        const series = chart.addSeries(LineSeries, {
+            color: '#3b82f6',
+            lineWidth: 2,
+            priceFormat: {
+                type: 'price',
+                precision: 2,
+                minMove: 0.01,
+            },
+            autoscaleInfoProvider: () => ({
+                priceRange: {
+                    minValue: 0,
+                    maxValue: 100,
+                },
+            }),
+        });
+
+        // Add 80 and 20 lines
+        series.createPriceLine({ price: 80, color: 'rgba(34,197,94,0.5)', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Overbought' });
+        series.createPriceLine({ price: 20, color: 'rgba(239,68,68,0.5)', lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: 'Oversold' });
+        series.createPriceLine({ price: 50, color: 'gray', lineWidth: 1, lineStyle: 3, axisLabelVisible: false });
+
+        series.setData(lwData);
+        chart.timeScale().fitContent();
+
+        // Tooltip logic
+        const toolTip = tooltipRef.current;
+        if (toolTip) {
+            chart.subscribeCrosshairMove((param) => {
+                if (!param.point || !param.time || param.point.x < 0 || param.point.x > chartContainerRef.current!.clientWidth || param.point.y < 0 || param.point.y > chartContainerRef.current!.clientHeight) {
+                    toolTip.style.display = 'none';
+                } else {
+                    const dateStr = param.time as string;
+                    let html = `<div class="font-bold mb-1 border-b border-slate-700 pb-1">${dateStr}</div>`;
+                    
+                    const price = param.seriesData.get(series) as any;
+                    if (price !== undefined) {
+                        const val = price.value !== undefined ? price.value : price;
+                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">% Above 200 SMA</span> <span class="text-white">${val.toFixed(2)}%</span></div>`;
+                    }
+
+                    toolTip.innerHTML = html;
+                    toolTip.style.display = 'block';
+                    
+                    const toolTipWidth = 180;
+                    const toolTipHeight = 60;
+                    const margin = 15;
+                    const chartWidth = chartContainerRef.current!.clientWidth;
+                    const chartHeight = chartContainerRef.current!.clientHeight;
+                    
+                    let left = param.point.x + margin;
+                    if (left + toolTipWidth > chartWidth) {
+                        left = param.point.x - toolTipWidth - margin;
+                    }
+                    
+                    let top = param.point.y + margin;
+                    if (top + toolTipHeight > chartHeight) {
+                        top = param.point.y - toolTipHeight - margin;
+                    }
+                    
+                    toolTip.style.left = left + 'px';
+                    toolTip.style.top = top + 'px';
+                }
+            });
+        }
+
+        return () => {
+            chart.remove();
+        };
+    }, [lwData]);
 
     const latest = data[data.length - 1];
     const latestDateStr = latest?.Date ?? "";
@@ -32,135 +132,149 @@ export function BreadthChart({ data, title }: BreadthChartProps) {
                     (Latest: {latestDateStr})
                 </span>
             </h3>
-            <Plot
-                useResizeHandler={true}
-                data={[
-                    {
-                        x: data.map((d) => d.Date),
-                        y: data.map((d) => d.Percentage),
-                        type: "scatter",
-                        mode: "lines",
-                        name: "% Above 200 SMA",
-                        line: { color: "#3b82f6", width: 2 },
-                        hovertemplate: "%{y:.2f}%<extra></extra>",
-                    },
-                ]}
-                layout={{
-                    paper_bgcolor: "transparent",
-                    plot_bgcolor: "transparent",
-                    font: { color: "#94a3b8", family: "Inter, sans-serif", size: 11 },
-                    hoverlabel: {
-                        bgcolor: "#1e1e2e",
-                        font: { color: "#f8fafc", size: 12, family: "Inter, sans-serif" },
-                        bordercolor: "#334155",
-                    },
-                    margin: { l: 40, r: 15, t: 10, b: 40 },
-                    xaxis: {
-                        gridcolor: "#1e1e2e",
-                        tickformat: "%b '%y",
-                        rangeslider: { visible: true, thickness: 0.06, bgcolor: "#111118", borderwidth: 0 },
-                    },
-                    yaxis: {
-                        gridcolor: "#1e1e2e",
-                        range: [0, 100],
-                        ticksuffix: "%",
-                        title: { text: "Percentage (%)", standoff: 10 },
-                    },
-                    shapes: [
-                        // Green zone (bullish > 80%)
-                        { type: "rect", x0: 0, x1: 1, xref: "paper", y0: 80, y1: 100, fillcolor: "rgba(34,197,94,0.08)", line: { width: 0 }, layer: "below" },
-                        // Red zone (bearish < 20%)
-                        { type: "rect", x0: 0, x1: 1, xref: "paper", y0: 0, y1: 20, fillcolor: "rgba(239,68,68,0.08)", line: { width: 0 }, layer: "below" },
-                        // 50% neutral line
-                        { type: "line", x0: 0, x1: 1, xref: "paper", y0: 50, y1: 50, line: { color: "gray", width: 1, dash: "dash" } },
-                    ],
-                    annotations: [
-                        {
-                            x: 1, xref: "paper", y: 50, yref: "y",
-                            text: "Neutral (50%)",
-                            showarrow: false,
-                            font: { color: "#64748b", size: 10 },
-                            xanchor: "right",
-                            yanchor: "bottom",
-                        },
-                    ],
-                    hovermode: "x unified" as const,
-                    dragmode: "pan",
-                    showlegend: false,
-                    autosize: true,
-                    height: 500,
-                }}
-                config={{
-                    responsive: true,
-                    displayModeBar: true,
-                    displaylogo: false,
-                    scrollZoom: true,
-                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
-                }}
-                style={{ width: "100%", height: "500px" }}
-            />
+            <div className="relative w-full h-[500px]">
+                <div ref={chartContainerRef} className="absolute inset-0" />
+                <div 
+                    ref={tooltipRef} 
+                    className="absolute z-50 bg-[#1e1e2e]/90 border border-slate-700 p-2 text-xs rounded shadow-lg pointer-events-none"
+                    style={{ display: 'none' }}
+                />
+            </div>
         </div>
     );
 }
 
 export function ParticipationChart({ data, title }: BreadthChartProps) {
+    const chartContainerRef = useRef<HTMLDivElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
+
+    const totalData = data.map(d => ({
+        time: d.Date,
+        value: (d.Above || 0) + (d.Below || 0)
+    }));
+
+    const aboveData = data.map(d => ({
+        time: d.Date,
+        value: d.Above || 0
+    }));
+
+    useEffect(() => {
+        if (!chartContainerRef.current || totalData.length === 0) return;
+
+        const chart = createChart(chartContainerRef.current, {
+            layout: {
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#94a3b8',
+                fontFamily: 'Inter, sans-serif',
+            },
+            grid: {
+                vertLines: { color: '#1e1e2e', style: 1 },
+                horzLines: { color: '#1e1e2e', style: 1 },
+            },
+            rightPriceScale: {
+                borderVisible: false,
+                scaleMargins: { top: 0.1, bottom: 0.1 },
+            },
+            timeScale: {
+                borderVisible: false,
+                timeVisible: true,
+                rightOffset: 5,
+            },
+            crosshair: {
+                mode: CrosshairMode.Normal,
+                vertLine: { width: 1, color: '#334155', style: 3 },
+                horzLine: { width: 1, color: '#334155', style: 3 },
+            },
+            autoSize: true,
+        });
+
+        // Background / Total (Red layer for Below)
+        const totalSeries = chart.addSeries(AreaSeries, {
+            lineColor: '#ef4444', // Red
+            topColor: 'rgba(239,68,68,0.6)',
+            bottomColor: 'rgba(239,68,68,0.6)',
+            lineWidth: 1,
+            priceFormat: { type: 'volume' },
+        });
+        totalSeries.setData(totalData);
+
+        // Foreground (Green layer for Above)
+        const aboveSeries = chart.addSeries(AreaSeries, {
+            lineColor: '#22c55e', // Green
+            topColor: 'rgba(34,197,94,0.6)',
+            bottomColor: 'rgba(34,197,94,0.6)',
+            lineWidth: 1,
+            priceFormat: { type: 'volume' },
+        });
+        aboveSeries.setData(aboveData);
+
+        chart.timeScale().fitContent();
+
+        // Tooltip logic
+        const toolTip = tooltipRef.current;
+        if (toolTip) {
+            chart.subscribeCrosshairMove((param) => {
+                if (!param.point || !param.time || param.point.x < 0 || param.point.x > chartContainerRef.current!.clientWidth || param.point.y < 0 || param.point.y > chartContainerRef.current!.clientHeight) {
+                    toolTip.style.display = 'none';
+                } else {
+                    const dateStr = param.time as string;
+                    let html = `<div class="font-bold mb-1 border-b border-slate-700 pb-1">${dateStr}</div>`;
+                    
+                    const abovePrice = param.seriesData.get(aboveSeries) as any;
+                    const totalPrice = param.seriesData.get(totalSeries) as any;
+                    
+                    if (abovePrice !== undefined && totalPrice !== undefined) {
+                        const aboveVal = abovePrice.value !== undefined ? abovePrice.value : abovePrice;
+                        const totalVal = totalPrice.value !== undefined ? totalPrice.value : totalPrice;
+                        const belowVal = totalVal - aboveVal;
+                        
+                        html += `<div class="flex justify-between gap-4"><span class="text-green-400 font-semibold">Above</span> <span class="text-white">${Math.round(aboveVal)}</span></div>`;
+                        html += `<div class="flex justify-between gap-4"><span class="text-red-400 font-semibold">Below</span> <span class="text-white">${Math.round(belowVal)}</span></div>`;
+                    }
+
+                    toolTip.innerHTML = html;
+                    toolTip.style.display = 'block';
+                    
+                    const toolTipWidth = 150;
+                    const toolTipHeight = 80;
+                    const margin = 15;
+                    const chartWidth = chartContainerRef.current!.clientWidth;
+                    const chartHeight = chartContainerRef.current!.clientHeight;
+                    
+                    let left = param.point.x + margin;
+                    if (left + toolTipWidth > chartWidth) {
+                        left = param.point.x - toolTipWidth - margin;
+                    }
+                    
+                    let top = param.point.y + margin;
+                    if (top + toolTipHeight > chartHeight) {
+                        top = param.point.y - toolTipHeight - margin;
+                    }
+                    
+                    toolTip.style.left = left + 'px';
+                    toolTip.style.top = top + 'px';
+                }
+            });
+        }
+
+        return () => {
+            chart.remove();
+        };
+    }, [aboveData, totalData]);
+
     if (!data || data.length === 0) return null;
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 mt-4">
             <h3 className="text-sm font-semibold text-white mb-2">Market Participation</h3>
-            <Plot
-                useResizeHandler={true}
-                data={[
-                    {
-                        x: data.map((d) => d.Date),
-                        y: data.map((d) => d.Above),
-                        type: "scatter",
-                        mode: "lines",
-                        name: "Above",
-                        stackgroup: "one",
-                        fillcolor: "rgba(34,197,94,0.6)",
-                        line: { color: "#22c55e", width: 0 },
-                    },
-                    {
-                        x: data.map((d) => d.Date),
-                        y: data.map((d) => d.Below),
-                        type: "scatter",
-                        mode: "lines",
-                        name: "Below",
-                        stackgroup: "one",
-                        fillcolor: "rgba(239,68,68,0.6)",
-                        line: { color: "#ef4444", width: 0 },
-                    },
-                ]}
-                layout={{
-                    paper_bgcolor: "transparent",
-                    plot_bgcolor: "transparent",
-                    font: { color: "#94a3b8", family: "Inter, sans-serif", size: 11 },
-                    hoverlabel: {
-                        bgcolor: "#1e1e2e",
-                        font: { color: "#f8fafc", size: 12, family: "Inter, sans-serif" },
-                        bordercolor: "#334155",
-                    },
-                    margin: { l: 40, r: 15, t: 10, b: 40 },
-                    xaxis: { gridcolor: "#1e1e2e", tickformat: "%b '%y", title: { text: "Date", standoff: 10 } },
-                    yaxis: { gridcolor: "#1e1e2e", title: { text: "Stocks", standoff: 10 }, fixedrange: false },
-                    hovermode: "x unified" as const,
-                    dragmode: "pan",
-                    showlegend: true,
-                    legend: { orientation: "h" as const, y: 1.12, x: 0.5, xanchor: "center" as const, font: { size: 10 } },
-                    autosize: true,
-                    height: 400,
-                }}
-                config={{
-                    responsive: true,
-                    displayModeBar: true,
-                    displaylogo: false,
-                    scrollZoom: true,
-                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
-                }}
-                style={{ width: "100%", height: "400px" }}
-            />
+            <div className="relative w-full h-[400px]">
+                <div ref={chartContainerRef} className="absolute inset-0" />
+                <div 
+                    ref={tooltipRef} 
+                    className="absolute z-50 bg-[#1e1e2e]/90 border border-slate-700 p-2 text-xs rounded shadow-lg pointer-events-none"
+                    style={{ display: 'none' }}
+                />
+            </div>
         </div>
     );
 }

@@ -1,20 +1,10 @@
-// components/charts/ThemePriceChart.tsx
 "use client";
 
-import dynamic from "next/dynamic";
-import { useState, useMemo, useEffect } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { createChart, ColorType, CrosshairMode, PriceScaleMode, IChartApi, ISeriesApi, AreaSeries, LineSeries } from "lightweight-charts";
 import type { BreadthDataPoint, TimeframeType, IndexConfig } from "@/types";
 import { ALL_CONFIGS } from "@/lib/config";
 import { Search, X, Settings2, Plus, Trash2 } from "lucide-react";
-
-const Plot = dynamic(() => import("react-plotly.js"), {
-    ssr: false,
-    loading: () => (
-        <div className="w-full h-[600px] flex items-center justify-center bg-slate-900/20 text-slate-400 rounded-lg animate-pulse">
-            Loading Price Chart...
-        </div>
-    ),
-});
 
 interface Indicator {
     id: string;
@@ -37,6 +27,15 @@ interface ThemePriceChartProps {
 }
 
 export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChartProps) {
+    const chartContainerRef = useRef<HTMLDivElement>(null);
+    const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Chart References
+    const chartRef = useRef<IChartApi | null>(null);
+    const primarySeriesRef = useRef<ISeriesApi<"Area"> | null>(null);
+    const indicatorSeriesRefs = useRef<Record<string, ISeriesApi<"Line">>>({});
+    const comparisonSeriesRefs = useRef<Record<string, ISeriesApi<"Line">>>({});
+
     const [timeframe, setTimeframe] = useState<TimeframeType>("D");
     const [indicators, setIndicators] = useState<Indicator[]>([
         { id: "1", type: "SMA", period: 20, color: "#f59e0b" },
@@ -62,104 +61,277 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
 
             let shouldFlush = false;
             if (timeframe === "W") {
-                // Flush on Sunday or last point
                 if (date.getDay() === 0 || isLast) shouldFlush = true;
             } else if (timeframe === "M") {
-                // Flush on last day of month or last point
                 const nextDate = i < primaryData.length - 1 ? new Date(primaryData[i+1].Date) : null;
                 if (!nextDate || nextDate.getMonth() !== date.getMonth()) shouldFlush = true;
             }
 
             if (shouldFlush && currentGroup.length > 0) {
                 const last = currentGroup[currentGroup.length - 1];
-                aggregated.push({
-                    ...last,
-                    // In a line chart, we just take the last close. 
-                    // If we had OHLC, we'd take Open from first, High from max, Low from min, Close from last.
-                });
+                aggregated.push({ ...last });
                 currentGroup = [];
             }
         });
         return aggregated;
     }, [primaryData, timeframe]);
 
-    // 2. Indicator Calculation
-    const indicatorSeries = useMemo(() => {
+    // Format data for lightweight-charts
+    const lwData = useMemo(() => {
+        return displayData
+            .filter(d => d.Index_Close !== undefined && d.Index_Close !== null)
+            .map(d => ({
+                time: d.Date,
+                value: d.Index_Close as number
+            }));
+    }, [displayData]);
+
+    const indicatorData = useMemo(() => {
         const prices = displayData.map(d => d.Index_Close || 0);
-        return indicators.map(ind => {
+        const result: Record<string, { time: string, value: number }[]> = {};
+        
+        indicators.forEach(ind => {
             const values = ind.type === "SMA" 
                 ? calculateSMA(prices, ind.period)
                 : calculateEMA(prices, ind.period);
-            return { ...ind, values };
+                
+            const formatted: { time: string, value: number }[] = [];
+            values.forEach((v, i) => {
+                if (v !== null && displayData[i]?.Date) {
+                    formatted.push({ time: displayData[i].Date, value: v });
+                }
+            });
+            result[ind.id] = formatted;
         });
+        return result;
     }, [displayData, indicators]);
 
-    // 3. Comparison Normalization
-    const chartTraces = useMemo(() => {
-        const traces: any[] = [];
-
-        // Primary trace
-        const hasComparisons = comparisons.length > 0;
+    const comparisonDataMap = useMemo(() => {
+        const result: Record<string, { time: string, value: number }[]> = {};
         
-        if (!hasComparisons) {
-            // Absolute price trace
-            traces.push({
-                x: displayData.map(d => d.Date),
-                y: displayData.map(d => d.Index_Close),
-                type: "scatter",
-                mode: "lines",
-                name: title,
-                line: { color: "#ffffff", width: 2 },
-                hovertemplate: "%{y:.2f}<extra></extra>",
-            });
+        comparisons.forEach(comp => {
+            const compDisplayData = timeframe === "D" ? comp.data : aggregateData(comp.data, timeframe);
+            const formatted = compDisplayData
+                .filter(d => d.Index_Close !== undefined && d.Index_Close !== null)
+                .map(d => ({
+                    time: d.Date,
+                    value: d.Index_Close as number
+                }));
+            result[comp.id] = formatted;
+        });
+        return result;
+    }, [comparisons, timeframe]);
 
-            // Indicators only on absolute chart
-            indicatorSeries.forEach(ind => {
-                traces.push({
-                    x: displayData.map(d => d.Date),
-                    y: ind.values,
-                    type: "scatter",
-                    mode: "lines",
-                    name: `${ind.type} ${ind.period}`,
-                    line: { color: ind.color, width: 1, dash: "dot" },
-                    connectgaps: false,
-                    hovertemplate: "%{y:.2f}<extra></extra>",
-                });
-            });
-        } else {
-            // Percentage change traces for comparison
-            const baseDate = displayData[0]?.Date;
-            const primaryBase = displayData[0]?.Index_Close || 1;
+    // Chart Initialization and Updates
+    useEffect(() => {
+        if (!chartContainerRef.current) return;
 
-            traces.push({
-                x: displayData.map(d => d.Date),
-                y: displayData.map(d => ((d.Index_Close || 0) / primaryBase - 1) * 100),
-                type: "scatter",
-                mode: "lines",
-                name: title,
-                line: { color: "#ffffff", width: 2 },
-                hovertemplate: "%{y:.2f}%<extra></extra>",
-            });
+        const chart = createChart(chartContainerRef.current, {
+            layout: {
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#94a3b8',
+                fontFamily: 'Inter, sans-serif',
+            },
+            grid: {
+                vertLines: { color: '#1e1e2e', style: 1 }, // 1 is dotted
+                horzLines: { color: '#1e1e2e', style: 1 },
+            },
+            rightPriceScale: {
+                borderVisible: false,
+                scaleMargins: { top: 0.1, bottom: 0.1 },
+            },
+            timeScale: {
+                borderVisible: false,
+                timeVisible: true,
+                rightOffset: 5,
+            },
+            crosshair: {
+                mode: CrosshairMode.Normal,
+                vertLine: {
+                    width: 1,
+                    color: '#334155',
+                    style: 3, // Dashed
+                },
+                horzLine: {
+                    width: 1,
+                    color: '#334155',
+                    style: 3,
+                },
+            },
+            autoSize: true,
+        });
+        chartRef.current = chart;
 
-            comparisons.forEach(comp => {
-                // Re-aggregate comparison data if timeframe changed
-                const compDisplayData = timeframe === "D" ? comp.data : aggregateData(comp.data, timeframe);
-                const compBase = compDisplayData[0]?.Index_Close || 1;
-                
-                traces.push({
-                    x: compDisplayData.map(d => d.Date),
-                    y: compDisplayData.map(d => ((d.Index_Close || 0) / compBase - 1) * 100),
-                    type: "scatter",
-                    mode: "lines",
-                    name: comp.title,
-                    line: { color: comp.color, width: 1.5 },
-                    hovertemplate: "%{y:.2f}%<extra></extra>",
-                });
+        // Primary Series
+        const primarySeries = chart.addSeries(AreaSeries, {
+            lineColor: '#3b82f6',
+            topColor: 'rgba(59, 130, 246, 0.4)',
+            bottomColor: 'rgba(59, 130, 246, 0.0)',
+            lineWidth: 2,
+            priceFormat: {
+                type: 'price',
+                precision: 2,
+                minMove: 0.01,
+            },
+        });
+        primarySeriesRef.current = primarySeries;
+
+        // Setup Tooltip
+        const toolTip = tooltipRef.current;
+        if (toolTip) {
+            chart.subscribeCrosshairMove((param) => {
+                if (
+                    param.point === undefined ||
+                    !param.time ||
+                    param.point.x < 0 ||
+                    param.point.x > chartContainerRef.current!.clientWidth ||
+                    param.point.y < 0 ||
+                    param.point.y > chartContainerRef.current!.clientHeight
+                ) {
+                    toolTip.style.display = 'none';
+                } else {
+                    const dateStr = param.time as string;
+                    let html = `<div class="font-bold mb-1 border-b border-slate-700 pb-1">${dateStr}</div>`;
+                    
+                    const price = param.seriesData.get(primarySeries) as any;
+                    if (price !== undefined) {
+                        html += `<div class="flex justify-between gap-4"><span class="text-blue-400 font-semibold">${title}</span> <span class="text-white">${price.value !== undefined ? price.value.toFixed(2) : price.toFixed(2)}</span></div>`;
+                    }
+                    
+                    // Indicators
+                    if (comparisons.length === 0) {
+                        indicators.forEach(ind => {
+                            const ref = indicatorSeriesRefs.current[ind.id];
+                            if (ref) {
+                                const val = param.seriesData.get(ref) as any;
+                                if (val !== undefined) {
+                                    const numVal = val.value !== undefined ? val.value : val;
+                                    html += `<div class="flex justify-between gap-4"><span style="color:${ind.color}">${ind.type} ${ind.period}</span> <span class="text-white">${numVal.toFixed(2)}</span></div>`;
+                                }
+                            }
+                        });
+                    }
+
+                    // Comparisons
+                    comparisons.forEach(comp => {
+                        const ref = comparisonSeriesRefs.current[comp.id];
+                        if (ref) {
+                            const val = param.seriesData.get(ref) as any;
+                            if (val !== undefined) {
+                                const numVal = val.value !== undefined ? val.value : val;
+                                html += `<div class="flex justify-between gap-4"><span style="color:${comp.color}">${comp.title}</span> <span class="text-white">${numVal.toFixed(2)}%</span></div>`;
+                            }
+                        }
+                    });
+
+                    toolTip.innerHTML = html;
+                    toolTip.style.display = 'block';
+                    
+                    const toolTipWidth = 200;
+                    const toolTipHeight = 100;
+                    const margin = 15;
+                    const chartWidth = chartContainerRef.current!.clientWidth;
+                    const chartHeight = chartContainerRef.current!.clientHeight;
+                    
+                    let left = param.point.x + margin;
+                    if (left + toolTipWidth > chartWidth) {
+                        left = param.point.x - toolTipWidth - margin;
+                    }
+                    
+                    let top = param.point.y + margin;
+                    if (top + toolTipHeight > chartHeight) {
+                        top = param.point.y - toolTipHeight - margin;
+                    }
+                    
+                    toolTip.style.left = left + 'px';
+                    toolTip.style.top = top + 'px';
+                }
             });
         }
 
-        return traces;
-    }, [displayData, title, timeframe, indicators, indicatorSeries, comparisons]);
+        return () => {
+            chart.remove();
+            chartRef.current = null;
+        };
+    }, []); // Empty dep array for initialization only
+
+    // Data Application Effect
+    useEffect(() => {
+        if (!chartRef.current || !primarySeriesRef.current) return;
+        const chart = chartRef.current;
+
+        // 1. Determine mode
+        const hasComparisons = comparisons.length > 0;
+        
+        chart.applyOptions({
+            rightPriceScale: {
+                mode: hasComparisons ? PriceScaleMode.Percentage : PriceScaleMode.Normal,
+            }
+        });
+
+        // 2. Set primary data
+        primarySeriesRef.current.setData(lwData);
+
+        // 3. Clear existing custom series
+        Object.values(indicatorSeriesRefs.current).forEach(series => chart.removeSeries(series));
+        indicatorSeriesRefs.current = {};
+        
+        Object.values(comparisonSeriesRefs.current).forEach(series => chart.removeSeries(series));
+        comparisonSeriesRefs.current = {};
+
+        // 4. Add Indicators (only if not comparing)
+        if (!hasComparisons) {
+            indicators.forEach(ind => {
+                const series = chart.addSeries(LineSeries, {
+                    color: ind.color,
+                    lineWidth: 1,
+                    lineStyle: 1, // Dotted
+                    priceLineVisible: false,
+                    lastValueVisible: false,
+                    crosshairMarkerVisible: false,
+                });
+                series.setData(indicatorData[ind.id] || []);
+                indicatorSeriesRefs.current[ind.id] = series;
+            });
+        }
+
+        // 5. Add Comparisons
+        if (hasComparisons) {
+            // Also need to set primary series to simple line for consistency when comparing
+            primarySeriesRef.current.applyOptions({
+                lineColor: '#ffffff',
+                topColor: 'rgba(255, 255, 255, 0)',
+                bottomColor: 'rgba(255, 255, 255, 0)',
+                lineWidth: 2,
+            });
+
+            comparisons.forEach(comp => {
+                const series = chart.addSeries(LineSeries, {
+                    color: comp.color,
+                    lineWidth: 2,
+                    priceFormat: {
+                        type: 'price',
+                        precision: 2,
+                        minMove: 0.01,
+                    },
+                });
+                series.setData(comparisonDataMap[comp.id] || []);
+                comparisonSeriesRefs.current[comp.id] = series;
+            });
+        } else {
+            // Reset primary series style
+            primarySeriesRef.current.applyOptions({
+                lineColor: '#3b82f6',
+                topColor: 'rgba(59, 130, 246, 0.4)',
+                bottomColor: 'rgba(59, 130, 246, 0.0)',
+                lineWidth: 2,
+            });
+        }
+
+        chart.timeScale().fitContent();
+
+    }, [lwData, indicators, comparisons, indicatorData, comparisonDataMap]);
+
 
     const addComparison = async (config: IndexConfig) => {
         if (comparisons.find(c => c.id === config.id)) return;
@@ -290,50 +462,12 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
             </div>
 
             <div className="flex-1 relative flex">
-                <div className="flex-1 min-h-[600px]">
-                    <Plot
-                        useResizeHandler={true}
-                        data={chartTraces}
-                        layout={{
-                            paper_bgcolor: "transparent",
-                            plot_bgcolor: "transparent",
-                            font: { color: "#94a3b8", family: "Inter, sans-serif", size: 11 },
-                            margin: { l: 60, r: 20, t: 30, b: 40 },
-                            hoverlabel: {
-                                bgcolor: "#1e1e2e",
-                                font: { color: "#f8fafc", size: 12, family: "Inter, sans-serif" },
-                                bordercolor: "#334155",
-                            },
-                            xaxis: {
-                                gridcolor: "#1e1e2e",
-                                tickformat: timeframe === "D" ? "%d %b %y" : "%b %y",
-                                rangeslider: { visible: false },
-                                zeroline: false,
-                            },
-                            yaxis: {
-                                gridcolor: "#1e1e2e",
-                                title: { text: comparisons.length > 0 ? "Change (%)" : "Index Value", standoff: 15 },
-                                ticksuffix: comparisons.length > 0 ? "%" : "",
-                                side: "right" as const,
-                                zeroline: true,
-                                zerolinecolor: "#334155",
-                                fixedrange: false,
-                            },
-                            hovermode: "x unified" as const,
-                            dragmode: "pan",
-                            showlegend: comparisons.length > 0,
-                            legend: { orientation: "h" as const, y: 1.05, x: 0.5, xanchor: "center" as const },
-                            autosize: true,
-                            height: 650,
-                        }}
-                        config={{
-                            responsive: true,
-                            displayModeBar: true,
-                            displaylogo: false,
-                            scrollZoom: true,
-                            modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"]
-                        }}
-                        style={{ width: "100%", height: "650px" }}
+                <div className="flex-1 relative bg-[#0a0a0f]" style={{ minHeight: '600px' }}>
+                    <div ref={chartContainerRef} className="absolute inset-0" />
+                    <div 
+                        ref={tooltipRef} 
+                        className="absolute z-50 bg-[#1e1e2e]/90 border border-slate-700 p-2 text-xs rounded shadow-lg pointer-events-none"
+                        style={{ display: 'none' }}
                     />
                 </div>
 

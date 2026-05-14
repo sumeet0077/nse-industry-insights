@@ -165,7 +165,7 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
         if (comparisons.find(c => c.id === config.id)) return;
         
         try {
-            const res = await fetch(`/api/breadth/${config.dataFile}`);
+            const res = await fetch(`/data/breadth/${config.dataFile}.json`);
             const data = await res.json();
             
             const colors = ["#fbbf24", "#34d399", "#f87171", "#818cf8", "#e879f9"];

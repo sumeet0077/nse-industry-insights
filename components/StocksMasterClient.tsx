@@ -475,7 +475,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 (secVal as number) < 0 ? "bg-red-500/10 text-red-400" : 
                                                 "bg-slate-500/10 text-slate-400"
                                             }`}>
-                                                {sectorSortCol.includes("RS") ? formatNum(secVal as number) : formatPct(secVal as number)}
+                                                {formatPct(secVal as number)}
                                             </div>
                                             <div className="relative">
                                                 <button 
@@ -551,20 +551,17 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         {/* Dynamic Cells */}
                                                         {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
                                                             const val = stock.perf?.[opt.stockValue as keyof ConstituentPerformance] as number;
-                                                            const isRS = opt.stockValue.includes("RS");
                                                             
                                                             let colorClass = "text-slate-400";
                                                             if (!val) {
                                                                 colorClass = "text-slate-600";
-                                                            } else if (isRS) {
-                                                                colorClass = val > 100 ? "text-emerald-400" : "text-red-400";
                                                             } else {
                                                                 colorClass = val > 0 ? "text-emerald-400" : val < 0 ? "text-red-400" : "text-slate-400";
                                                             }
 
                                                             return (
                                                                 <td key={opt.stockValue} className={`px-3 py-2 text-right ${colorClass}`}>
-                                                                    {isRS ? formatNum(val) : formatPct(val)}
+                                                                    {formatPct(val)}
                                                                 </td>
                                                             );
                                                         })}

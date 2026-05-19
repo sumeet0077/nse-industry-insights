@@ -2,7 +2,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol } from "@/lib/utils";
+import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol, formatReturn, getReturnColor } from "@/lib/utils";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { METRIC_CONFIG } from "@/lib/config";
@@ -41,19 +41,15 @@ const myTheme = themeQuartz.withParams({
 });
 
 function returnFormatter(params: ValueFormatterParams): string {
-    if (params.value === null || params.value === undefined || params.value === "") return "—";
-    const v = Number(params.value);
-    if (isNaN(v)) return "—";
-    return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
+    return formatReturn(params.value == null || params.value === "" ? undefined : Number(params.value));
 }
 
 function returnCellClass(params: CellClassParams): string {
     if (params.value === null || params.value === undefined) return "text-gray-500";
     const v = Number(params.value);
     if (isNaN(v)) return "text-gray-500";
-    if (v > 0) return "text-emerald-400 font-medium";
-    if (v < 0) return "text-red-400 font-medium";
-    return "text-gray-400";
+    const base = getReturnColor(v);
+    return v !== 0 ? `${base} font-medium` : base;
 }
 
 export function ConstituentTable({ data, showCagr = false }: ConstituentTableProps) {

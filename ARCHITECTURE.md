@@ -6,9 +6,9 @@ This document provides a complete architectural overview of the NSE Industry Ins
 A highly interactive, institutional-grade market breadth and relative rotation (RRG) dashboard tailored for the Indian stock market (NSE). It parses pre-calculated historical and intraday financial data to render complex comparative tables, heatmaps, and tail-rotation graphs.
 
 ## 2. Technology Stack
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router) & React 19
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS (with arbitrary value overrides for exact hex colors)
+- **Styling**: Tailwind CSS v4 (built-in modern styling directives)
 - **Data Grids**: AG Grid (Community Edition)
 - **Charting**: Plotly.js (via `react-plotly.js`) for complex scatter and RRG graphs.
 - **Icons**: Lucide React

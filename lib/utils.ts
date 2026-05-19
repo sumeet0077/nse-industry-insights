@@ -3,6 +3,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { DATA_KEY_ALIASES } from "./config";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -40,3 +41,13 @@ export function makeTradingViewUrl(ticker: string): string {
 export function getTickerLabel(ticker: string): string {
     return ticker.replace(".NS", "").replace(".BO", "");
 }
+
+/**
+ * Resolves a UI theme title or key to its normalized, case-insensitive backend dataset key.
+ * Uses the centralized DATA_KEY_ALIASES registry.
+ */
+export function resolveDataKey(title: string): string {
+    const lower = title.toLowerCase();
+    return DATA_KEY_ALIASES[lower] || lower;
+}
+

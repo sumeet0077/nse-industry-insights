@@ -4,7 +4,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2, Filter } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
-import { getTickerLabel, makeTradingViewUrl } from "@/lib/utils";
+import { getTickerLabel, makeTradingViewUrl, formatReturn, getReturnColor, resolveDataKey } from "@/lib/utils";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
@@ -15,17 +15,6 @@ interface StocksMasterClientProps {
     constituentPerformance: ConstituentPerformanceMap;
 }
 
-const ALIASES: Record<string, string> = {
-    "amc": "asset management",
-    "renewable energy": "renewable energy generation",
-    "nifty oil & gas": "nifty oil and gas",
-    "jewellery & gold": "jewellery (gold)",
-    "tyres & rubber": "tyres & rubber products",
-    "auto ancillary": "auto ancillary",
-    "white goods": "white goods & durables",
-    "wires & cables": "wires and cables",
-};
-
 function resolveMarketStatusKey(configTitle: string, statusKeys: string[]) {
     if (statusKeys.includes(configTitle)) return configTitle;
     const upperKey = configTitle.toUpperCase();
@@ -34,8 +23,7 @@ function resolveMarketStatusKey(configTitle: string, statusKeys: string[]) {
         const niftyUpper = "NIFTY " + configTitle.slice(6).toUpperCase();
         if (statusKeys.includes(niftyUpper)) return niftyUpper;
     }
-    const lowerTitle = configTitle.toLowerCase();
-    const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+    const resolvedTitle = resolveDataKey(configTitle);
     return statusKeys.find(k => k.toLowerCase() === resolvedTitle) || null;
 }
 
@@ -172,17 +160,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
             // Get Stock Performances
             const stocks = tickers.map(ticker => {
-                let stockPerf: ConstituentPerformance | null = null;
-                if ((constituentPerformance as any)[ticker]) {
-                    stockPerf = (constituentPerformance as any)[ticker];
-                } else {
-                    for (const groupKey of Object.keys(constituentPerformance)) {
-                        if ((constituentPerformance as any)[groupKey][ticker]) {
-                            stockPerf = (constituentPerformance as any)[groupKey][ticker];
-                            break;
-                        }
-                    }
-                }
+                const stockPerf = constituentPerformance[ticker] || null;
                 
                 return {
                     ticker,
@@ -222,15 +200,8 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         return data;
     }, [allConfigs, selectedThemeIds, performanceData, marketStatus, constituentPerformance, statusKeys, sectorSortCol, sectorSortDesc, stockSortCol, stockSortDesc, selectedStocksBySector]);
 
-    const formatPct = (val?: number | null) => {
-        if (val == null) return "—";
-        return `${val > 0 ? "+" : ""}${val.toFixed(2)}%`;
-    };
-
-    const formatNum = (val?: number | null) => {
-        if (val == null) return "—";
-        return val.toFixed(2);
-    };
+    // Using shared formatReturn and getReturnColor from lib/utils.ts
+    // to ensure consistent formatting with ConstituentTable
 
     return (
         <div className="flex flex-col gap-6">
@@ -475,7 +446,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 (secVal as number) < 0 ? "bg-red-500/10 text-red-400" : 
                                                 "bg-slate-500/10 text-slate-400"
                                             }`}>
-                                                {formatPct(secVal as number)}
+                                                {formatReturn(secVal as number)}
                                             </div>
                                             <div className="relative">
                                                 <button 
@@ -551,17 +522,10 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         {/* Dynamic Cells */}
                                                         {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
                                                             const val = stock.perf?.[opt.stockValue as keyof ConstituentPerformance] as number;
-                                                            
-                                                            let colorClass = "text-slate-400";
-                                                            if (!val) {
-                                                                colorClass = "text-slate-600";
-                                                            } else {
-                                                                colorClass = val > 0 ? "text-emerald-400" : val < 0 ? "text-red-400" : "text-slate-400";
-                                                            }
 
                                                             return (
-                                                                <td key={opt.stockValue} className={`px-3 py-2 text-right ${colorClass}`}>
-                                                                    {formatPct(val)}
+                                                                <td key={opt.stockValue} className={`px-3 py-2 text-right ${getReturnColor(val)}`}>
+                                                                    {formatReturn(val)}
                                                                 </td>
                                                             );
                                                         })}

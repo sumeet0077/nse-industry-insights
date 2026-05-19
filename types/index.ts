@@ -51,7 +51,7 @@ export interface MarketStatusEntry {
 
 export type MarketStatus = Record<string, MarketStatusEntry>;
 
-export type ConstituentPerformanceMap = Record<string, Record<string, ConstituentPerformance>>;
+export type ConstituentPerformanceMap = Record<string, ConstituentPerformance>;
 
 export type ThemeCategory = "broad-market" | "sectors" | "industries";
 export type QuadrantType = "Leading" | "Weakening" | "Lagging" | "Improving";

@@ -143,3 +143,15 @@ export const FREE_TIER_IDS = new Set(BROAD_MARKET.map((c) => c.id));
 export function isProRequired(id: string): boolean {
     return !FREE_TIER_IDS.has(id);
 }
+
+export const DATA_KEY_ALIASES: Record<string, string> = {
+    "amc": "asset management",
+    "renewable energy": "renewable energy generation",
+    "nifty oil & gas": "nifty oil and gas",
+    "jewellery & gold": "jewellery (gold)",
+    "tyres & rubber": "tyres & rubber products",
+    "auto ancillary": "auto ancillary",
+    "white goods": "white goods & durables",
+    "wires & cables": "wires and cables",
+};
+

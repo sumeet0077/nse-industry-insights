@@ -13,6 +13,8 @@ import type {
     RRGDataPoint,
 } from "@/types";
 import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
+import { resolveDataKey } from "./utils";
+
 
 const DATA_DIR = path.join(process.cwd(), "data");
 
@@ -64,18 +66,6 @@ export function getConstituentPerformance(): ConstituentPerformanceMap {
 export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry | null {
     const status = getMarketStatus();
 
-    // Map UI config titles to JSON dataset keys if they differ
-    const ALIASES: Record<string, string> = {
-        "amc": "asset management",
-        "renewable energy": "renewable energy generation",
-        "nifty oil & gas": "nifty oil and gas",
-        "jewellery & gold": "jewellery (gold)",
-        "tyres & rubber": "tyres & rubber products",
-        "auto ancillary": "auto ancillary",
-        "white goods": "white goods & durables",
-        "wires & cables": "wires and cables",
-    };
-
     // Direct match
     if (status[configTitle]) return status[configTitle];
 
@@ -89,9 +79,8 @@ export function getMarketStatusForIndex(configTitle: string): MarketStatusEntry 
         if (status[niftyUpper]) return status[niftyUpper];
     }
 
-    // Try all keys case-insensitive
-    const lowerTitle = configTitle.toLowerCase();
-    const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+    // Try all keys case-insensitive using centralized resolveDataKey
+    const resolvedTitle = resolveDataKey(configTitle);
 
     for (const key of Object.keys(status)) {
         if (key.toLowerCase() === resolvedTitle) return status[key];

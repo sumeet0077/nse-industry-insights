@@ -6,7 +6,7 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
-import { makeTradingViewUrl, makeTradingViewSymbol } from "@/lib/utils";
+import { makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
@@ -119,23 +119,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         if (themesToProcess.length === 0) return;
 
         const allTickers = new Set<string>();
-        
-        // Match theme titles to marketStatus keys (similar to lib/data.ts logic)
-        const ALIASES: Record<string, string> = {
-            "amc": "asset management",
-            "renewable energy": "renewable energy generation",
-            "nifty oil & gas": "nifty oil and gas",
-            "jewellery & gold": "jewellery (gold)",
-            "tyres & rubber": "tyres & rubber products",
-            "auto ancillary": "auto ancillary",
-            "white goods": "white goods & durables",
-            "wires & cables": "wires and cables",
-        };
 
         themesToProcess.forEach(title => {
             let statusKey = "";
-            const lowerTitle = title.toLowerCase();
-            const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+            const resolvedTitle = resolveDataKey(title);
 
             // Direct match or insensitive
             for (const key of Object.keys(marketStatus)) {
@@ -181,22 +168,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         if (themesToProcess.length === 0) return;
 
         const allTickers = new Set<string>();
-        
-        const ALIASES: Record<string, string> = {
-            "amc": "asset management",
-            "renewable energy": "renewable energy generation",
-            "nifty oil & gas": "nifty oil and gas",
-            "jewellery & gold": "jewellery (gold)",
-            "tyres & rubber": "tyres & rubber products",
-            "auto ancillary": "auto ancillary",
-            "white goods": "white goods & durables",
-            "wires & cables": "wires and cables",
-        };
 
         themesToProcess.forEach(title => {
             let statusKey = "";
-            const lowerTitle = title.toLowerCase();
-            const resolvedTitle = ALIASES[lowerTitle] || lowerTitle;
+            const resolvedTitle = resolveDataKey(title);
 
             for (const key of Object.keys(marketStatus)) {
                 if (key.toLowerCase() === resolvedTitle) {
@@ -228,32 +203,6 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
             alert(`Opening ${tickersToOpen.length} tabs might slow down your browser. Please use the "Copy Watchlist" button instead and paste it directly into TradingView.`);
             return;
         }
-
-        const onGridReady = useCallback((params: any) => {
-            // Apply persisted state
-            const storedState = window.localStorage.getItem("agGridState_heatmap");
-            if (storedState) {
-                try {
-                    params.api.applyColumnState({ state: JSON.parse(storedState), applyOrder: true });
-                } catch (e) {
-                    console.warn("Failed to apply AG grid state", e);
-                }
-            }
-            
-            // Restore row selection
-            params.api.forEachNode((node: IRowNode) => {
-                if (selectedThemes.has(node.data["Theme/Index"])) {
-                    node.setSelected(true);
-                }
-            });
-        }, [selectedThemes]);
-
-        const onSortChanged = useCallback(() => {
-            if (gridRef.current?.api) {
-                const state = gridRef.current.api.getColumnState();
-                window.localStorage.setItem("agGridState_heatmap", JSON.stringify(state));
-            }
-        }, []);
 
         tickersToOpen.forEach((ticker, index) => {
             setTimeout(() => {

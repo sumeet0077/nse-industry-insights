@@ -68,15 +68,27 @@ export function ThemePriceChart({ primaryData, title, themeId }: ThemePriceChart
 
         filteredPrimaryData.forEach((d, i) => {
             currentGroup.push(d);
-            const date = new Date(d.Date);
             const isLast = i === filteredPrimaryData.length - 1;
 
             let shouldFlush = false;
             if (timeframe === "W") {
-                if (date.getDay() === 0 || isLast) shouldFlush = true;
+                if (isLast) {
+                    shouldFlush = true;
+                } else {
+                    const nextDateStr = filteredPrimaryData[i+1].Date;
+                    if (getStartOfWeek(d.Date) !== getStartOfWeek(nextDateStr)) {
+                        shouldFlush = true;
+                    }
+                }
             } else if (timeframe === "M") {
-                const nextDate = i < filteredPrimaryData.length - 1 ? new Date(filteredPrimaryData[i+1].Date) : null;
-                if (!nextDate || nextDate.getMonth() !== date.getMonth()) shouldFlush = true;
+                if (isLast) {
+                    shouldFlush = true;
+                } else {
+                    const nextDateStr = filteredPrimaryData[i+1].Date;
+                    if (d.Date.slice(0, 7) !== nextDateStr.slice(0, 7)) {
+                        shouldFlush = true;
+                    }
+                }
             }
 
             if (shouldFlush && currentGroup.length > 0) {
@@ -666,15 +678,27 @@ function aggregateData(data: BreadthDataPoint[], timeframe: "D" | "W" | "M"): Br
 
     data.forEach((d, i) => {
         currentGroup.push(d);
-        const date = new Date(d.Date);
         const isLast = i === data.length - 1;
 
         let shouldFlush = false;
         if (timeframe === "W") {
-            if (date.getDay() === 0 || isLast) shouldFlush = true;
+            if (isLast) {
+                shouldFlush = true;
+            } else {
+                const nextDateStr = data[i+1].Date;
+                if (getStartOfWeek(d.Date) !== getStartOfWeek(nextDateStr)) {
+                    shouldFlush = true;
+                }
+            }
         } else if (timeframe === "M") {
-            const nextDate = i < data.length - 1 ? new Date(data[i+1].Date) : null;
-            if (!nextDate || nextDate.getMonth() !== date.getMonth()) shouldFlush = true;
+            if (isLast) {
+                shouldFlush = true;
+            } else {
+                const nextDateStr = data[i+1].Date;
+                if (d.Date.slice(0, 7) !== nextDateStr.slice(0, 7)) {
+                    shouldFlush = true;
+                }
+            }
         }
 
         if (shouldFlush && currentGroup.length > 0) {
@@ -683,4 +707,16 @@ function aggregateData(data: BreadthDataPoint[], timeframe: "D" | "W" | "M"): Br
         }
     });
     return aggregated;
+}
+
+function getStartOfWeek(dateStr: string): string {
+    const parts = dateStr.split("-");
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const d = new Date(Date.UTC(year, month, day));
+    const dayOfWeek = d.getUTCDay();
+    const diff = d.getUTCDate() - dayOfWeek;
+    const sunday = new Date(Date.UTC(year, month, diff));
+    return sunday.toISOString().split("T")[0];
 }

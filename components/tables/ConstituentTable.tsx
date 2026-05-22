@@ -412,7 +412,12 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                         const storedState = window.localStorage.getItem("agGridState_constituent");
                         if (storedState) {
                             try {
-                                params.api.applyColumnState({ state: JSON.parse(storedState), applyOrder: true });
+                                const parsed = JSON.parse(storedState);
+                                if (Array.isArray(parsed)) {
+                                    // Strip the hide property so it doesn't override React-driven visibility
+                                    const cleanedState = parsed.map(({ hide, ...rest }: any) => rest);
+                                    params.api.applyColumnState({ state: cleanedState, applyOrder: true });
+                                }
                             } catch (e) { console.warn("Failed to apply AG grid state", e); }
                         }
                         params.api.forEachNode((node: IRowNode) => {

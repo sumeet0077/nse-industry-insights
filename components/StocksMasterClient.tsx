@@ -50,6 +50,17 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
     const dropdownRef = useRef<HTMLDivElement>(null);
     const columnsDropdownRef = useRef<HTMLDivElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Auto-focus search input when themes dropdown opens
+    useEffect(() => {
+        if (isDropdownOpen) {
+            const timer = setTimeout(() => {
+                searchInputRef.current?.focus();
+            }, 50);
+            return () => clearTimeout(timer);
+        }
+    }, [isDropdownOpen]);
     const sectorStockDropdownRef = useRef<HTMLDivElement>(null);
     const captureRef = useRef<HTMLDivElement>(null);
 
@@ -264,6 +275,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
                                     <input 
+                                        ref={searchInputRef}
                                         type="text" 
                                         placeholder="Search..." 
                                         value={searchQuery}

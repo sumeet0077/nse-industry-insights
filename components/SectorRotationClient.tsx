@@ -403,7 +403,13 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                 <div className="border-t border-[#1e1e2e] pt-4">
                     <div className="mb-4 flex flex-wrap gap-4">
                         {QUADRANTS.map(q => {
-                            const colorClass = `text-${QUADRANT_COLORS[q]}-400`;
+                            const textColors: Record<QuadrantType, string> = {
+                                Leading: "text-emerald-400",
+                                Weakening: "text-yellow-400",
+                                Lagging: "text-red-400",
+                                Improving: "text-blue-400"
+                            };
+                            const colorClass = textColors[q];
                             return (
                                 <label key={q} className="flex items-center gap-1.5 cursor-pointer group">
                                     <input
@@ -482,8 +488,14 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 max-h-60 overflow-y-auto px-2 pb-2 custom-scrollbar">
                                 {filteredAllTickers.map(ticker => {
                                     const q = tickerQuadrants[ticker];
-                                    const qColor = q !== "Unknown" ? QUADRANT_COLORS[q as QuadrantType] : "slate";
-                                    const dotColor = `bg-${qColor}-400`;
+                                    const bgColors: Record<QuadrantType | "Unknown", string> = {
+                                        Leading: "bg-emerald-400",
+                                        Weakening: "bg-yellow-400",
+                                        Lagging: "bg-red-400",
+                                        Improving: "bg-blue-400",
+                                        Unknown: "bg-slate-400"
+                                    };
+                                    const dotColor = bgColors[q as QuadrantType] || "bg-slate-400";
                                     
                                     return (
                                         <label key={ticker} className="flex items-center gap-2 cursor-pointer group">

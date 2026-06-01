@@ -8538,6 +8538,13 @@
       "category": "sectors"
     }
   ],
+  "UNIVCABLES": [
+    {
+      "id": "breadth_theme_wires_and_cables",
+      "title": "Wires and Cables",
+      "category": "industries"
+    }
+  ],
   "UNOMINDA": [
     {
       "id": "market_breadth_nifty500",

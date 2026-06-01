@@ -2138,7 +2138,8 @@
             "KEI.NS",
             "APARINDS.NS",
             "FINCABLES.NS",
-            "RRKABEL.NS"
+            "RRKABEL.NS",
+            "UNIVCABLES.NS"
         ],
         "below": [
             "VGUARD.NS"

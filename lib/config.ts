@@ -129,6 +129,10 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_power_generation", title: "Power Generation", description: "Thermal, Hydro & Integrated Power Utilities", dataFile: "breadth_theme_power_generation", category: "industries" },
     { id: "breadth_theme_carbon_and_graphite", title: "Carbon and Graphite", description: "Carbon and Graphite Manufacturers", dataFile: "breadth_theme_carbon_and_graphite", category: "industries" },
     { id: "breadth_theme_oil_and_gas_midstream", title: "Oil & Gas Midstream", description: "Gas Transmission, LNG & City Gas Distribution", dataFile: "breadth_theme_oil_and_gas_midstream", category: "industries" },
+    { id: "breadth_theme_travel_and_tourism", title: "Travel & Tourism", description: "Travel, Tourism and Amusement Parks", dataFile: "breadth_theme_travel_and_tourism", category: "industries" },
+    { id: "breadth_theme_business_services", title: "Business Services", description: "Business Services & Outsourcing", dataFile: "breadth_theme_business_services", category: "industries" },
+    { id: "breadth_theme_technology_hardware_distribution", title: "Technology Hardware Distribution", description: "IT Hardware, Networking & Mobility Distributors", dataFile: "breadth_theme_technology_hardware_distribution", category: "industries" },
+    { id: "breadth_theme_it_hardware_and_peripherals", title: "IT Hardware & Peripherals", description: "Niche IT Manufacturers & Peripherals", dataFile: "breadth_theme_it_hardware_and_peripherals", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];

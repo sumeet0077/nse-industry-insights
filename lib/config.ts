@@ -39,6 +39,7 @@ export const METRIC_CONFIG: MetricOption[] = [
 
 export const BROAD_MARKET: IndexConfig[] = [
     { id: "market_breadth_nifty50", title: "Nifty 50", description: "Top 50 Blue-chip Companies", dataFile: "market_breadth_nifty50", category: "broad-market" },
+    { id: "market_breadth_niftynext50", title: "Nifty Next 50", description: "Next 50 Large-cap Companies", dataFile: "market_breadth_niftynext50", category: "broad-market" },
     { id: "market_breadth_nifty500", title: "Nifty 500", description: "Top 500 Companies", dataFile: "market_breadth_nifty500", category: "broad-market" },
     { id: "market_breadth_smallcap", title: "Nifty Smallcap 250", description: "Smallcap Segment", dataFile: "market_breadth_smallcap", category: "broad-market" },
 ];

@@ -88,6 +88,7 @@
     "breadth_theme_wires_and_cables",
     "market_breadth_nifty50",
     "market_breadth_nifty500",
+    "market_breadth_niftynext50",
     "market_breadth_smallcap"
   ],
   "has_performance": true,

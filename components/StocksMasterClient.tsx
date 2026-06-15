@@ -33,15 +33,15 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useLocalStorage<string>("sm_category", "all");
     
-    const [sectorSortCol, setSectorSortCol] = useLocalStorage<keyof PerformanceRow>("sm_sectorSort", "1 Week");
+    const [sectorSortCol, setSectorSortCol] = useLocalStorage<keyof PerformanceRow>("sm_sectorSort", "1 Day");
     const [sectorSortDesc, setSectorSortDesc] = useLocalStorage("sm_sectorDesc", true);
     
-    const [stockSortCol, setStockSortCol] = useLocalStorage<keyof ConstituentPerformance>("sm_stockSort", "1W");
+    const [stockSortCol, setStockSortCol] = useLocalStorage<keyof ConstituentPerformance>("sm_stockSort", "1D");
     const [stockSortDesc, setStockSortDesc] = useLocalStorage("sm_stockDesc", true);
 
     const [viewMode, setViewMode] = useLocalStorage<"grid" | "stack">("sm_view", "grid");
 
-    const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols", ["1D", "1W", "1M", "RS (20D)"]);
+    const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols", ["1D", "1W", "RS (20D)", "RS (50D)"]);
     const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
 
     // Stock Selection per sector
@@ -143,11 +143,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     const resetDefaults = () => {
         setSelectedThemeIds([]);
         setSelectedStocksBySector({});
-        setSectorSortCol("1 Week");
+        setSectorSortCol("1 Day");
         setSectorSortDesc(true);
-        setStockSortCol("1W");
+        setStockSortCol("1D");
         setStockSortDesc(true);
-        setVisibleColumns(["1D", "1W", "1M", "RS (20D)"]);
+        setVisibleColumns(["1D", "1W", "RS (20D)", "RS (50D)"]);
         setViewMode("grid");
     };
 

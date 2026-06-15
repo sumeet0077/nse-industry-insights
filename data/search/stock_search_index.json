@@ -9020,6 +9020,23 @@
       "category": "industries"
     }
   ],
+  "VAML": [
+    {
+      "id": "market_breadth_niftynext50",
+      "title": "Nifty Next 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
   "VBL": [
     {
       "id": "market_breadth_niftynext50",
@@ -9074,6 +9091,23 @@
       "category": "industries"
     }
   ],
+  "VEDPOWER": [
+    {
+      "id": "market_breadth_niftynext50",
+      "title": "Nifty Next 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
   "VGUARD": [
     {
       "id": "breadth_theme_white_goods_and_durables",
@@ -9124,11 +9158,45 @@
       "category": "industries"
     }
   ],
+  "VISL": [
+    {
+      "id": "market_breadth_niftynext50",
+      "title": "Nifty Next 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
+    }
+  ],
   "VMM": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    }
+  ],
+  "VOGL": [
+    {
+      "id": "market_breadth_niftynext50",
+      "title": "Nifty Next 50",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_metal",
+      "title": "Nifty Metal",
+      "category": "sectors"
     }
   ],
   "VOLTAMP": [

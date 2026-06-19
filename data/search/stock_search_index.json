@@ -9091,23 +9091,6 @@
       "category": "industries"
     }
   ],
-  "VEDPOWER": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
-      "id": "market_breadth_nifty500",
-      "title": "Nifty 500",
-      "category": "broad-market"
-    },
-    {
-      "id": "breadth_metal",
-      "title": "Nifty Metal",
-      "category": "sectors"
-    }
-  ],
   "VGUARD": [
     {
       "id": "breadth_theme_white_goods_and_durables",
@@ -9156,23 +9139,6 @@
       "id": "breadth_theme_fmcg_staples",
       "title": "FMCG Staples",
       "category": "industries"
-    }
-  ],
-  "VISL": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
-      "id": "market_breadth_nifty500",
-      "title": "Nifty 500",
-      "category": "broad-market"
-    },
-    {
-      "id": "breadth_metal",
-      "title": "Nifty Metal",
-      "category": "sectors"
     }
   ],
   "VMM": [

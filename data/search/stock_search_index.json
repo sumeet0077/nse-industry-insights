@@ -9086,6 +9086,13 @@
       "category": "industries"
     }
   ],
+  "VIAZ": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
+      "category": "industries"
+    }
+  ],
   "VIJAYA": [
     {
       "id": "market_breadth_nifty500",
@@ -9122,23 +9129,6 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
-    }
-  ],
-  "VOGL": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
-      "id": "market_breadth_nifty500",
-      "title": "Nifty 500",
-      "category": "broad-market"
-    },
-    {
-      "id": "breadth_metal",
-      "title": "Nifty Metal",
-      "category": "sectors"
     }
   ],
   "VOLTAMP": [

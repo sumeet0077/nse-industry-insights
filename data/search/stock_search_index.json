@@ -4409,6 +4409,13 @@
       "category": "industries"
     }
   ],
+  "IONEXCHANG": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
+    }
+  ],
   "IPCALAB": [
     {
       "id": "market_breadth_nifty500",
@@ -4697,6 +4704,13 @@
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
+    }
+  ],
+  "JISLJALEQS": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
     }
   ],
   "JKCEMENT": [
@@ -5093,6 +5107,13 @@
       "category": "industries"
     }
   ],
+  "KIRLOSBROS": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
+    }
+  ],
   "KIRLOSENG": [
     {
       "id": "market_breadth_nifty500",
@@ -5201,6 +5222,13 @@
     {
       "id": "breadth_theme_diagnostics_and_pathology",
       "title": "Diagnostics & Pathology",
+      "category": "industries"
+    }
+  ],
+  "KSB": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
       "category": "industries"
     }
   ],
@@ -7294,6 +7322,13 @@
       "category": "broad-market"
     }
   ],
+  "ROTO": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
+    }
+  ],
   "RPOWER": [
     {
       "id": "market_breadth_nifty500",
@@ -7633,6 +7668,13 @@
     {
       "id": "breadth_theme_logistics",
       "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "SHAKTIPUMP": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
       "category": "industries"
     }
   ],
@@ -9172,6 +9214,13 @@
       "category": "industries"
     }
   ],
+  "WABAG": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
+    }
+  ],
   "WEBELSOLAR": [
     {
       "id": "breadth_theme_solar_manufacturing",
@@ -9285,6 +9334,13 @@
     {
       "id": "breadth_theme_travel_and_tourism",
       "title": "Travel & Tourism",
+      "category": "industries"
+    }
+  ],
+  "WPIL": [
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
       "category": "industries"
     }
   ],

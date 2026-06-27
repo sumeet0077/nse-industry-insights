@@ -2220,6 +2220,22 @@
             "GOODYEAR.NS"
         ]
     },
+    "Water & Irrigation Infrastructure": {
+        "above": [
+            "KIRLOSBROS.NS",
+            "KSB.NS",
+            "ROTO.NS",
+            "WABAG.NS",
+            "IONEXCHANG.NS"
+        ],
+        "below": [
+            "SHAKTIPUMP.NS",
+            "JISLJALEQS.NS"
+        ],
+        "new_stock": [
+            "WPIL.NS"
+        ]
+    },
     "Wealth Management": {
         "above": [
             "360ONE.NS",

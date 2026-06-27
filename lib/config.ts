@@ -134,6 +134,7 @@ export const INDUSTRIES: IndexConfig[] = [
     { id: "breadth_theme_business_services", title: "Business Services", description: "Business Services & Outsourcing", dataFile: "breadth_theme_business_services", category: "industries" },
     { id: "breadth_theme_technology_hardware_distribution", title: "Technology Hardware Distribution", description: "IT Hardware, Networking & Mobility Distributors", dataFile: "breadth_theme_technology_hardware_distribution", category: "industries" },
     { id: "breadth_theme_it_hardware_and_peripherals", title: "IT Hardware & Peripherals", description: "Niche IT Manufacturers & Peripherals", dataFile: "breadth_theme_it_hardware_and_peripherals", category: "industries" },
+    { id: "breadth_theme_water_and_irrigation_infrastructure", title: "Water & Irrigation Infrastructure", description: "Water Infrastructure, Treatment & Irrigation", dataFile: "breadth_theme_water_and_irrigation_infrastructure", category: "industries" },
 ];
 
 export const ALL_CONFIGS: IndexConfig[] = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];

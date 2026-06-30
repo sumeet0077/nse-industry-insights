@@ -11,7 +11,6 @@
             "CIPLA.NS",
             "COALINDIA.NS",
             "DRREDDY.NS",
-            "EICHERMOT.NS",
             "GRASIM.NS",
             "HINDALCO.NS",
             "ICICIBANK.NS",
@@ -33,6 +32,7 @@
             "BAJAJFINSV.NS",
             "BEL.NS",
             "BHARTIARTL.NS",
+            "EICHERMOT.NS",
             "ETERNAL.NS",
             "HCLTECH.NS",
             "HDFCBANK.NS",
@@ -71,6 +71,7 @@
             "DMART.NS",
             "ENRIN.NS",
             "GAIL.NS",
+            "HDFCAMC.NS",
             "INDHOTEL.NS",
             "MOTHERSON.NS",
             "PFC.NS",
@@ -82,6 +83,7 @@
             "TMCV.NS",
             "TORNTPHARM.NS",
             "UNIONBANK.NS",
+            "UNITDSPR.NS",
             "VBL.NS",
             "VEDL.NS",
             "ZYDUSLIFE.NS"
@@ -95,7 +97,6 @@
             "DLF.NS",
             "GODREJCP.NS",
             "HAL.NS",
-            "HDFCAMC.NS",
             "HINDZINC.NS",
             "HYUNDAI.NS",
             "IOC.NS",
@@ -108,8 +109,7 @@
             "PNB.NS",
             "SHREECEM.NS",
             "TATAPOWER.NS",
-            "TVSMOTOR.NS",
-            "UNITDSPR.NS"
+            "TVSMOTOR.NS"
         ],
         "new_stock": []
     },
@@ -134,12 +134,14 @@
             "AEGISVOPAK.NS",
             "AIAENG.NS",
             "AJANTPHARM.NS",
+            "ALKEM.NS",
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANTHEM.NS",
             "ANURAS.NS",
             "APARINDS.NS",
             "APOLLOHOSP.NS",
+            "APTUS.NS",
             "ASIANPAINT.NS",
             "ASTERDM.NS",
             "ATGL.NS",
@@ -153,7 +155,6 @@
             "BALRAMCHIN.NS",
             "BANDHANBNK.NS",
             "BANKBARODA.NS",
-            "BANKINDIA.NS",
             "BELRISE.NS",
             "BERGEPAINT.NS",
             "BHARATFORG.NS",
@@ -163,16 +164,19 @@
             "BOSCHLTD.NS",
             "BSE.NS",
             "CAMS.NS",
+            "CANFINHOME.NS",
             "CANHLIFE.NS",
             "CAPLIPOINT.NS",
             "CARBORUNIV.NS",
             "CARTRADE.NS",
             "CCL.NS",
             "CEMPRO.NS",
+            "CESC.NS",
             "CGCL.NS",
             "CGPOWER.NS",
             "CHAMBLFERT.NS",
             "CHENNPETRO.NS",
+            "CHOICEIN.NS",
             "CHOLAFIN.NS",
             "CIEINDIA.NS",
             "CIPLA.NS",
@@ -189,7 +193,6 @@
             "DIVISLAB.NS",
             "DMART.NS",
             "DRREDDY.NS",
-            "EICHERMOT.NS",
             "ELECON.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
@@ -201,6 +204,7 @@
             "FACT.NS",
             "FEDERALBNK.NS",
             "FINCABLES.NS",
+            "FIVESTAR.NS",
             "FLUOROCHEM.NS",
             "FORTIS.NS",
             "GABRIEL.NS",
@@ -208,16 +212,17 @@
             "GALLANTT.NS",
             "GESHIP.NS",
             "GLAND.NS",
+            "GLAXO.NS",
             "GLENMARK.NS",
             "GMRAIRPORT.NS",
             "GODREJIND.NS",
             "GRANULES.NS",
             "GRASIM.NS",
-            "GRAVITA.NS",
             "GROWW.NS",
             "GRSE.NS",
             "GVT&D.NS",
             "HDBFS.NS",
+            "HDFCAMC.NS",
             "HFCL.NS",
             "HINDALCO.NS",
             "HINDCOPPER.NS",
@@ -230,6 +235,7 @@
             "IDFCFIRSTB.NS",
             "IFCI.NS",
             "IGIL.NS",
+            "IIFL.NS",
             "IKS.NS",
             "INDGN.NS",
             "INDHOTEL.NS",
@@ -270,11 +276,13 @@
             "MAXHEALTH.NS",
             "MCX.NS",
             "MEDANTA.NS",
+            "MGL.NS",
             "MINDACORP.NS",
             "MMTC.NS",
             "MOTHERSON.NS",
             "MOTILALOFS.NS",
             "NAM-INDIA.NS",
+            "NATCOPHARM.NS",
             "NATIONALUM.NS",
             "NAVA.NS",
             "NAVINFLUOR.NS",
@@ -296,6 +304,7 @@
             "OFSS.NS",
             "OLAELEC.NS",
             "OLECTRA.NS",
+            "ONESOURCE.NS",
             "PAGEIND.NS",
             "PCBL.NS",
             "PETRONET.NS",
@@ -337,12 +346,14 @@
             "SUNPHARMA.NS",
             "SUZLON.NS",
             "SYRMA.NS",
+            "TARIL.NS",
             "TATACAP.NS",
             "TATACOMM.NS",
             "TATASTEEL.NS",
             "TATATECH.NS",
             "TBOTEK.NS",
             "TEJASNET.NS",
+            "TENNIND.NS",
             "THELEELA.NS",
             "THERMAX.NS",
             "TIINDIA.NS",
@@ -354,8 +365,10 @@
             "TORNTPOWER.NS",
             "TRAVELFOOD.NS",
             "TRENT.NS",
+            "TRIDENT.NS",
             "TRITURBINE.NS",
             "UNIONBANK.NS",
+            "UNITDSPR.NS",
             "USHAMART.NS",
             "VBL.NS",
             "VEDL.NS",
@@ -382,13 +395,11 @@
             "AFCONS.NS",
             "AFFLE.NS",
             "AIIL.NS",
-            "ALKEM.NS",
             "AMBUJACEM.NS",
             "ANANTRAJ.NS",
             "ANGELONE.NS",
             "APLAPOLLO.NS",
             "APOLLOTYRE.NS",
-            "APTUS.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
             "ASHOKLEY.NS",
@@ -398,6 +409,7 @@
             "BAJAJHFL.NS",
             "BAJAJHLDNG.NS",
             "BALKRISIND.NS",
+            "BANKINDIA.NS",
             "BATAINDIA.NS",
             "BAYERCROP.NS",
             "BBTC.NS",
@@ -415,14 +427,11 @@
             "BRITANNIA.NS",
             "BSOFT.NS",
             "CANBK.NS",
-            "CANFINHOME.NS",
             "CASTROLIND.NS",
             "CDSL.NS",
             "CEATLTD.NS",
             "CENTRALBK.NS",
-            "CESC.NS",
             "CHALET.NS",
-            "CHOICEIN.NS",
             "CHOLAHLDNG.NS",
             "CLEAN.NS",
             "COCHINSHIP.NS",
@@ -443,6 +452,7 @@
             "DLF.NS",
             "DOMS.NS",
             "ECLERX.NS",
+            "EICHERMOT.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "EMAMILTD.NS",
@@ -450,12 +460,10 @@
             "ESCORTS.NS",
             "ETERNAL.NS",
             "FIRSTCRY.NS",
-            "FIVESTAR.NS",
             "FORCEMOT.NS",
             "FSL.NS",
             "GICRE.NS",
             "GILLETTE.NS",
-            "GLAXO.NS",
             "GMDCLTD.NS",
             "GODFRYPHLP.NS",
             "GODIGIT.NS",
@@ -463,11 +471,11 @@
             "GODREJPROP.NS",
             "GPIL.NS",
             "GRAPHITE.NS",
+            "GRAVITA.NS",
             "HAL.NS",
             "HAVELLS.NS",
             "HBLENGINE.NS",
             "HCLTECH.NS",
-            "HDFCAMC.NS",
             "HDFCBANK.NS",
             "HDFCLIFE.NS",
             "HEG.NS",
@@ -483,7 +491,6 @@
             "IDBI.NS",
             "IEX.NS",
             "IGL.NS",
-            "IIFL.NS",
             "INDIACEM.NS",
             "INDIAMART.NS",
             "INDIANB.NS",
@@ -531,20 +538,17 @@
             "MARUTI.NS",
             "MAZDOCK.NS",
             "MFSL.NS",
-            "MGL.NS",
             "MPHASIS.NS",
             "MRF.NS",
             "MRPL.NS",
             "MSUMI.NS",
             "MUTHOOTFIN.NS",
-            "NATCOPHARM.NS",
             "NAUKRI.NS",
             "NCC.NS",
             "NEWGEN.NS",
             "NTPCGREEN.NS",
             "NUVOCO.NS",
             "OIL.NS",
-            "ONESOURCE.NS",
             "ONGC.NS",
             "PARADEEP.NS",
             "PATANJALI.NS",
@@ -585,7 +589,6 @@
             "SWANCORP.NS",
             "SWIGGY.NS",
             "SYNGENE.NS",
-            "TARIL.NS",
             "TATACHEM.NS",
             "TATACONSUM.NS",
             "TATAELXSI.NS",
@@ -596,13 +599,11 @@
             "TECHNOE.NS",
             "TEGA.NS",
             "TMPV.NS",
-            "TRIDENT.NS",
             "TTML.NS",
             "TVSMOTOR.NS",
             "UBL.NS",
             "UCOBANK.NS",
             "ULTRACEMCO.NS",
-            "UNITDSPR.NS",
             "UNOMINDA.NS",
             "UPL.NS",
             "URBANCO.NS",
@@ -617,8 +618,7 @@
         "new_stock": [
             "ICICIAMC.NS",
             "JSWDULUX.NS",
-            "MEESHO.NS",
-            "TENNIND.NS"
+            "MEESHO.NS"
         ]
     },
     "Nifty Midcap 150": {
@@ -626,12 +626,12 @@
             "ABCAPITAL.NS",
             "AIAENG.NS",
             "AJANTPHARM.NS",
+            "ALKEM.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "ATGL.NS",
             "AUBANK.NS",
             "AUROPHARMA.NS",
-            "BANKINDIA.NS",
             "BERGEPAINT.NS",
             "BHARATFORG.NS",
             "BHEL.NS",
@@ -642,6 +642,7 @@
             "FEDERALBNK.NS",
             "FLUOROCHEM.NS",
             "FORTIS.NS",
+            "GLAXO.NS",
             "GLENMARK.NS",
             "GMRAIRPORT.NS",
             "GODREJIND.NS",
@@ -704,7 +705,6 @@
             "ABBOTINDIA.NS",
             "ACC.NS",
             "AIIL.NS",
-            "ALKEM.NS",
             "APLAPOLLO.NS",
             "APOLLOTYRE.NS",
             "ASHOKLEY.NS",
@@ -712,6 +712,7 @@
             "AWL.NS",
             "BAJAJHFL.NS",
             "BALKRISIND.NS",
+            "BANKINDIA.NS",
             "BDL.NS",
             "BHARTIHEXA.NS",
             "BLUESTARCO.NS",
@@ -726,7 +727,6 @@
             "DIXON.NS",
             "ESCORTS.NS",
             "GICRE.NS",
-            "GLAXO.NS",
             "GODFRYPHLP.NS",
             "GODREJPROP.NS",
             "HAVELLS.NS",
@@ -794,6 +794,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANURAS.NS",
+            "APTUS.NS",
             "ASTERDM.NS",
             "ATHERENERG.NS",
             "ATUL.NS",
@@ -802,15 +803,18 @@
             "BELRISE.NS",
             "BLUEJET.NS",
             "CAMS.NS",
+            "CANFINHOME.NS",
             "CANHLIFE.NS",
             "CAPLIPOINT.NS",
             "CARBORUNIV.NS",
             "CARTRADE.NS",
             "CCL.NS",
             "CEMPRO.NS",
+            "CESC.NS",
             "CGCL.NS",
             "CHAMBLFERT.NS",
             "CHENNPETRO.NS",
+            "CHOICEIN.NS",
             "CIEINDIA.NS",
             "CPPLUS.NS",
             "CRAFTSMAN.NS",
@@ -827,12 +831,12 @@
             "ENGINERSIN.NS",
             "FACT.NS",
             "FINCABLES.NS",
+            "FIVESTAR.NS",
             "GABRIEL.NS",
             "GALLANTT.NS",
             "GESHIP.NS",
             "GLAND.NS",
             "GRANULES.NS",
-            "GRAVITA.NS",
             "GRSE.NS",
             "HFCL.NS",
             "HINDCOPPER.NS",
@@ -841,6 +845,7 @@
             "HSCL.NS",
             "IFCI.NS",
             "IGIL.NS",
+            "IIFL.NS",
             "IKS.NS",
             "INDGN.NS",
             "J&KBANK.NS",
@@ -856,8 +861,10 @@
             "KPIL.NS",
             "LALPATHLAB.NS",
             "MANAPPURAM.NS",
+            "MGL.NS",
             "MINDACORP.NS",
             "MMTC.NS",
+            "NATCOPHARM.NS",
             "NAVA.NS",
             "NAVINFLUOR.NS",
             "NBCC.NS",
@@ -869,6 +876,7 @@
             "NUVAMA.NS",
             "OLAELEC.NS",
             "OLECTRA.NS",
+            "ONESOURCE.NS",
             "PCBL.NS",
             "PIRAMALFIN.NS",
             "PNBHOUSING.NS",
@@ -890,13 +898,16 @@
             "SPLPETRO.NS",
             "STARHEALTH.NS",
             "SYRMA.NS",
+            "TARIL.NS",
             "TATATECH.NS",
             "TBOTEK.NS",
             "TEJASNET.NS",
+            "TENNIND.NS",
             "THELEELA.NS",
             "TIMKEN.NS",
             "TITAGARH.NS",
             "TRAVELFOOD.NS",
+            "TRIDENT.NS",
             "TRITURBINE.NS",
             "USHAMART.NS",
             "VIJAYA.NS",
@@ -917,7 +928,6 @@
             "AFFLE.NS",
             "ANANTRAJ.NS",
             "ANGELONE.NS",
-            "APTUS.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
             "BATAINDIA.NS",
@@ -929,14 +939,11 @@
             "BLUEDART.NS",
             "BRIGADE.NS",
             "BSOFT.NS",
-            "CANFINHOME.NS",
             "CASTROLIND.NS",
             "CDSL.NS",
             "CEATLTD.NS",
             "CENTRALBK.NS",
-            "CESC.NS",
             "CHALET.NS",
-            "CHOICEIN.NS",
             "CHOLAHLDNG.NS",
             "CLEAN.NS",
             "COHANCE.NS",
@@ -952,7 +959,6 @@
             "EMAMILTD.NS",
             "ERIS.NS",
             "FIRSTCRY.NS",
-            "FIVESTAR.NS",
             "FORCEMOT.NS",
             "FSL.NS",
             "GILLETTE.NS",
@@ -960,12 +966,12 @@
             "GODIGIT.NS",
             "GPIL.NS",
             "GRAPHITE.NS",
+            "GRAVITA.NS",
             "HBLENGINE.NS",
             "HEG.NS",
             "IDBI.NS",
             "IEX.NS",
             "IGL.NS",
-            "IIFL.NS",
             "INDIACEM.NS",
             "INDIAMART.NS",
             "INOXWIND.NS",
@@ -988,14 +994,11 @@
             "LEMONTREE.NS",
             "LTFOODS.NS",
             "MAPMYINDIA.NS",
-            "MGL.NS",
             "MRPL.NS",
             "MSUMI.NS",
-            "NATCOPHARM.NS",
             "NCC.NS",
             "NEWGEN.NS",
             "NUVOCO.NS",
-            "ONESOURCE.NS",
             "PARADEEP.NS",
             "PFIZER.NS",
             "PGEL.NS",
@@ -1019,11 +1022,9 @@
             "SUNTV.NS",
             "SWANCORP.NS",
             "SYNGENE.NS",
-            "TARIL.NS",
             "TATACHEM.NS",
             "TECHNOE.NS",
             "TEGA.NS",
-            "TRIDENT.NS",
             "TTML.NS",
             "UCOBANK.NS",
             "URBANCO.NS",
@@ -1033,8 +1034,7 @@
         ],
         "new_stock": [
             "JSWDULUX.NS",
-            "MEESHO.NS",
-            "TENNIND.NS"
+            "MEESHO.NS"
         ]
     },
     "NIFTY AUTO": {
@@ -1042,7 +1042,6 @@
             "BAJAJ-AUTO.NS",
             "BHARATFORG.NS",
             "BOSCHLTD.NS",
-            "EICHERMOT.NS",
             "EXIDEIND.NS",
             "MOTHERSON.NS",
             "SONACOMS.NS",
@@ -1050,6 +1049,7 @@
         ],
         "below": [
             "ASHOKLEY.NS",
+            "EICHERMOT.NS",
             "HEROMOTOCO.NS",
             "M&M.NS",
             "MARUTI.NS",
@@ -1112,6 +1112,7 @@
             "MARICO.NS",
             "NESTLEIND.NS",
             "RADICO.NS",
+            "UNITDSPR.NS",
             "VBL.NS"
         ],
         "below": [
@@ -1124,13 +1125,13 @@
             "ITC.NS",
             "PATANJALI.NS",
             "TATACONSUM.NS",
-            "UBL.NS",
-            "UNITDSPR.NS"
+            "UBL.NS"
         ],
         "new_stock": []
     },
     "NIFTY HEALTHCARE": {
         "above": [
+            "ALKEM.NS",
             "APOLLOHOSP.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
@@ -1150,7 +1151,6 @@
         ],
         "below": [
             "ABBOTINDIA.NS",
-            "ALKEM.NS",
             "PPLPHARMA.NS",
             "SYNGENE.NS"
         ],
@@ -1215,6 +1215,7 @@
     "NIFTY PHARMA": {
         "above": [
             "AJANTPHARM.NS",
+            "ALKEM.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
             "CIPLA.NS",
@@ -1234,7 +1235,6 @@
         ],
         "below": [
             "ABBOTINDIA.NS",
-            "ALKEM.NS",
             "PPLPHARMA.NS"
         ],
         "new_stock": []
@@ -1259,12 +1259,12 @@
     "NIFTY PSU BANK": {
         "above": [
             "BANKBARODA.NS",
-            "BANKINDIA.NS",
             "MAHABANK.NS",
             "SBIN.NS",
             "UNIONBANK.NS"
         ],
         "below": [
+            "BANKINDIA.NS",
             "CANBK.NS",
             "CENTRALBK.NS",
             "INDIANB.NS",
@@ -1319,6 +1319,7 @@
             "ATGL.NS",
             "CHENNPETRO.NS",
             "GAIL.NS",
+            "MGL.NS",
             "PETRONET.NS"
         ],
         "below": [
@@ -1327,7 +1328,6 @@
             "HINDPETRO.NS",
             "IGL.NS",
             "IOC.NS",
-            "MGL.NS",
             "OIL.NS",
             "ONGC.NS",
             "RELIANCE.NS"
@@ -1343,6 +1343,7 @@
             "AEGISLOG.NS",
             "ATGL.NS",
             "BHEL.NS",
+            "CESC.NS",
             "CGPOWER.NS",
             "COALINDIA.NS",
             "ENRIN.NS",
@@ -1350,6 +1351,7 @@
             "GVT&D.NS",
             "JPPOWER.NS",
             "JSWENERGY.NS",
+            "MGL.NS",
             "NAVA.NS",
             "NHPC.NS",
             "NLCINDIA.NS",
@@ -1365,12 +1367,10 @@
         "below": [
             "BPCL.NS",
             "CASTROLIND.NS",
-            "CESC.NS",
             "HINDPETRO.NS",
             "IGL.NS",
             "INOXWIND.NS",
             "IOC.NS",
-            "MGL.NS",
             "NTPCGREEN.NS",
             "OIL.NS",
             "ONGC.NS",
@@ -1434,12 +1434,12 @@
     },
     "Alcohols & Breweries": {
         "above": [
-            "RADICO.NS"
+            "RADICO.NS",
+            "TI.NS"
         ],
         "below": [
             "UBL.NS",
             "GLOBUSSPR.NS",
-            "TI.NS",
             "SULA.NS",
             "SDBL.NS",
             "PICCADIL.NS",
@@ -1449,11 +1449,11 @@
     },
     "Asset Management": {
         "above": [
+            "HDFCAMC.NS",
             "NAM-INDIA.NS",
             "ABSLAMC.NS"
         ],
         "below": [
-            "HDFCAMC.NS",
             "UTIAMC.NS"
         ],
         "new_stock": [
@@ -1489,12 +1489,12 @@
     },
     "Auto Passenger & CV": {
         "above": [
-            "EICHERMOT.NS",
             "TMCV.NS"
         ],
         "below": [
             "MARUTI.NS",
             "M&M.NS",
+            "EICHERMOT.NS",
             "ASHOKLEY.NS",
             "TMPV.NS"
         ],
@@ -1657,15 +1657,15 @@
             "MTARTECH.NS",
             "IDEAFORGE.NS",
             "ZENTEC.NS",
-            "KRISHNADEF.NS"
+            "KRISHNADEF.NS",
+            "DCXINDIA.NS"
         ],
         "below": [
             "BEL.NS",
             "HAL.NS",
             "MAZDOCK.NS",
             "COCHINSHIP.NS",
-            "BDL.NS",
-            "DCXINDIA.NS"
+            "BDL.NS"
         ],
         "new_stock": []
     },
@@ -1809,16 +1809,16 @@
             "LICHSGFIN.NS",
             "PNBHOUSING.NS",
             "AADHARHFC.NS",
+            "CANFINHOME.NS",
             "HOMEFIRST.NS",
             "AAVAS.NS",
+            "APTUS.NS",
             "REPCOHOME.NS",
             "SAMMAANCAP.NS"
         ],
         "below": [
             "BAJAJHFL.NS",
             "HUDCO.NS",
-            "CANFINHOME.NS",
-            "APTUS.NS",
             "INDIASHLTR.NS"
         ],
         "new_stock": []
@@ -1872,13 +1872,13 @@
     "Jewellery & Gold": {
         "above": [
             "TITAN.NS",
+            "SENCO.NS",
             "SKYGOLD.NS",
             "GOLDIAM.NS",
             "THANGAMAYL.NS"
         ],
         "below": [
             "KALYANKJIL.NS",
-            "SENCO.NS",
             "PNGJL.NS"
         ],
         "new_stock": []
@@ -2010,12 +2010,12 @@
         "above": [
             "GAIL.NS",
             "PETRONET.NS",
+            "MGL.NS",
             "ATGL.NS",
             "DEEPINDS.NS"
         ],
         "below": [
             "IGL.NS",
-            "MGL.NS",
             "GUJGASLTD.NS"
         ],
         "new_stock": []
@@ -2034,13 +2034,13 @@
             "SBIN.NS",
             "BANKBARODA.NS",
             "UNIONBANK.NS",
-            "BANKINDIA.NS",
             "MAHABANK.NS"
         ],
         "below": [
             "PNB.NS",
             "CANBK.NS",
             "INDIANB.NS",
+            "BANKINDIA.NS",
             "IOB.NS",
             "CENTRALBK.NS",
             "PSB.NS",
@@ -2095,7 +2095,8 @@
     "Paper": {
         "above": [
             "WSTCSTPAPR.NS",
-            "TNPL.NS"
+            "TNPL.NS",
+            "EMAMIPAP.NS"
         ],
         "below": [
             "JKPAPER.NS",
@@ -2103,8 +2104,7 @@
             "ORIENTPPR.NS",
             "SESHAPAPER.NS",
             "KUANTUM.NS",
-            "STARPAPER.NS",
-            "EMAMIPAP.NS"
+            "STARPAPER.NS"
         ],
         "new_stock": []
     },
@@ -2149,21 +2149,21 @@
             "LUPIN.NS",
             "AUROPHARMA.NS",
             "ZYDUSLIFE.NS",
+            "ALKEM.NS",
             "GLENMARK.NS",
             "IPCALAB.NS",
             "AJANTPHARM.NS",
+            "NATCOPHARM.NS",
             "GRANULES.NS",
             "JBCHEPHARM.NS",
+            "GLAXO.NS",
             "LINCOLN.NS"
         ],
         "below": [
-            "ALKEM.NS",
             "ABBOTINDIA.NS",
-            "NATCOPHARM.NS",
             "PFIZER.NS",
             "ERIS.NS",
-            "SANOFI.NS",
-            "GLAXO.NS"
+            "SANOFI.NS"
         ],
         "new_stock": []
     },
@@ -2174,12 +2174,12 @@
             "JSWENERGY.NS",
             "NHPC.NS",
             "NLCINDIA.NS",
-            "TORNTPOWER.NS"
+            "TORNTPOWER.NS",
+            "CESC.NS"
         ],
         "below": [
             "TATAPOWER.NS",
-            "SJVN.NS",
-            "CESC.NS"
+            "SJVN.NS"
         ],
         "new_stock": []
     },
@@ -2404,18 +2404,19 @@
         "above": [
             "PAGEIND.NS",
             "KPRMILL.NS",
+            "TRIDENT.NS",
             "WELSPUNLIV.NS",
             "LUXIND.NS"
         ],
         "below": [
-            "ABFRL.NS",
-            "TRIDENT.NS"
+            "ABFRL.NS"
         ],
         "new_stock": []
     },
     "Travel & Tourism": {
         "above": [
-            "TBOTEK.NS"
+            "TBOTEK.NS",
+            "IMAGICAA.NS"
         ],
         "below": [
             "IXIGO.NS",
@@ -2423,19 +2424,18 @@
             "THOMASCOOK.NS",
             "YATRA.NS",
             "BLS.NS",
-            "WONDERLA.NS",
-            "IMAGICAA.NS"
+            "WONDERLA.NS"
         ],
         "new_stock": []
     },
     "Two & Three Wheelers": {
         "above": [
-            "BAJAJ-AUTO.NS",
-            "EICHERMOT.NS"
+            "BAJAJ-AUTO.NS"
         ],
         "below": [
             "HEROMOTOCO.NS",
-            "TVSMOTOR.NS"
+            "TVSMOTOR.NS",
+            "EICHERMOT.NS"
         ],
         "new_stock": []
     },

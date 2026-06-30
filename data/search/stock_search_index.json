@@ -6,6 +6,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_wealth_management",
       "title": "Wealth Management",
       "category": "industries"
@@ -15,6 +20,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -95,6 +105,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -104,6 +119,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -126,6 +146,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -216,6 +241,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_cement",
       "title": "Cement",
       "category": "industries"
@@ -267,6 +297,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "ADANIENT": [
@@ -308,6 +343,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_green_hydrogen",
       "title": "Green Hydrogen",
       "category": "industries"
@@ -328,6 +373,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_infrastructure_and_epc",
@@ -352,6 +402,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
@@ -367,6 +422,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "AEGISVOPAK": [
@@ -419,6 +479,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -429,12 +494,22 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "AJANTPHARM": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -452,6 +527,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -509,6 +589,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_cement",
@@ -584,6 +669,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "ANURAS": [
@@ -602,6 +692,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -627,6 +722,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
@@ -649,6 +749,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_hospitals",
       "title": "Hospitals",
       "category": "industries"
@@ -665,6 +770,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -733,8 +843,18 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_auto",
       "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
       "category": "sectors"
     },
     {
@@ -784,6 +904,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_pvc_pipes_and_plumbing",
       "title": "PVC Pipes & Plumbing",
       "category": "industries"
@@ -801,6 +926,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_midstream",
@@ -849,6 +984,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_bank",
       "title": "Nifty Bank",
       "category": "sectors"
@@ -865,6 +1005,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -901,6 +1046,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -1001,6 +1151,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_housing_finance",
       "title": "Housing Finance",
       "category": "industries"
@@ -1051,6 +1206,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -1132,6 +1292,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_psubank",
       "title": "Nifty PSU Bank",
       "category": "sectors"
@@ -1197,6 +1362,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -1268,6 +1438,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_paints",
       "title": "Paints",
       "category": "industries"
@@ -1287,8 +1462,18 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_auto",
       "title": "Nifty Auto",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
       "category": "sectors"
     },
     {
@@ -1309,6 +1494,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_telecom_services",
       "title": "Telecom Services",
       "category": "industries"
@@ -1319,6 +1509,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "BHEL": [
@@ -1326,6 +1521,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_capital_goods",
@@ -1349,6 +1554,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -1415,6 +1625,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
@@ -1464,6 +1679,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_downstream",
@@ -1521,6 +1746,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -1696,6 +1926,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "CCL": [
@@ -1814,6 +2049,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
@@ -1846,6 +2086,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_capital_goods",
@@ -2025,6 +2275,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_metals_and_mining",
       "title": "Metals & Mining",
       "category": "industries"
@@ -2034,6 +2289,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -2058,6 +2318,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -2090,6 +2355,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
@@ -2104,6 +2374,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -2152,6 +2427,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -2206,6 +2486,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "CROMPTON": [
@@ -2254,6 +2539,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -2297,6 +2587,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
@@ -2311,6 +2606,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -2529,6 +2829,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
@@ -2558,6 +2863,11 @@
     {
       "id": "breadth_realty",
       "title": "Nifty Realty",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
       "category": "sectors"
     }
   ],
@@ -2812,6 +3122,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_auto_ancillary",
       "title": "Auto Ancillary",
       "category": "industries"
@@ -2839,6 +3154,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "EPL": [
@@ -2876,6 +3196,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -2917,6 +3242,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_auto",
       "title": "Nifty Auto",
       "category": "sectors"
@@ -2948,6 +3278,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -3026,6 +3361,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "FORCEMOT": [
@@ -3047,8 +3387,18 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_healthcare",
       "title": "Nifty Healthcare",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
       "category": "sectors"
     },
     {
@@ -3101,6 +3451,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_green_hydrogen",
@@ -3182,6 +3542,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_general_insurance",
       "title": "General Insurance",
       "category": "industries"
@@ -3233,6 +3598,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_pharma_formulations",
       "title": "Pharma Formulations",
       "category": "industries"
@@ -3242,6 +3612,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -3286,6 +3661,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_aviation",
       "title": "Aviation",
       "category": "industries"
@@ -3307,6 +3687,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -3354,12 +3739,22 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "GODREJPROP": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -3438,6 +3833,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     }
   ],
   "GRAVITA": [
@@ -3477,6 +3877,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -3521,6 +3926,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "HAL": [
@@ -3556,6 +3971,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -3607,6 +4027,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -3705,6 +4130,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_auto",
       "title": "Nifty Auto",
       "category": "sectors"
@@ -3724,6 +4154,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -3805,6 +4240,21 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_downstream",
@@ -3904,6 +4354,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -3938,6 +4393,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_housing_finance",
       "title": "Housing Finance",
       "category": "industries"
@@ -3966,6 +4426,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4013,6 +4478,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
@@ -4027,6 +4497,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4054,6 +4529,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_telecom_services",
       "title": "Telecom Services",
       "category": "industries"
@@ -4070,6 +4550,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4141,6 +4626,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_oil_and_gas_midstream",
       "title": "Oil & Gas Midstream",
       "category": "industries"
@@ -4208,6 +4698,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_hotels_and_hospitality",
       "title": "Hotels & Hospitality",
       "category": "industries"
@@ -4244,6 +4739,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_psubank",
       "title": "Nifty PSU Bank",
       "category": "sectors"
@@ -4273,6 +4773,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_aviation",
       "title": "Aviation",
       "category": "industries"
@@ -4289,6 +4794,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4312,6 +4822,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_telecom_infra",
@@ -4351,6 +4871,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_renewable_energy_generation",
@@ -4404,6 +4929,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_oil_and_gas_downstream",
       "title": "Oil & Gas Downstream",
       "category": "industries"
@@ -4420,6 +4955,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4479,6 +5019,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_railways_and_infrastructure",
       "title": "Railways & Infrastructure",
       "category": "industries"
@@ -4493,6 +5038,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -4546,6 +5096,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4720,6 +5275,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_cement",
       "title": "Cement",
       "category": "industries"
@@ -4771,12 +5331,22 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "JSL": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4816,6 +5386,16 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_green_hydrogen",
       "title": "Green Hydrogen",
       "category": "industries"
@@ -4835,6 +5415,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4874,6 +5459,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -4974,6 +5564,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
@@ -5058,6 +5653,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5194,6 +5794,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -5203,6 +5808,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5282,6 +5892,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_healthcare",
       "title": "Nifty Healthcare",
       "category": "sectors"
@@ -5319,12 +5934,22 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "LGEINDIA": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5344,6 +5969,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5369,6 +5999,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_life_insurance",
       "title": "Life Insurance",
       "category": "industries"
@@ -5386,12 +6021,22 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "LLOYDSME": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5429,6 +6074,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -5443,6 +6093,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -5487,6 +6142,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_semiconductors_and_ems",
       "title": "Semiconductors & EMS",
       "category": "industries"
@@ -5503,6 +6163,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5557,6 +6222,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_nbfc",
       "title": "NBFC",
       "category": "industries"
@@ -5566,6 +6236,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5610,6 +6285,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_healthcare",
       "title": "Nifty Healthcare",
       "category": "sectors"
@@ -5641,6 +6321,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5693,6 +6378,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_hospitals",
       "title": "Hospitals",
       "category": "industries"
@@ -5727,6 +6417,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_capital_market",
       "title": "Capital Market",
       "category": "industries"
@@ -5736,6 +6431,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5789,6 +6489,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
@@ -5809,6 +6514,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_midstream",
@@ -5904,6 +6614,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_auto_ancillary",
       "title": "Auto Ancillary",
       "category": "industries"
@@ -5921,6 +6636,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_capital_market",
       "title": "Capital Market",
       "category": "industries"
@@ -5930,6 +6650,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -5947,6 +6672,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6025,6 +6755,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_asset_management",
       "title": "Asset Management",
       "category": "industries"
@@ -6054,6 +6789,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
@@ -6069,6 +6809,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "NAVA": [
@@ -6081,6 +6826,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "NAVINFLUOR": [
@@ -6252,6 +7002,16 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
@@ -6266,6 +7026,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6298,6 +7063,16 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
@@ -6307,6 +7082,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6349,6 +7129,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_green_hydrogen",
       "title": "Green Hydrogen",
       "category": "industries"
@@ -6369,6 +7159,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "NUVAMA": [
@@ -6407,6 +7207,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_retail_and_e_commerce",
       "title": "Retail & E-Commerce",
       "category": "industries"
@@ -6416,6 +7221,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6431,6 +7241,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_it",
       "title": "Nifty IT",
       "category": "sectors"
@@ -6441,6 +7256,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_upstream",
@@ -6501,6 +7326,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_oil_and_gas_upstream",
       "title": "Oil & Gas Upstream",
       "category": "industries"
@@ -6531,6 +7366,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6572,6 +7412,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
@@ -6581,6 +7426,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6613,6 +7463,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_it",
       "title": "Nifty IT",
       "category": "sectors"
@@ -6628,6 +7483,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_oil_and_gas_midstream",
@@ -6722,6 +7587,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
@@ -6755,6 +7625,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6857,6 +7732,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_fintech",
       "title": "Fintech",
       "category": "industries"
@@ -6866,6 +7746,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -6922,6 +7807,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_tandd",
       "title": "Power T&D",
       "category": "industries"
@@ -6932,6 +7827,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_power_tandd",
@@ -6987,6 +7892,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_solar_manufacturing",
       "title": "Solar Manufacturing",
       "category": "industries"
@@ -6996,6 +7906,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -7099,6 +8014,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -7257,6 +8177,16 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_oil_and_gas_upstream",
       "title": "Oil & Gas Upstream",
       "category": "industries"
@@ -7339,6 +8269,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     }
   ],
   "RPTECH": [
@@ -7379,6 +8314,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_railways_and_infrastructure",
       "title": "Railways & Infrastructure",
       "category": "industries"
@@ -7400,6 +8340,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -7521,6 +8466,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
@@ -7584,6 +8534,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -7711,6 +8666,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_cement",
       "title": "Cement",
       "category": "industries"
@@ -7769,6 +8729,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -7810,6 +8775,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_luxury",
@@ -7947,6 +8922,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_specialty_chemicals",
       "title": "Specialty Chemicals",
       "category": "industries"
@@ -8004,6 +8984,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -8082,6 +9067,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_pvc_pipes_and_plumbing",
       "title": "PVC Pipes & Plumbing",
       "category": "industries"
@@ -8092,6 +9082,21 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_renewable_energy_generation",
@@ -8115,6 +9120,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -8219,6 +9229,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_data_centre_and_ai",
       "title": "Data Centre and AI",
       "category": "industries"
@@ -8258,6 +9273,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_theme_semiconductors_and_ems",
       "title": "Semiconductors & EMS",
       "category": "industries"
@@ -8267,6 +9287,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     }
   ],
@@ -8280,6 +9305,16 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_green_hydrogen",
@@ -8504,6 +9539,16 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
       "category": "industries"
@@ -8534,6 +9579,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -8717,6 +9767,16 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "breadth_energy",
+      "title": "Nifty Energy",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"
@@ -8871,6 +9931,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
@@ -8927,6 +9992,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_infra",
+      "title": "Nifty Infrastructure",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_cement",
@@ -8992,6 +10062,11 @@
       "category": "broad-market"
     },
     {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_auto",
       "title": "Nifty Auto",
       "category": "sectors"
@@ -9006,6 +10081,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -9164,6 +10244,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
     }
   ],
   "VOLTAMP": [
@@ -9177,6 +10262,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -9206,6 +10296,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {
@@ -9369,6 +10464,11 @@
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
       "category": "broad-market"
     },
     {

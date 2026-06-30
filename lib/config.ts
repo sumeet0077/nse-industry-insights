@@ -41,6 +41,7 @@ export const BROAD_MARKET: IndexConfig[] = [
     { id: "market_breadth_nifty50", title: "Nifty 50", description: "Top 50 Blue-chip Companies", dataFile: "market_breadth_nifty50", category: "broad-market" },
     { id: "market_breadth_niftynext50", title: "Nifty Next 50", description: "Next 50 Large-cap Companies", dataFile: "market_breadth_niftynext50", category: "broad-market" },
     { id: "market_breadth_nifty500", title: "Nifty 500", description: "Top 500 Companies", dataFile: "market_breadth_nifty500", category: "broad-market" },
+    { id: "market_breadth_midcap", title: "Nifty Midcap 150", description: "Midcap Segment", dataFile: "market_breadth_midcap", category: "broad-market" },
     { id: "market_breadth_smallcap", title: "Nifty Smallcap 250", description: "Smallcap Segment", dataFile: "market_breadth_smallcap", category: "broad-market" },
 ];
 
@@ -59,6 +60,8 @@ export const SECTORS: IndexConfig[] = [
     { id: "breadth_realty", title: "Nifty Realty", description: "Real Estate", dataFile: "breadth_realty", category: "sectors" },
     { id: "breadth_consumer", title: "Nifty Consumer Durables", description: "Consumer Durables", dataFile: "breadth_consumer", category: "sectors" },
     { id: "breadth_oilgas", title: "Nifty Oil & Gas", description: "Oil, Gas & Petroleum", dataFile: "breadth_oilgas", category: "sectors" },
+    { id: "breadth_energy", title: "Nifty Energy", description: "Energy & Utilities", dataFile: "breadth_energy", category: "sectors" },
+    { id: "breadth_infra", title: "Nifty Infrastructure", description: "Infrastructure Sector", dataFile: "breadth_infra", category: "sectors" },
 ];
 
 export const INDUSTRIES: IndexConfig[] = [

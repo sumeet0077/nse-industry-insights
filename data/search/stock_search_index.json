@@ -3914,13 +3914,6 @@
       "category": "industries"
     }
   ],
-  "GUJGASLTD": [
-    {
-      "id": "breadth_theme_oil_and_gas_midstream",
-      "title": "Oil & Gas Midstream",
-      "category": "industries"
-    }
-  ],
   "GVT&D": [
     {
       "id": "market_breadth_nifty500",
@@ -10205,6 +10198,13 @@
     {
       "id": "breadth_theme_wires_and_cables",
       "title": "Wires and Cables",
+      "category": "industries"
+    }
+  ],
+  "VIAZ": [
+    {
+      "id": "breadth_theme_tyres_and_rubber_products",
+      "title": "Tyres & Rubber Products",
       "category": "industries"
     }
   ],

@@ -1962,7 +1962,10 @@
             "TATASTEEL.NS",
             "JINDALSTEL.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "VAML.NS",
+            "VISL.NS"
+        ]
     },
     "Music & Content": {
         "above": [
@@ -2026,7 +2029,9 @@
             "OIL.NS",
             "RELIANCE.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "VOGL.NS"
+        ]
     },
     "PSU Banking": {
         "above": [
@@ -2180,7 +2185,9 @@
             "TATAPOWER.NS",
             "SJVN.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "VEDPOWER.NS"
+        ]
     },
     "Power T&D": {
         "above": [

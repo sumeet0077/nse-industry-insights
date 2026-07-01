@@ -2508,7 +2508,8 @@
             "APARINDS.NS",
             "FINCABLES.NS",
             "RRKABEL.NS",
-            "UNIVCABLES.NS"
+            "UNIVCABLES.NS",
+            "BANSALWIRE.NS"
         ],
         "below": [
             "VGUARD.NS"

@@ -8787,11 +8787,6 @@
       "category": "sectors"
     },
     {
-      "id": "breadth_theme_luxury",
-      "title": "Luxury",
-      "category": "industries"
-    },
-    {
       "id": "breadth_theme_power_generation",
       "title": "Power Generation",
       "category": "industries"

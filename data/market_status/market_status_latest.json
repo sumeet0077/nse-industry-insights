@@ -1916,12 +1916,13 @@
         "above": [
             "TITAN.NS",
             "TRENT.NS",
-            "KALYANKJIL.NS",
             "ETHOSLTD.NS",
-            "LANDMARK.NS"
+            "LANDMARK.NS",
+            "PAGEIND.NS"
         ],
         "below": [
-            "SULA.NS"
+            "SULA.NS",
+            "METROBRAND.NS"
         ],
         "new_stock": []
     },

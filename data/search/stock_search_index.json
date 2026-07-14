@@ -5577,11 +5577,6 @@
       "id": "breadth_theme_jewellery_and_gold",
       "title": "Jewellery & Gold",
       "category": "industries"
-    },
-    {
-      "id": "breadth_theme_luxury",
-      "title": "Luxury",
-      "category": "industries"
     }
   ],
   "KAMOPAINTS": [
@@ -6467,6 +6462,11 @@
     {
       "id": "breadth_theme_footwear",
       "title": "Footwear",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
       "category": "industries"
     },
     {
@@ -7372,6 +7372,11 @@
       "id": "market_breadth_midcap",
       "title": "Nifty Midcap 150",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_luxury",
+      "title": "Luxury",
+      "category": "industries"
     },
     {
       "id": "breadth_theme_textiles",

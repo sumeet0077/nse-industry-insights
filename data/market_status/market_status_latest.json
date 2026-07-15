@@ -2136,7 +2136,8 @@
             "BIOCON.NS",
             "PPLPHARMA.NS",
             "NEULANDLAB.NS",
-            "CONCORDBIO.NS"
+            "CONCORDBIO.NS",
+            "RUBICON.NS"
         ],
         "below": [
             "SYNGENE.NS",

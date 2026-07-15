@@ -8305,6 +8305,13 @@
       "category": "industries"
     }
   ],
+  "RUBICON": [
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
+    }
+  ],
   "RUSHIL": [
     {
       "id": "breadth_theme_building_materials",

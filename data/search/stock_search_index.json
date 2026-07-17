@@ -5152,28 +5152,6 @@
       "category": "broad-market"
     }
   ],
-  "JBCHEPHARM": [
-    {
-      "id": "market_breadth_nifty500",
-      "title": "Nifty 500",
-      "category": "broad-market"
-    },
-    {
-      "id": "market_breadth_smallcap",
-      "title": "Nifty Smallcap 250",
-      "category": "broad-market"
-    },
-    {
-      "id": "breadth_pharma",
-      "title": "Nifty Pharma",
-      "category": "sectors"
-    },
-    {
-      "id": "breadth_theme_pharma_formulations",
-      "title": "Pharma Formulations",
-      "category": "industries"
-    }
-  ],
   "JBMA": [
     {
       "id": "market_breadth_nifty500",
@@ -7546,6 +7524,16 @@
   ],
   "PFOCUS": [
     {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    },
+    {
       "id": "breadth_media",
       "title": "Nifty Media",
       "category": "sectors"
@@ -8375,6 +8363,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_pharma",
+      "title": "Nifty Pharma",
+      "category": "sectors"
     }
   ],
   "SAMMAANCAP": [
@@ -10226,13 +10219,6 @@
     {
       "id": "breadth_theme_wires_and_cables",
       "title": "Wires and Cables",
-      "category": "industries"
-    }
-  ],
-  "VIAZ": [
-    {
-      "id": "breadth_theme_tyres_and_rubber_products",
-      "title": "Tyres & Rubber Products",
       "category": "industries"
     }
   ],

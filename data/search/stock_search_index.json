@@ -9208,6 +9208,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
     }
   ],
   "TATACHEM": [

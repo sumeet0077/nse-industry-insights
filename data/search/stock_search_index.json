@@ -3105,6 +3105,13 @@
       "category": "broad-market"
     }
   ],
+  "EMIL": [
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
+    }
+  ],
   "EMMVEE": [
     {
       "id": "market_breadth_nifty500",
@@ -6434,6 +6441,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_retail_and_e_commerce",
+      "title": "Retail & E-Commerce",
+      "category": "industries"
     }
   ],
   "METROBRAND": [
@@ -9183,6 +9195,13 @@
     {
       "id": "breadth_theme_hotels_and_hospitality",
       "title": "Hotels & Hospitality",
+      "category": "industries"
+    }
+  ],
+  "TALBROAUTO": [
+    {
+      "id": "breadth_theme_auto_ancillary",
+      "title": "Auto Ancillary",
       "category": "industries"
     }
   ],

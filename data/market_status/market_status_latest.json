@@ -1477,7 +1477,8 @@
             "GABRIEL.NS",
             "SUPRAJIT.NS",
             "MINDACORP.NS",
-            "SANSERA.NS"
+            "SANSERA.NS",
+            "TALBROAUTO.NS"
         ],
         "below": [
             "UNOMINDA.NS",
@@ -2278,7 +2279,8 @@
         "above": [
             "TRENT.NS",
             "NYKAA.NS",
-            "ETERNAL.NS"
+            "ETERNAL.NS",
+            "EMIL.NS"
         ],
         "below": [
             "DMART.NS",
@@ -2288,7 +2290,9 @@
             "RELIANCE.NS",
             "SWIGGY.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "MEESHO.NS"
+        ]
     },
     "Semiconductors & EMS": {
         "above": [

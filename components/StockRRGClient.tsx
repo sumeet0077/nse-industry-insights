@@ -22,6 +22,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [tailLength, setTailLength] = useState<number>(12);
     const [searchQuery, setSearchQuery] = useState("");
     const [gridQuadrantFilter, setGridQuadrantFilter] = useState<"All" | QuadrantType>("All");
+    const [topNCount, setTopNCount] = useState<number | "All">("All");
 
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [selectedQuadrants, setSelectedQuadrants] = useState<QuadrantType[]>([...QUADRANTS]);
@@ -58,17 +59,21 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
         }
     }, [allTickers]);
 
+    // Latest points per ticker for quadrant calculation & distance ranking
+    const latestPoints = useMemo(() => {
+        const map: Record<string, RRGDataPoint> = {};
+        for (const pt of rawData) {
+            if (!map[pt.Ticker] || pt.Date > map[pt.Ticker].Date) {
+                map[pt.Ticker] = pt;
+            }
+        }
+        return map;
+    }, [rawData]);
+
     // Map ticker -> quadrant for filtering
     const tickerQuadrants = useMemo(() => {
         const map: Record<string, QuadrantType> = {};
-        const grouped: Record<string, RRGDataPoint[]> = {};
-        for (const pt of rawData) {
-            if (!grouped[pt.Ticker]) grouped[pt.Ticker] = [];
-            grouped[pt.Ticker].push(pt);
-        }
-        for (const [ticker, points] of Object.entries(grouped)) {
-            points.sort((a, b) => a.Date.localeCompare(b.Date));
-            const last = points[points.length - 1];
+        for (const [ticker, last] of Object.entries(latestPoints)) {
             if (last) {
                 const ratio = last.RS_Ratio;
                 const mom = last.RS_Momentum;
@@ -79,7 +84,31 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             }
         }
         return map;
-    }, [rawData]);
+    }, [latestPoints]);
+
+    // Calculate Top N tickers per selected quadrant
+    const topNActiveTickers = useMemo(() => {
+        if (topNCount === "All") return null;
+
+        const activeSet = new Set<string>();
+        for (const q of selectedQuadrants) {
+            const tickersInQ = allTickers.filter((t) => tickerQuadrants[t] === q);
+            tickersInQ.sort((a, b) => {
+                const headA = latestPoints[a];
+                const headB = latestPoints[b];
+                const distA = headA ? Math.sqrt(Math.pow(headA.RS_Ratio - 100, 2) + Math.pow(headA.RS_Momentum - 100, 2)) : 0;
+                const distB = headB ? Math.sqrt(Math.pow(headB.RS_Ratio - 100, 2) + Math.pow(headB.RS_Momentum - 100, 2)) : 0;
+                return distB - distA;
+            });
+            const sliced = tickersInQ.slice(0, topNCount);
+            sliced.forEach((t) => activeSet.add(t));
+        }
+        return Array.from(activeSet);
+    }, [topNCount, selectedQuadrants, allTickers, tickerQuadrants, latestPoints]);
+
+    const activeTopNSet = useMemo(() => {
+        return topNActiveTickers ? new Set(topNActiveTickers) : null;
+    }, [topNActiveTickers]);
 
     // Group data by ticker for trend scanner
     const groupedByTicker = useMemo(() => {
@@ -140,7 +169,8 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const filteredData = rawData.filter(
         (d) =>
             selectedTickers.includes(d.Ticker) &&
-            selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType)
+            selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
+            (!activeTopNSet || activeTopNSet.has(d.Ticker))
     );
 
     const filteredAllTickers = useMemo(() => {
@@ -307,6 +337,39 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                             />
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Top N Filter Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-300 font-semibold uppercase tracking-wider">
+                        Top N Per Quadrant:
+                    </span>
+                    <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
+                        {(["All", 5, 10, 15] as const).map((n) => (
+                            <button
+                                key={String(n)}
+                                onClick={() => setTopNCount(n)}
+                                className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
+                                    topNCount === n
+                                        ? "bg-blue-600 text-white font-semibold shadow-sm"
+                                        : "text-slate-400 hover:text-slate-200"
+                                }`}
+                            >
+                                {n === "All" ? "Show All" : `Top ${n}`}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <div className="text-[11px] text-slate-400 font-medium">
+                    {topNCount !== "All" ? (
+                        <span className="text-blue-400 font-bold">
+                            Displaying Top {topNCount} stocks per active quadrant ({filteredData.length / (tailLength + 1)} total)
+                        </span>
+                    ) : (
+                        <span>Showing all active quadrant stocks</span>
+                    )}
                 </div>
             </div>
 

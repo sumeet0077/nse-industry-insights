@@ -57,6 +57,9 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     const [showSectors, setShowSectors] = useLocalStorage("sr_showSectors", true);
     const [showIndustries, setShowIndustries] = useLocalStorage("sr_showIndustries", true);
 
+    // Top N per-quadrant filter state
+    const [topNCount, setTopNCount] = useLocalStorage<number | "All">("sr_topNCount", "All");
+
     const currentDataRaw = useMemo(() => {
         if (allThemeData && allThemeData.length > 0) {
             const dynamicData = computeRRGData(allThemeData, benchmarkId, timeframe);
@@ -156,6 +159,30 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
         Improving: ((quadrantCounts.Improving / totalCount) * 100).toFixed(1),
     };
 
+    // Calculate Top N tickers for each checked quadrant (ranked by distance magnitude from benchmark 100,100)
+    const topNActiveTickers = useMemo(() => {
+        if (topNCount === "All") return null;
+
+        const activeSet = new Set<string>();
+        for (const q of selectedQuadrants) {
+            const tickersInQ = allTickers.filter((t) => tickerQuadrants[t] === q);
+            tickersInQ.sort((a, b) => {
+                const headA = latestPoints[a];
+                const headB = latestPoints[b];
+                const distA = headA ? Math.sqrt(Math.pow(headA.RS_Ratio - 100, 2) + Math.pow(headA.RS_Momentum - 100, 2)) : 0;
+                const distB = headB ? Math.sqrt(Math.pow(headB.RS_Ratio - 100, 2) + Math.pow(headB.RS_Momentum - 100, 2)) : 0;
+                return distB - distA;
+            });
+            const sliced = tickersInQ.slice(0, topNCount);
+            sliced.forEach((t) => activeSet.add(t));
+        }
+        return Array.from(activeSet);
+    }, [topNCount, selectedQuadrants, allTickers, tickerQuadrants, latestPoints]);
+
+    const activeTopNSet = useMemo(() => {
+        return topNActiveTickers ? new Set(topNActiveTickers) : null;
+    }, [topNActiveTickers]);
+
     // Trend Scanner: compute which tickers match the trend criteria
     const trendMatchingTickers = useMemo(() => {
         if (trendDirection === "off") return null; // null = scanner disabled
@@ -202,13 +229,10 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     // Handler for direction change that auto-applies the scanner
     const handleDirectionChange = useCallback((dir: TrendDirectionType) => {
         setTrendDirection(dir);
-        if (dir === "off") return; // Don't change selection when turning off
-        // We need to compute matches manually here since state updates are async
-        // The effect below will handle auto-applying
+        if (dir === "off") return;
     }, []);
 
     // Auto-apply scanner when direction, metric, or lookback changes
-    // Using useMemo to determine if we should auto-apply
     const prevScannerRef = useRef({ direction: trendDirection, metric: trendMetric, lookback: trendLookback });
     if (
         trendDirection !== "off" &&
@@ -218,14 +242,14 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
          prevScannerRef.current.lookback !== trendLookback)
     ) {
         prevScannerRef.current = { direction: trendDirection, metric: trendMetric, lookback: trendLookback };
-        // Schedule update for next render cycle
         setTimeout(() => applyTrendScanner(), 0);
     }
 
-    // Filter by BOTH active tickers and active quadrants
+    // Filter by BOTH active tickers, active quadrants, and active Top N filter
     const filteredData = currentData.filter(d =>
         selectedTickers.includes(d.Ticker) &&
-        selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType)
+        selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
+        (!activeTopNSet || activeTopNSet.has(d.Ticker))
     );
 
     // Search-filtered tickers for the selector panel
@@ -234,7 +258,6 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
         : allTickers;
 
     const toggleTicker = (ticker: string) => {
-        // Manual toggle disables the scanner
         if (trendDirection !== "off") setTrendDirection("off");
         if (selectedTickers.includes(ticker)) {
             setSelectedTickers(selectedTickers.filter(t => t !== ticker));
@@ -432,6 +455,39 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                 {/* ────────── End Trend Scanner ────────── */}
 
                 <div className="border-t border-[#1e1e2e] pt-4">
+                    {/* Top N Filter Toolbar */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-[#1a1a2e]/60 border border-slate-700/60 p-2.5 rounded-lg">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-300 font-semibold uppercase tracking-wider">
+                                Top N Per Quadrant:
+                            </span>
+                            <div className="flex bg-[#111118] border border-slate-700/80 rounded-lg p-0.5">
+                                {(["All", 5, 10, 15] as const).map((n) => (
+                                    <button
+                                        key={String(n)}
+                                        onClick={() => setTopNCount(n)}
+                                        className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
+                                            topNCount === n
+                                                ? "bg-blue-600 text-white font-semibold shadow-sm"
+                                                : "text-slate-400 hover:text-slate-200"
+                                        }`}
+                                    >
+                                        {n === "All" ? "Show All" : `Top ${n}`}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-medium">
+                            {topNCount !== "All" ? (
+                                <span className="text-blue-400 font-bold">
+                                    Displaying Top {topNCount} tickers per active quadrant ({filteredData.length / (tailLength + 1)} total)
+                                </span>
+                            ) : (
+                                <span>Showing all active quadrant tickers</span>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="mb-4 flex flex-wrap gap-4">
                         {QUADRANTS.map(q => {
                             const textColors: Record<QuadrantType, string> = {

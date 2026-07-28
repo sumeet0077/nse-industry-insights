@@ -28,6 +28,7 @@ interface RRGChartProps {
 
 export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
     const [labelMode, setLabelMode] = useState<LabelModeType>("staggered");
+    const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
 
     const chartData = useMemo(() => {
         if (!data || data.length === 0) return null;
@@ -40,7 +41,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         }, {} as Record<string, RRGDataPoint[]>);
 
         // Calculate score for each ticker's head point
-        // If stock is in Leading quadrant, give priority bonus based on combined Ratio + Momentum
         const tickerScores: { ticker: string; score: number }[] = [];
         for (const [ticker, points] of Object.entries(grouped)) {
             if (points.length === 0) continue;
@@ -50,7 +50,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             const dist = Math.sqrt(Math.pow(head.RS_Ratio - 100, 2) + Math.pow(head.RS_Momentum - 100, 2));
             const isLeading = head.RS_Ratio >= 100 && head.RS_Momentum >= 100;
 
-            // Prioritize Leading quadrant stocks with strong magnitude
             const score = isLeading ? dist * 1.5 : dist;
             tickerScores.push({ ticker, score });
         }
@@ -59,7 +58,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         tickerScores.sort((a, b) => b.score - a.score);
         const top10Tickers = new Set(tickerScores.slice(0, 10).map((t) => t.ticker));
 
-        // Stagger positions for text labels to prevent text overlap in dense clusters
         const cardinalPositions: ("top right" | "bottom right" | "top left" | "bottom left" | "top center" | "bottom center" | "middle right" | "middle left")[] = [
             "top right",
             "bottom right",
@@ -76,6 +74,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         let minX = 100, maxX = 100, minY = 100, maxY = 100;
         let index = 0;
 
+        const isHoverActive = hoveredTicker !== null;
+
         for (const [ticker, points] of Object.entries(grouped)) {
             index++;
             points.sort((a, b) => a.Date.localeCompare(b.Date));
@@ -85,6 +85,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
 
             const head = tailData[tailData.length - 1];
             const cleanName = cleanTicker(ticker);
+            const isHovered = isHoverActive && hoveredTicker === ticker;
 
             // Hash color generator
             let hash = 0;
@@ -92,7 +93,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 hash = ticker.charCodeAt(i) + ((hash << 5) - hash);
             }
             const hue = Math.abs(hash) % 360;
-            const color = `hsl(${hue}, 85%, 62%)`;
+            const baseColor = `hsl(${hue}, 85%, 62%)`;
 
             // Update axis ranges
             for (const p of tailData) {
@@ -103,8 +104,38 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             }
 
             const tailLen = tailData.length;
-            const markerSizes = tailData.map((_, i) => Math.max(5, Math.round(4 + (i / Math.max(1, tailLen - 1)) * 4)));
-            const markerOpacities = tailData.map((_, i) => Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4));
+
+            // Dynamic styling based on hover focus state
+            let lineOpacity = 0.75;
+            let lineWidth = 2;
+            let markerBaseSize = 4;
+            let headMarkerSize = 10;
+            let headLineColor = "#ffffff";
+            let headLineWidth = 2;
+
+            if (isHoverActive) {
+                if (isHovered) {
+                    lineOpacity = 1.0;
+                    lineWidth = 4;
+                    markerBaseSize = 6;
+                    headMarkerSize = 14;
+                    headLineWidth = 3;
+                    headLineColor = "#ffffff";
+                } else {
+                    lineOpacity = 0.12;
+                    lineWidth = 1;
+                    markerBaseSize = 3;
+                    headMarkerSize = 5;
+                    headLineWidth = 0;
+                }
+            }
+
+            const markerSizes = tailData.map((_, i) => Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4)));
+            const markerOpacities = tailData.map((_, i) =>
+                isHoverActive
+                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.1
+                    : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4)
+            );
 
             // Determine quadrant name for tooltip
             const getQuadrantName = (r: number, m: number) => {
@@ -119,13 +150,14 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 x: tailData.map((d) => d.RS_Ratio),
                 y: tailData.map((d) => d.RS_Momentum),
                 mode: "lines+markers",
+                customdata: tailData.map(() => ticker),
                 marker: {
                     size: markerSizes,
-                    color: color,
+                    color: baseColor,
                     opacity: markerOpacities,
-                    line: { width: 1, color: "#0f172a" },
+                    line: { width: isHoverActive && !isHovered ? 0 : 1, color: "#0f172a" },
                 },
-                line: { width: 2, color: color, opacity: 0.75 },
+                line: { width: lineWidth, color: baseColor, opacity: lineOpacity },
                 hoverinfo: "text",
                 hovertext: tailData.map(
                     (d) =>
@@ -134,9 +166,11 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 showlegend: false,
             });
 
-            // Determine if label should be visible based on labelMode
+            // Determine if label should be visible based on labelMode & hover
             const shouldShowLabel =
-                labelMode === "staggered" || (labelMode === "leaders" && top10Tickers.has(ticker));
+                isHovered ||
+                (!isHoverActive &&
+                    (labelMode === "staggered" || (labelMode === "leaders" && top10Tickers.has(ticker))));
 
             const textPos = cardinalPositions[index % cardinalPositions.length];
 
@@ -147,8 +181,19 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 mode: shouldShowLabel ? "markers+text" : "markers",
                 text: shouldShowLabel ? [cleanName] : undefined,
                 textposition: textPos,
-                marker: { symbol: "circle", size: 10, color: color, line: { width: 2, color: "#ffffff" } },
-                textfont: { color: color, size: 11, weight: "bold" },
+                customdata: [ticker],
+                marker: {
+                    symbol: "circle",
+                    size: headMarkerSize,
+                    color: baseColor,
+                    opacity: isHoverActive && !isHovered ? 0.2 : 1.0,
+                    line: { width: headLineWidth, color: headLineColor },
+                },
+                textfont: {
+                    color: isHovered ? "#ffffff" : baseColor,
+                    size: isHovered ? 13 : 11,
+                    weight: "bold",
+                },
                 hoverinfo: "text",
                 hovertext: [
                     `<b>${cleanName}</b> (Current Head)<br>Date: ${head.Date.split("T")[0]}<br>RS-Ratio: ${head.RS_Ratio.toFixed(2)}<br>RS-Mom: ${head.RS_Momentum.toFixed(2)}<br>Quadrant: <b>${getQuadrantName(head.RS_Ratio, head.RS_Momentum)}</b>`,
@@ -169,7 +214,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
         };
-    }, [data, tailLength, labelMode]);
+    }, [data, tailLength, labelMode, hoveredTicker]);
 
     if (!data || data.length === 0) {
         return (
@@ -219,14 +264,31 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     </div>
                 </div>
 
-                <div className="text-[11px] text-slate-500 hidden sm:block">
-                    Tip: Hover over any head or path to see details
+                <div className="text-[11px] text-slate-400 font-medium hidden sm:block">
+                    {hoveredTicker ? (
+                        <span className="text-blue-400 font-bold">
+                            Focusing: {cleanTicker(hoveredTicker)}
+                        </span>
+                    ) : (
+                        <span>Tip: Hover over any head or path to highlight</span>
+                    )}
                 </div>
             </div>
 
             <Plot
                 useResizeHandler={true}
                 data={chartData.traces}
+                onHover={(event) => {
+                    if (event.points && event.points.length > 0) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        const pt = event.points[0] as any;
+                        const t = Array.isArray(pt.customdata) ? pt.customdata[0] : pt.customdata;
+                        if (t && typeof t === "string") {
+                            setHoveredTicker(t);
+                        }
+                    }
+                }}
+                onUnhover={() => setHoveredTicker(null)}
                 layout={{
                     title: { text: `Sector Rotation - ${timeframe}`, font: { size: 14 } },
                     paper_bgcolor: "transparent",
@@ -276,3 +338,4 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         </div>
     );
 }
+

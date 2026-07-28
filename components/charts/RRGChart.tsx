@@ -39,19 +39,25 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             return acc;
         }, {} as Record<string, RRGDataPoint[]>);
 
-        // Calculate distance from center (100, 100) for each ticker's head point to identify top leaders
-        const tickerDistances: { ticker: string; dist: number }[] = [];
+        // Calculate score for each ticker's head point
+        // If stock is in Leading quadrant, give priority bonus based on combined Ratio + Momentum
+        const tickerScores: { ticker: string; score: number }[] = [];
         for (const [ticker, points] of Object.entries(grouped)) {
             if (points.length === 0) continue;
             points.sort((a, b) => a.Date.localeCompare(b.Date));
             const head = points[points.length - 1];
+
             const dist = Math.sqrt(Math.pow(head.RS_Ratio - 100, 2) + Math.pow(head.RS_Momentum - 100, 2));
-            tickerDistances.push({ ticker, dist });
+            const isLeading = head.RS_Ratio >= 100 && head.RS_Momentum >= 100;
+
+            // Prioritize Leading quadrant stocks with strong magnitude
+            const score = isLeading ? dist * 1.5 : dist;
+            tickerScores.push({ ticker, score });
         }
 
-        // Sort descending by distance from center
-        tickerDistances.sort((a, b) => b.dist - a.dist);
-        const top10Tickers = new Set(tickerDistances.slice(0, 10).map((t) => t.ticker));
+        // Sort descending by score
+        tickerScores.sort((a, b) => b.score - a.score);
+        const top10Tickers = new Set(tickerScores.slice(0, 10).map((t) => t.ticker));
 
         // Stagger positions for text labels to prevent text overlap in dense clusters
         const cardinalPositions: ("top right" | "bottom right" | "top left" | "bottom left" | "top center" | "bottom center" | "middle right" | "middle left")[] = [
@@ -195,7 +201,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
                         {[
                             { id: "staggered", label: "Auto-Staggered (Clean)" },
-                            { id: "leaders", label: "Top 10 Leaders Only" },
+                            { id: "leaders", label: "Top 10 Leaders / Movers" },
                             { id: "hover", label: "Hover / Focus Only" },
                         ].map((mode) => (
                             <button

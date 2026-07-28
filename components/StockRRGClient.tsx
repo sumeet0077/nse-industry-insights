@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
-import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
 import { QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
@@ -22,6 +21,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [timeframe, setTimeframe] = useState<TimeframeType>("W");
     const [tailLength, setTailLength] = useState<number>(12);
     const [searchQuery, setSearchQuery] = useState("");
+    const [gridQuadrantFilter, setGridQuadrantFilter] = useState<"All" | QuadrantType>("All");
 
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [selectedQuadrants, setSelectedQuadrants] = useState<QuadrantType[]>([...QUADRANTS]);
@@ -143,12 +143,19 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType)
     );
 
-    const filteredAllTickers = searchQuery.trim()
-        ? allTickers.filter((t) =>
-              cleanTicker(t).toLowerCase().includes(searchQuery.toLowerCase()) ||
-              t.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : allTickers;
+    const filteredAllTickers = useMemo(() => {
+        return searchQuery.trim()
+            ? allTickers.filter((t) =>
+                  cleanTicker(t).toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  t.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+            : allTickers;
+    }, [allTickers, searchQuery]);
+
+    const displayGridTickers = useMemo(() => {
+        if (gridQuadrantFilter === "All") return filteredAllTickers;
+        return filteredAllTickers.filter((t) => tickerQuadrants[t] === gridQuadrantFilter);
+    }, [filteredAllTickers, gridQuadrantFilter, tickerQuadrants]);
 
     const toggleTicker = (ticker: string) => {
         if (trendDirection !== "off") setTrendDirection("off");
@@ -306,7 +313,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             {/* Quadrant Quick Filter Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg">
                 <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs font-semibold text-slate-400">Quadrants:</span>
+                    <span className="text-xs font-semibold text-slate-400">Chart Quadrants:</span>
                     {QUADRANTS.map((q) => {
                         const count = allTickers.filter((t) => tickerQuadrants[t] === q).length;
                         const isChecked = selectedQuadrants.includes(q);
@@ -365,44 +372,98 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                 <RRGChart data={filteredData} tailLength={tailLength} timeframe={TIMEFRAMES[timeframe]} />
             </div>
 
-            {/* Premium Constituent Stock Chips Selector Grid */}
+            {/* Premium Constituent Stock Chips Selector Grid with Quadrant Filter & Select/Deselect All */}
             <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-4 mb-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#1e1e2e]">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#1e1e2e]">
                     <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                        <span className="text-xs text-slate-300 font-bold uppercase tracking-wider">
                             Constituent Stocks
                         </span>
-                        <span className="text-xs bg-blue-500/10 text-blue-400 font-bold px-2 py-0.5 rounded-full border border-blue-500/20">
+                        <span className="text-xs bg-blue-500/10 text-blue-400 font-bold px-2.5 py-0.5 rounded-full border border-blue-500/20">
                             {selectedTickers.length} of {allTickers.length} selected
                         </span>
                     </div>
 
-                    <div className="relative w-full sm:w-64">
-                        <input
-                            type="text"
-                            placeholder="Search stock..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#1a1a2e] border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        />
-                        <svg
-                            className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    <div className="flex flex-wrap items-center gap-3">
+                        {/* Quadrant Filter Buttons for Grid */}
+                        <div className="flex flex-wrap bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
+                            {(["All", "Leading", "Weakening", "Lagging", "Improving"] as const).map((q) => {
+                                const count = q === "All" ? allTickers.length : allTickers.filter((t) => tickerQuadrants[t] === q).length;
+                                const activeColor: Record<string, string> = {
+                                    All: "bg-slate-700 text-white font-semibold shadow-sm",
+                                    Leading: "bg-emerald-600/30 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm",
+                                    Weakening: "bg-yellow-600/30 text-yellow-300 font-semibold border border-yellow-500/40 shadow-sm",
+                                    Lagging: "bg-red-600/30 text-red-300 font-semibold border border-red-500/40 shadow-sm",
+                                    Improving: "bg-blue-600/30 text-blue-300 font-semibold border border-blue-500/40 shadow-sm",
+                                };
+                                return (
+                                    <button
+                                        key={q}
+                                        onClick={() => setGridQuadrantFilter(q)}
+                                        className={`text-[11px] px-2.5 py-1 rounded-md transition-all ${
+                                            gridQuadrantFilter === q
+                                                ? activeColor[q]
+                                                : "text-slate-400 hover:text-slate-200"
+                                        }`}
+                                    >
+                                        {q} ({count})
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Select All / Deselect All for grid */}
+                        <div className="flex items-center gap-1.5">
+                            <button
+                                onClick={() => {
+                                    if (trendDirection !== "off") setTrendDirection("off");
+                                    const toAdd = new Set([...selectedTickers, ...displayGridTickers]);
+                                    setSelectedTickers(Array.from(toAdd));
+                                }}
+                                className="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-lg font-medium transition-colors"
+                            >
+                                Select All
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (trendDirection !== "off") setTrendDirection("off");
+                                    const removeSet = new Set(displayGridTickers);
+                                    setSelectedTickers(selectedTickers.filter((t) => !removeSet.has(t)));
+                                }}
+                                className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-lg font-medium transition-colors"
+                            >
+                                Deselect All
+                            </button>
+                        </div>
+
+                        {/* Search Input */}
+                        <div className="relative w-full sm:w-44">
+                            <input
+                                type="text"
+                                placeholder="Search stock..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-[#1a1a2e] border border-slate-700 rounded-lg pl-8 pr-3 py-1 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             />
-                        </svg>
+                            <svg
+                                className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
-                    {filteredAllTickers.map((ticker) => {
+                    {displayGridTickers.map((ticker) => {
                         const isSelected = selectedTickers.includes(ticker);
                         const q = tickerQuadrants[ticker];
                         const cleanName = cleanTicker(ticker);
@@ -444,6 +505,11 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                             </button>
                         );
                     })}
+                    {displayGridTickers.length === 0 && (
+                        <div className="col-span-full text-center py-6 text-xs text-slate-500">
+                            No stocks match the selected quadrant ({gridQuadrantFilter}) and search query ({searchQuery || "None"}).
+                        </div>
+                    )}
                 </div>
             </div>
 

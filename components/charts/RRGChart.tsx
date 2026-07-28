@@ -88,7 +88,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             const tailLen = tailData.length;
 
             // Dynamic styling based on hover focus state
-            let lineOpacity = 0.75;
+            let traceOpacity = 0.75;
             let lineWidth = 2;
             let markerBaseSize = 4;
             let headMarkerSize = 10;
@@ -97,15 +97,15 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
 
             if (isHoverActive) {
                 if (isHovered) {
-                    lineOpacity = 1.0;
+                    traceOpacity = 1.0;
                     lineWidth = 4.5;
                     markerBaseSize = 6;
                     headMarkerSize = 15;
                     headLineWidth = 3.5;
                     headLineColor = "#ffffff";
                 } else {
-                    // Ultra-faint dimming for non-hovered traces
-                    lineOpacity = 0.03;
+                    // Ultra-faint dimming applied at ROOT TRACE level so Plotly respects it
+                    traceOpacity = 0.04;
                     lineWidth = 1;
                     markerBaseSize = 0;
                     headMarkerSize = 4;
@@ -140,11 +140,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             else if (dx < 0 && dy < 0) textPos = "bottom left";
             else textPos = "bottom right";
 
-            // 1. Draw Tail line + path markers
+            // 1. Draw Tail line + path markers (hoverinfo set to "none" so tooltip box never blocks tail line)
             traces.push({
                 x: tailData.map((d) => d.RS_Ratio),
                 y: tailData.map((d) => d.RS_Momentum),
                 mode: "lines+markers",
+                opacity: traceOpacity,
                 customdata: tailData.map(() => ticker),
                 marker: {
                     size: markerSizes,
@@ -152,12 +153,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     opacity: markerOpacities,
                     line: { width: isHoverActive && !isHovered ? 0 : 1, color: "#0f172a" },
                 },
-                line: { width: lineWidth, color: baseColor, opacity: lineOpacity },
-                hoverinfo: "text",
-                hovertext: tailData.map(
-                    (d) =>
-                        `<b>${cleanName}</b><br>Date: ${d.Date.split("T")[0]}<br>RS-Ratio: ${d.RS_Ratio.toFixed(2)}<br>RS-Mom: ${d.RS_Momentum.toFixed(2)}<br>Quadrant: <b>${getQuadrantName(d.RS_Ratio, d.RS_Momentum)}</b>`
-                ),
+                line: { width: lineWidth, color: baseColor },
+                hoverinfo: "none",
                 showlegend: false,
             });
 
@@ -170,13 +167,13 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 y: [head.RS_Momentum],
                 mode: shouldShowLabel ? "markers+text" : "markers",
                 text: shouldShowLabel ? [cleanName] : undefined,
-                textposition: textPos,
+                textposition: [textPos],
+                opacity: isHoverActive && !isHovered ? 0.04 : 1.0,
                 customdata: [ticker],
                 marker: {
                     symbol: "circle",
                     size: headMarkerSize,
                     color: baseColor,
-                    opacity: isHoverActive && !isHovered ? 0.05 : 1.0,
                     line: { width: headLineWidth, color: headLineColor },
                 },
                 textfont: {
@@ -186,7 +183,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 },
                 hoverinfo: "text",
                 hovertext: [
-                    `<b>${cleanName}</b> (Current Head)<br>Date: ${head.Date.split("T")[0]}<br>RS-Ratio: ${head.RS_Ratio.toFixed(2)}<br>RS-Mom: ${head.RS_Momentum.toFixed(2)}<br>Quadrant: <b>${getQuadrantName(head.RS_Ratio, head.RS_Momentum)}</b>`,
+                    `<b>${cleanName}</b><br>Date: ${head.Date.split("T")[0]}<br>RS-Ratio: ${head.RS_Ratio.toFixed(2)}<br>RS-Mom: ${head.RS_Momentum.toFixed(2)}<br>Quadrant: <b>${getQuadrantName(head.RS_Ratio, head.RS_Momentum)}</b>`,
                 ],
                 showlegend: false,
             });
@@ -199,33 +196,10 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         const maxDevX = Math.max(Math.abs(maxX - 100), Math.abs(100 - minX)) + xPad;
         const maxDevY = Math.max(Math.abs(maxY - 100), Math.abs(100 - minY)) + yPad;
 
-        // Calculate latest point for active hovered ticker for top-right floating summary card
-        let hoveredMetrics: { name: string; date: string; ratio: number; momentum: number; quadrant: string } | null = null;
-        if (hoveredTicker && grouped[hoveredTicker]) {
-            const hPoints = grouped[hoveredTicker];
-            const hLast = hPoints[hPoints.length - 1];
-            if (hLast) {
-                const getQName = (r: number, m: number) => {
-                    if (r >= 100 && m >= 100) return "Leading";
-                    if (r >= 100 && m < 100) return "Weakening";
-                    if (r < 100 && m < 100) return "Lagging";
-                    return "Improving";
-                };
-                hoveredMetrics = {
-                    name: cleanTicker(hoveredTicker),
-                    date: hLast.Date.split("T")[0],
-                    ratio: hLast.RS_Ratio,
-                    momentum: hLast.RS_Momentum,
-                    quadrant: getQName(hLast.RS_Ratio, hLast.RS_Momentum),
-                };
-            }
-        }
-
         return {
             traces,
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
-            hoveredMetrics,
         };
     }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
 
@@ -247,8 +221,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             </div>
         );
     }
-
-    const hMetrics = chartData.hoveredMetrics;
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 relative">
@@ -280,35 +252,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     )}
                 </div>
             </div>
-
-            {/* Top-Right Floating Focus Card Overlay */}
-            {hMetrics && (
-                <div className="absolute top-16 right-6 z-20 bg-[#0f172a]/95 border border-blue-500/40 backdrop-blur-md rounded-xl p-3.5 shadow-2xl min-w-[200px] pointer-events-none transition-all duration-150">
-                    <div className="flex items-center justify-between gap-3 border-b border-slate-700/60 pb-2 mb-2">
-                        <span className="text-sm font-bold text-white tracking-wide">
-                            {hMetrics.name}
-                        </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                            hMetrics.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
-                            hMetrics.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
-                            hMetrics.quadrant === "Lagging" ? "bg-red-500/20 text-red-300" :
-                            "bg-blue-500/20 text-blue-300"
-                        }`}>
-                            {hMetrics.quadrant}
-                        </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-                        <div>
-                            <span className="text-slate-400 text-[10px] block font-semibold">RS-Ratio</span>
-                            <span className="font-mono font-bold text-slate-100">{hMetrics.ratio.toFixed(2)}</span>
-                        </div>
-                        <div>
-                            <span className="text-slate-400 text-[10px] block font-semibold">RS-Momentum</span>
-                            <span className="font-mono font-bold text-slate-100">{hMetrics.momentum.toFixed(2)}</span>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <Plot
                 useResizeHandler={true}

@@ -29,6 +29,7 @@ interface RRGChartProps {
 export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
     const [hoverOnlyLabels, setHoverOnlyLabels] = useState(false);
     const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
+    const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
     const [hoveredPoint, setHoveredPoint] = useState<{ name: string; date: string; ratio: number; momentum: number; quadrant: string } | null>(null);
 
     const chartData = useMemo(() => {
@@ -103,14 +104,32 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 }
             }
 
-            const markerSizes = tailData.map((_, i) =>
-                Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4))
-            );
-            const markerOpacities = tailData.map((_, i) =>
-                isHoverActive
+            // Per-point marker popping calculations
+            const markerSizes = tailData.map((_, i) => {
+                const isThisPointHovered = isHovered && hoveredPointIndex === i;
+                if (isThisPointHovered) return 14; // Prominent pop size when point is hovered!
+                return Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4));
+            });
+
+            const markerOpacities = tailData.map((_, i) => {
+                const isThisPointHovered = isHovered && hoveredPointIndex === i;
+                if (isThisPointHovered) return 1.0;
+                return isHoverActive
                     ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.2
-                    : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4)
-            );
+                    : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4);
+            });
+
+            const markerLineColors = tailData.map((_, i) => {
+                const isThisPointHovered = isHovered && hoveredPointIndex === i;
+                if (isThisPointHovered) return "#ffffff"; // Bright white ring on popped dot!
+                return "#0f172a";
+            });
+
+            const markerLineWidths = tailData.map((_, i) => {
+                const isThisPointHovered = isHovered && hoveredPointIndex === i;
+                if (isThisPointHovered) return 3; // Thick 3px ring on popped dot!
+                return isHoverActive && !isHovered ? 0 : 1;
+            });
 
             // Determine quadrant name for tooltip
             const getQuadrantName = (r: number, m: number) => {
@@ -149,7 +168,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     size: markerSizes,
                     color: baseColor,
                     opacity: markerOpacities,
-                    line: { width: isHoverActive && !isHovered ? 0 : 1, color: "#0f172a" },
+                    line: { width: markerLineWidths, color: markerLineColors },
                 },
                 line: { width: lineWidth, color: baseColor },
                 hoverinfo: "none",
@@ -201,7 +220,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
         };
-    }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
+    }, [data, tailLength, hoverOnlyLabels, hoveredTicker, hoveredPointIndex]);
 
     if (!data || data.length === 0) {
         return (
@@ -281,6 +300,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const pt = event.points[0] as any;
                         const cd = pt.customdata;
+                        const pIdx = typeof pt.pointIndex === "number" ? pt.pointIndex : null;
+                        setHoveredPointIndex(pIdx);
                         if (cd) {
                             const dataObj = Array.isArray(cd) ? cd[0] : cd;
                             if (dataObj && typeof dataObj === "object" && dataObj.ticker) {
@@ -301,6 +322,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 onUnhover={() => {
                     setHoveredTicker(null);
                     setHoveredPoint(null);
+                    setHoveredPointIndex(null);
                 }}
                 layout={{
                     title: { text: `Sector Rotation - ${timeframe}`, font: { size: 14 } },

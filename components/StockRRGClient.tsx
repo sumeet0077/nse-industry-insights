@@ -19,7 +19,7 @@ function cleanTicker(ticker: string): string {
 
 export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [timeframe, setTimeframe] = useState<TimeframeType>("W");
-    const [tailLength, setTailLength] = useState<number>(12);
+    const [tailLength, setTailLength] = useState<number>(5);
     const [searchQuery, setSearchQuery] = useState("");
     const [gridQuadrantFilter, setGridQuadrantFilter] = useState<"All" | QuadrantType>("All");
     const [topNCount, setTopNCount] = useState<number | "All">("All");
@@ -31,7 +31,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useState<TrendDirectionType>("off");
     const [trendMetric, setTrendMetric] = useState<TrendMetricType>("momentum");
-    const [trendLookback, setTrendLookback] = useState(12);
+    const [trendLookback, setTrendLookback] = useState(5);
 
     const rawData: RRGDataPoint[] = useMemo(() => {
         if (!stockRRGData) return [];

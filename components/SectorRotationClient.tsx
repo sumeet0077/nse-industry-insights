@@ -37,7 +37,7 @@ function humanizeTickerId(raw: string): string {
 export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: SectorRotationClientProps) {
     const [benchmarkId, setBenchmarkId] = useLocalStorage<string>("sr_benchmark", "market_breadth_nifty50");
     const [timeframe, setTimeframe] = useLocalStorage<TimeframeType>("sr_timeframe", "W");
-    const [tailLength, setTailLength] = useLocalStorage("sr_tailLength", 12);
+    const [tailLength, setTailLength] = useLocalStorage("sr_tailLength", 5);
     const [searchQuery, setSearchQuery] = useState("");
 
     const [selectedTickers, setSelectedTickers] = useLocalStorage<string[]>("sr_selectedTickers", []);
@@ -50,7 +50,7 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirectionType>("sr_trendDirection", "off");
     const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetricType>("sr_trendMetric", "momentum");
-    const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 12);
+    const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 5);
 
     // Category filters
     const [showBroadMarket, setShowBroadMarket] = useLocalStorage("sr_showBroadMarket", true);

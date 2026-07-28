@@ -18,7 +18,7 @@ function cleanTicker(ticker: string): string {
     return ticker.replace(/\.NS$/i, "").replace(/\.BO$/i, "");
 }
 
-type LabelModeType = "staggered" | "leaders" | "hover";
+type LabelModeType = "all" | "hover";
 
 interface RRGChartProps {
     data: RRGDataPoint[];
@@ -27,7 +27,7 @@ interface RRGChartProps {
 }
 
 export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
-    const [labelMode, setLabelMode] = useState<LabelModeType>("staggered");
+    const [hoverOnlyLabels, setHoverOnlyLabels] = useState(false);
     const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
 
     const chartData = useMemo(() => {
@@ -39,24 +39,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             acc[point.Ticker].push(point);
             return acc;
         }, {} as Record<string, RRGDataPoint[]>);
-
-        // Calculate score for each ticker's head point
-        const tickerScores: { ticker: string; score: number }[] = [];
-        for (const [ticker, points] of Object.entries(grouped)) {
-            if (points.length === 0) continue;
-            points.sort((a, b) => a.Date.localeCompare(b.Date));
-            const head = points[points.length - 1];
-
-            const dist = Math.sqrt(Math.pow(head.RS_Ratio - 100, 2) + Math.pow(head.RS_Momentum - 100, 2));
-            const isLeading = head.RS_Ratio >= 100 && head.RS_Momentum >= 100;
-
-            const score = isLeading ? dist * 1.5 : dist;
-            tickerScores.push({ ticker, score });
-        }
-
-        // Sort descending by score
-        tickerScores.sort((a, b) => b.score - a.score);
-        const top10Tickers = new Set(tickerScores.slice(0, 10).map((t) => t.ticker));
 
         const cardinalPositions: ("top right" | "bottom right" | "top left" | "bottom left" | "top center" | "bottom center" | "middle right" | "middle left")[] = [
             "top right",
@@ -166,12 +148,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 showlegend: false,
             });
 
-            // Determine if label should be visible based on labelMode & hover
-            const shouldShowLabel =
-                isHovered ||
-                (!isHoverActive &&
-                    (labelMode === "staggered" || (labelMode === "leaders" && top10Tickers.has(ticker))));
-
+            // Determine if label should be visible based on hoverOnlyLabels & hover
+            const shouldShowLabel = isHovered || (!isHoverActive && !hoverOnlyLabels);
             const textPos = cardinalPositions[index % cardinalPositions.length];
 
             // 2. Draw Head marker + text label
@@ -214,7 +192,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
         };
-    }, [data, tailLength, labelMode, hoveredTicker]);
+    }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
 
     if (!data || data.length === 0) {
         return (
@@ -243,25 +221,16 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
                         Graph Labels:
                     </span>
-                    <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
-                        {[
-                            { id: "staggered", label: "Auto-Staggered (Clean)" },
-                            { id: "leaders", label: "Top 10 Leaders / Movers" },
-                            { id: "hover", label: "Hover / Focus Only" },
-                        ].map((mode) => (
-                            <button
-                                key={mode.id}
-                                onClick={() => setLabelMode(mode.id as LabelModeType)}
-                                className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
-                                    labelMode === mode.id
-                                        ? "bg-blue-600 text-white font-semibold shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                            >
-                                {mode.label}
-                            </button>
-                        ))}
-                    </div>
+                    <button
+                        onClick={() => setHoverOnlyLabels(!hoverOnlyLabels)}
+                        className={`text-xs px-3 py-1 rounded-md font-medium transition-all ${
+                            hoverOnlyLabels
+                                ? "bg-blue-600 text-white font-semibold shadow-sm"
+                                : "bg-[#1a1a2e] border border-slate-700/80 text-slate-400 hover:text-slate-200"
+                        }`}
+                    >
+                        Hover / Focus Only
+                    </button>
                 </div>
 
                 <div className="text-[11px] text-slate-400 font-medium hidden sm:block">

@@ -23,6 +23,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [gridQuadrantFilter, setGridQuadrantFilter] = useState<"All" | QuadrantType>("All");
     const [topNCount, setTopNCount] = useState<number | "All">("All");
+    const [copiedQuadrant, setCopiedQuadrant] = useState<string | null>(null);
 
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [selectedQuadrants, setSelectedQuadrants] = useState<QuadrantType[]>([...QUADRANTS]);
@@ -586,21 +587,37 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                         Improving: "text-blue-400",
                     };
 
+                    const handleCopyWatchlist = (quadrantName: string, tickers: string[]) => {
+                        const watchlist = tickers.map((t) => `NSE:${cleanTicker(t)}`).join(", ");
+                        navigator.clipboard.writeText(watchlist);
+                        setCopiedQuadrant(quadrantName);
+                        setTimeout(() => setCopiedQuadrant(null), 2000);
+                    };
+
                     return (
                         <div key={q} className={`border rounded-lg p-3 ${tabStyles[q]}`}>
-                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2">
+                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2 gap-1">
                                 <h3 className={`text-sm font-bold flex items-center gap-2 ${textStyles[q]}`}>
                                     {q}
                                     <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-white font-mono">
                                         {activeTickersInQuadrant.length}
                                     </span>
                                 </h3>
-                                <button
-                                    onClick={() => setExpandedQuadrant(expandedQuadrant === q ? null : q)}
-                                    className="text-[10px] text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded flex items-center gap-1 font-semibold"
-                                >
-                                    {expandedQuadrant === q ? "Close" : "Expand"}
-                                </button>
+                                <div className="flex items-center gap-1.5">
+                                    <button
+                                        onClick={() => handleCopyWatchlist(q, activeTickersInQuadrant)}
+                                        className="text-[10px] text-blue-300 hover:text-white transition-colors bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 px-2 py-1 rounded flex items-center gap-1 font-semibold"
+                                        title="Copy TradingView formatted watchlist (NSE:SYMBOL1, NSE:SYMBOL2...)"
+                                    >
+                                        {copiedQuadrant === q ? "✓ Copied!" : "📋 Watchlist"}
+                                    </button>
+                                    <button
+                                        onClick={() => setExpandedQuadrant(expandedQuadrant === q ? null : q)}
+                                        className="text-[10px] text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded flex items-center gap-1 font-semibold"
+                                    >
+                                        {expandedQuadrant === q ? "Close" : "Expand"}
+                                    </button>
+                                </div>
                             </div>
 
                             {expandedQuadrant === q ? (
@@ -614,38 +631,63 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                                                     {activeTickersInQuadrant.length} stocks
                                                 </span>
                                             </div>
-                                            <button
-                                                onClick={() => setExpandedQuadrant(null)}
-                                                className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors"
-                                            >
-                                                ✕ Close
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleCopyWatchlist(q, activeTickersInQuadrant)}
+                                                    className="text-xs bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-300 hover:text-white px-3 py-1.5 rounded-lg transition-colors font-semibold flex items-center gap-1.5"
+                                                >
+                                                    {copiedQuadrant === q ? "✓ Watchlist Copied!" : "📋 Copy Watchlist for TradingView"}
+                                                </button>
+                                                <button
+                                                    onClick={() => setExpandedQuadrant(null)}
+                                                    className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors"
+                                                >
+                                                    ✕ Close
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1 custom-scrollbar">
-                                            {activeTickersInQuadrant.map((ticker) => (
-                                                <div
-                                                    key={ticker}
-                                                    className="bg-[#1a1a2e] border border-slate-800 hover:border-slate-700 p-3 rounded-lg transition-all"
-                                                >
-                                                    <p className="text-sm font-bold text-white font-mono">{cleanTicker(ticker)}</p>
-                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">{q} Quadrant</p>
-                                                </div>
-                                            ))}
+                                            {activeTickersInQuadrant.map((ticker) => {
+                                                const clean = cleanTicker(ticker);
+                                                return (
+                                                    <a
+                                                        key={ticker}
+                                                        href={`https://in.tradingview.com/chart/?symbol=NSE:${clean}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 p-3 rounded-lg transition-all group"
+                                                    >
+                                                        <div className="flex items-center justify-between">
+                                                            <p className="text-sm font-bold text-white group-hover:text-blue-400 font-mono">{clean}</p>
+                                                            <span className="text-xs text-slate-500 group-hover:text-blue-400">↗</span>
+                                                        </div>
+                                                        <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">{q} Quadrant • Open Chart</p>
+                                                    </a>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                // Compact card list view
+                                // Compact card list view with TradingView chart links
                                 <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
-                                    {activeTickersInQuadrant.map((ticker) => (
-                                        <span
-                                            key={ticker}
-                                            className="text-xs bg-[#1a1a2e] border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono font-medium"
-                                        >
-                                            {cleanTicker(ticker)}
-                                        </span>
-                                    ))}
+                                    {activeTickersInQuadrant.map((ticker) => {
+                                        const clean = cleanTicker(ticker);
+                                        return (
+                                            <a
+                                                key={ticker}
+                                                href={`https://in.tradingview.com/chart/?symbol=NSE:${clean}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title={`Open ${clean} chart on TradingView`}
+                                                className="text-xs bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 px-2 py-0.5 rounded text-slate-300 hover:text-blue-400 font-mono font-medium transition-all flex items-center gap-1 group"
+                                            >
+                                                <span>{clean}</span>
+                                                <span className="text-[9px] text-slate-500 group-hover:text-blue-400 opacity-60">↗</span>
+                                            </a>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>

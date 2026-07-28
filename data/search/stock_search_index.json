@@ -3249,6 +3249,13 @@
       "category": "industries"
     }
   ],
+  "EXICOM": [
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    }
+  ],
   "EXIDEIND": [
     {
       "id": "market_breadth_nifty500",
@@ -5145,6 +5152,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
     }
   ],
   "JAINREC": [
@@ -5588,6 +5600,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
     }
   ],
   "KAYNES": [
@@ -6966,6 +6983,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
     }
   ],
   "NH": [
@@ -8821,6 +8843,13 @@
       "category": "industries"
     }
   ],
+  "SKIPPER": [
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
+    }
+  ],
   "SKYGOLD": [
     {
       "id": "breadth_theme_jewellery_and_gold",
@@ -10571,6 +10600,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
     }
   ],
   "ZENTEC": [

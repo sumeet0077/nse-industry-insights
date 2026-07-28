@@ -98,24 +98,27 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             if (isHoverActive) {
                 if (isHovered) {
                     lineOpacity = 1.0;
-                    lineWidth = 4;
+                    lineWidth = 4.5;
                     markerBaseSize = 6;
-                    headMarkerSize = 14;
-                    headLineWidth = 3;
+                    headMarkerSize = 15;
+                    headLineWidth = 3.5;
                     headLineColor = "#ffffff";
                 } else {
-                    lineOpacity = 0.12;
+                    // Ultra-faint dimming for non-hovered traces
+                    lineOpacity = 0.03;
                     lineWidth = 1;
-                    markerBaseSize = 3;
-                    headMarkerSize = 5;
+                    markerBaseSize = 0;
+                    headMarkerSize = 4;
                     headLineWidth = 0;
                 }
             }
 
-            const markerSizes = tailData.map((_, i) => Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4)));
+            const markerSizes = tailData.map((_, i) =>
+                isHoverActive && !isHovered ? 0 : Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4))
+            );
             const markerOpacities = tailData.map((_, i) =>
                 isHoverActive
-                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.1
+                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0
                     : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4)
             );
 
@@ -173,7 +176,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     symbol: "circle",
                     size: headMarkerSize,
                     color: baseColor,
-                    opacity: isHoverActive && !isHovered ? 0.2 : 1.0,
+                    opacity: isHoverActive && !isHovered ? 0.05 : 1.0,
                     line: { width: headLineWidth, color: headLineColor },
                 },
                 textfont: {
@@ -196,10 +199,33 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         const maxDevX = Math.max(Math.abs(maxX - 100), Math.abs(100 - minX)) + xPad;
         const maxDevY = Math.max(Math.abs(maxY - 100), Math.abs(100 - minY)) + yPad;
 
+        // Calculate latest point for active hovered ticker for top-right floating summary card
+        let hoveredMetrics: { name: string; date: string; ratio: number; momentum: number; quadrant: string } | null = null;
+        if (hoveredTicker && grouped[hoveredTicker]) {
+            const hPoints = grouped[hoveredTicker];
+            const hLast = hPoints[hPoints.length - 1];
+            if (hLast) {
+                const getQName = (r: number, m: number) => {
+                    if (r >= 100 && m >= 100) return "Leading";
+                    if (r >= 100 && m < 100) return "Weakening";
+                    if (r < 100 && m < 100) return "Lagging";
+                    return "Improving";
+                };
+                hoveredMetrics = {
+                    name: cleanTicker(hoveredTicker),
+                    date: hLast.Date.split("T")[0],
+                    ratio: hLast.RS_Ratio,
+                    momentum: hLast.RS_Momentum,
+                    quadrant: getQName(hLast.RS_Ratio, hLast.RS_Momentum),
+                };
+            }
+        }
+
         return {
             traces,
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
+            hoveredMetrics,
         };
     }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
 
@@ -221,6 +247,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             </div>
         );
     }
+
+    const hMetrics = chartData.hoveredMetrics;
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 relative">
@@ -252,6 +280,35 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     )}
                 </div>
             </div>
+
+            {/* Top-Right Floating Focus Card Overlay */}
+            {hMetrics && (
+                <div className="absolute top-16 right-6 z-20 bg-[#0f172a]/95 border border-blue-500/40 backdrop-blur-md rounded-xl p-3.5 shadow-2xl min-w-[200px] pointer-events-none transition-all duration-150">
+                    <div className="flex items-center justify-between gap-3 border-b border-slate-700/60 pb-2 mb-2">
+                        <span className="text-sm font-bold text-white tracking-wide">
+                            {hMetrics.name}
+                        </span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                            hMetrics.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
+                            hMetrics.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
+                            hMetrics.quadrant === "Lagging" ? "bg-red-500/20 text-red-300" :
+                            "bg-blue-500/20 text-blue-300"
+                        }`}>
+                            {hMetrics.quadrant}
+                        </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
+                        <div>
+                            <span className="text-slate-400 text-[10px] block font-semibold">RS-Ratio</span>
+                            <span className="font-mono font-bold text-slate-100">{hMetrics.ratio.toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span className="text-slate-400 text-[10px] block font-semibold">RS-Momentum</span>
+                            <span className="font-mono font-bold text-slate-100">{hMetrics.momentum.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Plot
                 useResizeHandler={true}

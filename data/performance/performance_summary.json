@@ -1350,6 +1350,21 @@
     "RS (50D)":1.54
   },
   {
+    "Theme\/Index":"Nifty MidSmallcap 400",
+    "1 Day":-0.33,
+    "1 Week":-1.48,
+    "1 Month":0.44,
+    "3 Months":4.31,
+    "6 Months":11.72,
+    "1 Year":6.15,
+    "3 Years":97.31,
+    "5 Years":200.14,
+    "RS (5D)":-1.36,
+    "RS (10D)":-1.95,
+    "RS (20D)":-1.28,
+    "RS (50D)":2.72
+  },
+  {
     "Theme\/Index":"Nifty 50",
     "1 Day":0.14,
     "1 Week":-0.12,

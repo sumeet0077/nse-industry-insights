@@ -107,7 +107,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             // Per-point marker popping calculations
             const markerSizes = tailData.map((_, i) => {
                 const isThisPointHovered = isHovered && hoveredPointIndex === i;
-                if (isThisPointHovered) return 14; // Prominent pop size when point is hovered!
+                if (isThisPointHovered) return 13; // Prominent scale pop size when point is hovered!
                 return Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4));
             });
 
@@ -119,17 +119,11 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4);
             });
 
-            const markerLineColors = tailData.map((_, i) => {
-                const isThisPointHovered = isHovered && hoveredPointIndex === i;
-                if (isThisPointHovered) return "#ffffff"; // Bright white ring on popped dot!
-                return "#0f172a";
-            });
+            const markerLineColors = tailData.map(() => "#0f172a");
 
-            const markerLineWidths = tailData.map((_, i) => {
-                const isThisPointHovered = isHovered && hoveredPointIndex === i;
-                if (isThisPointHovered) return 3; // Thick 3px ring on popped dot!
-                return isHoverActive && !isHovered ? 0 : 1;
-            });
+            const markerLineWidths = tailData.map(() =>
+                isHoverActive && !isHovered ? 0 : 1
+            );
 
             // Determine quadrant name for tooltip
             const getQuadrantName = (r: number, m: number) => {

@@ -139,3 +139,22 @@ export type StockSearchIndex = Record<string, StockSearchEntry[]>;
 export function getStockSearchIndex(): StockSearchIndex {
     return readJson<StockSearchIndex>("search/stock_search_index.json") ?? {};
 }
+
+export interface StockRRGPayload {
+    D: RRGDataPoint[];
+    W: RRGDataPoint[];
+    M: RRGDataPoint[];
+    skipped?: {
+        D: string[];
+        W: string[];
+        M: string[];
+    };
+}
+
+/**
+ * Load pre-computed constituent stock RRG metrics for a specific index or theme.
+ */
+export function getStockRRGData(dataFile: string): StockRRGPayload | null {
+    return readJson<StockRRGPayload>(`stock_rrg/${dataFile}.json`);
+}
+

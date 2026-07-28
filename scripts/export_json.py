@@ -438,6 +438,14 @@ def main():
     print("\nExporting RRG Data...")
     export_rrg_data(output_dir, source_dir)
 
+    print("\nExporting Stock-Level RRG Data...")
+    try:
+        import subprocess
+        script_path = Path(__file__).parent / "export_stock_rrg.py"
+        subprocess.run([sys.executable, str(script_path), "--output", str(output_dir), "--source", str(source_dir)], check=True)
+    except Exception as e:
+        print(f"  ERR Stock RRG export: {e}")
+
     print("\nGenerating manifest...")
     generate_manifest(output_dir)
 

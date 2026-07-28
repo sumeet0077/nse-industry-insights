@@ -3,9 +3,11 @@
 
 import { BreadthChart, ParticipationChart } from "@/components/charts/BreadthChart";
 import { ThemePriceChart } from "@/components/charts/ThemePriceChart";
+import { StockRRGClient } from "@/components/StockRRGClient";
 import { MetricCardsRow } from "@/components/common/MetricCard";
 import { ConstituentTable } from "@/components/tables/ConstituentTable";
 import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
+import type { StockRRGPayload } from "@/lib/data";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useState, useRef, useEffect } from "react";
 import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
@@ -19,6 +21,7 @@ interface IndexDetailPageProps {
     isIndustry?: boolean;
     globalLatestDate?: string | null;
     themeId: string;
+    stockRRGData?: StockRRGPayload | null;
 }
 
 export function IndexDetailPage({
@@ -30,8 +33,9 @@ export function IndexDetailPage({
     isIndustry = false,
     globalLatestDate,
     themeId,
+    stockRRGData,
 }: IndexDetailPageProps) {
-    const [activeTab, setActiveTab] = useState<"chart" | "constituents" | "price">("constituents");
+    const [activeTab, setActiveTab] = useState<"chart" | "constituents" | "price" | "rrg">("constituents");
     const [showCagr, setShowCagr] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 
@@ -167,12 +171,25 @@ export function IndexDetailPage({
                     >
                         📈 Chart
                     </button>
+                    <button
+                        onClick={() => setActiveTab("rrg")}
+                        className={`px-4 py-2 text-sm font-medium transition-colors ${activeTab === "rrg"
+                            ? "text-blue-400 border-b-2 border-blue-400"
+                            : "text-slate-400 hover:text-white"
+                            }`}
+                    >
+                        🔄 RRG
+                    </button>
                 </div>
 
                 {/* CAGR Toggle was removed here as requested; using the one in performance trend */}
             </div>
 
             {/* Tab content */}
+            {activeTab === "rrg" && (
+                <StockRRGClient title={title} stockRRGData={stockRRGData ?? null} />
+            )}
+
             {activeTab === "chart" && (
                 <>
                     <BreadthChart data={breadthData} title={title} />

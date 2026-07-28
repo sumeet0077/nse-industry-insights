@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getConfigById, INDUSTRIES } from "@/lib/config";
-import { getBreadthData, getConstituentPerformance, getMarketStatusForIndex, getLatestDataDate } from "@/lib/data";
+import { getBreadthData, getConstituentPerformance, getMarketStatusForIndex, getLatestDataDate, getStockRRGData } from "@/lib/data";
 import { IndexDetailPage } from "@/components/common/IndexDetailPage";
 
 interface Props {
@@ -31,6 +31,7 @@ export default async function IndustryPage({ params }: Props) {
     const breadthData = getBreadthData(config.dataFile);
     const allConstituents = getConstituentPerformance();
     const marketStatus = getMarketStatusForIndex(config.title);
+    const stockRRGData = getStockRRGData(config.dataFile);
 
     let constituents: any[] = [];
     if (marketStatus) {
@@ -57,6 +58,7 @@ export default async function IndustryPage({ params }: Props) {
             isIndustry={true}
             globalLatestDate={getLatestDataDate()}
             themeId={config.id}
+            stockRRGData={stockRRGData}
         />
     );
 }

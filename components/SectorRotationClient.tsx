@@ -5,15 +5,18 @@ import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
 import { IndexConfig, RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
-import { ALL_CONFIGS, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
+import { ALL_CONFIGS, BROAD_MARKET, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
+import { computeRRGData } from "@/lib/rrg";
+import type { ThemeBreadthSummary } from "@/lib/data";
 
 interface SectorRotationClientProps {
     dataD: RRGDataPoint[];
     dataW: RRGDataPoint[];
     dataM: RRGDataPoint[];
+    allThemeData?: ThemeBreadthSummary[];
 }
 
 /**
@@ -31,7 +34,8 @@ function humanizeTickerId(raw: string): string {
         .replace(/\b\w/g, c => c.toUpperCase()); // Title Case
 }
 
-export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClientProps) {
+export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: SectorRotationClientProps) {
+    const [benchmarkId, setBenchmarkId] = useLocalStorage<string>("sr_benchmark", "market_breadth_nifty50");
     const [timeframe, setTimeframe] = useLocalStorage<TimeframeType>("sr_timeframe", "W");
     const [tailLength, setTailLength] = useLocalStorage("sr_tailLength", 12);
     const [searchQuery, setSearchQuery] = useState("");
@@ -53,7 +57,17 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
     const [showSectors, setShowSectors] = useLocalStorage("sr_showSectors", true);
     const [showIndustries, setShowIndustries] = useLocalStorage("sr_showIndustries", true);
 
-    const currentDataRaw = timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
+    const currentDataRaw = useMemo(() => {
+        if (allThemeData && allThemeData.length > 0) {
+            const dynamicData = computeRRGData(allThemeData, benchmarkId, timeframe);
+            if (dynamicData && dynamicData.length > 0) {
+                return dynamicData;
+            }
+        }
+        // Fallback to pre-computed Nifty 50 static RRG data
+        return timeframe === "D" ? dataD : timeframe === "W" ? dataW : dataM;
+    }, [allThemeData, benchmarkId, timeframe, dataD, dataW, dataM]);
+
     const timeframeLabel = TIMEFRAMES[timeframe];
 
     // Build a lookup map ONCE from ALL_CONFIGS for O(1) matching
@@ -248,7 +262,7 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
                 <div className="flex flex-col">
                     <h1 className="text-xl font-bold text-white mb-1">Relative Rotation Graph (RRG)</h1>
                     <p className="text-sm text-slate-400 font-medium">
-                        Cycle analysis of themes vs Nifty 50
+                        Cycle analysis of themes vs Broad Market Indices
                     </p>
                 </div>
                 <CaptureScreenshot 
@@ -272,6 +286,23 @@ export function SectorRotationClient({ dataD, dataW, dataM }: SectorRotationClie
 
             <div className="flex flex-col gap-6 mb-6 bg-[#111118] border border-[#1e1e2e] p-4 rounded-lg">
                 <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex-1">
+                        <label className="block text-xs text-slate-400 mb-2 font-semibold">
+                            Benchmark Index
+                        </label>
+                        <select
+                            value={benchmarkId}
+                            onChange={(e) => setBenchmarkId(e.target.value)}
+                            className="w-full bg-[#1a1a2e] border border-slate-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        >
+                            {BROAD_MARKET.map((bm) => (
+                                <option key={bm.id} value={bm.id}>
+                                    {bm.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="flex-1">
                         <label className="block text-xs text-slate-400 mb-2 font-semibold">
                             Timeframe

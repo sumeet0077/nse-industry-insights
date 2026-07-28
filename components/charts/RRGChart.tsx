@@ -77,13 +77,22 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 if (p.RS_Momentum > maxY) maxY = p.RS_Momentum;
             }
 
-            // 1. Draw Path (tail)
+            // 1. Draw Path (tail) with prominent tracking dots along data points
+            const tailLen = tailData.length;
+            const markerSizes = tailData.map((_, i) => Math.max(6, Math.round(5 + (i / Math.max(1, tailLen - 1)) * 4)));
+            const markerOpacities = tailData.map((_, i) => Math.min(1.0, 0.65 + (i / Math.max(1, tailLen - 1)) * 0.35));
+
             traces.push({
                 x: tailData.map(d => d.RS_Ratio),
                 y: tailData.map(d => d.RS_Momentum),
                 mode: "lines+markers",
-                marker: { size: 4, color: color, opacity: 0.4 },
-                line: { width: 2, color: color, opacity: 0.6 },
+                marker: { 
+                    size: markerSizes, 
+                    color: color, 
+                    opacity: markerOpacities,
+                    line: { width: 1, color: "#0f172a" }
+                },
+                line: { width: 2, color: color, opacity: 0.7 },
                 hoverinfo: "text",
                 hovertext: tailData.map(
                     d => `<b>${ticker}</b><br>Date: ${d.Date.split('T')[0]}<br>Ratio: ${d.RS_Ratio.toFixed(2)}<br>Mom: ${d.RS_Momentum.toFixed(2)}`
@@ -98,7 +107,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 mode: "markers+text",
                 text: [ticker],
                 textposition: "top right",
-                marker: { symbol: "circle", size: 8, color: color },
+                marker: { symbol: "circle", size: 10, color: color, line: { width: 1.5, color: "#ffffff" } },
                 textfont: { color: color, size: 12, weight: "bold" },
                 hoverinfo: "none",
                 showlegend: false,
@@ -134,7 +143,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 useResizeHandler={true}
                 data={chartData.traces}
                 layout={{
-                    title: { text: `Sector Rotation (vs Nifty 50) - ${timeframe}` },
+                    title: { text: `Sector Rotation - ${timeframe}` },
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#94a3b8", family: "Inter, sans-serif" },

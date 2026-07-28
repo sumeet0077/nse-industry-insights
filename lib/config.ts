@@ -42,6 +42,7 @@ export const BROAD_MARKET: IndexConfig[] = [
     { id: "market_breadth_niftynext50", title: "Nifty Next 50", description: "Next 50 Large-cap Companies", dataFile: "market_breadth_niftynext50", category: "broad-market" },
     { id: "market_breadth_nifty500", title: "Nifty 500", description: "Top 500 Companies", dataFile: "market_breadth_nifty500", category: "broad-market" },
     { id: "market_breadth_midcap", title: "Nifty Midcap 150", description: "Midcap Segment", dataFile: "market_breadth_midcap", category: "broad-market" },
+    { id: "market_breadth_midsmallcap400", title: "Nifty MidSmallcap 400", description: "Mid & Small Cap Combined", dataFile: "market_breadth_midsmallcap400", category: "broad-market" },
     { id: "market_breadth_smallcap", title: "Nifty Smallcap 250", description: "Smallcap Segment", dataFile: "market_breadth_smallcap", category: "broad-market" },
 ];
 

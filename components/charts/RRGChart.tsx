@@ -104,21 +104,21 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     headLineWidth = 3.5;
                     headLineColor = "#ffffff";
                 } else {
-                    // Ultra-faint dimming applied at ROOT TRACE level so Plotly respects it
-                    traceOpacity = 0.04;
-                    lineWidth = 1;
-                    markerBaseSize = 0;
-                    headMarkerSize = 4;
+                    // Soft background dimming (0.25 opacity) so other tails remain clearly visible
+                    traceOpacity = 0.25;
+                    lineWidth = 1.5;
+                    markerBaseSize = 3;
+                    headMarkerSize = 7;
                     headLineWidth = 0;
                 }
             }
 
             const markerSizes = tailData.map((_, i) =>
-                isHoverActive && !isHovered ? 0 : Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4))
+                Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4))
             );
             const markerOpacities = tailData.map((_, i) =>
                 isHoverActive
-                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0
+                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.2
                     : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4)
             );
 
@@ -140,7 +140,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             else if (dx < 0 && dy < 0) textPos = "bottom left";
             else textPos = "bottom right";
 
-            // 1. Draw Tail line + path markers (hoverinfo set to "none" so tooltip box never blocks tail line)
+            // 1. Draw Tail line + path markers (hoverinfo set to "none" so cursor popup box never blocks tail line)
             traces.push({
                 x: tailData.map((d) => d.RS_Ratio),
                 y: tailData.map((d) => d.RS_Momentum),
@@ -161,14 +161,14 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             // Determine if label should be visible based on hoverOnlyLabels & hover
             const shouldShowLabel = isHovered || (!isHoverActive && !hoverOnlyLabels);
 
-            // 2. Draw Head marker + text label
+            // 2. Draw Head marker + text label (hoverinfo set to "none" to eliminate cursor hover box)
             traces.push({
                 x: [head.RS_Ratio],
                 y: [head.RS_Momentum],
                 mode: shouldShowLabel ? "markers+text" : "markers",
                 text: shouldShowLabel ? [cleanName] : undefined,
                 textposition: [textPos],
-                opacity: isHoverActive && !isHovered ? 0.04 : 1.0,
+                opacity: isHoverActive && !isHovered ? 0.25 : 1.0,
                 customdata: [ticker],
                 marker: {
                     symbol: "circle",
@@ -181,10 +181,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     size: isHovered ? 13 : 11,
                     weight: "bold",
                 },
-                hoverinfo: "text",
-                hovertext: [
-                    `<b>${cleanName}</b><br>Date: ${head.Date.split("T")[0]}<br>RS-Ratio: ${head.RS_Ratio.toFixed(2)}<br>RS-Mom: ${head.RS_Momentum.toFixed(2)}<br>Quadrant: <b>${getQuadrantName(head.RS_Ratio, head.RS_Momentum)}</b>`,
-                ],
+                hoverinfo: "none",
                 showlegend: false,
             });
         }
@@ -196,10 +193,33 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         const maxDevX = Math.max(Math.abs(maxX - 100), Math.abs(100 - minX)) + xPad;
         const maxDevY = Math.max(Math.abs(maxY - 100), Math.abs(100 - minY)) + yPad;
 
+        // Calculate latest metrics for active hovered ticker for top header bar
+        let hoveredMetrics: { name: string; date: string; ratio: number; momentum: number; quadrant: string } | null = null;
+        if (hoveredTicker && grouped[hoveredTicker]) {
+            const hPoints = grouped[hoveredTicker];
+            const hLast = hPoints[hPoints.length - 1];
+            if (hLast) {
+                const getQName = (r: number, m: number) => {
+                    if (r >= 100 && m >= 100) return "Leading";
+                    if (r >= 100 && m < 100) return "Weakening";
+                    if (r < 100 && m < 100) return "Lagging";
+                    return "Improving";
+                };
+                hoveredMetrics = {
+                    name: cleanTicker(hoveredTicker),
+                    date: hLast.Date.split("T")[0],
+                    ratio: hLast.RS_Ratio,
+                    momentum: hLast.RS_Momentum,
+                    quadrant: getQName(hLast.RS_Ratio, hLast.RS_Momentum),
+                };
+            }
+        }
+
         return {
             traces,
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
+            hoveredMetrics,
         };
     }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
 
@@ -222,6 +242,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         );
     }
 
+    const hMetrics = chartData.hoveredMetrics;
+
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 relative">
             {/* Label Density Controls Toolbar */}
@@ -242,10 +264,23 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     </button>
                 </div>
 
-                <div className="text-[11px] text-slate-400 font-medium hidden sm:block">
-                    {hoveredTicker ? (
-                        <span className="text-blue-400 font-bold">
-                            Focusing: {cleanTicker(hoveredTicker)}
+                <div className="text-[11px] text-slate-300 font-medium hidden sm:block">
+                    {hMetrics ? (
+                        <span className="text-blue-400 font-bold flex items-center gap-2">
+                            <span>Focusing: {hMetrics.name}</span>
+                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-300 font-mono font-medium">Date: {hMetrics.date}</span>
+                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Ratio: {hMetrics.ratio.toFixed(2)}</span>
+                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Mom: {hMetrics.momentum.toFixed(2)}</span>
+                            <span className="text-slate-600">•</span>
+                            <span className={`font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded ${
+                                hMetrics.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
+                                hMetrics.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
+                                hMetrics.quadrant === "Lagging" ? "bg-red-500/20 text-red-300" :
+                                "bg-blue-500/20 text-blue-300"
+                            }`}>{hMetrics.quadrant}</span>
                         </span>
                     ) : (
                         <span>Tip: Hover over any head or path to highlight</span>

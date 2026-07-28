@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
 import type { RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
 import { QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
@@ -13,6 +14,10 @@ interface StockRRGClientProps {
     stockRRGData: StockRRGPayload | null;
 }
 
+function cleanTicker(ticker: string): string {
+    return ticker.replace(/\.NS$/i, "").replace(/\.BO$/i, "");
+}
+
 export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [timeframe, setTimeframe] = useState<TimeframeType>("W");
     const [tailLength, setTailLength] = useState<number>(12);
@@ -20,6 +25,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [selectedQuadrants, setSelectedQuadrants] = useState<QuadrantType[]>([...QUADRANTS]);
+    const [expandedQuadrant, setExpandedQuadrant] = useState<QuadrantType | null>(null);
 
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useState<TrendDirectionType>("off");
@@ -138,7 +144,10 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     );
 
     const filteredAllTickers = searchQuery.trim()
-        ? allTickers.filter((t) => t.toLowerCase().includes(searchQuery.toLowerCase()))
+        ? allTickers.filter((t) =>
+              cleanTicker(t).toLowerCase().includes(searchQuery.toLowerCase()) ||
+              t.toLowerCase().includes(searchQuery.toLowerCase())
+          )
         : allTickers;
 
     const toggleTicker = (ticker: string) => {
@@ -164,7 +173,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
     if (!rawData || rawData.length === 0) {
         return (
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-6 text-center text-slate-400 my-4">
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-8 text-center text-slate-400 my-4">
                 <p className="font-semibold text-lg text-slate-300 mb-2">No Stock RRG Data Available</p>
                 <p className="text-sm">Constituent stock relative rotation data is not available for this index/theme.</p>
             </div>
@@ -210,7 +219,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                     <div className="flex-1">
                         <label className="block text-xs text-slate-400 mb-2 font-semibold flex justify-between">
                             <span>Tail Length (Periods)</span>
-                            <span className="text-blue-400">{tailLength}</span>
+                            <span className="text-blue-400 font-bold">{tailLength}</span>
                         </label>
                         <input
                             type="range"
@@ -294,13 +303,19 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                 </div>
             </div>
 
-            {/* Quadrant Filters & Stock Selection */}
+            {/* Quadrant Quick Filter Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg">
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="text-xs font-semibold text-slate-400">Quadrants:</span>
                     {QUADRANTS.map((q) => {
                         const count = allTickers.filter((t) => tickerQuadrants[t] === q).length;
                         const isChecked = selectedQuadrants.includes(q);
+                        const dotColors: Record<QuadrantType, string> = {
+                            Leading: "bg-emerald-400",
+                            Weakening: "bg-yellow-400",
+                            Lagging: "bg-red-400",
+                            Improving: "bg-blue-400",
+                        };
                         return (
                             <label
                                 key={q}
@@ -316,7 +331,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                                     onChange={() => toggleQuadrant(q)}
                                     className="hidden"
                                 />
-                                <span className={`w-2 h-2 rounded-full bg-${QUADRANT_COLORS[q]}-400`}></span>
+                                <span className={`w-2 h-2 rounded-full ${dotColors[q]}`}></span>
                                 {q} ({count})
                             </label>
                         );
@@ -329,7 +344,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                             if (trendDirection !== "off") setTrendDirection("off");
                             setSelectedTickers([...allTickers]);
                         }}
-                        className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded font-medium transition-colors"
+                        className="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1 rounded font-medium transition-colors"
                     >
                         Select All ({allTickers.length})
                     </button>
@@ -338,7 +353,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                             if (trendDirection !== "off") setTrendDirection("off");
                             setSelectedTickers([]);
                         }}
-                        className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded font-medium transition-colors"
+                        className="text-xs bg-slate-800 hover:bg-slate-700 text-red-400 px-3 py-1 rounded font-medium transition-colors"
                     >
                         Deselect All
                     </button>
@@ -350,46 +365,174 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                 <RRGChart data={filteredData} tailLength={tailLength} timeframe={TIMEFRAMES[timeframe]} />
             </div>
 
-            {/* Stock Search & Multiselect */}
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-4 mb-4">
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
-                        Constituent Stocks ({selectedTickers.length}/{allTickers.length} selected)
-                    </h3>
-                    <input
-                        type="text"
-                        placeholder="Search stock..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="bg-[#1a1a2e] border border-slate-700 rounded px-2.5 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-48"
-                    />
+            {/* Premium Constituent Stock Chips Selector Grid */}
+            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-4 mb-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#1e1e2e]">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                            Constituent Stocks
+                        </span>
+                        <span className="text-xs bg-blue-500/10 text-blue-400 font-bold px-2 py-0.5 rounded-full border border-blue-500/20">
+                            {selectedTickers.length} of {allTickers.length} selected
+                        </span>
+                    </div>
+
+                    <div className="relative w-full sm:w-64">
+                        <input
+                            type="text"
+                            placeholder="Search stock..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-[#1a1a2e] border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                        <svg
+                            className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                            />
+                        </svg>
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-56 overflow-y-auto pr-1">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
                     {filteredAllTickers.map((ticker) => {
                         const isSelected = selectedTickers.includes(ticker);
                         const q = tickerQuadrants[ticker];
+                        const cleanName = cleanTicker(ticker);
+
+                        const borderAccent: Record<QuadrantType, string> = {
+                            Leading: "border-emerald-500/40 hover:border-emerald-500",
+                            Weakening: "border-yellow-500/40 hover:border-yellow-500",
+                            Lagging: "border-red-500/40 hover:border-red-500",
+                            Improving: "border-blue-500/40 hover:border-blue-500",
+                        };
+
+                        const badgeAccent: Record<QuadrantType, string> = {
+                            Leading: "bg-emerald-500/20 text-emerald-300",
+                            Weakening: "bg-yellow-500/20 text-yellow-300",
+                            Lagging: "bg-red-500/20 text-red-300",
+                            Improving: "bg-blue-500/20 text-blue-300",
+                        };
+
                         return (
                             <button
                                 key={ticker}
                                 onClick={() => toggleTicker(ticker)}
-                                className={`text-left text-xs p-2 rounded border transition-colors flex items-center justify-between ${
+                                className={`text-left text-xs px-3 py-2 rounded-lg border transition-all duration-150 flex items-center justify-between group ${
                                     isSelected
-                                        ? "bg-blue-600/15 border-blue-500/40 text-blue-200"
-                                        : "bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300"
+                                        ? `bg-[#1a1a2e] ${borderAccent[q] || "border-blue-500/50"} shadow-sm`
+                                        : "bg-[#111118]/60 border-slate-800 text-slate-500 hover:border-slate-700 hover:text-slate-300 opacity-60"
                                 }`}
                             >
-                                <span className="font-mono font-medium truncate mr-1">{ticker}</span>
+                                <span className={`font-semibold tracking-wide truncate ${isSelected ? "text-slate-100" : "text-slate-500"}`}>
+                                    {cleanName}
+                                </span>
                                 {q && (
                                     <span
-                                        className={`w-1.5 h-1.5 rounded-full shrink-0 bg-${QUADRANT_COLORS[q]}-400`}
-                                        title={q}
-                                    ></span>
+                                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded ml-1 uppercase shrink-0 ${badgeAccent[q]}`}
+                                    >
+                                        {q[0]}
+                                    </span>
                                 )}
                             </button>
                         );
                     })}
                 </div>
+            </div>
+
+            {/* Selected Stocks Listed by Quadrant Cards + Expand Modal */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {QUADRANTS.map((q) => {
+                    if (!selectedQuadrants.includes(q)) return null;
+
+                    const activeTickersInQuadrant = selectedTickers.filter((t) => tickerQuadrants[t] === q);
+                    if (activeTickersInQuadrant.length === 0) return null;
+
+                    const tabStyles: Record<string, string> = {
+                        Leading: "border-emerald-500/20 bg-emerald-500/5",
+                        Weakening: "border-yellow-500/20 bg-yellow-500/5",
+                        Lagging: "border-red-500/20 bg-red-500/5",
+                        Improving: "border-blue-500/20 bg-blue-500/5",
+                    };
+                    const textStyles: Record<string, string> = {
+                        Leading: "text-emerald-400",
+                        Weakening: "text-yellow-400",
+                        Lagging: "text-red-400",
+                        Improving: "text-blue-400",
+                    };
+
+                    return (
+                        <div key={q} className={`border rounded-lg p-3 ${tabStyles[q]}`}>
+                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2">
+                                <h3 className={`text-sm font-bold flex items-center gap-2 ${textStyles[q]}`}>
+                                    {q}
+                                    <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-white font-mono">
+                                        {activeTickersInQuadrant.length}
+                                    </span>
+                                </h3>
+                                <button
+                                    onClick={() => setExpandedQuadrant(expandedQuadrant === q ? null : q)}
+                                    className="text-[10px] text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded flex items-center gap-1 font-semibold"
+                                >
+                                    {expandedQuadrant === q ? "Close" : "Expand"}
+                                </button>
+                            </div>
+
+                            {expandedQuadrant === q ? (
+                                // Full overlay modal view
+                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
+                                    <div className="bg-[#111118] border border-slate-800 rounded-xl p-6 max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+                                        <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                                            <div className="flex items-center gap-3">
+                                                <h2 className={`text-xl font-bold ${textStyles[q]}`}>{q} Quadrant Stocks</h2>
+                                                <span className="text-xs bg-slate-800 text-slate-300 font-mono font-bold px-2.5 py-0.5 rounded-full">
+                                                    {activeTickersInQuadrant.length} stocks
+                                                </span>
+                                            </div>
+                                            <button
+                                                onClick={() => setExpandedQuadrant(null)}
+                                                className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors"
+                                            >
+                                                ✕ Close
+                                            </button>
+                                        </div>
+
+                                        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1 custom-scrollbar">
+                                            {activeTickersInQuadrant.map((ticker) => (
+                                                <div
+                                                    key={ticker}
+                                                    className="bg-[#1a1a2e] border border-slate-800 hover:border-slate-700 p-3 rounded-lg transition-all"
+                                                >
+                                                    <p className="text-sm font-bold text-white font-mono">{cleanTicker(ticker)}</p>
+                                                    <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">{q} Quadrant</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Compact card list view
+                                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
+                                    {activeTickersInQuadrant.map((ticker) => (
+                                        <span
+                                            key={ticker}
+                                            className="text-xs bg-[#1a1a2e] border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono font-medium"
+                                        >
+                                            {cleanTicker(ticker)}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Recent Listings / Skipped Stocks Notice Banner */}
@@ -403,7 +546,9 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                         <p className="text-amber-300/90 leading-relaxed">
                             The following constituent stock(s) have fewer than 22 trading periods for the selected{" "}
                             <strong>{TIMEFRAMES[timeframe]}</strong> timeframe and are excluded from trend rotation metrics:{" "}
-                            <span className="font-mono font-semibold text-amber-200">{skippedStocks.join(", ")}</span>.
+                            <span className="font-mono font-semibold text-amber-200">
+                                {skippedStocks.map(cleanTicker).join(", ")}
+                            </span>.
                         </p>
                     </div>
                 </div>

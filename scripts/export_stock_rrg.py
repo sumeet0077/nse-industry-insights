@@ -27,12 +27,13 @@ def main():
     parser.add_argument("--source", type=str, default="../nifty-breadth", help="Source directory containing CSVs and Parquet")
     args = parser.parse_args()
 
-    output_dir = Path(args.output)
-    source_dir = Path(args.source)
+    output_dir = Path(args.output).resolve()
+    source_dir = Path(args.source).resolve()
     stock_rrg_dir = output_dir / "stock_rrg"
     stock_rrg_dir.mkdir(parents=True, exist_ok=True)
 
-    if str(source_dir.resolve()) not in sys.path:
+    if str(source_dir) not in sys.path:
+        sys.path.insert(0, str(source_dir))
         sys.path.insert(0, str(source_dir.resolve()))
 
     try:

@@ -17,6 +17,11 @@ function cleanTicker(ticker: string): string {
     return ticker.replace(/\.NS$/i, "").replace(/\.BO$/i, "");
 }
 
+function toTVSymbol(ticker: string): string {
+    const clean = cleanTicker(ticker);
+    return `NSE:${clean.replace(/[&\-\s]/g, "_")}`;
+}
+
 export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [timeframe, setTimeframe] = useState<TimeframeType>("W");
     const [tailLength, setTailLength] = useState<number>(5);
@@ -588,7 +593,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                     };
 
                     const handleCopyWatchlist = (quadrantName: string, tickers: string[]) => {
-                        const watchlist = tickers.map((t) => `NSE:${cleanTicker(t)}`).join(", ");
+                        const watchlist = tickers.map(toTVSymbol).join(", ");
                         navigator.clipboard.writeText(watchlist);
                         setCopiedQuadrant(quadrantName);
                         setTimeout(() => setCopiedQuadrant(null), 2000);
@@ -650,10 +655,11 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                                         <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1 custom-scrollbar">
                                             {activeTickersInQuadrant.map((ticker) => {
                                                 const clean = cleanTicker(ticker);
+                                                const tvSym = toTVSymbol(ticker);
                                                 return (
                                                     <a
                                                         key={ticker}
-                                                        href={`https://in.tradingview.com/chart/?symbol=NSE:${clean}`}
+                                                        href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 p-3 rounded-lg transition-all group"
@@ -674,13 +680,14 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                                 <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
                                     {activeTickersInQuadrant.map((ticker) => {
                                         const clean = cleanTicker(ticker);
+                                        const tvSym = toTVSymbol(ticker);
                                         return (
                                             <a
                                                 key={ticker}
-                                                href={`https://in.tradingview.com/chart/?symbol=NSE:${clean}`}
+                                                href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                title={`Open ${clean} chart on TradingView`}
+                                                title={`Open ${clean} (${tvSym}) chart on TradingView`}
                                                 className="text-xs bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 px-2 py-0.5 rounded text-slate-300 hover:text-blue-400 font-mono font-medium transition-all flex items-center gap-1 group"
                                             >
                                                 <span>{clean}</span>

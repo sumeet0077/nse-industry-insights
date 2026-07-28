@@ -29,6 +29,7 @@ interface RRGChartProps {
 export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
     const [hoverOnlyLabels, setHoverOnlyLabels] = useState(false);
     const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
+    const [hoveredPoint, setHoveredPoint] = useState<{ name: string; date: string; ratio: number; momentum: number; quadrant: string } | null>(null);
 
     const chartData = useMemo(() => {
         if (!data || data.length === 0) return null;
@@ -39,17 +40,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             acc[point.Ticker].push(point);
             return acc;
         }, {} as Record<string, RRGDataPoint[]>);
-
-        const cardinalPositions: ("top right" | "bottom right" | "top left" | "bottom left" | "top center" | "bottom center" | "middle right" | "middle left")[] = [
-            "top right",
-            "bottom right",
-            "top left",
-            "bottom left",
-            "top center",
-            "bottom center",
-            "middle right",
-            "middle left",
-        ];
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const traces: any[] = [];
@@ -140,13 +130,21 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             else if (dx < 0 && dy < 0) textPos = "bottom left";
             else textPos = "bottom right";
 
+            // Point-level metadata payload for hover tracking
+            const pointMetadata = tailData.map((d) => ({
+                ticker,
+                date: d.Date.split("T")[0],
+                ratio: d.RS_Ratio,
+                momentum: d.RS_Momentum,
+            }));
+
             // 1. Draw Tail line + path markers (hoverinfo set to "none" so cursor popup box never blocks tail line)
             traces.push({
                 x: tailData.map((d) => d.RS_Ratio),
                 y: tailData.map((d) => d.RS_Momentum),
                 mode: "lines+markers",
                 opacity: traceOpacity,
-                customdata: tailData.map(() => ticker),
+                customdata: pointMetadata,
                 marker: {
                     size: markerSizes,
                     color: baseColor,
@@ -169,7 +167,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 text: shouldShowLabel ? [cleanName] : undefined,
                 textposition: [textPos],
                 opacity: isHoverActive && !isHovered ? 0.25 : 1.0,
-                customdata: [ticker],
+                customdata: [{
+                    ticker,
+                    date: head.Date.split("T")[0],
+                    ratio: head.RS_Ratio,
+                    momentum: head.RS_Momentum,
+                }],
                 marker: {
                     symbol: "circle",
                     size: headMarkerSize,
@@ -193,33 +196,10 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         const maxDevX = Math.max(Math.abs(maxX - 100), Math.abs(100 - minX)) + xPad;
         const maxDevY = Math.max(Math.abs(maxY - 100), Math.abs(100 - minY)) + yPad;
 
-        // Calculate latest metrics for active hovered ticker for top header bar
-        let hoveredMetrics: { name: string; date: string; ratio: number; momentum: number; quadrant: string } | null = null;
-        if (hoveredTicker && grouped[hoveredTicker]) {
-            const hPoints = grouped[hoveredTicker];
-            const hLast = hPoints[hPoints.length - 1];
-            if (hLast) {
-                const getQName = (r: number, m: number) => {
-                    if (r >= 100 && m >= 100) return "Leading";
-                    if (r >= 100 && m < 100) return "Weakening";
-                    if (r < 100 && m < 100) return "Lagging";
-                    return "Improving";
-                };
-                hoveredMetrics = {
-                    name: cleanTicker(hoveredTicker),
-                    date: hLast.Date.split("T")[0],
-                    ratio: hLast.RS_Ratio,
-                    momentum: hLast.RS_Momentum,
-                    quadrant: getQName(hLast.RS_Ratio, hLast.RS_Momentum),
-                };
-            }
-        }
-
         return {
             traces,
             xRange: [100 - maxDevX, 100 + maxDevX],
             yRange: [100 - maxDevY, 100 + maxDevY],
-            hoveredMetrics,
         };
     }, [data, tailLength, hoverOnlyLabels, hoveredTicker]);
 
@@ -242,7 +222,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
         );
     }
 
-    const hMetrics = chartData.hoveredMetrics;
+    const getQuadrantName = (r: number, m: number) => {
+        if (r >= 100 && m >= 100) return "Leading";
+        if (r >= 100 && m < 100) return "Weakening";
+        if (r < 100 && m < 100) return "Lagging";
+        return "Improving";
+    };
 
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 relative">
@@ -265,25 +250,25 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 </div>
 
                 <div className="text-[11px] text-slate-300 font-medium hidden sm:block">
-                    {hMetrics ? (
+                    {hoveredPoint ? (
                         <span className="text-blue-400 font-bold flex items-center gap-2">
-                            <span>Focusing: {hMetrics.name}</span>
+                            <span>Focusing: {hoveredPoint.name}</span>
                             <span className="text-slate-600">•</span>
-                            <span className="text-slate-300 font-mono font-medium">Date: {hMetrics.date}</span>
+                            <span className="text-slate-300 font-mono font-medium">Date: {hoveredPoint.date}</span>
                             <span className="text-slate-600">•</span>
-                            <span className="text-slate-300 font-mono font-medium">RS-Ratio: {hMetrics.ratio.toFixed(2)}</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Ratio: {hoveredPoint.ratio.toFixed(2)}</span>
                             <span className="text-slate-600">•</span>
-                            <span className="text-slate-300 font-mono font-medium">RS-Mom: {hMetrics.momentum.toFixed(2)}</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Mom: {hoveredPoint.momentum.toFixed(2)}</span>
                             <span className="text-slate-600">•</span>
                             <span className={`font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded ${
-                                hMetrics.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
-                                hMetrics.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
-                                hMetrics.quadrant === "Lagging" ? "bg-red-500/20 text-red-300" :
+                                hoveredPoint.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
+                                hoveredPoint.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
+                                hoveredPoint.quadrant === "Lagging" ? "bg-red-500/20 text-red-300" :
                                 "bg-blue-500/20 text-blue-300"
-                            }`}>{hMetrics.quadrant}</span>
+                            }`}>{hoveredPoint.quadrant}</span>
                         </span>
                     ) : (
-                        <span>Tip: Hover over any head or path to highlight</span>
+                        <span>Tip: Hover over any head or path point to inspect metrics</span>
                     )}
                 </div>
             </div>
@@ -295,13 +280,28 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     if (event.points && event.points.length > 0) {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const pt = event.points[0] as any;
-                        const t = Array.isArray(pt.customdata) ? pt.customdata[0] : pt.customdata;
-                        if (t && typeof t === "string") {
-                            setHoveredTicker(t);
+                        const cd = pt.customdata;
+                        if (cd) {
+                            const dataObj = Array.isArray(cd) ? cd[0] : cd;
+                            if (dataObj && typeof dataObj === "object" && dataObj.ticker) {
+                                setHoveredTicker(dataObj.ticker);
+                                const ratio = typeof pt.x === "number" ? pt.x : dataObj.ratio;
+                                const momentum = typeof pt.y === "number" ? pt.y : dataObj.momentum;
+                                setHoveredPoint({
+                                    name: cleanTicker(dataObj.ticker),
+                                    date: dataObj.date || "",
+                                    ratio,
+                                    momentum,
+                                    quadrant: getQuadrantName(ratio, momentum),
+                                });
+                            }
                         }
                     }
                 }}
-                onUnhover={() => setHoveredTicker(null)}
+                onUnhover={() => {
+                    setHoveredTicker(null);
+                    setHoveredPoint(null);
+                }}
                 layout={{
                     title: { text: `Sector Rotation - ${timeframe}`, font: { size: 14 } },
                     paper_bgcolor: "transparent",

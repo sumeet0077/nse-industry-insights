@@ -341,35 +341,24 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             </div>
 
             {/* Top N Filter Toolbar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg">
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-300 font-semibold uppercase tracking-wider">
-                        Top N Per Quadrant:
-                    </span>
-                    <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
-                        {(["All", 5, 10, 15] as const).map((n) => (
-                            <button
-                                key={String(n)}
-                                onClick={() => setTopNCount(n)}
-                                className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
-                                    topNCount === n
-                                        ? "bg-blue-600 text-white font-semibold shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                            >
-                                {n === "All" ? "Show All" : `Top ${n}`}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-                <div className="text-[11px] text-slate-400 font-medium">
-                    {topNCount !== "All" ? (
-                        <span className="text-blue-400 font-bold">
-                            Displaying Top {topNCount} stocks per active quadrant ({filteredData.length / (tailLength + 1)} total)
-                        </span>
-                    ) : (
-                        <span>Showing all active quadrant stocks</span>
-                    )}
+            <div className="flex items-center gap-2 mb-4 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg w-fit">
+                <span className="text-xs text-slate-300 font-semibold uppercase tracking-wider">
+                    Top N Per Quadrant:
+                </span>
+                <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
+                    {(["All", 5, 10, 15] as const).map((n) => (
+                        <button
+                            key={String(n)}
+                            onClick={() => setTopNCount(n)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
+                                topNCount === n
+                                    ? "bg-blue-600 text-white font-semibold shadow-sm"
+                                    : "text-slate-400 hover:text-slate-200"
+                            }`}
+                        >
+                            {n === "All" ? "Show All" : `Top ${n}`}
+                        </button>
+                    ))}
                 </div>
             </div>
 

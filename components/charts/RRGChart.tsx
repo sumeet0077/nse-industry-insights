@@ -127,6 +127,16 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 return "Improving";
             };
 
+            // Calculate heading vector direction so text label projects FORWARD away from the tail
+            const prevPoint = tailData.length > 1 ? tailData[tailData.length - 2] : undefined;
+            const dx = prevPoint ? head.RS_Ratio - prevPoint.RS_Ratio : 0;
+            const dy = prevPoint ? head.RS_Momentum - prevPoint.RS_Momentum : 0;
+            let textPos: "top right" | "bottom right" | "top left" | "bottom left" = "top right";
+            if (dx >= 0 && dy >= 0) textPos = "top right";
+            else if (dx < 0 && dy >= 0) textPos = "top left";
+            else if (dx < 0 && dy < 0) textPos = "bottom left";
+            else textPos = "bottom right";
+
             // 1. Draw Tail line + path markers
             traces.push({
                 x: tailData.map((d) => d.RS_Ratio),
@@ -150,7 +160,6 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
 
             // Determine if label should be visible based on hoverOnlyLabels & hover
             const shouldShowLabel = isHovered || (!isHoverActive && !hoverOnlyLabels);
-            const textPos = cardinalPositions[index % cardinalPositions.length];
 
             // 2. Draw Head marker + text label
             traces.push({
@@ -263,6 +272,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#94a3b8", family: "Inter, sans-serif" },
+                    hoverlabel: {
+                        bgcolor: "#0f172a",
+                        bordercolor: "#334155",
+                        font: { color: "#f8fafc", family: "Inter, sans-serif", size: 12 },
+                        align: "left",
+                    },
                     xaxis: {
                         title: { text: "RS-Ratio (Trend)" },
                         range: chartData.xRange,

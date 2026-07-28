@@ -513,6 +513,7 @@
             "JMFINANCIL.NS",
             "JPPOWER.NS",
             "JSL.NS",
+            "JSWDULUX.NS",
             "JUBLFOOD.NS",
             "JUBLPHARMA.NS",
             "JWL.NS",
@@ -617,8 +618,7 @@
             "ZFCVINDIA.NS"
         ],
         "new_stock": [
-            "ICICIAMC.NS",
-            "JSWDULUX.NS"
+            "ICICIAMC.NS"
         ]
     },
     "Nifty Midcap 150": {
@@ -1098,6 +1098,7 @@
             "JMFINANCIL.NS",
             "JPPOWER.NS",
             "JSL.NS",
+            "JSWDULUX.NS",
             "JUBLFOOD.NS",
             "JUBLPHARMA.NS",
             "JWL.NS",
@@ -1183,8 +1184,7 @@
             "ZFCVINDIA.NS"
         ],
         "new_stock": [
-            "ICICIAMC.NS",
-            "JSWDULUX.NS"
+            "ICICIAMC.NS"
         ]
     },
     "Nifty Smallcap 250": {
@@ -1388,6 +1388,7 @@
             "JKTYRE.NS",
             "JMFINANCIL.NS",
             "JPPOWER.NS",
+            "JSWDULUX.NS",
             "JUBLPHARMA.NS",
             "JWL.NS",
             "JYOTICNC.NS",
@@ -1441,9 +1442,7 @@
             "ZENSARTECH.NS",
             "ZFCVINDIA.NS"
         ],
-        "new_stock": [
-            "JSWDULUX.NS"
-        ]
+        "new_stock": []
     },
     "NIFTY AUTO": {
         "above": [

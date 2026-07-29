@@ -95,11 +95,11 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     headLineWidth = 3.5;
                     headLineColor = "#ffffff";
                 } else {
-                    // Soft background dimming (~0.38 opacity) so all other tails remain clearly visible as context
-                    traceOpacity = 0.38;
-                    lineWidth = 1.8;
-                    markerBaseSize = 3.5;
-                    headMarkerSize = 8;
+                    // Soft background dimming (0.25 opacity) so other tails remain clearly visible
+                    traceOpacity = 0.25;
+                    lineWidth = 1.5;
+                    markerBaseSize = 3;
+                    headMarkerSize = 7;
                     headLineWidth = 0;
                 }
             }
@@ -107,7 +107,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             // Per-point marker popping calculations
             const markerSizes = tailData.map((_, i) => {
                 const isThisPointHovered = isHovered && hoveredPointIndex === i;
-                if (isThisPointHovered) return 14; // Prominent scale pop size when point is hovered!
+                if (isThisPointHovered) return 13; // Prominent scale pop size when point is hovered!
                 return Math.max(3, Math.round(markerBaseSize + (i / Math.max(1, tailLen - 1)) * 4));
             });
 
@@ -115,7 +115,7 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 const isThisPointHovered = isHovered && hoveredPointIndex === i;
                 if (isThisPointHovered) return 1.0;
                 return isHoverActive
-                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.6
+                    ? isHovered ? Math.min(1.0, 0.7 + (i / Math.max(1, tailLen - 1)) * 0.3) : 0.2
                     : Math.min(1.0, 0.6 + (i / Math.max(1, tailLen - 1)) * 0.4);
             });
 
@@ -133,29 +133,15 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 return "Improving";
             };
 
-            // Calculate smooth direction vector over last 3 points to project label forward away from tail
-            const startPt = tailData[Math.max(0, tailLen - 3)];
-            const dx = head.RS_Ratio - startPt.RS_Ratio;
-            const dy = head.RS_Momentum - startPt.RS_Momentum;
-            const absDx = Math.abs(dx);
-            const absDy = Math.abs(dy);
-
-            type TextPosType = "top right" | "bottom right" | "top left" | "bottom left" | "top center" | "bottom center" | "middle left" | "middle right";
-            let textPos: TextPosType = "top right";
-
-            if (dx < 0 && dy < 0) {
-                // Moving Down-Left (Weakening): project to bottom-left / middle-left
-                textPos = absDx > absDy * 1.5 ? "middle left" : absDy > absDx * 1.5 ? "bottom center" : "bottom left";
-            } else if (dx < 0 && dy >= 0) {
-                // Moving Up-Left (Lagging -> Improving): project to top-left / middle-left
-                textPos = absDx > absDy * 1.5 ? "middle left" : absDy > absDx * 1.5 ? "top center" : "top left";
-            } else if (dx >= 0 && dy < 0) {
-                // Moving Down-Right (Leading -> Weakening): project to bottom-right / middle-right
-                textPos = absDx > absDy * 1.5 ? "middle right" : absDy > absDx * 1.5 ? "bottom center" : "bottom right";
-            } else {
-                // Moving Up-Right (Improving -> Leading): project to top-right / middle-right
-                textPos = absDx > absDy * 1.5 ? "middle right" : absDy > absDx * 1.5 ? "top center" : "top right";
-            }
+            // Calculate heading vector direction so text label projects FORWARD away from the tail
+            const prevPoint = tailData.length > 1 ? tailData[tailData.length - 2] : undefined;
+            const dx = prevPoint ? head.RS_Ratio - prevPoint.RS_Ratio : 0;
+            const dy = prevPoint ? head.RS_Momentum - prevPoint.RS_Momentum : 0;
+            let textPos: "top right" | "bottom right" | "top left" | "bottom left" = "top right";
+            if (dx >= 0 && dy >= 0) textPos = "top right";
+            else if (dx < 0 && dy >= 0) textPos = "top left";
+            else if (dx < 0 && dy < 0) textPos = "bottom left";
+            else textPos = "bottom right";
 
             // Point-level metadata payload for hover tracking
             const pointMetadata = tailData.map((d) => ({
@@ -192,8 +178,8 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 y: [head.RS_Momentum],
                 mode: shouldShowLabel ? "markers+text" : "markers",
                 text: shouldShowLabel ? [cleanName] : undefined,
-                textposition: textPos,
-                opacity: isHoverActive && !isHovered ? 0.38 : 1.0,
+                textposition: [textPos],
+                opacity: isHoverActive && !isHovered ? 0.25 : 1.0,
                 customdata: [{
                     ticker,
                     date: head.Date.split("T")[0],

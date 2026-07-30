@@ -638,6 +638,13 @@
       "category": "industries"
     }
   ],
+  "ALGOQUANT": [
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
+    }
+  ],
   "ALKEM": [
     {
       "id": "market_breadth_nifty500",
@@ -989,6 +996,16 @@
     {
       "id": "breadth_theme_auto_ancillary",
       "title": "Auto Ancillary",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_critical_minerals",
+      "title": "Critical Minerals",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
       "category": "industries"
     }
   ],
@@ -2986,6 +3003,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
     }
   ],
   "CRISIL": [
@@ -5509,6 +5531,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
     }
   ],
   "IGIL": [
@@ -5600,6 +5627,13 @@
     {
       "id": "breadth_theme_travel_and_tourism",
       "title": "Travel & Tourism",
+      "category": "industries"
+    }
+  ],
+  "INA": [
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
       "category": "industries"
     }
   ],
@@ -9102,6 +9136,13 @@
       "category": "industries"
     }
   ],
+  "PGIL": [
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
   "PHOENIXLTD": [
     {
       "id": "market_breadth_nifty500",
@@ -11921,6 +11962,13 @@
       "category": "industries"
     }
   ],
+  "UFBL": [
+    {
+      "id": "breadth_theme_qsr",
+      "title": "QSR",
+      "category": "industries"
+    }
+  ],
   "UFLEX": [
     {
       "id": "breadth_theme_packaging_solutions",
@@ -11999,6 +12047,11 @@
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_alcohols_and_breweries",
+      "title": "Alcohols & Breweries",
+      "category": "industries"
     }
   ],
   "UNIVCABLES": [
@@ -12110,6 +12163,13 @@
     {
       "id": "breadth_theme_asset_management",
       "title": "Asset Management",
+      "category": "industries"
+    }
+  ],
+  "UTLSOLAR": [
+    {
+      "id": "breadth_theme_solar_manufacturing",
+      "title": "Solar Manufacturing",
       "category": "industries"
     }
   ],
@@ -12337,6 +12397,13 @@
     {
       "id": "breadth_theme_solar_manufacturing",
       "title": "Solar Manufacturing",
+      "category": "industries"
+    }
+  ],
+  "WAAREERTL": [
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
       "category": "industries"
     }
   ],

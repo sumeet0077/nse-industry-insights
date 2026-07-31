@@ -131,7 +131,13 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const watchlistRawData = useMemo(() => {
         if (activeWatchlist.tickers.length === 0) return [];
         const activeSet = new Set(activeWatchlist.tickers.map((t) => t.toUpperCase()));
-        return benchmarkRawData.filter((pt) => activeSet.has(pt.Ticker.toUpperCase()));
+        const cleanSet = new Set(activeWatchlist.tickers.map((t) => cleanTicker(t).toUpperCase()));
+
+        return benchmarkRawData.filter((pt) => {
+            const ptUpper = pt.Ticker.toUpperCase();
+            const ptClean = cleanTicker(pt.Ticker).toUpperCase();
+            return activeSet.has(ptUpper) || cleanSet.has(ptClean);
+        });
     }, [benchmarkRawData, activeWatchlist.tickers]);
 
     // Latest point per ticker for quadrant calculation

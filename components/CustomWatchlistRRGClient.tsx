@@ -21,11 +21,10 @@ import {
     Download,
     Upload,
     RotateCcw,
-    Copy,
-    ExternalLink,
-    Filter,
     Layers,
     ChevronDown,
+    ExternalLink,
+    Filter,
     Sparkles,
 } from "lucide-react";
 
@@ -74,47 +73,36 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const [stockSearchQuery, setStockSearchQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-    // Filters
+    // Chart Filters & Controls
+    const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
     const [selectedQuadrants, setSelectedQuadrants] = useLocalStorage<QuadrantType[]>("cw_selectedQuadrants", [...QUADRANTS]);
     const [expandedQuadrant, setExpandedQuadrant] = useState<QuadrantType | null>(null);
-    const [hoverOnlyLabels, setHoverOnlyLabels] = useLocalStorage("cw_hoverOnlyLabels", false);
+    const [gridQuadrantFilter, setGridQuadrantFilter] = useState<"All" | QuadrantType>("All");
     const [topNCount, setTopNCount] = useLocalStorage<number | "All">("cw_topNCount", "All");
     const [copiedQuadrant, setCopiedQuadrant] = useState<string | null>(null);
+    const [chipSearchQuery, setChipSearchQuery] = useState("");
 
     // Trend Scanner state
     const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirectionType>("cw_trendDirection", "off");
     const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetricType>("cw_trendMetric", "momentum");
-    const [trendLookback, setTrendLookback] = useLocalStorage("cw_trendLookback", 5);
+    const [trendLookback, setTrendLookback] = useLocalStorage<number>("cw_trendLookback", 5);
 
     // Table filter & search
     const [tableSearchQuery, setTableSearchQuery] = useState("");
     const [tableSortField, setTableSortField] = useState<"ticker" | "ratio" | "momentum" | "quadrant">("ratio");
     const [tableSortAsc, setTableSortAsc] = useState(false);
 
-    const chartRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     // Get stock universe tickers list from search index
     const allUniverseTickers = useMemo(() => {
         const set = new Set<string>();
-        for (const [sym, entries] of Object.entries(stockSearchIndex)) {
+        for (const [sym] of Object.entries(stockSearchIndex)) {
             const formatted = sym.endsWith(".NS") ? sym : `${sym}.NS`;
             set.add(formatted);
         }
         return Array.from(set).sort();
     }, [stockSearchIndex]);
-
-    // Filter stock search results for autocomplete
-    const searchResults = useMemo(() => {
-        const q = stockSearchQuery.trim().toUpperCase();
-        if (!q) return [];
-        const cleanQ = q.replace(/\.NS$/, "");
-        return allUniverseTickers
-            .filter((t) => {
-                const clean = cleanTicker(t);
-                return clean.includes(cleanQ) && !activeWatchlist.tickers.includes(t);
-            })
-            .slice(0, 8);
-    }, [stockSearchQuery, allUniverseTickers, activeWatchlist.tickers]);
 
     // Active stock RRG payload for the selected benchmark
     const activeBenchmarkPayload = useMemo(() => {
@@ -125,6 +113,11 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const benchmarkRawData: RRGDataPoint[] = useMemo(() => {
         if (!activeBenchmarkPayload) return [];
         return activeBenchmarkPayload[timeframe] || [];
+    }, [activeBenchmarkPayload, timeframe]);
+
+    const skippedStocks: string[] = useMemo(() => {
+        if (!activeBenchmarkPayload || !activeBenchmarkPayload.skipped) return [];
+        return activeBenchmarkPayload.skipped[timeframe] || [];
     }, [activeBenchmarkPayload, timeframe]);
 
     // Filter RRG points to include ONLY stocks present in the active watchlist
@@ -139,6 +132,28 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
             return activeSet.has(ptUpper) || cleanSet.has(ptClean);
         });
     }, [benchmarkRawData, activeWatchlist.tickers]);
+
+    // Initialize selectedTickers to include all active watchlist tickers when watchlist changes
+    useEffect(() => {
+        if (activeWatchlist.tickers.length > 0) {
+            setSelectedTickers(activeWatchlist.tickers);
+        } else {
+            setSelectedTickers([]);
+        }
+    }, [activeWatchlist.tickers]);
+
+    // Filter stock search results for autocomplete
+    const searchResults = useMemo(() => {
+        const q = stockSearchQuery.trim().toUpperCase();
+        if (!q) return [];
+        const cleanQ = q.replace(/\.NS$/, "");
+        return allUniverseTickers
+            .filter((t) => {
+                const clean = cleanTicker(t);
+                return clean.includes(cleanQ) && !activeWatchlist.tickers.includes(t);
+            })
+            .slice(0, 8);
+    }, [stockSearchQuery, allUniverseTickers, activeWatchlist.tickers]);
 
     // Latest point per ticker for quadrant calculation
     const latestPoints = useMemo(() => {
@@ -167,20 +182,31 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return map;
     }, [latestPoints]);
 
-    // Calculate Top N tickers per quadrant
+    // Group data by ticker for trend scanner
+    const groupedByTicker = useMemo(() => {
+        const grouped: Record<string, RRGDataPoint[]> = {};
+        for (const pt of watchlistRawData) {
+            if (!grouped[pt.Ticker]) grouped[pt.Ticker] = [];
+            grouped[pt.Ticker].push(pt);
+        }
+        for (const ticker of Object.keys(grouped)) {
+            grouped[ticker].sort((a, b) => a.Date.localeCompare(b.Date));
+        }
+        return grouped;
+    }, [watchlistRawData]);
+
+    // Calculate Top N tickers per quadrant (ranked by distance magnitude from 100,100)
     const topNActiveTickers = useMemo(() => {
         if (topNCount === "All") return null;
 
         const activeSet = new Set<string>();
         for (const q of selectedQuadrants) {
-            const quadTickers = Object.entries(tickerQuadrants)
-                .filter(([_, quad]) => quad === q)
-                .map(([t]) => t);
+            const quadTickers = activeWatchlist.tickers.filter((t) => tickerQuadrants[t] === q);
 
             const sortedByDistance = quadTickers
                 .map((t) => {
                     const pt = latestPoints[t];
-                    const dist = Math.sqrt(Math.pow(pt.RS_Ratio - 100, 2) + Math.pow(pt.RS_Momentum - 100, 2));
+                    const dist = pt ? Math.sqrt(Math.pow(pt.RS_Ratio - 100, 2) + Math.pow(pt.RS_Momentum - 100, 2)) : 0;
                     return { ticker: t, dist };
                 })
                 .sort((a, b) => b.dist - a.dist)
@@ -191,89 +217,117 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         }
 
         return activeSet;
-    }, [topNCount, selectedQuadrants, tickerQuadrants, latestPoints]);
+    }, [topNCount, selectedQuadrants, activeWatchlist.tickers, tickerQuadrants, latestPoints]);
 
-    // Trend Scanner matching tickers
-    const trendScannerActiveTickers = useMemo(() => {
+    const activeTopNSet = useMemo(() => {
+        return topNActiveTickers ? new Set(topNActiveTickers) : null;
+    }, [topNActiveTickers]);
+
+    // Trend Scanner logic matching StockRRGClient
+    const trendMatchingTickers = useMemo(() => {
         if (trendDirection === "off") return null;
 
-        const historyByTicker: Record<string, RRGDataPoint[]> = {};
-        for (const pt of watchlistRawData) {
-            if (!historyByTicker[pt.Ticker]) historyByTicker[pt.Ticker] = [];
-            historyByTicker[pt.Ticker].push(pt);
-        }
+        const matches: string[] = [];
+        for (const ticker of activeWatchlist.tickers) {
+            const points = groupedByTicker[ticker];
+            if (!points || points.length < trendLookback + 1) continue;
 
-        const activeSet = new Set<string>();
+            const tail = points.slice(-(trendLookback + 1));
+            let isMatch = true;
 
-        for (const [t, points] of Object.entries(historyByTicker)) {
-            if (points.length < 2) continue;
-            points.sort((a, b) => a.Date.localeCompare(b.Date));
+            for (let i = 1; i < tail.length; i++) {
+                const currM = tail[i].RS_Momentum;
+                const prevM = tail[i - 1].RS_Momentum;
+                const currR = tail[i].RS_Ratio;
+                const prevR = tail[i - 1].RS_Ratio;
 
-            const sliced = points.slice(-trendLookback);
-            if (sliced.length < 2) continue;
-
-            const first = sliced[0];
-            const last = sliced[sliced.length - 1];
-
-            if (trendMetric === "momentum") {
-                const diff = last.RS_Momentum - first.RS_Momentum;
-                if (trendDirection === "rising" && diff > 0) activeSet.add(t);
-                if (trendDirection === "falling" && diff < 0) activeSet.add(t);
-            } else {
-                const diff = last.RS_Ratio - first.RS_Ratio;
-                if (trendDirection === "rising" && diff > 0) activeSet.add(t);
-                if (trendDirection === "falling" && diff < 0) activeSet.add(t);
+                if (trendDirection === "rising") {
+                    if (trendMetric === "momentum" && currM <= prevM) { isMatch = false; break; }
+                    if (trendMetric === "ratio" && currR <= prevR) { isMatch = false; break; }
+                    if (trendMetric === "both" && (currM <= prevM || currR <= prevR)) { isMatch = false; break; }
+                } else {
+                    if (trendMetric === "momentum" && currM > prevM) { isMatch = false; break; }
+                    if (trendMetric === "ratio" && currR > prevR) { isMatch = false; break; }
+                    if (trendMetric === "both" && (currM > prevM || currR > prevR)) { isMatch = false; break; }
+                }
             }
+
+            if (isMatch) matches.push(ticker);
         }
+        return matches;
+    }, [trendDirection, trendMetric, trendLookback, activeWatchlist.tickers, groupedByTicker]);
 
-        return activeSet;
-    }, [trendDirection, trendMetric, trendLookback, watchlistRawData]);
+    const applyTrendScanner = useCallback(() => {
+        if (trendMatchingTickers) {
+            setSelectedTickers(trendMatchingTickers);
+        }
+    }, [trendMatchingTickers]);
 
-    // Final filtered data to pass into RRGChart
+    useEffect(() => {
+        if (trendDirection !== "off" && trendMatchingTickers) {
+            applyTrendScanner();
+        }
+    }, [trendDirection, trendMetric, trendLookback, applyTrendScanner, trendMatchingTickers]);
+
+    // Final filtered chart dataset
     const finalChartData = useMemo(() => {
         return watchlistRawData.filter((pt) => {
             const quad = tickerQuadrants[pt.Ticker];
             if (!quad || !selectedQuadrants.includes(quad)) return false;
-            if (topNActiveTickers && !topNActiveTickers.has(pt.Ticker)) return false;
-            if (trendScannerActiveTickers && !trendScannerActiveTickers.has(pt.Ticker)) return false;
+            if (!selectedTickers.includes(pt.Ticker)) return false;
+            if (activeTopNSet && !activeTopNSet.has(pt.Ticker)) return false;
             return true;
         });
-    }, [watchlistRawData, tickerQuadrants, selectedQuadrants, topNActiveTickers, trendScannerActiveTickers]);
+    }, [watchlistRawData, tickerQuadrants, selectedQuadrants, selectedTickers, activeTopNSet]);
 
-    // Group tickers by quadrant for summary cards
-    const quadrantLists = useMemo(() => {
-        const res: Record<QuadrantType, { ticker: string; ratio: number; mom: number }[]> = {
-            Leading: [],
-            Weakening: [],
-            Lagging: [],
-            Improving: [],
-        };
-        for (const [t, pt] of Object.entries(latestPoints)) {
-            const quad = tickerQuadrants[t];
-            if (quad) {
-                res[quad].push({ ticker: t, ratio: pt.RS_Ratio, mom: pt.RS_Momentum });
-            }
+    // Stock Chip Grid Tickers Search & Quadrant Filter
+    const filteredGridTickers = useMemo(() => {
+        let list = activeWatchlist.tickers;
+        if (chipSearchQuery.trim()) {
+            const q = chipSearchQuery.trim().toLowerCase();
+            list = list.filter((t) => cleanTicker(t).toLowerCase().includes(q) || t.toLowerCase().includes(q));
         }
-        for (const q of QUADRANTS) {
-            res[q].sort((a, b) => b.ratio - a.ratio);
+        if (gridQuadrantFilter !== "All") {
+            list = list.filter((t) => tickerQuadrants[t] === gridQuadrantFilter);
         }
-        return res;
-    }, [latestPoints, tickerQuadrants]);
+        return list;
+    }, [activeWatchlist.tickers, chipSearchQuery, gridQuadrantFilter, tickerQuadrants]);
 
-    // Copy tickers to clipboard
-    const copyTickers = (quadrant: QuadrantType) => {
-        const list = quadrantLists[quadrant].map((i) => cleanTicker(i.ticker)).join(", ");
-        navigator.clipboard.writeText(list);
-        setCopiedQuadrant(quadrant);
+    const toggleTicker = (ticker: string) => {
+        if (trendDirection !== "off") setTrendDirection("off");
+        if (selectedTickers.includes(ticker)) {
+            setSelectedTickers(selectedTickers.filter((t) => t !== ticker));
+        } else {
+            setSelectedTickers([...selectedTickers, ticker]);
+        }
+    };
+
+    const toggleQuadrant = (q: QuadrantType) => {
+        if (selectedQuadrants.includes(q)) {
+            setSelectedQuadrants(selectedQuadrants.filter((item) => item !== q));
+        } else {
+            setSelectedQuadrants([...selectedQuadrants, q]);
+        }
+    };
+
+    // Copy TradingView Watchlist format
+    const handleCopyWatchlist = (quadrantName: string, tickers: string[]) => {
+        const watchlist = tickers.map(toTVSymbol).join(", ");
+        navigator.clipboard.writeText(watchlist);
+        setCopiedQuadrant(quadrantName);
         setTimeout(() => setCopiedQuadrant(null), 2000);
     };
 
-    // Toggle quadrant selection
-    const toggleQuadrant = (q: QuadrantType) => {
-        setSelectedQuadrants((prev) => (prev.includes(q) ? prev.filter((item) => item !== q) : [...prev, q]));
-    };
+    // Get title of selected benchmark
+    const activeBenchmarkTitle = useMemo(() => {
+        const bMatch = BROAD_MARKET.find((b) => b.dataFile === benchmarkId || b.id === benchmarkId);
+        if (bMatch) return bMatch.title;
+        const sMatch = SECTORS.find((s) => s.dataFile === benchmarkId || s.id === benchmarkId);
+        if (sMatch) return sMatch.title;
+        return benchmarkId;
+    }, [benchmarkId]);
 
-    // Watchlist creation handler
+    // Watchlist management handlers
     const handleCreateWatchlist = () => {
         if (!newWatchlistName.trim()) return;
         createWatchlist(newWatchlistName.trim());
@@ -281,14 +335,12 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         setIsCreating(false);
     };
 
-    // Watchlist rename handler
     const handleRenameWatchlist = () => {
         if (!editName.trim()) return;
         renameWatchlist(activeWatchlist.id, editName.trim());
         setIsRenaming(false);
     };
 
-    // Import Watchlists JSON
     const handleImportJson = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -304,7 +356,6 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         reader.readAsText(file);
     };
 
-    // Export Watchlists JSON
     const handleExportJson = () => {
         const json = exportWatchlistsJson();
         const blob = new Blob([json], { type: "application/json" });
@@ -316,25 +367,19 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         URL.revokeObjectURL(url);
     };
 
-    // Get title of selected benchmark
-    const activeBenchmarkTitle = useMemo(() => {
-        const bMatch = BROAD_MARKET.find((b) => b.dataFile === benchmarkId || b.id === benchmarkId);
-        if (bMatch) return bMatch.title;
-        const sMatch = SECTORS.find((s) => s.dataFile === benchmarkId || s.id === benchmarkId);
-        if (sMatch) return sMatch.title;
-        return benchmarkId;
-    }, [benchmarkId]);
-
     // Filtered constituent table items
     const tableRows = useMemo(() => {
         const query = tableSearchQuery.trim().toLowerCase();
         let rows = Object.entries(latestPoints).map(([ticker, pt]) => {
+            const quad = tickerQuadrants[ticker] || "Lagging";
+            const dist = Math.sqrt(Math.pow(pt.RS_Ratio - 100, 2) + Math.pow(pt.RS_Momentum - 100, 2));
             return {
                 ticker,
                 clean: cleanTicker(ticker),
                 ratio: pt.RS_Ratio,
                 momentum: pt.RS_Momentum,
-                quadrant: tickerQuadrants[ticker] || "Lagging",
+                distance: dist,
+                quadrant: quad,
             };
         });
 
@@ -354,22 +399,27 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return rows;
     }, [latestPoints, tickerQuadrants, tableSearchQuery, tableSortField, tableSortAsc]);
 
+    const scannerIsActive = trendDirection !== "off";
+    const matchCount = trendMatchingTickers?.length ?? 0;
+
     return (
-        <div className="space-y-6">
+        <div ref={contentRef} className="py-2 space-y-6">
             {/* Header Title & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#111118] p-5 rounded-xl border border-[#1e1e2e]">
                 <div>
                     <div className="flex items-center gap-2.5">
                         <BookmarkCheck className="h-6 w-6 text-blue-400" />
-                        <h1 className="text-xl font-bold text-white tracking-tight">Custom Watchlist RRG</h1>
+                        <h1 className="text-xl font-bold text-white tracking-tight">
+                            Custom Stock Watchlist Rotation (vs {activeBenchmarkTitle})
+                        </h1>
                     </div>
                     <p className="text-xs text-slate-400 mt-1">
-                        Build your custom stock watchlists and visualize Sector Rotation Graphs relative to any Broad Market or Sectoral Benchmark.
+                        Build your custom stock watchlists and analyze Relative Rotation Graphs compared to any Broad Market or Sectoral Benchmark.
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                    <CaptureScreenshot targetRef={chartRef} filename={`Custom_RRG_${activeWatchlist.name}_vs_${benchmarkId}`} />
+                    <CaptureScreenshot targetRef={contentRef} filename={`Custom_RRG_${activeWatchlist.name}_vs_${benchmarkId}`} label="Capture RRG" />
 
                     <button
                         onClick={handleExportJson}
@@ -397,10 +447,10 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 </div>
             </div>
 
-            {/* Watchlist Bar & Selector */}
+            {/* Watchlist Bar & Stock Picker */}
             <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    {/* Watchlist Tabs / Dropdown */}
+                    {/* Watchlist Tabs */}
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
                         <span className="text-xs font-semibold text-slate-400 flex items-center gap-1 shrink-0">
                             <Layers className="h-3.5 w-3.5 text-blue-400" />
@@ -514,16 +564,15 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                     </div>
                 </div>
 
-                {/* Stock Picker Input & Stock Badges */}
+                {/* Stock Picker Input & Stock Pills */}
                 <div className="pt-2 border-t border-[#1e1e2e] space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        {/* Search & Add Stock */}
                         <div className="relative flex-1 max-w-md">
                             <div className="flex items-center bg-[#1a1a2e] border border-slate-700/60 rounded-lg px-3 py-1.5 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/30 transition-colors">
                                 <Search className="h-3.5 w-3.5 text-slate-400 mr-2 shrink-0" />
                                 <input
                                     type="text"
-                                    placeholder="Add stock (e.g. RELIANCE, TATASTEEL, DELHIVERY)..."
+                                    placeholder="Add stock to watchlist (e.g. INFY, PSPPROJECT, OFSS, RELIANCE)..."
                                     value={stockSearchQuery}
                                     onChange={(e) => {
                                         setStockSearchQuery(e.target.value);
@@ -566,24 +615,20 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                             )}
                         </div>
 
-                        {/* Quick Actions */}
-                        <div className="flex items-center gap-2">
-                            {activeWatchlist.tickers.length > 0 && (
-                                <button
-                                    onClick={clearActiveWatchlist}
-                                    className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-[11px] font-medium border border-slate-700/40 transition-colors"
-                                >
-                                    Clear Tickers
-                                </button>
-                            )}
-                        </div>
+                        {activeWatchlist.tickers.length > 0 && (
+                            <button
+                                onClick={clearActiveWatchlist}
+                                className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-[11px] font-medium border border-slate-700/40 transition-colors"
+                            >
+                                Clear Tickers
+                            </button>
+                        )}
                     </div>
 
-                    {/* Stock Badges Pills */}
-                    <div className="flex flex-wrap items-center gap-1.5 max-h-28 overflow-y-auto pr-1">
+                    <div className="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
                         {activeWatchlist.tickers.length === 0 ? (
                             <p className="text-xs text-slate-500 italic py-1">
-                                No stocks in this watchlist. Use the search bar above to add stocks!
+                                No stocks in this watchlist. Search and add stocks using the input above!
                             </p>
                         ) : (
                             activeWatchlist.tickers.map((t) => (
@@ -606,225 +651,224 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 </div>
             </div>
 
-            {/* Benchmark Selector & Chart Controls */}
-            <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            {/* Controls Bar matching StockRRGClient */}
+            <div className="flex flex-col gap-6 bg-[#111118] border border-[#1e1e2e] p-4 rounded-lg">
+                <div className="flex flex-col md:flex-row gap-6">
                     {/* Benchmark Selection (Grouped Optgroups) */}
-                    <div className="md:col-span-5 flex flex-col gap-1.5">
-                        <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                            <Layers className="h-3 w-3 text-blue-400" />
-                            Benchmark Index
+                    <div className="flex-1">
+                        <label className="block text-xs text-slate-400 mb-2 font-semibold flex items-center gap-1">
+                            <span>Benchmark Index</span>
                         </label>
-                        <div className="relative">
-                            <select
-                                value={benchmarkId}
-                                onChange={(e) => setBenchmarkId(e.target.value)}
-                                className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-lg px-3 py-2 text-xs text-white font-medium focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-colors appearance-none cursor-pointer pr-8"
-                            >
-                                <optgroup label="Broad Market Indices">
-                                    {BROAD_MARKET.map((b) => (
-                                        <option key={b.dataFile} value={b.dataFile}>
-                                            {b.title} ({b.description})
-                                        </option>
-                                    ))}
-                                </optgroup>
+                        <select
+                            value={benchmarkId}
+                            onChange={(e) => setBenchmarkId(e.target.value)}
+                            className="w-full bg-[#1a1a2e] border border-slate-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        >
+                            <optgroup label="Broad Market Indices">
+                                {BROAD_MARKET.map((b) => (
+                                    <option key={b.dataFile} value={b.dataFile}>
+                                        {b.title} ({b.description})
+                                    </option>
+                                ))}
+                            </optgroup>
 
-                                <optgroup label="Sectoral Indices">
-                                    {SECTORS.map((s) => (
-                                        <option key={s.dataFile} value={s.dataFile}>
-                                            {s.title} ({s.description})
-                                        </option>
-                                    ))}
-                                </optgroup>
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-                        </div>
+                            <optgroup label="Sectoral Indices">
+                                {SECTORS.map((s) => (
+                                    <option key={s.dataFile} value={s.dataFile}>
+                                        {s.title} ({s.description})
+                                    </option>
+                                ))}
+                            </optgroup>
+                        </select>
                     </div>
 
-                    {/* Timeframe Toggles */}
-                    <div className="md:col-span-4 flex flex-col gap-1.5">
-                        <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                    {/* Timeframe Selector */}
+                    <div className="flex-1">
+                        <label className="block text-xs text-slate-400 mb-2 font-semibold">
                             Timeframe
                         </label>
-                        <div className="flex bg-[#1a1a2e] p-1 rounded-lg border border-slate-800">
-                            {(["D", "W", "M"] as TimeframeType[]).map((tf) => (
-                                <button
-                                    key={tf}
-                                    onClick={() => setTimeframe(tf)}
-                                    className={`flex-1 py-1 text-xs font-semibold rounded-md transition-colors ${
-                                        timeframe === tf
-                                            ? "bg-blue-600 text-white shadow-sm"
-                                            : "text-slate-400 hover:text-slate-200"
-                                    }`}
-                                >
-                                    {TIMEFRAMES[tf]} ({tf})
-                                </button>
-                            ))}
-                        </div>
+                        <select
+                            value={timeframe}
+                            onChange={(e) => setTimeframe(e.target.value as TimeframeType)}
+                            className="w-full bg-[#1a1a2e] border border-slate-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        >
+                            <option value="D">Daily</option>
+                            <option value="W">Weekly</option>
+                            <option value="M">Monthly</option>
+                        </select>
                     </div>
 
-                    {/* Tail Length & Hover Mode */}
-                    <div className="md:col-span-3 flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                            <span>Tail Length: {tailLength}</span>
-                            <button
-                                onClick={() => setHoverOnlyLabels(!hoverOnlyLabels)}
-                                className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
-                                    hoverOnlyLabels
-                                        ? "bg-blue-500/20 text-blue-400 border-blue-500/40"
-                                        : "bg-slate-800 text-slate-400 border-slate-700"
-                                }`}
-                            >
-                                {hoverOnlyLabels ? "Hover Only" : "Always Show Labels"}
-                            </button>
-                        </div>
+                    {/* Tail Length Slider */}
+                    <div className="flex-1">
+                        <label className="block text-xs text-slate-400 mb-2 font-semibold flex justify-between">
+                            <span>Tail Length (Periods)</span>
+                            <span className="text-blue-400 font-bold">{tailLength}</span>
+                        </label>
                         <input
                             type="range"
                             min="1"
-                            max="15"
+                            max="12"
                             value={tailLength}
-                            onChange={(e) => setTailLength(Number(e.target.value))}
-                            className="w-full h-2 bg-[#1a1a2e] rounded-lg appearance-none cursor-pointer accent-blue-500"
+                            onChange={(e) => {
+                                const newTail = parseInt(e.target.value);
+                                setTailLength(newTail);
+                                if (trendLookback > newTail) setTrendLookback(newTail);
+                            }}
+                            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 mt-2"
                         />
                     </div>
                 </div>
-            </div>
 
-            {/* Quadrant Badges & Filters Bar */}
-            <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-semibold text-slate-400 mr-1 flex items-center gap-1">
-                            <Filter className="h-3.5 w-3.5 text-blue-400" />
-                            Quadrants:
-                        </span>
-                        {QUADRANTS.map((q) => {
-                            const isSelected = selectedQuadrants.includes(q);
-                            const count = quadrantLists[q].length;
-                            const color = QUADRANT_COLORS[q];
-                            return (
-                                <button
-                                    key={q}
-                                    onClick={() => toggleQuadrant(q)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border flex items-center gap-1.5 ${
-                                        isSelected
-                                            ? color === "emerald"
-                                                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                                                : color === "yellow"
-                                                ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/40"
-                                                : color === "red"
-                                                ? "bg-red-500/20 text-red-300 border-red-500/40"
-                                                : "bg-blue-500/20 text-blue-300 border-blue-500/40"
-                                            : "bg-[#1a1a2e] text-slate-500 border-slate-800 opacity-60 hover:opacity-100"
-                                    }`}
-                                >
-                                    <span>{q}</span>
-                                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/40">
-                                        {count}
-                                    </span>
-                                </button>
-                            );
-                        })}
+                {/* Trend Scanner Section */}
+                <div className="border-t border-[#1e1e2e] pt-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Trend Scanner</h3>
+                        {scannerIsActive && (
+                            <span className="text-[11px] font-bold bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full animate-pulse">
+                                {matchCount} match{matchCount !== 1 ? "es" : ""}
+                            </span>
+                        )}
                     </div>
 
-                    {/* Top N Filter */}
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400 self-start sm:self-center">
-                        <span className="font-semibold">Top N Filter:</span>
-                        <div className="flex bg-[#1a1a2e] rounded-lg p-0.5 border border-slate-800">
-                            {(["All", 3, 5, 10] as (number | "All")[]).map((n) => (
-                                <button
-                                    key={String(n)}
-                                    onClick={() => setTopNCount(n)}
-                                    className={`px-2 py-0.5 text-[11px] font-semibold rounded ${
-                                        topNCount === n
-                                            ? "bg-blue-600 text-white"
-                                            : "text-slate-400 hover:text-slate-200"
-                                    }`}
-                                >
-                                    {n === "All" ? "All" : `Top ${n}`}
-                                </button>
-                            ))}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-xs text-slate-400 mb-1">Direction</label>
+                            <div className="flex bg-[#1a1a2e] border border-slate-700 rounded p-0.5">
+                                {(["off", "rising", "falling"] as TrendDirectionType[]).map((dir) => (
+                                    <button
+                                        key={dir}
+                                        onClick={() => setTrendDirection(dir)}
+                                        className={`flex-1 py-1 text-xs rounded font-medium capitalize transition-colors ${
+                                            trendDirection === dir
+                                                ? dir === "rising"
+                                                    ? "bg-emerald-600 text-white"
+                                                    : dir === "falling"
+                                                    ? "bg-red-600 text-white"
+                                                    : "bg-slate-700 text-white"
+                                                : "text-slate-400 hover:text-slate-200"
+                                        }`}
+                                    >
+                                        {dir === "rising" ? "Rotating Up ↗" : dir === "falling" ? "Rotating Down ↘" : "Off"}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* Trend Scanner */}
-                <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-[#1e1e2e] text-xs">
-                    <span className="font-semibold text-slate-400 flex items-center gap-1">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-                        Trend Scanner:
-                    </span>
-
-                    <div className="flex items-center gap-1.5 bg-[#1a1a2e] p-1 rounded-lg border border-slate-800">
-                        <button
-                            onClick={() => setTrendDirection("off")}
-                            className={`px-2.5 py-0.5 text-[11px] font-medium rounded ${
-                                trendDirection === "off" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            Off
-                        </button>
-                        <button
-                            onClick={() => setTrendDirection("rising")}
-                            className={`px-2.5 py-0.5 text-[11px] font-medium rounded ${
-                                trendDirection === "rising" ? "bg-emerald-600 text-white" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            Rotating Up ↗
-                        </button>
-                        <button
-                            onClick={() => setTrendDirection("falling")}
-                            className={`px-2.5 py-0.5 text-[11px] font-medium rounded ${
-                                trendDirection === "falling" ? "bg-red-600 text-white" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            Rotating Down ↘
-                        </button>
-                    </div>
-
-                    {trendDirection !== "off" && (
-                        <div className="flex items-center gap-2">
+                        <div>
+                            <label className="block text-xs text-slate-400 mb-1">Metric</label>
                             <select
                                 value={trendMetric}
                                 onChange={(e) => setTrendMetric(e.target.value as TrendMetricType)}
-                                className="bg-[#1a1a2e] border border-slate-700 text-white text-xs px-2 py-1 rounded"
+                                disabled={!scannerIsActive}
+                                className="w-full bg-[#1a1a2e] border border-slate-700 rounded px-3 py-1.5 text-xs text-white disabled:opacity-40"
                             >
-                                <option value="momentum">RS-Momentum</option>
-                                <option value="ratio">RS-Ratio</option>
-                            </select>
-
-                            <span className="text-slate-500">over</span>
-
-                            <select
-                                value={trendLookback}
-                                onChange={(e) => setTrendLookback(Number(e.target.value))}
-                                className="bg-[#1a1a2e] border border-slate-700 text-white text-xs px-2 py-1 rounded"
-                            >
-                                <option value={3}>3 Bars</option>
-                                <option value={5}>5 Bars</option>
-                                <option value={10}>10 Bars</option>
+                                <option value="momentum">Momentum Only</option>
+                                <option value="ratio">Ratio Only</option>
+                                <option value="both">Ratio & Momentum (Strict)</option>
                             </select>
                         </div>
-                    )}
+
+                        <div>
+                            <label className="block text-xs text-slate-400 mb-1">
+                                Lookback: <span className="text-blue-400 font-semibold">{trendLookback}</span> periods
+                            </label>
+                            <input
+                                type="range"
+                                min="1"
+                                max={tailLength}
+                                value={trendLookback}
+                                disabled={!scannerIsActive}
+                                onChange={(e) => setTrendLookback(parseInt(e.target.value))}
+                                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 disabled:opacity-40 mt-1"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {/* RRG Chart Display Container */}
-            <div ref={chartRef} className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] shadow-xl">
-                <div className="flex items-center justify-between mb-3 px-2">
-                    <div>
-                        <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                            <span>Watchlist: {activeWatchlist.name}</span>
-                            <span className="text-xs font-normal text-slate-400">vs {activeBenchmarkTitle}</span>
-                        </h2>
-                    </div>
-                    <span className="text-xs font-semibold text-blue-400">
-                        {finalChartData.length > 0 ? `${new Set(finalChartData.map(d => d.Ticker)).size} Stocks Plotted` : "No stocks matching filter"}
-                    </span>
+            {/* Top N Filter Toolbar */}
+            <div className="flex items-center gap-2 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg w-fit">
+                <span className="text-xs text-slate-300 font-semibold uppercase tracking-wider">
+                    Top N Per Quadrant:
+                </span>
+                <div className="flex bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
+                    {(["All", 5, 10, 15] as const).map((n) => (
+                        <button
+                            key={String(n)}
+                            onClick={() => setTopNCount(n)}
+                            className={`text-xs px-2.5 py-1 rounded-md font-medium transition-all ${
+                                topNCount === n
+                                    ? "bg-blue-600 text-white font-semibold shadow-sm"
+                                    : "text-slate-400 hover:text-slate-200"
+                            }`}
+                        >
+                            {n === "All" ? "Show All" : `Top ${n}`}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Quadrant Quick Filter Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#111118] border border-[#1e1e2e] p-3 rounded-lg">
+                <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-xs font-semibold text-slate-400">Chart Quadrants:</span>
+                    {QUADRANTS.map((q) => {
+                        const count = activeWatchlist.tickers.filter((t) => tickerQuadrants[t] === q).length;
+                        const isChecked = selectedQuadrants.includes(q);
+                        const dotColors: Record<QuadrantType, string> = {
+                            Leading: "bg-emerald-400",
+                            Weakening: "bg-yellow-400",
+                            Lagging: "bg-red-400",
+                            Improving: "bg-blue-400",
+                        };
+                        return (
+                            <label
+                                key={q}
+                                className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded cursor-pointer border transition-colors ${
+                                    isChecked
+                                        ? "bg-slate-800 border-slate-600 text-white font-medium"
+                                        : "bg-slate-900/40 border-slate-800 text-slate-500 hover:text-slate-300"
+                                }`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => toggleQuadrant(q)}
+                                    className="hidden"
+                                />
+                                <span className={`w-2 h-2 rounded-full ${dotColors[q]}`}></span>
+                                {q} ({count})
+                            </label>
+                        );
+                    })}
                 </div>
 
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            if (trendDirection !== "off") setTrendDirection("off");
+                            setSelectedTickers([...activeWatchlist.tickers]);
+                        }}
+                        className="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1 rounded font-medium transition-colors"
+                    >
+                        Select All ({activeWatchlist.tickers.length})
+                    </button>
+                    <button
+                        onClick={() => {
+                            if (trendDirection !== "off") setTrendDirection("off");
+                            setSelectedTickers([]);
+                        }}
+                        className="text-xs bg-slate-800 hover:bg-slate-700 text-red-400 px-3 py-1 rounded font-medium transition-colors"
+                    >
+                        Deselect All
+                    </button>
+                </div>
+            </div>
+
+            {/* RRG Chart */}
+            <div>
                 {activeWatchlist.tickers.length === 0 ? (
-                    <div className="h-96 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-800 rounded-xl bg-[#161622]">
+                    <div className="h-96 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-800 rounded-xl bg-[#111118]">
                         <BookmarkCheck className="h-10 w-10 text-slate-600 mb-2" />
                         <p className="text-sm font-medium text-slate-400">Watchlist is Empty</p>
                         <p className="text-xs text-slate-500 mt-1 max-w-sm">
@@ -832,199 +876,398 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                         </p>
                     </div>
                 ) : (
-                    <RRGChart
-                        data={finalChartData}
-                        tailLength={tailLength}
-                        timeframe={timeframe}
-                    />
+                    <RRGChart data={finalChartData} tailLength={tailLength} timeframe={TIMEFRAMES[timeframe]} />
                 )}
             </div>
 
-            {/* Quadrant Summary Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {QUADRANTS.map((quadrant) => {
-                    const list = quadrantLists[quadrant];
-                    const color = QUADRANT_COLORS[quadrant];
-                    const isCopied = copiedQuadrant === quadrant;
+            {/* Constituent Stock Chips Selector Grid */}
+            {activeWatchlist.tickers.length > 0 && (
+                <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-4">
+                    <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 mb-4 pb-3 border-b border-[#1e1e2e]">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs text-slate-300 font-bold uppercase tracking-wider">
+                                Watchlist Stock Selector
+                            </span>
+                            <span className="text-xs bg-blue-500/10 text-blue-400 font-bold px-2.5 py-0.5 rounded-full border border-blue-500/20">
+                                {selectedTickers.length} of {activeWatchlist.tickers.length} selected
+                            </span>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* Quadrant Filter Buttons for Grid */}
+                            <div className="flex flex-wrap bg-[#1a1a2e] border border-slate-700/80 rounded-lg p-0.5">
+                                {(["All", "Leading", "Weakening", "Lagging", "Improving"] as const).map((q) => {
+                                    const count = q === "All" ? activeWatchlist.tickers.length : activeWatchlist.tickers.filter((t) => tickerQuadrants[t] === q).length;
+                                    const activeColor: Record<string, string> = {
+                                        All: "bg-slate-700 text-white font-semibold shadow-sm",
+                                        Leading: "bg-emerald-600/30 text-emerald-300 font-semibold border border-emerald-500/40 shadow-sm",
+                                        Weakening: "bg-yellow-600/30 text-yellow-300 font-semibold border border-yellow-500/40 shadow-sm",
+                                        Lagging: "bg-red-600/30 text-red-300 font-semibold border border-red-500/40 shadow-sm",
+                                        Improving: "bg-blue-600/30 text-blue-300 font-semibold border border-blue-500/40 shadow-sm",
+                                    };
+                                    return (
+                                        <button
+                                            key={q}
+                                            onClick={() => setGridQuadrantFilter(q)}
+                                            className={`text-[11px] px-2.5 py-1 rounded-md transition-all ${
+                                                gridQuadrantFilter === q
+                                                    ? activeColor[q]
+                                                    : "text-slate-400 hover:text-slate-200"
+                                            }`}
+                                        >
+                                            {q} ({count})
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Select All / Deselect All for grid */}
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    onClick={() => {
+                                        if (trendDirection !== "off") setTrendDirection("off");
+                                        const toAdd = new Set([...selectedTickers, ...filteredGridTickers]);
+                                        setSelectedTickers(Array.from(toAdd));
+                                    }}
+                                    className="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-lg font-medium transition-colors"
+                                >
+                                    Select All
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (trendDirection !== "off") setTrendDirection("off");
+                                        const removeSet = new Set(filteredGridTickers);
+                                        setSelectedTickers(selectedTickers.filter((t) => !removeSet.has(t)));
+                                    }}
+                                    className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-lg font-medium transition-colors"
+                                >
+                                    Deselect All
+                                </button>
+                            </div>
+
+                            {/* Search Input */}
+                            <div className="relative w-full sm:w-44">
+                                <input
+                                    type="text"
+                                    placeholder="Filter stock..."
+                                    value={chipSearchQuery}
+                                    onChange={(e) => setChipSearchQuery(e.target.value)}
+                                    className="w-full bg-[#1a1a2e] border border-slate-700 rounded-lg pl-8 pr-3 py-1 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                />
+                                <svg
+                                    className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                        {filteredGridTickers.map((ticker) => {
+                            const isSelected = selectedTickers.includes(ticker);
+                            const q = tickerQuadrants[ticker] || "Lagging";
+                            const cleanName = cleanTicker(ticker);
+
+                            const borderAccent: Record<QuadrantType, string> = {
+                                Leading: "border-emerald-500/40 hover:border-emerald-500",
+                                Weakening: "border-yellow-500/40 hover:border-yellow-500",
+                                Lagging: "border-red-500/40 hover:border-red-500",
+                                Improving: "border-blue-500/40 hover:border-blue-500",
+                            };
+
+                            const badgeAccent: Record<QuadrantType, string> = {
+                                Leading: "bg-emerald-500/20 text-emerald-300",
+                                Weakening: "bg-yellow-500/20 text-yellow-300",
+                                Lagging: "bg-red-500/20 text-red-300",
+                                Improving: "bg-blue-500/20 text-blue-300",
+                            };
+
+                            return (
+                                <button
+                                    key={ticker}
+                                    onClick={() => toggleTicker(ticker)}
+                                    className={`text-left text-xs px-3 py-2 rounded-lg border transition-all duration-150 flex items-center justify-between group ${
+                                        isSelected
+                                            ? `bg-[#1a1a2e] ${borderAccent[q] || "border-blue-500/50"} shadow-sm`
+                                            : "bg-[#111118]/60 border-slate-800 text-slate-500 hover:border-slate-700 hover:text-slate-300 opacity-60"
+                                    }`}
+                                >
+                                    <span className={`font-semibold tracking-wide truncate ${isSelected ? "text-slate-100" : "text-slate-500"}`}>
+                                        {cleanName}
+                                    </span>
+                                    {q && (
+                                        <span
+                                            className={`text-[9px] font-bold px-1.5 py-0.5 rounded ml-1 uppercase shrink-0 ${badgeAccent[q]}`}
+                                        >
+                                            {q[0]}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                        {filteredGridTickers.length === 0 && (
+                            <div className="col-span-full text-center py-6 text-xs text-slate-500">
+                                No stocks match the selected quadrant ({gridQuadrantFilter}) and search query ({chipSearchQuery || "None"}).
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Selected Stocks Listed by Quadrant Cards + Expand Modal */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {QUADRANTS.map((q) => {
+                    if (!selectedQuadrants.includes(q)) return null;
+
+                    const activeTickersInQuadrant = selectedTickers.filter((t) => tickerQuadrants[t] === q);
+                    if (activeTickersInQuadrant.length === 0) return null;
+
+                    const tabStyles: Record<string, string> = {
+                        Leading: "border-emerald-500/20 bg-emerald-500/5",
+                        Weakening: "border-yellow-500/20 bg-yellow-500/5",
+                        Lagging: "border-red-500/20 bg-red-500/5",
+                        Improving: "border-blue-500/20 bg-blue-500/5",
+                    };
+                    const textStyles: Record<string, string> = {
+                        Leading: "text-emerald-400",
+                        Weakening: "text-yellow-400",
+                        Lagging: "text-red-400",
+                        Improving: "text-blue-400",
+                    };
 
                     return (
-                        <div
-                            key={quadrant}
-                            className={`bg-[#111118] p-4 rounded-xl border transition-all ${
-                                color === "emerald"
-                                    ? "border-emerald-500/30 hover:border-emerald-500/50"
-                                    : color === "yellow"
-                                    ? "border-yellow-500/30 hover:border-yellow-500/50"
-                                    : color === "red"
-                                    ? "border-red-500/30 hover:border-red-500/50"
-                                    : "border-blue-500/30 hover:border-blue-500/50"
-                            }`}
-                        >
-                            <div className="flex items-center justify-between mb-3 pb-2 border-b border-[#1e1e2e]">
-                                <div className="flex items-center gap-2">
-                                    <span
-                                        className={`w-2.5 h-2.5 rounded-full ${
-                                            color === "emerald"
-                                                ? "bg-emerald-400"
-                                                : color === "yellow"
-                                                ? "bg-yellow-400"
-                                                : color === "red"
-                                                ? "bg-red-400"
-                                                : "bg-blue-400"
-                                        }`}
-                                    />
-                                    <h3 className="font-bold text-sm text-white">{quadrant}</h3>
-                                    <span className="text-xs text-slate-500">({list.length})</span>
-                                </div>
-
-                                {list.length > 0 && (
+                        <div key={q} className={`border rounded-lg p-3 ${tabStyles[q]}`}>
+                            <div className="flex justify-between items-center mb-2 border-b border-white/5 pb-2 gap-1">
+                                <h3 className={`text-sm font-bold flex items-center gap-2 ${textStyles[q]}`}>
+                                    {q}
+                                    <span className="text-[10px] bg-white/10 px-1.5 py-0.5 rounded text-white font-mono">
+                                        {activeTickersInQuadrant.length}
+                                    </span>
+                                </h3>
+                                <div className="flex items-center gap-1.5">
                                     <button
-                                        onClick={() => copyTickers(quadrant)}
-                                        className="p-1 text-slate-500 hover:text-slate-200 transition-colors"
-                                        title="Copy tickers to clipboard"
+                                        onClick={() => handleCopyWatchlist(q, activeTickersInQuadrant)}
+                                        className="text-[10px] text-blue-300 hover:text-white transition-colors bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 px-2 py-1 rounded flex items-center gap-1 font-semibold"
+                                        title="Copy TradingView formatted watchlist (NSE:SYMBOL1, NSE:SYMBOL2...)"
                                     >
-                                        {isCopied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                                        {copiedQuadrant === q ? "✓ Copied!" : "📋 Watchlist"}
                                     </button>
-                                )}
+                                    <button
+                                        onClick={() => setExpandedQuadrant(expandedQuadrant === q ? null : q)}
+                                        className="text-[10px] text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2 py-1 rounded flex items-center gap-1 font-semibold"
+                                    >
+                                        {expandedQuadrant === q ? "Close" : "Expand"}
+                                    </button>
+                                </div>
                             </div>
 
-                            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
-                                {list.length === 0 ? (
-                                    <p className="text-xs text-slate-500 italic py-2 text-center">No stocks in {quadrant}</p>
-                                ) : (
-                                    list.map((item) => (
-                                        <div
-                                            key={item.ticker}
-                                            className="flex items-center justify-between p-2 rounded-lg bg-[#161622] border border-slate-800/80 hover:border-slate-700 text-xs transition-colors"
-                                        >
-                                            <div className="flex items-center gap-1.5">
-                                                <a
-                                                    href={`https://www.tradingview.com/chart/?symbol=${toTVSymbol(item.ticker)}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="font-bold text-slate-200 hover:text-blue-400 flex items-center gap-1"
-                                                >
-                                                    <span>{cleanTicker(item.ticker)}</span>
-                                                    <ExternalLink className="h-2.5 w-2.5 text-slate-500" />
-                                                </a>
+                            {expandedQuadrant === q ? (
+                                // Full overlay modal view matching StockRRGClient
+                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
+                                    <div className="bg-[#111118] border border-slate-800 rounded-xl p-6 max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+                                        <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
+                                            <div className="flex items-center gap-3">
+                                                <h2 className={`text-xl font-bold ${textStyles[q]}`}>{q} Quadrant Stocks</h2>
+                                                <span className="text-xs bg-slate-800 text-slate-300 font-mono font-bold px-2.5 py-0.5 rounded-full">
+                                                    {activeTickersInQuadrant.length} stocks
+                                                </span>
                                             </div>
-                                            <div className="text-right font-mono text-[11px] text-slate-400">
-                                                <span className="text-slate-300">{item.ratio.toFixed(1)}</span>
-                                                <span className="text-slate-600 mx-1">/</span>
-                                                <span>{item.mom.toFixed(1)}</span>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleCopyWatchlist(q, activeTickersInQuadrant)}
+                                                    className="text-xs bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/40 text-blue-300 hover:text-white px-3 py-1.5 rounded-lg transition-colors font-semibold flex items-center gap-1.5"
+                                                >
+                                                    {copiedQuadrant === q ? "✓ Watchlist Copied!" : "📋 Copy Watchlist for TradingView"}
+                                                </button>
+                                                <button
+                                                    onClick={() => setExpandedQuadrant(null)}
+                                                    className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-colors"
+                                                >
+                                                    ✕ Close
+                                                </button>
                                             </div>
                                         </div>
-                                    ))
-                                )}
-                            </div>
+
+                                        <div className="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-1 custom-scrollbar">
+                                            {activeTickersInQuadrant.map((ticker) => {
+                                                const clean = cleanTicker(ticker);
+                                                const tvSym = toTVSymbol(ticker);
+                                                return (
+                                                    <a
+                                                        key={ticker}
+                                                        href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 p-3 rounded-lg transition-all group"
+                                                    >
+                                                        <div className="flex items-center justify-between">
+                                                            <p className="text-sm font-bold text-white group-hover:text-blue-400 font-mono">{clean}</p>
+                                                            <span className="text-xs text-slate-500 group-hover:text-blue-400">↗</span>
+                                                        </div>
+                                                        <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider">{q} Quadrant • Open Chart</p>
+                                                    </a>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                // Compact card list view with TradingView chart links
+                                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
+                                    {activeTickersInQuadrant.map((ticker) => {
+                                        const clean = cleanTicker(ticker);
+                                        const tvSym = toTVSymbol(ticker);
+                                        return (
+                                            <a
+                                                key={ticker}
+                                                href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title={`Open ${clean} (${tvSym}) chart on TradingView`}
+                                                className="text-xs bg-[#1a1a2e] hover:bg-[#252542] border border-slate-800 hover:border-blue-500/50 px-2 py-0.5 rounded text-slate-300 hover:text-blue-400 font-mono font-medium transition-all flex items-center gap-1 group"
+                                            >
+                                                <span>{clean}</span>
+                                                <span className="text-[9px] text-slate-500 group-hover:text-blue-400 opacity-60">↗</span>
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
             </div>
 
-            {/* Watchlist Constituent Data Table */}
-            <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <span>Watchlist Constituents Data</span>
-                        <span className="text-xs text-slate-400">({tableRows.length} stocks)</span>
-                    </h3>
-
-                    <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-500 pointer-events-none" />
-                        <input
-                            type="text"
-                            placeholder="Filter table stocks..."
-                            value={tableSearchQuery}
-                            onChange={(e) => setTableSearchQuery(e.target.value)}
-                            className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50"
-                        />
+            {/* Skipped Stocks Notice Banner */}
+            {skippedStocks && skippedStocks.length > 0 && (
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-300 rounded-lg p-3.5 text-xs flex items-start gap-2.5">
+                    <span className="text-base leading-none">ℹ️</span>
+                    <div>
+                        <span className="font-semibold text-amber-200 block mb-0.5">
+                            Notice on Recent Listings / Insufficient History:
+                        </span>
+                        <p className="text-amber-300/90 leading-relaxed">
+                            The following constituent stock(s) have fewer than 22 trading periods for the selected{" "}
+                            <strong>{TIMEFRAMES[timeframe]}</strong> timeframe and are excluded from trend rotation metrics:{" "}
+                            <span className="font-mono font-semibold text-amber-200">
+                                {skippedStocks.map(cleanTicker).join(", ")}
+                            </span>.
+                        </p>
                     </div>
                 </div>
+            )}
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs">
-                        <thead>
-                            <tr className="border-b border-[#1e1e2e] text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
-                                <th
-                                    onClick={() => {
-                                        setTableSortField("ticker");
-                                        setTableSortAsc(!tableSortAsc);
-                                    }}
-                                    className="pb-2 cursor-pointer hover:text-white"
-                                >
-                                    Stock Ticker
-                                </th>
-                                <th
-                                    onClick={() => {
-                                        setTableSortField("quadrant");
-                                        setTableSortAsc(!tableSortAsc);
-                                    }}
-                                    className="pb-2 cursor-pointer hover:text-white"
-                                >
-                                    Quadrant
-                                </th>
-                                <th
-                                    onClick={() => {
-                                        setTableSortField("ratio");
-                                        setTableSortAsc(!tableSortAsc);
-                                    }}
-                                    className="pb-2 text-right cursor-pointer hover:text-white"
-                                >
-                                    RS-Ratio
-                                </th>
-                                <th
-                                    onClick={() => {
-                                        setTableSortField("momentum");
-                                        setTableSortAsc(!tableSortAsc);
-                                    }}
-                                    className="pb-2 text-right cursor-pointer hover:text-white"
-                                >
-                                    RS-Momentum
-                                </th>
-                                <th className="pb-2 text-right">Chart</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-[#1e1e2e]">
-                            {tableRows.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="py-4 text-center text-slate-500 italic">
-                                        No constituents found matching search query
-                                    </td>
+            {/* Sortable Constituent Data Table */}
+            {tableRows.length > 0 && (
+                <div className="bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 shadow-xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
+                        <div>
+                            <h3 className="text-sm font-bold text-white tracking-wide">
+                                Watchlist Constituent Metrics (vs {activeBenchmarkTitle})
+                            </h3>
+                            <p className="text-xs text-slate-400">
+                                Latest RS-Ratio, RS-Momentum, and distance from benchmark center (100, 100)
+                            </p>
+                        </div>
+
+                        <div className="relative w-full sm:w-56">
+                            <input
+                                type="text"
+                                placeholder="Filter table stocks..."
+                                value={tableSearchQuery}
+                                onChange={(e) => setTableSearchQuery(e.target.value)}
+                                className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                            />
+                            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                            <thead>
+                                <tr className="border-b border-[#1e1e2e] text-slate-400 font-semibold bg-[#161622]">
+                                    <th
+                                        className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
+                                        onClick={() => {
+                                            if (tableSortField === "ticker") setTableSortAsc(!tableSortAsc);
+                                            else { setTableSortField("ticker"); setTableSortAsc(true); }
+                                        }}
+                                    >
+                                        Stock Ticker {tableSortField === "ticker" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                    </th>
+                                    <th
+                                        className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
+                                        onClick={() => {
+                                            if (tableSortField === "quadrant") setTableSortAsc(!tableSortAsc);
+                                            else { setTableSortField("quadrant"); setTableSortAsc(true); }
+                                        }}
+                                    >
+                                        Quadrant {tableSortField === "quadrant" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                    </th>
+                                    <th
+                                        className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
+                                        onClick={() => {
+                                            if (tableSortField === "ratio") setTableSortAsc(!tableSortAsc);
+                                            else { setTableSortField("ratio"); setTableSortAsc(false); }
+                                        }}
+                                    >
+                                        RS-Ratio {tableSortField === "ratio" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                    </th>
+                                    <th
+                                        className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
+                                        onClick={() => {
+                                            if (tableSortField === "momentum") setTableSortAsc(!tableSortAsc);
+                                            else { setTableSortField("momentum"); setTableSortAsc(false); }
+                                        }}
+                                    >
+                                        RS-Momentum {tableSortField === "momentum" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                    </th>
+                                    <th className="py-2.5 px-3 text-right">Dist. from Center</th>
+                                    <th className="py-2.5 px-3 text-center">Chart Link</th>
                                 </tr>
-                            ) : (
-                                tableRows.map((row) => {
-                                    const quadColor = QUADRANT_COLORS[row.quadrant as QuadrantType];
+                            </thead>
+                            <tbody className="divide-y divide-[#1e1e2e]/60">
+                                {tableRows.map((row) => {
+                                    const badgeStyles: Record<string, string> = {
+                                        Leading: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+                                        Weakening: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+                                        Lagging: "bg-red-500/20 text-red-300 border-red-500/40",
+                                        Improving: "bg-blue-500/20 text-blue-300 border-blue-500/40",
+                                    };
+                                    const tvSym = toTVSymbol(row.ticker);
+
                                     return (
-                                        <tr key={row.ticker} className="hover:bg-[#161622] transition-colors">
-                                            <td className="py-2.5 font-bold text-white">{row.clean}</td>
-                                            <td className="py-2.5">
-                                                <span
-                                                    className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                                                        quadColor === "emerald"
-                                                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                                            : quadColor === "yellow"
-                                                            ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                                                            : quadColor === "red"
-                                                            ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                                                            : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
-                                                    }`}
-                                                >
+                                        <tr key={row.ticker} className="hover:bg-[#1a1a2e]/60 transition-colors">
+                                            <td className="py-2 px-3 font-semibold text-white font-mono">{row.clean}</td>
+                                            <td className="py-2 px-3">
+                                                <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${badgeStyles[row.quadrant]}`}>
                                                     {row.quadrant}
                                                 </span>
                                             </td>
-                                            <td className="py-2.5 text-right font-mono font-medium text-slate-200">
+                                            <td className={`py-2 px-3 text-right font-mono font-semibold ${row.ratio >= 100 ? "text-emerald-400" : "text-red-400"}`}>
                                                 {row.ratio.toFixed(2)}
                                             </td>
-                                            <td className="py-2.5 text-right font-mono font-medium text-slate-200">
+                                            <td className={`py-2 px-3 text-right font-mono font-semibold ${row.momentum >= 100 ? "text-emerald-400" : "text-red-400"}`}>
                                                 {row.momentum.toFixed(2)}
                                             </td>
-                                            <td className="py-2.5 text-right">
+                                            <td className="py-2 px-3 text-right font-mono text-slate-400">
+                                                {row.distance.toFixed(2)}
+                                            </td>
+                                            <td className="py-2 px-3 text-center">
                                                 <a
-                                                    href={`https://www.tradingview.com/chart/?symbol=${toTVSymbol(row.ticker)}`}
+                                                    href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 font-medium"
+                                                    className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium"
                                                 >
                                                     <span>View</span>
                                                     <ExternalLink className="h-3 w-3" />
@@ -1032,12 +1275,12 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                             </td>
                                         </tr>
                                     );
-                                })
-                            )}
-                        </tbody>
-                    </table>
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

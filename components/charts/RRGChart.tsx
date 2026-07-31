@@ -170,16 +170,39 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
             });
 
             // Determine if label should be visible based on hoverOnlyLabels & hover
-            const shouldShowLabel = isHovered || (!isHoverActive && !hoverOnlyLabels);
+            const shouldShowLabel = hoverOnlyLabels ? isHovered : true;
 
-            // 2. Draw Head marker + text label (hoverinfo set to "none" to eliminate cursor hover box)
+            // 2. Draw Head marker + text label
+            // Use per-element HSLA colors for dimming instead of trace-level opacity,
+            // because Plotly's trace opacity flattens text to invisible on dark backgrounds.
+            const isNonHoveredDimmed = isHoverActive && !isHovered;
+
+            let headTraceOpacity = 1.0;
+            let headMkrColor: string = baseColor;
+            let headTxtColor: string = baseColor;
+            let headTxtSize = 11;
+
+            if (isHovered) {
+                headTxtColor = "#ffffff";
+                headTxtSize = 13;
+            } else if (isNonHoveredDimmed) {
+                if (hoverOnlyLabels) {
+                    // Focus mode: label hidden via shouldShowLabel, dim marker heavily
+                    headTraceOpacity = 0.25;
+                } else {
+                    // Default mode: dim marker and text via alpha but keep text readable
+                    headMkrColor = `hsla(${hue}, 85%, 62%, 0.35)`;
+                    headTxtColor = `hsla(${hue}, 80%, 75%, 0.7)`;
+                }
+            }
+
             traces.push({
                 x: [head.RS_Ratio],
                 y: [head.RS_Momentum],
                 mode: shouldShowLabel ? "markers+text" : "markers",
                 text: shouldShowLabel ? [cleanName] : undefined,
                 textposition: [textPos],
-                opacity: isHoverActive && !isHovered ? 0.25 : 1.0,
+                opacity: headTraceOpacity,
                 customdata: [{
                     ticker,
                     date: head.Date.split("T")[0],
@@ -189,12 +212,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                 marker: {
                     symbol: "circle",
                     size: headMarkerSize,
-                    color: baseColor,
+                    color: headMkrColor,
                     line: { width: headLineWidth, color: headLineColor },
                 },
                 textfont: {
-                    color: isHovered ? "#ffffff" : baseColor,
-                    size: isHovered ? 13 : 11,
+                    color: headTxtColor,
+                    size: headTxtSize,
                     weight: "bold",
                 },
                 hoverinfo: "none",

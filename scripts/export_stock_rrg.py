@@ -118,13 +118,13 @@ def main():
     df_pivot_daily.index = pd.to_datetime(df_pivot_daily.index)
     print(f"Pivoted stock price history matrix: {df_pivot_daily.shape[0]} dates x {df_pivot_daily.shape[1]} stocks.", flush=True)
 
-    # Adjust unadjusted corporate action price drops (> 55% single-day drop)
-    print("Adjusting unadjusted corporate action price drops (> 55% single-day drop)...", flush=True)
+    # Adjust unadjusted corporate action price drops (> 45% single-day drop, e.g. 2:1, 3:1, 5:1, 6:1 splits & 1:1 bonuses)
+    print("Adjusting unadjusted corporate action price drops (> 45% single-day drop)...", flush=True)
     for col in df_pivot_daily.columns:
         ser = df_pivot_daily[col].dropna()
         if len(ser) > 2:
             pct = ser.pct_change()
-            split_dates = pct[pct < -0.55].index
+            split_dates = pct[pct < -0.45].index
             if len(split_dates) > 0:
                 s_copy = df_pivot_daily[col].copy()
                 for d in split_dates:

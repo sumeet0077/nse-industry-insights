@@ -6,6 +6,12 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.0.5] - 2026-07-31
+### Improved
+- **Corporate Action Split Threshold**: Refined split drop detection threshold to **45%** (`pct < -0.45`), expanding automatic backward adjustment to cover 2:1 stock splits and 1:1 bonus issues alongside 3:1, 5:1, 6:1, and 10:1 splits.
+
+---
+
 ## [1.0.4] - 2026-07-31
 ### Added
 - **Live Version Badge**: Added live version and git commit tracking badge (`v1.0.4 (commit)`) to top Data Freshness Header for instant verification of live deployments and rollbacks.

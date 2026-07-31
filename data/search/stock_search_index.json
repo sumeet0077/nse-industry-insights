@@ -512,6 +512,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
     }
   ],
   "AEGISVOPAK": [
@@ -1948,6 +1953,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
     }
   ],
   "BLUEJET": [
@@ -3325,6 +3335,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
     }
   ],
   "DEN": [
@@ -9573,6 +9588,13 @@
       "category": "industries"
     }
   ],
+  "PSPPROJECT": [
+    {
+      "id": "breadth_theme_infrastructure_and_epc",
+      "title": "Infrastructure & EPC",
+      "category": "industries"
+    }
+  ],
   "PTCIL": [
     {
       "id": "market_breadth_nifty500",
@@ -10615,6 +10637,13 @@
       "category": "industries"
     }
   ],
+  "SNOWMAN": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
   "SOBHA": [
     {
       "id": "market_breadth_nifty500",
@@ -11297,6 +11326,20 @@
       "category": "industries"
     }
   ],
+  "TCI": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
+  "TCIEXP": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
   "TCPLPACK": [
     {
       "id": "breadth_theme_packaging_solutions",
@@ -11901,6 +11944,13 @@
       "category": "industries"
     }
   ],
+  "TVSSCS": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
+      "category": "industries"
+    }
+  ],
   "TVSSRICHAK": [
     {
       "id": "breadth_theme_tyres_and_rubber_products",
@@ -12358,6 +12408,13 @@
     {
       "id": "breadth_theme_white_goods_and_durables",
       "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
+  "VRLLOG": [
+    {
+      "id": "breadth_theme_logistics",
+      "title": "Logistics",
       "category": "industries"
     }
   ],

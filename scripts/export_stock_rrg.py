@@ -130,7 +130,43 @@ def main():
 
     # Discover all breadth CSV files
     csv_files = sorted(glob.glob(str(source_dir / "market_breadth_*.csv")) + glob.glob(str(source_dir / "breadth_*.csv")))
-    print(f"Vectorized stock RRG processing for {len(csv_files)} benchmark CSV files...", flush=True)
+    # Parse config.ts for id -> title lookup
+    import re
+    id_to_title = {}
+    config_path = output_dir.parent / "lib" / "config.ts"
+    if config_path.exists():
+        content = config_path.read_text()
+        for match in re.finditer(r'id:\s*"([^"]+)",\s*title:\s*"([^"]+)"', content):
+            id_to_title[match.group(1)] = match.group(2)
+
+    ms_by_norm_key = {}
+    for k, v in market_status.items():
+        norm_key = re.sub(r"[^a-z0-9]", "", k.lower())
+        ms_by_norm_key[norm_key] = v
+
+    benchmark_constituents_map = {}
+    for csv_path in csv_files:
+        dataFile = os.path.basename(csv_path).replace(".csv", "")
+        title = id_to_title.get(dataFile, "")
+        
+        found_val = None
+        if title:
+            norm_title = re.sub(r"[^a-z0-9]", "", title.lower())
+            found_val = ms_by_norm_key.get(norm_title)
+            
+        if not found_val:
+            clean_dataFile = dataFile.replace("market_breadth_", "").replace("breadth_theme_", "").replace("breadth_", "")
+            norm_dataFile = re.sub(r"[^a-z0-9]", "", clean_dataFile)
+            found_val = ms_by_norm_key.get(norm_dataFile)
+
+        if not found_val and dataFile == "breadth_oilgas":
+            found_val = market_status.get("NIFTY OIL & GAS")
+
+        if found_val and isinstance(found_val, dict):
+            c_set = set(found_val.get("above", []) + found_val.get("below", []) + found_val.get("new_stock", []))
+            benchmark_constituents_map[dataFile] = sorted(list(c_set))
+        else:
+            benchmark_constituents_map[dataFile] = []
 
     success_count = 0
 
@@ -150,7 +186,11 @@ def main():
                 "M": resample_pivot(bench_pivot_d.to_frame(), "M")["Index_Close"],
             }
 
-            payload = {"D": [], "W": [], "M": [], "skipped": {"D": [], "W": [], "M": []}}
+            payload = {
+                "constituents": benchmark_constituents_map.get(dataFile, []),
+                "D": [], "W": [], "M": [],
+                "skipped": {"D": [], "W": [], "M": []}
+            }
 
             for tf in ["D", "W", "M"]:
                 records = compute_rrg_matrix(stock_matrices[tf], bench_pivots[tf])

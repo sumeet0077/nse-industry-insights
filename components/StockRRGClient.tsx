@@ -39,10 +39,30 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [trendMetric, setTrendMetric] = useState<TrendMetricType>("momentum");
     const [trendLookback, setTrendLookback] = useState(5);
 
+    // Build normalized set of constituent tickers for this specific index/theme
+    const constituentSet = useMemo(() => {
+        if (!stockRRGData || !stockRRGData.constituents || stockRRGData.constituents.length === 0) return null;
+        const set = new Set<string>();
+        for (const s of stockRRGData.constituents) {
+            const upper = s.toUpperCase();
+            const clean = cleanTicker(s).toUpperCase();
+            set.add(upper);
+            set.add(clean);
+            if (!upper.endsWith(".NS")) set.add(`${upper}.NS`);
+        }
+        return set;
+    }, [stockRRGData]);
+
     const rawData: RRGDataPoint[] = useMemo(() => {
         if (!stockRRGData) return [];
-        return stockRRGData[timeframe] || [];
-    }, [stockRRGData, timeframe]);
+        const allPoints = stockRRGData[timeframe] || [];
+        if (!constituentSet || constituentSet.size === 0) return allPoints;
+        return allPoints.filter((pt) => {
+            const ptUpper = pt.Ticker.toUpperCase();
+            const ptClean = cleanTicker(pt.Ticker).toUpperCase();
+            return constituentSet.has(ptUpper) || constituentSet.has(ptClean);
+        });
+    }, [stockRRGData, timeframe, constituentSet]);
 
     const skippedStocks: string[] = useMemo(() => {
         if (!stockRRGData || !stockRRGData.skipped) return [];

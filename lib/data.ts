@@ -141,6 +141,7 @@ export function getStockSearchIndex(): StockSearchIndex {
 }
 
 export interface StockRRGPayload {
+    constituents?: string[];
     D: RRGDataPoint[];
     W: RRGDataPoint[];
     M: RRGDataPoint[];

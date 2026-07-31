@@ -104,10 +104,26 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return Array.from(set).sort();
     }, [stockSearchIndex]);
 
+    // Dynamic client-side fetch cache for benchmark stock RRG JSON payloads
+    const [dynamicRRGMap, setDynamicRRGMap] = useState<Record<string, StockRRGPayload | null>>(allStockRRGMap);
+
+    useEffect(() => {
+        if (!dynamicRRGMap[benchmarkId]) {
+            fetch(`/data/stock_rrg/${benchmarkId}.json`)
+                .then((res) => (res.ok ? res.json() : null))
+                .then((data: StockRRGPayload | null) => {
+                    if (data) {
+                        setDynamicRRGMap((prev) => ({ ...prev, [benchmarkId]: data }));
+                    }
+                })
+                .catch(() => {});
+        }
+    }, [benchmarkId, dynamicRRGMap]);
+
     // Active stock RRG payload for the selected benchmark
     const activeBenchmarkPayload = useMemo(() => {
-        return allStockRRGMap[benchmarkId] || null;
-    }, [allStockRRGMap, benchmarkId]);
+        return dynamicRRGMap[benchmarkId] || allStockRRGMap[benchmarkId] || null;
+    }, [dynamicRRGMap, allStockRRGMap, benchmarkId]);
 
     // Raw RRG points for selected benchmark & timeframe
     const benchmarkRawData: RRGDataPoint[] = useMemo(() => {

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getStockSearchIndex, getStockRRGData, StockRRGPayload } from "@/lib/data";
-import { BROAD_MARKET, SECTORS } from "@/lib/config";
 import { CustomWatchlistRRGClient } from "@/components/CustomWatchlistRRGClient";
 
 export const metadata: Metadata = {
@@ -11,19 +10,17 @@ export const metadata: Metadata = {
 export default function CustomWatchlistPage() {
     const stockSearchIndex = getStockSearchIndex();
 
-    // Load pre-computed stock RRG payloads for Broad Market and Sectoral Benchmarks
-    const allStockRRGMap: Record<string, StockRRGPayload | null> = {};
+    // Preload ONLY default benchmark (Nifty 50) on server to keep static RSC payload light (< 2 MB)
+    const initialBenchmarkPayload = getStockRRGData("market_breadth_nifty50");
 
-    const benchmarksToPreload = [...BROAD_MARKET, ...SECTORS];
-
-    for (const b of benchmarksToPreload) {
-        allStockRRGMap[b.dataFile] = getStockRRGData(b.dataFile);
-    }
+    const initialStockRRGMap: Record<string, StockRRGPayload | null> = {
+        market_breadth_nifty50: initialBenchmarkPayload,
+    };
 
     return (
         <CustomWatchlistRRGClient
             stockSearchIndex={stockSearchIndex}
-            allStockRRGMap={allStockRRGMap}
+            allStockRRGMap={initialStockRRGMap}
         />
     );
 }

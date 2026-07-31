@@ -118,6 +118,27 @@ def main():
     df_pivot_daily.index = pd.to_datetime(df_pivot_daily.index)
     print(f"Pivoted stock price history matrix: {df_pivot_daily.shape[0]} dates x {df_pivot_daily.shape[1]} stocks.", flush=True)
 
+    # Adjust unadjusted corporate action price drops (> 55% single-day drop)
+    print("Adjusting unadjusted corporate action price drops (> 55% single-day drop)...", flush=True)
+    for col in df_pivot_daily.columns:
+        ser = df_pivot_daily[col].dropna()
+        if len(ser) > 2:
+            pct = ser.pct_change()
+            split_dates = pct[pct < -0.55].index
+            if len(split_dates) > 0:
+                s_copy = df_pivot_daily[col].copy()
+                for d in split_dates:
+                    idx = s_copy.index.get_loc(d)
+                    if idx > 0:
+                        prev_val = s_copy.iloc[idx - 1]
+                        curr_val = s_copy.iloc[idx]
+                        if pd.notna(prev_val) and pd.notna(curr_val) and curr_val > 0:
+                            ratio_val = float(prev_val) / float(curr_val)
+                            factor = round(ratio_val)
+                            if factor >= 2:
+                                s_copy.iloc[:idx] = s_copy.iloc[:idx] / factor
+                df_pivot_daily[col] = s_copy
+
     # Pre-resample stock matrix for W and M
     df_pivot_weekly = resample_pivot(df_pivot_daily, "W")
     df_pivot_monthly = resample_pivot(df_pivot_daily, "M")

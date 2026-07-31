@@ -38,6 +38,28 @@ export function getLatestDataDate(): string | null {
     return data[data.length - 1].Date;
 }
 
+export interface AppVersionInfo {
+    version: string;
+    commitHash: string;
+    timestamp: string;
+    displayVersion: string;
+}
+
+export function getAppVersionInfo(): AppVersionInfo {
+    try {
+        const fullPath = path.join(process.cwd(), "lib", "version.json");
+        const raw = fs.readFileSync(fullPath, "utf-8");
+        return JSON.parse(raw) as AppVersionInfo;
+    } catch {
+        return {
+            version: "1.0.4",
+            commitHash: "main",
+            timestamp: "",
+            displayVersion: "v1.0.4 (main)",
+        };
+    }
+}
+
 export function getPerformanceSummary(): PerformanceRow[] {
     return readJson<PerformanceRow[]>("performance/performance_summary.json") ?? [];
 }

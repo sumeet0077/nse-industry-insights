@@ -1,11 +1,12 @@
 // components/layout/DataFreshnessBanner.tsx
 // Shows the latest data date at the top of the dashboard for quick verification
 
-import { getLatestDataDate } from "@/lib/data";
+import { getLatestDataDate, getAppVersionInfo } from "@/lib/data";
 
 export function DataFreshnessBanner() {
     // This acts as the global Source of Truth (from Nifty 500)
     const latestDate = getLatestDataDate();
+    const versionInfo = getAppVersionInfo();
 
     if (!latestDate) return null;
 
@@ -28,22 +29,35 @@ export function DataFreshnessBanner() {
 
     return (
         <div
-            className={`flex items-center justify-center gap-2 px-4 py-1.5 text-xs font-medium tracking-wide border-b ${isStale
+            className={`flex items-center justify-between px-4 py-1.5 text-xs font-medium tracking-wide border-b ${isStale
                     ? "bg-amber-500/8 border-amber-500/20 text-amber-400"
                     : "bg-emerald-500/8 border-emerald-500/15 text-emerald-400"
                 }`}
         >
-            <span
-                className={`inline-block w-1.5 h-1.5 rounded-full ${isStale ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
-                    }`}
-            />
-            <span className="text-slate-400">Data completely synced. Market Date:</span>
-            <span className="font-semibold">{formatted}</span>
-            {isStale && (
-                <span className="text-amber-500/70 ml-1">
-                    ({diffDays}d ago — waiting for market updates to finish)
+            <div className="flex items-center gap-2 mx-auto sm:mx-0">
+                <span
+                    className={`inline-block w-1.5 h-1.5 rounded-full ${isStale ? "bg-amber-400 animate-pulse" : "bg-emerald-400"
+                        }`}
+                />
+                <span className="text-slate-400">Data completely synced. Market Date:</span>
+                <span className="font-semibold">{formatted}</span>
+                {isStale && (
+                    <span className="text-amber-500/70 ml-1">
+                        ({diffDays}d ago — waiting for market updates to finish)
+                    </span>
+                )}
+            </div>
+
+            {/* Live Build Version & Commit Tracking Badge */}
+            <div className="hidden sm:flex items-center gap-1.5 text-[11px]">
+                <span className="text-slate-500">Version:</span>
+                <span
+                    title={`Version: ${versionInfo.version} | Commit: ${versionInfo.commitHash} | Built: ${versionInfo.timestamp}`}
+                    className="font-mono bg-slate-800/80 border border-slate-700/80 text-blue-400 px-2 py-0.5 rounded font-semibold transition-colors hover:bg-slate-800 hover:text-blue-300"
+                >
+                    {versionInfo.displayVersion}
                 </span>
-            )}
+            </div>
         </div>
     );
 }

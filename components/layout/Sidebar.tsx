@@ -28,6 +28,7 @@ const STATIC_GROUPS = [
         items: [
             { label: "Performance", href: "/performance" },
             { label: "Sector Rotation", href: "/sector-rotation" },
+            { label: "Custom Watchlist", href: "/watchlist" },
             { label: "Theme Overview", href: "/theme-overview" },
             { label: "Stocks Master", href: "/stocks-master" },
         ],

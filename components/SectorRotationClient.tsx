@@ -281,18 +281,27 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
 
     return (
         <div ref={contentRef}>
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div className="flex flex-col">
                     <h1 className="text-xl font-bold text-white mb-1">Relative Rotation Graph (RRG)</h1>
                     <p className="text-sm text-slate-400 font-medium">
                         Cycle analysis of themes vs Broad Market Indices
                     </p>
                 </div>
-                <CaptureScreenshot 
-                    targetRef={contentRef}
-                    filename="Sector_Rotation_RRG"
-                    label="Capture RRG"
-                />
+                <div className="flex items-center gap-2">
+                    <Link
+                        href="/watchlist"
+                        className="px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                    >
+                        <span>Custom Stock Watchlist</span>
+                        <span>→</span>
+                    </Link>
+                    <CaptureScreenshot 
+                        targetRef={contentRef}
+                        filename="Sector_Rotation_RRG"
+                        label="Capture RRG"
+                    />
+                </div>
             </div>
 
             {/* Category Filters */}

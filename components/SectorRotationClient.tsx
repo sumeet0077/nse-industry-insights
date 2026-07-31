@@ -608,7 +608,12 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                 </div>
             </div>
 
-            <RRGChart data={filteredData} tailLength={tailLength} timeframe={timeframeLabel} />
+            <RRGChart
+                data={filteredData}
+                tailLength={tailLength}
+                timeframe={timeframeLabel}
+                benchmarkName={BROAD_MARKET.find((bm) => bm.id === benchmarkId)?.title || "Nifty 50"}
+            />
 
             {/* Selected Indices Listed by Quadrant Below Graph */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

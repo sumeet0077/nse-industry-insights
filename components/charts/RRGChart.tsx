@@ -24,9 +24,10 @@ interface RRGChartProps {
     data: RRGDataPoint[];
     tailLength: number;
     timeframe: string;
+    benchmarkName?: string;
 }
 
-export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
+export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChartProps) {
     const [hoverOnlyLabels, setHoverOnlyLabels] = useState(false);
     const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
     const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
@@ -342,7 +343,12 @@ export function RRGChart({ data, tailLength, timeframe }: RRGChartProps) {
                     setHoveredPointIndex(null);
                 }}
                 layout={{
-                    title: { text: `Sector Rotation - ${timeframe}`, font: { size: 14 } },
+                    title: {
+                        text: benchmarkName
+                            ? `Sector Rotation - ${timeframe} (Vs. ${benchmarkName})`
+                            : `Sector Rotation - ${timeframe}`,
+                        font: { size: 14 }
+                    },
                     paper_bgcolor: "transparent",
                     plot_bgcolor: "transparent",
                     font: { color: "#94a3b8", family: "Inter, sans-serif" },

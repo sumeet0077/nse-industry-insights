@@ -427,7 +427,12 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
             {/* RRG Chart */}
             <div className="mb-6">
-                <RRGChart data={filteredData} tailLength={tailLength} timeframe={TIMEFRAMES[timeframe]} />
+                <RRGChart
+                    data={filteredData}
+                    tailLength={tailLength}
+                    timeframe={TIMEFRAMES[timeframe]}
+                    benchmarkName={title}
+                />
             </div>
 
             {/* Premium Constituent Stock Chips Selector Grid with Quadrant Filter & Select/Deselect All */}

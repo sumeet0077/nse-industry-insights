@@ -892,7 +892,16 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                         </p>
                     </div>
                 ) : (
-                    <RRGChart data={finalChartData} tailLength={tailLength} timeframe={TIMEFRAMES[timeframe]} />
+                    <RRGChart
+                        data={finalChartData}
+                        tailLength={tailLength}
+                        timeframe={TIMEFRAMES[timeframe]}
+                        benchmarkName={
+                            [...BROAD_MARKET, ...SECTORS].find(
+                                (b) => b.dataFile === benchmarkId || b.id === benchmarkId
+                            )?.title || benchmarkId
+                        }
+                    />
                 )}
             </div>
 

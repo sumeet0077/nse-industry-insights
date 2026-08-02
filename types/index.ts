@@ -18,6 +18,7 @@ export interface PerformanceRow {
     "1 Month"?: number | null;
     "3 Months"?: number | null;
     "6 Months"?: number | null;
+    "YTD"?: number | null;
     "1 Year"?: number | null;
     "3 Years"?: number | null;
     "5 Years"?: number | null;
@@ -34,6 +35,7 @@ export interface ConstituentPerformance {
     "1M"?: number | null;
     "3M"?: number | null;
     "6M"?: number | null;
+    "YTD"?: number | null;
     "1Y"?: number | null;
     "3Y"?: number | null;
     "5Y"?: number | null;

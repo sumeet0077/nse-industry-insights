@@ -6,6 +6,13 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.0.6] - 2026-08-02
+### Added
+- **YTD Return Filter & Sorting in Theme Overview**: Added **YTD (Year-To-Date)** option to the time range selector (`1W`, `1M`, `3M`, `6M`, `YTD`, `1Y`, `3Y`, `5Y`, `ALL`) in the **Theme Overview** tab (`ThemeOverviewGrid.tsx`).
+- **YTD Metric Across Dashboard**: Integrated YTD performance calculations into `performance_summary.json`, `METRIC_CONFIG` (`lib/config.ts`), Performance Heatmap tables, and Constituent performance tables.
+
+---
+
 ## [1.0.5] - 2026-07-31
 ### Improved
 - **Corporate Action Split Threshold**: Refined split drop detection threshold to **45%** (`pct < -0.45`), expanding automatic backward adjustment to cover 2:1 stock splits and 1:1 bonus issues alongside 3:1, 5:1, 6:1, and 10:1 splits.

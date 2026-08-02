@@ -59,6 +59,7 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
         "1 Month": 30,
         "3 Months": 90,
         "6 Months": 180,
+        "YTD": None,
         "1 Year": 365,
         "3 Years": 365*3,
         "5 Years": 365*5
@@ -117,7 +118,10 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
             row = {"Theme/Index": title}
             
             for p_name, days in periods.items():
-                target_date = current_date - timedelta(days=days)
+                if p_name == "YTD":
+                    target_date = pd.Timestamp(year=current_date.year - 1, month=12, day=31)
+                else:
+                    target_date = current_date - timedelta(days=days)
                 mask = df['Date'] <= target_date
                 if mask.any():
                     past_row = df[mask].iloc[-1]

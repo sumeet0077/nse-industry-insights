@@ -28,6 +28,7 @@ export const METRIC_CONFIG: MetricOption[] = [
     { label: "1 Month", value: "1 Month", stockValue: "1M" },
     { label: "3 Months", value: "3 Months", stockValue: "3M" },
     { label: "6 Months", value: "6 Months", stockValue: "6M" },
+    { label: "YTD", value: "YTD", stockValue: "YTD" },
     { label: "1 Year", value: "1 Year", stockValue: "1Y" },
     { label: "3 Years", value: "3 Years", stockValue: "3Y" },
     { label: "5 Years", value: "5 Years", stockValue: "5Y" },

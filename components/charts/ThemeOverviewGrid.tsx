@@ -9,13 +9,14 @@ import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
 import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ, TrendingUp, TrendingDown, Calendar, Search, X, Check } from "lucide-react";
 
-type TimeRange = "1W" | "1M" | "3M" | "6M" | "1Y" | "3Y" | "5Y" | "ALL";
+type TimeRange = "1W" | "1M" | "3M" | "6M" | "YTD" | "1Y" | "3Y" | "5Y" | "ALL";
 
 const PERFORMANCE_MAPPING: Record<TimeRange, keyof PerformanceRow | null> = {
     "1W": "1 Week",
     "1M": "1 Month",
     "3M": "3 Months",
     "6M": "6 Months",
+    YTD: "YTD",
     "1Y": "1 Year",
     "3Y": "3 Years",
     "5Y": "5 Years",
@@ -27,6 +28,7 @@ const CALENDAR_DAYS: Record<TimeRange, number> = {
     "1M": 30,
     "3M": 90,
     "6M": 180,
+    YTD: 365,
     "1Y": 365,
     "3Y": 365 * 3,
     "5Y": 365 * 5,
@@ -97,9 +99,17 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
         return filtered
             .map((theme) => {
                 let trimmed = theme.data;
-                if (timeRange !== "ALL" && theme.data.length > 0) {
+                if (timeRange === "YTD" && theme.data.length > 0) {
                     const latestDateStr = theme.data[theme.data.length - 1].Date;
-                    const latestDate = new Date(latestDateStr);
+                    const latestYear = new Date(latestDateStr + "T00:00:00").getFullYear();
+                    const targetDateStr = `${latestYear - 1}-12-31`;
+                    const startIndex = theme.data.findIndex((d) => d.Date >= targetDateStr);
+                    if (startIndex !== -1) {
+                        trimmed = theme.data.slice(startIndex);
+                    }
+                } else if (timeRange !== "ALL" && theme.data.length > 0) {
+                    const latestDateStr = theme.data[theme.data.length - 1].Date;
+                    const latestDate = new Date(latestDateStr + "T00:00:00");
                     latestDate.setDate(latestDate.getDate() - maxDays);
                     const targetDateStr = latestDate.toISOString().split("T")[0];
                     
@@ -266,7 +276,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                     {/* Time Range Selector */}
                     <div className="flex items-center gap-0.5 bg-[#111118] border border-[#1e1e2e] rounded-lg p-0.5 overflow-x-auto max-w-[280px] sm:max-w-none no-scrollbar">
                         <Calendar className="h-3 w-3 text-slate-500 ml-1.5 mr-0.5 shrink-0" />
-                        {(["1W", "1M", "3M", "6M", "1Y", "3Y", "5Y", "ALL"] as TimeRange[]).map((range) => (
+                        {(["1W", "1M", "3M", "6M", "YTD", "1Y", "3Y", "5Y", "ALL"] as TimeRange[]).map((range) => (
                             <button
                                 key={range}
                                 onClick={() => setTimeRange(range)}

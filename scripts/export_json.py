@@ -315,6 +315,168 @@ def export_json_file(output_dir: Path, source_dir: Path, src_name: str, dest_sub
         return False
 
 
+def export_constituent_performance(output_dir: Path, source_dir: Path):
+    """Calculate constituent performance directly from master NSE Bhavcopy parquet file with corporate action ratio adjustments."""
+    perf_dir = output_dir / "constituent_performance"
+    perf_dir.mkdir(parents=True, exist_ok=True)
+    out_file = perf_dir / "constituent_performance_latest.json"
+
+    parquet_paths = [
+        source_dir / "nse_master_adjusted_2014_onwards.parquet",
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_bhav_with_delivery_2014_onwards.parquet"),
+    ]
+    parquet_file = next((p for p in parquet_paths if p.exists()), None)
+
+    if not parquet_file:
+        print("  WARN Parquet file not found. Falling back to source JSON.")
+        export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")
+        return
+
+    print("  Calculating Constituent Performance from Parquet Bhavcopy...")
+    try:
+        try:
+            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"])
+        except Exception:
+            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "adj_close"])
+            df_master = df_master.rename(columns={"adj_close": "close"})
+
+        df_master["symbol_ns"] = df_master["symbol"].astype(str).apply(lambda s: s if s.endswith(".NS") else f"{s}.NS")
+        df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"])
+        df_pivot = df_master.pivot(index="trade_date", columns="symbol_ns", values="close").sort_index()
+        df_pivot.index = pd.to_datetime(df_pivot.index)
+
+        # Apply corporate action split/bonus ratio adjustments (pct < -0.45 and pct > +0.80)
+        for col in df_pivot.columns:
+            ser = df_pivot[col].dropna()
+            if len(ser) > 2:
+                pct = ser.pct_change()
+                # 1. Splits / Bonuses (price drop > 45%)
+                split_dates = pct[pct < -0.45].index
+                if len(split_dates) > 0:
+                    s_copy = df_pivot[col].copy()
+                    for d in split_dates:
+                        idx = s_copy.index.get_loc(d)
+                        if idx > 0:
+                            prev_raw = s_copy.iloc[idx - 1]
+                            curr_raw = s_copy.iloc[idx]
+                            if pd.notna(prev_raw) and pd.notna(curr_raw):
+                                prev_val = float(prev_raw)
+                                curr_val = float(curr_raw)
+                                if curr_val > 0:
+                                    factor = round(prev_val / curr_val)
+                                    if factor >= 2:
+                                        s_copy.iloc[:idx] = s_copy.iloc[:idx] / factor
+                    df_pivot[col] = s_copy
+
+                # 2. Reverse Splits (price surge > 80%)
+                rev_dates = pct[pct > 0.80].index
+                if len(rev_dates) > 0:
+                    s_copy = df_pivot[col].copy()
+                    for d in rev_dates:
+                        idx = s_copy.index.get_loc(d)
+                        if idx > 0:
+                            prev_raw = s_copy.iloc[idx - 1]
+                            curr_raw = s_copy.iloc[idx]
+                            if pd.notna(prev_raw) and pd.notna(curr_raw):
+                                prev_val = float(prev_raw)
+                                curr_val = float(curr_raw)
+                                if prev_val > 0:
+                                    factor = round(curr_val / prev_val)
+                                    if factor >= 2:
+                                        s_copy.iloc[:idx] = s_copy.iloc[:idx] * factor
+                    df_pivot[col] = s_copy
+
+        # Load Nifty 50 for Relative Strength calculations
+        nifty_file = source_dir / "market_breadth_nifty50.csv"
+        nifty_ser = None
+        if nifty_file.exists():
+            try:
+                b_df = pd.read_csv(nifty_file)
+                if not b_df.empty and 'Index_Close' in b_df.columns:
+                    b_df['Date'] = pd.to_datetime(b_df['Date'])
+                    nifty_ser = b_df.set_index('Date')['Index_Close'].dropna()
+            except Exception:
+                pass
+
+        nifty_latest = float(nifty_ser.iloc[-1]) if nifty_ser is not None and len(nifty_ser) >= 1 else 0
+        nifty_5d = float(nifty_ser.iloc[-6]) if nifty_ser is not None and len(nifty_ser) >= 6 else 0
+        nifty_10d = float(nifty_ser.iloc[-11]) if nifty_ser is not None and len(nifty_ser) >= 11 else 0
+        nifty_20d = float(nifty_ser.iloc[-21]) if nifty_ser is not None and len(nifty_ser) >= 21 else 0
+        nifty_50d = float(nifty_ser.iloc[-51]) if nifty_ser is not None and len(nifty_ser) >= 51 else 0
+
+        latest_date = df_pivot.index[-1]
+        periods = {
+            "1D": 1,
+            "1W": 7,
+            "1M": 30,
+            "3M": 90,
+            "6M": 180,
+            "YTD": None,
+            "1Y": 365,
+            "3Y": 365 * 3,
+            "5Y": 365 * 5,
+        }
+
+        result = {}
+        for col in df_pivot.columns:
+            ser = df_pivot[col].dropna()
+            if ser.empty:
+                continue
+            curr_price = float(ser.iloc[-1])
+            if curr_price <= 0:
+                continue
+
+            c_row = {}
+            for p_name, days in periods.items():
+                if p_name == "1D":
+                    if len(ser) >= 2:
+                        prev_p = float(ser.iloc[-2])
+                        c_row["1D"] = round(((curr_price - prev_p) / prev_p) * 100, 2) if prev_p > 0 else None
+                    else:
+                        c_row["1D"] = None
+                elif p_name == "YTD":
+                    ytd_target = pd.Timestamp(year=latest_date.year - 1, month=12, day=31)
+                    mask = ser.index <= ytd_target
+                    if mask.any():
+                        past_p = float(ser[mask].iloc[-1])
+                        c_row["YTD"] = round(((curr_price - past_p) / past_p) * 100, 2) if past_p > 0 else None
+                    else:
+                        c_row["YTD"] = None
+                else:
+                    target_d = latest_date - timedelta(days=days)
+                    mask = ser.index <= target_d
+                    if mask.any():
+                        past_p = float(ser[mask].iloc[-1])
+                        c_row[p_name] = round(((curr_price - past_p) / past_p) * 100, 2) if past_p > 0 else None
+                    else:
+                        c_row[p_name] = None
+
+            # Relative Strength
+            for num_days, label in [(6, "RS (5D)"), (11, "RS (10D)"), (21, "RS (20D)"), (51, "RS (50D)")]:
+                nifty_past = nifty_5d if num_days == 6 else (nifty_10d if num_days == 11 else (nifty_20d if num_days == 21 else nifty_50d))
+                if nifty_latest > 0 and nifty_past > 0 and len(ser) >= num_days:
+                    past_p = float(ser.iloc[-num_days])
+                    if past_p > 0:
+                        curr_ratio = curr_price / nifty_latest
+                        past_ratio = past_p / nifty_past
+                        rs_val = ((curr_ratio - past_ratio) / past_ratio) * 100
+                        c_row[label] = round(rs_val, 2) if pd.notna(rs_val) else None
+                    else:
+                        c_row[label] = None
+                else:
+                    c_row[label] = None
+
+            result[col] = c_row
+
+        with open(out_file, "w") as f:
+            json.dump(result, f, indent=2)
+
+        print(f"  OK   constituent_performance_latest.json ({len(result)} stocks)")
+    except Exception as e:
+        print(f"  ERR  Calculating constituent performance: {e}")
+        export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")
+
+
 def generate_manifest(output_dir: Path):
     """Generate a manifest of all available data files for the frontend."""
     breadth_dir = output_dir / "breadth"
@@ -437,7 +599,7 @@ def main():
     export_json_file(output_dir, source_dir, "market_status_latest.json", "market_status", "market_status_latest.json")
 
     print("\nExporting constituent performance...")
-    export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")
+    export_constituent_performance(output_dir, source_dir)
 
     print("\nExporting RRG Data...")
     export_rrg_data(output_dir, source_dir)

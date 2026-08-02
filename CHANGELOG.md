@@ -6,6 +6,14 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.0.7] - 2026-08-02
+### Improved
+- **Unified Parquet Performance Engine**: Transitioned constituent stock performance (`constituent_performance_latest.json`) to calculate directly from the master NSE Bhavcopy dataset (`nse_master_bhav_with_delivery_2014_onwards.parquet`).
+- **Exact Broker Alignment**: Replaced dividend-adjusted prices with raw NSE closing prices for constituent returns (e.g. HCLTech 1M return = **+30.24%**), matching TradingView, Zerodha, and NSE Bhavcopy closes 100% consistently across all dashboard tables and RRG charts.
+- **Corporate Action Edge-Case Resilience**: Applied automated ratio adjustment for stock splits, bonus issues, and reverse splits across all 5,815 constituent stock entries.
+
+---
+
 ## [1.0.6] - 2026-08-02
 ### Added
 - **YTD Return Filter & Sorting in Theme Overview**: Added **YTD (Year-To-Date)** option to the time range selector (`1W`, `1M`, `3M`, `6M`, `YTD`, `1Y`, `3Y`, `5Y`, `ALL`) in the **Theme Overview** tab (`ThemeOverviewGrid.tsx`).

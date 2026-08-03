@@ -29,7 +29,7 @@ export function DataFreshnessBanner() {
 
     return (
         <div
-            className={`flex items-center justify-between px-4 py-1.5 text-xs font-medium tracking-wide border-b ${isStale
+            className={`flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2 px-4 py-1.5 text-xs font-medium tracking-wide border-b ${isStale
                     ? "bg-amber-500/8 border-amber-500/20 text-amber-400"
                     : "bg-emerald-500/8 border-emerald-500/15 text-emerald-400"
                 }`}
@@ -49,7 +49,7 @@ export function DataFreshnessBanner() {
             </div>
 
             {/* Live Build Version & Commit Tracking Badge */}
-            <div className="hidden sm:flex items-center gap-1.5 text-[11px]">
+            <div className="flex items-center gap-1.5 text-[11px] mx-auto sm:mx-0">
                 <span className="text-slate-500">Version:</span>
                 <span
                     title={`Version: ${versionInfo.version} | Commit: ${versionInfo.commitHash} | Built: ${versionInfo.timestamp}`}

@@ -6,6 +6,15 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.0.8] - 2026-08-03
+### Improved
+- **Enhanced Mobile Browser UI & Navigation**: Optimized responsiveness across smartphones and small tablet viewports (< 640px).
+- **Mobile Navigation Drawer**: Added direct access links for `Custom Watchlist RRG` and `Stocks Master` to the mobile slide-in menu (`TopBar.tsx`).
+- **Responsive RRG Charts**: Adapted Relative Rotation Graphs (`RRGChart.tsx`) to responsive heights (`550px` on mobile, `800px` on desktop) with touch-enabled node focus cards.
+- **Top Banner Mobile Layout**: Updated `DataFreshnessBanner.tsx` to wrap cleanly on small screens while displaying live version metadata (`v1.0.8`).
+
+---
+
 ## [1.0.7] - 2026-08-02
 ### Improved
 - **Unified Parquet Performance Engine**: Transitioned constituent stock performance (`constituent_performance_latest.json`) to calculate directly from the master NSE Bhavcopy dataset (`nse_master_bhav_with_delivery_2014_onwards.parquet`).

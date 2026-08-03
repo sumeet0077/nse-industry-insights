@@ -269,7 +269,7 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChar
     return (
         <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 relative">
             {/* Label Density Controls Toolbar */}
-            <div className="flex items-center justify-between mb-3 px-2 pt-1 border-b border-[#1e1e2e] pb-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3 px-2 pt-1 border-b border-[#1e1e2e] pb-2.5">
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
                         Graph Labels:
@@ -286,17 +286,17 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChar
                     </button>
                 </div>
 
-                <div className="text-[11px] text-slate-300 font-medium hidden sm:block">
+                <div className="text-[11px] text-slate-300 font-medium">
                     {hoveredPoint ? (
-                        <span className="text-blue-400 font-bold flex items-center gap-2">
+                        <span className="text-blue-400 font-bold flex flex-wrap items-center gap-1.5 sm:gap-2">
                             <span>Focusing: {hoveredPoint.name}</span>
-                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className="text-slate-300 font-mono font-medium">Date: {hoveredPoint.date}</span>
-                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className="text-slate-300 font-mono font-medium">RS-Ratio: {hoveredPoint.ratio.toFixed(2)}</span>
-                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className="text-slate-300 font-mono font-medium">RS-Mom: {hoveredPoint.momentum.toFixed(2)}</span>
-                            <span className="text-slate-600">•</span>
+                            <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className={`font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded ${
                                 hoveredPoint.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
                                 hoveredPoint.quadrant === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
@@ -305,97 +305,96 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChar
                             }`}>{hoveredPoint.quadrant}</span>
                         </span>
                     ) : (
-                        <span>Tip: Hover over any head or path point to inspect metrics</span>
+                        <span className="text-slate-500">Tip: Hover or tap any point to inspect metrics</span>
                     )}
                 </div>
             </div>
 
-            <Plot
-                useResizeHandler={true}
-                data={chartData.traces}
-                onHover={(event) => {
-                    if (event.points && event.points.length > 0) {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const pt = event.points[0] as any;
-                        const cd = pt.customdata;
-                        const pIdx = typeof pt.pointIndex === "number" ? pt.pointIndex : null;
-                        setHoveredPointIndex(pIdx);
-                        if (cd) {
-                            const dataObj = Array.isArray(cd) ? cd[0] : cd;
-                            if (dataObj && typeof dataObj === "object" && dataObj.ticker) {
-                                setHoveredTicker(dataObj.ticker);
-                                const ratio = typeof pt.x === "number" ? pt.x : dataObj.ratio;
-                                const momentum = typeof pt.y === "number" ? pt.y : dataObj.momentum;
-                                setHoveredPoint({
-                                    name: cleanTicker(dataObj.ticker),
-                                    date: dataObj.date || "",
-                                    ratio,
-                                    momentum,
-                                    quadrant: getQuadrantName(ratio, momentum),
-                                });
+            <div className="w-full h-[550px] sm:h-[800px]">
+                <Plot
+                    useResizeHandler={true}
+                    data={chartData.traces}
+                    onHover={(event) => {
+                        if (event.points && event.points.length > 0) {
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            const pt = event.points[0] as any;
+                            const cd = pt.customdata;
+                            const pIdx = typeof pt.pointIndex === "number" ? pt.pointIndex : null;
+                            setHoveredPointIndex(pIdx);
+                            if (cd) {
+                                const dataObj = Array.isArray(cd) ? cd[0] : cd;
+                                if (dataObj && typeof dataObj === "object" && dataObj.ticker) {
+                                    setHoveredTicker(dataObj.ticker);
+                                    const ratio = typeof pt.x === "number" ? pt.x : dataObj.ratio;
+                                    const momentum = typeof pt.y === "number" ? pt.y : dataObj.momentum;
+                                    setHoveredPoint({
+                                        name: cleanTicker(dataObj.ticker),
+                                        date: dataObj.date || "",
+                                        ratio,
+                                        momentum,
+                                        quadrant: getQuadrantName(ratio, momentum),
+                                    });
+                                }
                             }
                         }
-                    }
-                }}
-                onUnhover={() => {
-                    setHoveredTicker(null);
-                    setHoveredPoint(null);
-                    setHoveredPointIndex(null);
-                }}
-                layout={{
-                    title: {
-                        text: benchmarkName
-                            ? `Sector Rotation - ${timeframe} (Vs. ${benchmarkName})`
-                            : `Sector Rotation - ${timeframe}`,
-                        font: { size: 14 }
-                    },
-                    paper_bgcolor: "transparent",
-                    plot_bgcolor: "transparent",
-                    font: { color: "#94a3b8", family: "Inter, sans-serif" },
-                    hoverlabel: {
-                        bgcolor: "#0f172a",
-                        bordercolor: "#334155",
-                        font: { color: "#f8fafc", family: "Inter, sans-serif", size: 12 },
-                        align: "left",
-                    },
-                    xaxis: {
-                        title: { text: "RS-Ratio (Trend)" },
-                        range: chartData.xRange,
-                        zeroline: false,
-                        gridcolor: "#1e1e2e",
-                    },
-                    yaxis: {
-                        title: { text: "RS-Momentum (ROC)" },
-                        range: chartData.yRange,
-                        zeroline: false,
-                        gridcolor: "#1e1e2e",
-                        scaleanchor: "x",
-                        scaleratio: 1,
-                    },
-                    shapes: [
-                        { type: "line", x0: 100, x1: 100, y0: 0, y1: 200, xref: "x", yref: "paper", line: { color: "#334155", width: 1, dash: "dot" } },
-                        { type: "line", x0: 0, x1: 200, y0: 100, y1: 100, xref: "paper", yref: "y", line: { color: "#334155", width: 1, dash: "dot" } },
-                    ],
-                    annotations: [
-                        { xref: "paper", yref: "paper", x: 0.98, y: 0.98, text: "LEADING", showarrow: false, font: { color: "rgba(34, 197, 94, 0.35)", size: 36, weight: "bold" }, xanchor: "right", yanchor: "top" },
-                        { xref: "paper", yref: "paper", x: 0.98, y: 0.02, text: "WEAKENING", showarrow: false, font: { color: "rgba(234, 179, 8, 0.35)", size: 36, weight: "bold" }, xanchor: "right", yanchor: "bottom" },
-                        { xref: "paper", yref: "paper", x: 0.02, y: 0.02, text: "LAGGING", showarrow: false, font: { color: "rgba(239, 68, 68, 0.35)", size: 36, weight: "bold" }, xanchor: "left", yanchor: "bottom" },
-                        { xref: "paper", yref: "paper", x: 0.02, y: 0.98, text: "IMPROVING", showarrow: false, font: { color: "rgba(59, 130, 246, 0.35)", size: 36, weight: "bold" }, xanchor: "left", yanchor: "top" },
-                    ],
-                    showlegend: false,
-                    autosize: true,
-                    height: 800,
-                    margin: { l: 50, r: 25, t: 40, b: 50 },
-                }}
-                config={{
-                    responsive: true,
-                    displayModeBar: true,
-                    displaylogo: false,
-                    modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"],
-                }}
-                style={{ width: "100%", height: "800px" }}
-            />
+                    }}
+                    onUnhover={() => {
+                        setHoveredTicker(null);
+                        setHoveredPoint(null);
+                        setHoveredPointIndex(null);
+                    }}
+                    layout={{
+                        title: {
+                            text: benchmarkName
+                                ? `Sector Rotation - ${timeframe} (Vs. ${benchmarkName})`
+                                : `Sector Rotation - ${timeframe}`,
+                            font: { size: 14 }
+                        },
+                        paper_bgcolor: "transparent",
+                        plot_bgcolor: "transparent",
+                        font: { color: "#94a3b8", family: "Inter, sans-serif" },
+                        hoverlabel: {
+                            bgcolor: "#0f172a",
+                            bordercolor: "#334155",
+                            font: { color: "#f8fafc", family: "Inter, sans-serif", size: 12 },
+                            align: "left",
+                        },
+                        xaxis: {
+                            title: { text: "RS-Ratio (Trend)" },
+                            range: chartData.xRange,
+                            zeroline: false,
+                            gridcolor: "#1e1e2e",
+                        },
+                        yaxis: {
+                            title: { text: "RS-Momentum (ROC)" },
+                            range: chartData.yRange,
+                            zeroline: false,
+                            gridcolor: "#1e1e2e",
+                            scaleanchor: "x",
+                            scaleratio: 1,
+                        },
+                        shapes: [
+                            { type: "line", x0: 100, x1: 100, y0: 0, y1: 200, xref: "x", yref: "paper", line: { color: "#334155", width: 1, dash: "dot" } },
+                            { type: "line", x0: 0, x1: 200, y0: 100, y1: 100, xref: "paper", yref: "y", line: { color: "#334155", width: 1, dash: "dot" } },
+                        ],
+                        annotations: [
+                            { x: 0.98, y: 0.98, xref: "paper", yref: "paper", text: "<b>LEADING</b>", showarrow: false, font: { color: "rgba(34, 197, 94, 0.4)", size: 16 } },
+                            { x: 0.98, y: 0.02, xref: "paper", yref: "paper", text: "<b>WEAKENING</b>", showarrow: false, font: { color: "rgba(234, 179, 8, 0.4)", size: 16 } },
+                            { x: 0.02, y: 0.02, xref: "paper", yref: "paper", text: "<b>LAGGING</b>", showarrow: false, font: { color: "rgba(239, 68, 68, 0.4)", size: 16 } },
+                            { x: 0.02, y: 0.98, xref: "paper", yref: "paper", text: "<b>IMPROVING</b>", showarrow: false, font: { color: "rgba(59, 130, 246, 0.4)", size: 16 } },
+                        ],
+                        margin: { l: 45, r: 25, t: 40, b: 45 },
+                        autosize: true,
+                    }}
+                    config={{
+                        responsive: true,
+                        displayModeBar: true,
+                        displaylogo: false,
+                        modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"],
+                    }}
+                    style={{ width: "100%", height: "100%" }}
+                />
+            </div>
         </div>
     );
 }
-

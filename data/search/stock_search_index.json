@@ -382,6 +382,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
     }
   ],
   "ADANIENT": [
@@ -5326,6 +5331,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_auto_passenger_and_cv",
+      "title": "Auto Passenger & CV",
+      "category": "industries"
     }
   ],
   "ICICIAMC": [
@@ -6320,6 +6330,11 @@
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
     }
   ],
   "JISLJALEQS": [

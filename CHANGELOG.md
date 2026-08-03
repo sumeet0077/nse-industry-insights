@@ -6,6 +6,13 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.1.0] - 2026-08-04
+### Added
+- **Theme Assignment Updates**: Integrated **Hyundai Motor India** (`HYUNDAI.NS`) into **`Auto Passenger & CV`**, **Adani Energy Solutions** (`ADANIENSOL.NS`) into **`Power T&D`**, and **Jio Financial Services** (`JIOFIN.NS`) into **`Fintech`**.
+- **Data Export & RRG Pipeline Re-sync**: Re-calculated theme breadth series, stock RRG matrices, and constituent performance across all 95 index & industry theme pages.
+
+---
+
 ## [1.0.9] - 2026-08-04
 ### Added
 - **Ola Electric (`OLAELEC.NS`) Integrated into Themes**: Added Ola Electric Mobility Ltd. (`OLAELEC.NS`) to the **`EV Ecosystem`** and **`Two & Three Wheelers`** theme constituent lists.

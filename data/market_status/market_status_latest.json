@@ -195,7 +195,6 @@
             "COFORGE.NS",
             "CONCOR.NS",
             "CONCORDBIO.NS",
-            "COROMANDEL.NS",
             "CPPLUS.NS",
             "CRAFTSMAN.NS",
             "CREDITACC.NS",
@@ -271,7 +270,6 @@
             "J&KBANK.NS",
             "JBMA.NS",
             "JINDALSAW.NS",
-            "JKCEMENT.NS",
             "JPPOWER.NS",
             "JSWCEMENT.NS",
             "JSWENERGY.NS",
@@ -468,6 +466,7 @@
             "COCHINSHIP.NS",
             "COHANCE.NS",
             "COLPAL.NS",
+            "COROMANDEL.NS",
             "CYIENT.NS",
             "DABUR.NS",
             "DALBHARAT.NS",
@@ -527,6 +526,7 @@
             "JAINREC.NS",
             "JINDALSTEL.NS",
             "JIOFIN.NS",
+            "JKCEMENT.NS",
             "JKTYRE.NS",
             "JMFINANCIL.NS",
             "JSL.NS",
@@ -647,7 +647,6 @@
             "BSE.NS",
             "COFORGE.NS",
             "CONCOR.NS",
-            "COROMANDEL.NS",
             "CRISIL.NS",
             "DIXON.NS",
             "ENDURANCE.NS",
@@ -669,7 +668,6 @@
             "INDIANB.NS",
             "INDUSINDBK.NS",
             "IPCALAB.NS",
-            "JKCEMENT.NS",
             "JSWENERGY.NS",
             "JSWINFRA.NS",
             "KALYANKJIL.NS",
@@ -730,6 +728,7 @@
             "BLUESTARCO.NS",
             "COCHINSHIP.NS",
             "COLPAL.NS",
+            "COROMANDEL.NS",
             "DABUR.NS",
             "DALBHARAT.NS",
             "ESCORTS.NS",
@@ -746,6 +745,7 @@
             "IRCTC.NS",
             "IREDA.NS",
             "ITCHOTELS.NS",
+            "JKCEMENT.NS",
             "JSL.NS",
             "JUBLFOOD.NS",
             "KPITTECH.NS",
@@ -842,7 +842,6 @@
             "COFORGE.NS",
             "CONCOR.NS",
             "CONCORDBIO.NS",
-            "COROMANDEL.NS",
             "CPPLUS.NS",
             "CRAFTSMAN.NS",
             "CREDITACC.NS",
@@ -903,7 +902,6 @@
             "J&KBANK.NS",
             "JBMA.NS",
             "JINDALSAW.NS",
-            "JKCEMENT.NS",
             "JPPOWER.NS",
             "JSWCEMENT.NS",
             "JSWENERGY.NS",
@@ -1063,6 +1061,7 @@
             "COCHINSHIP.NS",
             "COHANCE.NS",
             "COLPAL.NS",
+            "COROMANDEL.NS",
             "CYIENT.NS",
             "DABUR.NS",
             "DALBHARAT.NS",
@@ -1108,6 +1107,7 @@
             "ITCHOTELS.NS",
             "ITI.NS",
             "JAINREC.NS",
+            "JKCEMENT.NS",
             "JKTYRE.NS",
             "JMFINANCIL.NS",
             "JSL.NS",
@@ -1827,11 +1827,11 @@
     },
     "Agrochemicals & Fertilisers": {
         "above": [
-            "COROMANDEL.NS",
             "DEEPAKFERT.NS"
         ],
         "below": [
             "UPL.NS",
+            "COROMANDEL.NS",
             "RALLIS.NS",
             "DHANUKA.NS",
             "BAYERCROP.NS",
@@ -1901,7 +1901,8 @@
             "M&M.NS",
             "EICHERMOT.NS",
             "ASHOKLEY.NS",
-            "TMCV.NS"
+            "TMCV.NS",
+            "HYUNDAI.NS"
         ],
         "below": [
             "MARUTI.NS",
@@ -2009,14 +2010,14 @@
     "Cement": {
         "above": [
             "ULTRACEMCO.NS",
-            "SHREECEM.NS",
-            "JKCEMENT.NS"
+            "SHREECEM.NS"
         ],
         "below": [
             "AMBUJACEM.NS",
             "ACC.NS",
             "RAMCOCEM.NS",
-            "DALBHARAT.NS"
+            "DALBHARAT.NS",
+            "JKCEMENT.NS"
         ],
         "new_stock": []
     },
@@ -2140,7 +2141,8 @@
         ],
         "below": [
             "POLICYBZR.NS",
-            "CDSL.NS"
+            "CDSL.NS",
+            "JIOFIN.NS"
         ],
         "new_stock": [
             "ALGOQUANT.NS"
@@ -2632,7 +2634,8 @@
             "APARINDS.NS",
             "KPIL.NS",
             "GENUSPOWER.NS",
-            "SKIPPER.NS"
+            "SKIPPER.NS",
+            "ADANIENSOL.NS"
         ],
         "below": [
             "KEC.NS",

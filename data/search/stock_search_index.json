@@ -8779,6 +8779,16 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_ev_ecosystem",
+      "title": "EV Ecosystem",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_two_and_three_wheelers",
+      "title": "Two & Three Wheelers",
+      "category": "industries"
     }
   ],
   "OLECTRA": [

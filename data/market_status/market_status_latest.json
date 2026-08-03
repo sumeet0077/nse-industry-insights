@@ -2105,7 +2105,8 @@
             "MOTHERSON.NS",
             "ATHERENERG.NS",
             "TMCV.NS",
-            "EXICOM.NS"
+            "EXICOM.NS",
+            "OLAELEC.NS"
         ],
         "below": [
             "TMPV.NS"
@@ -2878,7 +2879,8 @@
             "BAJAJ-AUTO.NS",
             "HEROMOTOCO.NS",
             "TVSMOTOR.NS",
-            "EICHERMOT.NS"
+            "EICHERMOT.NS",
+            "OLAELEC.NS"
         ],
         "below": [],
         "new_stock": []

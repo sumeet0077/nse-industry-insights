@@ -6,6 +6,13 @@ The versioning format follows **Semantic Versioning** (`vMAJOR.MINOR.PATCH (COMM
 
 ---
 
+## [1.0.9] - 2026-08-04
+### Added
+- **Ola Electric (`OLAELEC.NS`) Integrated into Themes**: Added Ola Electric Mobility Ltd. (`OLAELEC.NS`) to the **`EV Ecosystem`** and **`Two & Three Wheelers`** theme constituent lists.
+- **Data Export & RRG Synchronization**: Updated theme breadth calculation and stock RRG data payloads across all daily, weekly, and monthly timeframes.
+
+---
+
 ## [1.0.8] - 2026-08-03
 ### Improved
 - **Enhanced Mobile Browser UI & Navigation**: Optimized responsiveness across smartphones and small tablet viewports (< 640px).

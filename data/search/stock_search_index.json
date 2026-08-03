@@ -3835,6 +3835,16 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
     }
   ],
   "EPL": [

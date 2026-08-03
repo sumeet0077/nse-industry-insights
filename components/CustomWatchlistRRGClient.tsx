@@ -4,7 +4,7 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
-import type { RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
+import type { RRGDataPoint, TimeframeType, QuadrantType, TrendMetricDirectionType } from "@/types";
 import { BROAD_MARKET, SECTORS, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useWatchlists } from "@/hooks/useWatchlists";
@@ -82,9 +82,9 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const [copiedQuadrant, setCopiedQuadrant] = useState<string | null>(null);
     const [chipSearchQuery, setChipSearchQuery] = useState("");
 
-    // Trend Scanner state
-    const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirectionType>("cw_trendDirection", "off");
-    const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetricType>("cw_trendMetric", "momentum");
+    // Trend Scanner state — independent per-metric direction
+    const [momentumDir, setMomentumDir] = useLocalStorage<TrendMetricDirectionType>("cw_momentumDir", "off");
+    const [ratioDir, setRatioDir] = useLocalStorage<TrendMetricDirectionType>("cw_ratioDir", "off");
     const [trendLookback, setTrendLookback] = useLocalStorage<number>("cw_trendLookback", 5);
 
     // Table filter & search
@@ -239,9 +239,16 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return topNActiveTickers ? new Set(topNActiveTickers) : null;
     }, [topNActiveTickers]);
 
-    // Trend Scanner logic matching StockRRGClient
+    // Trend Scanner: independent per-metric direction
+    const scannerIsActive = momentumDir !== "off" || ratioDir !== "off";
+
+    const resetScanner = useCallback(() => {
+        setMomentumDir("off");
+        setRatioDir("off");
+    }, []);
+
     const trendMatchingTickers = useMemo(() => {
-        if (trendDirection === "off") return null;
+        if (momentumDir === "off" && ratioDir === "off") return null;
 
         const matches: string[] = [];
         for (const ticker of activeWatchlist.tickers) {
@@ -257,21 +264,25 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 const currR = tail[i].RS_Ratio;
                 const prevR = tail[i - 1].RS_Ratio;
 
-                if (trendDirection === "rising") {
-                    if (trendMetric === "momentum" && currM <= prevM) { isMatch = false; break; }
-                    if (trendMetric === "ratio" && currR <= prevR) { isMatch = false; break; }
-                    if (trendMetric === "both" && (currM <= prevM || currR <= prevR)) { isMatch = false; break; }
-                } else {
-                    if (trendMetric === "momentum" && currM > prevM) { isMatch = false; break; }
-                    if (trendMetric === "ratio" && currR > prevR) { isMatch = false; break; }
-                    if (trendMetric === "both" && (currM > prevM || currR > prevR)) { isMatch = false; break; }
-                }
+                if (momentumDir === "rising"  && currM <= prevM) { isMatch = false; break; }
+                if (momentumDir === "falling" && currM > prevM)  { isMatch = false; break; }
+                if (ratioDir === "rising"     && currR <= prevR) { isMatch = false; break; }
+                if (ratioDir === "falling"    && currR > prevR)  { isMatch = false; break; }
             }
 
             if (isMatch) matches.push(ticker);
         }
         return matches;
-    }, [trendDirection, trendMetric, trendLookback, activeWatchlist.tickers, groupedByTicker]);
+    }, [momentumDir, ratioDir, trendLookback, activeWatchlist.tickers, groupedByTicker]);
+
+    // Derive active preset from current toggle states
+    const activePreset = useMemo(() => {
+        if (momentumDir === "rising"  && ratioDir === "rising")  return "improving";
+        if (momentumDir === "falling" && ratioDir === "rising")  return "leading";
+        if (momentumDir === "falling" && ratioDir === "falling") return "weakening";
+        if (momentumDir === "rising"  && ratioDir === "falling") return "lagging";
+        return null;
+    }, [momentumDir, ratioDir]);
 
     const applyTrendScanner = useCallback(() => {
         if (trendMatchingTickers) {
@@ -280,10 +291,10 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     }, [trendMatchingTickers]);
 
     useEffect(() => {
-        if (trendDirection !== "off" && trendMatchingTickers) {
+        if (scannerIsActive && trendMatchingTickers) {
             applyTrendScanner();
         }
-    }, [trendDirection, trendMetric, trendLookback, applyTrendScanner, trendMatchingTickers]);
+    }, [momentumDir, ratioDir, trendLookback, applyTrendScanner, trendMatchingTickers, scannerIsActive]);
 
     // Final filtered chart dataset
     const finalChartData = useMemo(() => {
@@ -310,7 +321,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     }, [activeWatchlist.tickers, chipSearchQuery, gridQuadrantFilter, tickerQuadrants]);
 
     const toggleTicker = (ticker: string) => {
-        if (trendDirection !== "off") setTrendDirection("off");
+        if (scannerIsActive) resetScanner();
         if (selectedTickers.includes(ticker)) {
             setSelectedTickers(selectedTickers.filter((t) => t !== ticker));
         } else {
@@ -415,7 +426,6 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return rows;
     }, [latestPoints, tickerQuadrants, tableSearchQuery, tableSortField, tableSortAsc]);
 
-    const scannerIsActive = trendDirection !== "off";
     const matchCount = trendMatchingTickers?.length ?? 0;
 
     return (
@@ -744,18 +754,56 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                 {matchCount} match{matchCount !== 1 ? "es" : ""}
                             </span>
                         )}
+                        {scannerIsActive && (
+                            <button
+                                onClick={resetScanner}
+                                className="text-[11px] font-semibold text-slate-500 hover:text-slate-300 transition-colors ml-auto"
+                            >
+                                Reset ✕
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Quick Presets */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-4">
+                        {([
+                            { id: "improving",  label: "Improving ↗",  mDir: "rising" as const,  rDir: "rising" as const,  color: "text-emerald-400 border-emerald-500/40", activeBg: "bg-emerald-500/20" },
+                            { id: "leading",    label: "Leading ★",    mDir: "falling" as const, rDir: "rising" as const,  color: "text-blue-400 border-blue-500/40",    activeBg: "bg-blue-500/20" },
+                            { id: "weakening",  label: "Weakening ↘",  mDir: "falling" as const, rDir: "falling" as const, color: "text-red-400 border-red-500/40",     activeBg: "bg-red-500/20" },
+                            { id: "lagging",    label: "Lagging ↙",    mDir: "rising" as const,  rDir: "falling" as const, color: "text-amber-400 border-amber-500/40",  activeBg: "bg-amber-500/20" },
+                        ]).map(p => (
+                            <button
+                                key={p.id}
+                                onClick={() => {
+                                    if (activePreset === p.id) {
+                                        resetScanner();
+                                    } else {
+                                        setMomentumDir(p.mDir);
+                                        setRatioDir(p.rDir);
+                                    }
+                                }}
+                                className={`text-[11px] sm:text-[12px] font-semibold py-2 sm:py-1.5 px-2.5 rounded-lg border transition-all duration-200 ${
+                                    activePreset === p.id
+                                        ? `${p.color} ${p.activeBg}`
+                                        : "text-slate-500 border-slate-700/60 bg-[#1a1a2e]/60 hover:border-slate-600"
+                                }`}
+                            >
+                                {p.label}
+                            </button>
+                        ))}
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {/* RS-Momentum Direction */}
                         <div>
-                            <label className="block text-xs text-slate-400 mb-1">Direction</label>
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Momentum <span className="text-slate-600">(Y-axis)</span></label>
                             <div className="flex bg-[#1a1a2e] border border-slate-700 rounded p-0.5">
-                                {(["off", "rising", "falling"] as TrendDirectionType[]).map((dir) => (
+                                {(["off", "rising", "falling"] as TrendMetricDirectionType[]).map((dir) => (
                                     <button
                                         key={dir}
-                                        onClick={() => setTrendDirection(dir)}
-                                        className={`flex-1 py-1 text-xs rounded font-medium capitalize transition-colors ${
-                                            trendDirection === dir
+                                        onClick={() => setMomentumDir(dir)}
+                                        className={`flex-1 py-1.5 sm:py-1 text-xs rounded font-medium capitalize transition-colors ${
+                                            momentumDir === dir
                                                 ? dir === "rising"
                                                     ? "bg-emerald-600 text-white"
                                                     : dir === "falling"
@@ -764,26 +812,37 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                                 : "text-slate-400 hover:text-slate-200"
                                         }`}
                                     >
-                                        {dir === "rising" ? "Rotating Up ↗" : dir === "falling" ? "Rotating Down ↘" : "Off"}
+                                        {dir === "rising" ? "Rising ↑" : dir === "falling" ? "Falling ↓" : "Off"}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
+                        {/* RS-Ratio Direction */}
                         <div>
-                            <label className="block text-xs text-slate-400 mb-1">Metric</label>
-                            <select
-                                value={trendMetric}
-                                onChange={(e) => setTrendMetric(e.target.value as TrendMetricType)}
-                                disabled={!scannerIsActive}
-                                className="w-full bg-[#1a1a2e] border border-slate-700 rounded px-3 py-1.5 text-xs text-white disabled:opacity-40"
-                            >
-                                <option value="momentum">Momentum Only</option>
-                                <option value="ratio">Ratio Only</option>
-                                <option value="both">Ratio & Momentum (Strict)</option>
-                            </select>
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Ratio <span className="text-slate-600">(X-axis)</span></label>
+                            <div className="flex bg-[#1a1a2e] border border-slate-700 rounded p-0.5">
+                                {(["off", "rising", "falling"] as TrendMetricDirectionType[]).map((dir) => (
+                                    <button
+                                        key={dir}
+                                        onClick={() => setRatioDir(dir)}
+                                        className={`flex-1 py-1.5 sm:py-1 text-xs rounded font-medium capitalize transition-colors ${
+                                            ratioDir === dir
+                                                ? dir === "rising"
+                                                    ? "bg-emerald-600 text-white"
+                                                    : dir === "falling"
+                                                    ? "bg-red-600 text-white"
+                                                    : "bg-slate-700 text-white"
+                                                : "text-slate-400 hover:text-slate-200"
+                                        }`}
+                                    >
+                                        {dir === "rising" ? "Rising ↑" : dir === "falling" ? "Falling ↓" : "Off"}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
+                        {/* Lookback Slider */}
                         <div>
                             <label className="block text-xs text-slate-400 mb-1">
                                 Lookback: <span className="text-blue-400 font-semibold">{trendLookback}</span> periods
@@ -862,7 +921,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => {
-                            if (trendDirection !== "off") setTrendDirection("off");
+                            if (scannerIsActive) resetScanner();
                             setSelectedTickers([...activeWatchlist.tickers]);
                         }}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1 rounded font-medium transition-colors"
@@ -871,7 +930,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                     </button>
                     <button
                         onClick={() => {
-                            if (trendDirection !== "off") setTrendDirection("off");
+                            if (scannerIsActive) resetScanner();
                             setSelectedTickers([]);
                         }}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-red-400 px-3 py-1 rounded font-medium transition-colors"
@@ -950,7 +1009,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                             <div className="flex items-center gap-1.5">
                                 <button
                                     onClick={() => {
-                                        if (trendDirection !== "off") setTrendDirection("off");
+                                        if (scannerIsActive) resetScanner();
                                         const toAdd = new Set([...selectedTickers, ...filteredGridTickers]);
                                         setSelectedTickers(Array.from(toAdd));
                                     }}
@@ -960,7 +1019,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                 </button>
                                 <button
                                     onClick={() => {
-                                        if (trendDirection !== "off") setTrendDirection("off");
+                                        if (scannerIsActive) resetScanner();
                                         const removeSet = new Set(filteredGridTickers);
                                         setSelectedTickers(selectedTickers.filter((t) => !removeSet.has(t)));
                                     }}

@@ -58,8 +58,7 @@ export type ConstituentPerformanceMap = Record<string, ConstituentPerformance>;
 export type ThemeCategory = "broad-market" | "sectors" | "industries";
 export type QuadrantType = "Leading" | "Weakening" | "Lagging" | "Improving";
 export type TimeframeType = "D" | "W" | "M";
-export type TrendMetricType = "momentum" | "ratio" | "both";
-export type TrendDirectionType = "off" | "rising" | "falling";
+export type TrendMetricDirectionType = "off" | "rising" | "falling";
 
 export interface IndexConfig {
     id: string;

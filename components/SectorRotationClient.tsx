@@ -4,7 +4,7 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
-import { IndexConfig, RRGDataPoint, TimeframeType, QuadrantType, TrendDirectionType, TrendMetricType } from "@/types";
+import { IndexConfig, RRGDataPoint, TimeframeType, QuadrantType, TrendMetricDirectionType } from "@/types";
 import { ALL_CONFIGS, BROAD_MARKET, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -47,9 +47,9 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     const [selectedQuadrants, setSelectedQuadrants] = useLocalStorage<QuadrantType[]>("sr_selectedQuadrants", [...QUADRANTS]);
     const [expandedQuadrant, setExpandedQuadrant] = useState<QuadrantType | null>(null);
 
-    // Trend Scanner state
-    const [trendDirection, setTrendDirection] = useLocalStorage<TrendDirectionType>("sr_trendDirection", "off");
-    const [trendMetric, setTrendMetric] = useLocalStorage<TrendMetricType>("sr_trendMetric", "momentum");
+    // Trend Scanner state — independent per-metric direction
+    const [momentumDir, setMomentumDir] = useLocalStorage<TrendMetricDirectionType>("sr_momentumDir", "off");
+    const [ratioDir, setRatioDir] = useLocalStorage<TrendMetricDirectionType>("sr_ratioDir", "off");
     const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 5);
 
     // Category filters
@@ -184,15 +184,21 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     }, [topNActiveTickers]);
 
     // Trend Scanner: compute which tickers match the trend criteria
+    const scannerIsActive = momentumDir !== "off" || ratioDir !== "off";
+
+    const resetScanner = useCallback(() => {
+        setMomentumDir("off");
+        setRatioDir("off");
+    }, []);
+
     const trendMatchingTickers = useMemo(() => {
-        if (trendDirection === "off") return null; // null = scanner disabled
+        if (momentumDir === "off" && ratioDir === "off") return null;
 
         const matches: string[] = [];
         for (const ticker of allTickers) {
             const points = groupedByTicker[ticker];
             if (!points || points.length < trendLookback + 1) continue;
 
-            // Take the last (trendLookback + 1) points
             const tail = points.slice(-(trendLookback + 1));
 
             let isMatch = true;
@@ -202,22 +208,25 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                 const currR = tail[i].RS_Ratio;
                 const prevR = tail[i - 1].RS_Ratio;
 
-                if (trendDirection === "rising") {
-                    if (trendMetric === "momentum" && currM <= prevM) { isMatch = false; break; }
-                    if (trendMetric === "ratio" && currR <= prevR) { isMatch = false; break; }
-                    if (trendMetric === "both" && (currM <= prevM || currR <= prevR)) { isMatch = false; break; }
-                } else {
-                    // "falling" — decrease OR flat counts as falling
-                    if (trendMetric === "momentum" && currM > prevM) { isMatch = false; break; }
-                    if (trendMetric === "ratio" && currR > prevR) { isMatch = false; break; }
-                    if (trendMetric === "both" && (currM > prevM || currR > prevR)) { isMatch = false; break; }
-                }
+                if (momentumDir === "rising"  && currM <= prevM) { isMatch = false; break; }
+                if (momentumDir === "falling" && currM > prevM)  { isMatch = false; break; }
+                if (ratioDir === "rising"     && currR <= prevR) { isMatch = false; break; }
+                if (ratioDir === "falling"    && currR > prevR)  { isMatch = false; break; }
             }
 
             if (isMatch) matches.push(ticker);
         }
         return matches;
-    }, [trendDirection, trendMetric, trendLookback, allTickers, groupedByTicker]);
+    }, [momentumDir, ratioDir, trendLookback, allTickers, groupedByTicker]);
+
+    // Derive active preset from current toggle states
+    const activePreset = useMemo(() => {
+        if (momentumDir === "rising"  && ratioDir === "rising")  return "improving";
+        if (momentumDir === "falling" && ratioDir === "rising")  return "leading";
+        if (momentumDir === "falling" && ratioDir === "falling") return "weakening";
+        if (momentumDir === "rising"  && ratioDir === "falling") return "lagging";
+        return null;
+    }, [momentumDir, ratioDir]);
 
     // Apply the trend scanner: auto-select matching tickers
     const applyTrendScanner = useCallback(() => {
@@ -226,22 +235,16 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
         }
     }, [trendMatchingTickers]);
 
-    // Handler for direction change that auto-applies the scanner
-    const handleDirectionChange = useCallback((dir: TrendDirectionType) => {
-        setTrendDirection(dir);
-        if (dir === "off") return;
-    }, []);
-
-    // Auto-apply scanner when direction, metric, or lookback changes
-    const prevScannerRef = useRef({ direction: trendDirection, metric: trendMetric, lookback: trendLookback });
+    // Auto-apply scanner when direction or lookback changes
+    const prevScannerRef = useRef({ momentumDir, ratioDir, lookback: trendLookback });
     if (
-        trendDirection !== "off" &&
+        scannerIsActive &&
         trendMatchingTickers &&
-        (prevScannerRef.current.direction !== trendDirection ||
-         prevScannerRef.current.metric !== trendMetric ||
+        (prevScannerRef.current.momentumDir !== momentumDir ||
+         prevScannerRef.current.ratioDir !== ratioDir ||
          prevScannerRef.current.lookback !== trendLookback)
     ) {
-        prevScannerRef.current = { direction: trendDirection, metric: trendMetric, lookback: trendLookback };
+        prevScannerRef.current = { momentumDir, ratioDir, lookback: trendLookback };
         setTimeout(() => applyTrendScanner(), 0);
     }
 
@@ -258,7 +261,7 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
         : allTickers;
 
     const toggleTicker = (ticker: string) => {
-        if (trendDirection !== "off") setTrendDirection("off");
+        if (scannerIsActive) resetScanner();
         if (selectedTickers.includes(ticker)) {
             setSelectedTickers(selectedTickers.filter(t => t !== ticker));
         } else {
@@ -276,7 +279,6 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
 
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const scannerIsActive = trendDirection !== "off";
     const matchCount = trendMatchingTickers?.length ?? 0;
 
     return (
@@ -382,29 +384,60 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                                 {matchCount} match{matchCount !== 1 ? "es" : ""}
                             </span>
                         )}
+                        {scannerIsActive && (
+                            <button
+                                onClick={resetScanner}
+                                className="text-[11px] font-semibold text-slate-500 hover:text-slate-300 transition-colors ml-auto"
+                            >
+                                Reset ✕
+                            </button>
+                        )}
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-4">
-                        {/* Direction Toggle */}
+                    {/* Quick Presets */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-4">
+                        {([
+                            { id: "improving",  label: "Improving ↗",  mDir: "rising" as const,  rDir: "rising" as const,  color: "text-emerald-400 border-emerald-500/40", activeBg: "bg-emerald-500/20" },
+                            { id: "leading",    label: "Leading ★",    mDir: "falling" as const, rDir: "rising" as const,  color: "text-blue-400 border-blue-500/40",    activeBg: "bg-blue-500/20" },
+                            { id: "weakening",  label: "Weakening ↘",  mDir: "falling" as const, rDir: "falling" as const, color: "text-red-400 border-red-500/40",     activeBg: "bg-red-500/20" },
+                            { id: "lagging",    label: "Lagging ↙",    mDir: "rising" as const,  rDir: "falling" as const, color: "text-amber-400 border-amber-500/40",  activeBg: "bg-amber-500/20" },
+                        ]).map(p => (
+                            <button
+                                key={p.id}
+                                onClick={() => {
+                                    if (activePreset === p.id) {
+                                        resetScanner();
+                                    } else {
+                                        setMomentumDir(p.mDir);
+                                        setRatioDir(p.rDir);
+                                    }
+                                }}
+                                className={`text-[11px] sm:text-[12px] font-semibold py-2 sm:py-1.5 px-2.5 rounded-lg border transition-all duration-200 ${
+                                    activePreset === p.id
+                                        ? `${p.color} ${p.activeBg}`
+                                        : "text-slate-500 border-slate-700/60 bg-[#1a1a2e]/60 hover:border-slate-600"
+                                }`}
+                            >
+                                {p.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        {/* RS-Momentum Direction */}
                         <div className="flex-1">
-                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">Direction</label>
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Momentum <span className="text-slate-600">(Y-axis)</span></label>
                             <div className="flex gap-1">
                                 {([
-                                    { value: "off", label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
-                                    { value: "rising", label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
-                                    { value: "falling", label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
-                                ] as const).map(opt => (
+                                    { value: "off" as const, label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "rising" as const, label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
+                                    { value: "falling" as const, label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
+                                ]).map(opt => (
                                     <button
                                         key={opt.value}
-                                        onClick={() => {
-                                            handleDirectionChange(opt.value);
-                                            if (opt.value !== "off") {
-                                                // Compute and apply immediately
-                                                setTimeout(() => applyTrendScanner(), 0);
-                                            }
-                                        }}
-                                        className={`flex-1 text-[12px] font-semibold py-1.5 px-2 rounded border transition-all duration-200 ${
-                                            trendDirection === opt.value ? opt.activeColor : opt.color
+                                        onClick={() => setMomentumDir(opt.value)}
+                                        className={`flex-1 text-[12px] font-semibold py-2 sm:py-1.5 px-2 rounded border transition-all duration-200 ${
+                                            momentumDir === opt.value ? opt.activeColor : opt.color
                                         } hover:brightness-110`}
                                     >
                                         <span className="mr-1">{opt.icon}</span>{opt.label}
@@ -413,29 +446,23 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                             </div>
                         </div>
 
-                        {/* Metric Toggle */}
-                        <div className={`flex-1 transition-opacity duration-200 ${scannerIsActive ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
-                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">Metric</label>
+                        {/* RS-Ratio Direction */}
+                        <div className="flex-1">
+                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Ratio <span className="text-slate-600">(X-axis)</span></label>
                             <div className="flex gap-1">
                                 {([
-                                    { value: "momentum", label: "Momentum", desc: "RS-Momentum (ROC)" },
-                                    { value: "ratio", label: "RS Ratio", desc: "RS-Ratio (Trend)" },
-                                    { value: "both", label: "Both", desc: "Both Momentum & Ratio" },
-                                ] as const).map(opt => (
+                                    { value: "off" as const, label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "rising" as const, label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
+                                    { value: "falling" as const, label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
+                                ]).map(opt => (
                                     <button
                                         key={opt.value}
-                                        onClick={() => {
-                                            setTrendMetric(opt.value);
-                                            setTimeout(() => applyTrendScanner(), 0);
-                                        }}
-                                        title={opt.desc}
-                                        className={`flex-1 text-[12px] font-semibold py-1.5 px-2 rounded border transition-all duration-200 ${
-                                            trendMetric === opt.value
-                                                ? "text-violet-300 bg-violet-500/20 border-violet-500/40"
-                                                : "text-slate-500 border-slate-700 bg-[#1a1a2e]"
+                                        onClick={() => setRatioDir(opt.value)}
+                                        className={`flex-1 text-[12px] font-semibold py-2 sm:py-1.5 px-2 rounded border transition-all duration-200 ${
+                                            ratioDir === opt.value ? opt.activeColor : opt.color
                                         } hover:brightness-110`}
                                     >
-                                        {opt.label}
+                                        <span className="mr-1">{opt.icon}</span>{opt.label}
                                     </button>
                                 ))}
                             </div>
@@ -522,21 +549,21 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                         </label>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => { setTrendDirection("off"); setSelectedTickers(allTickers); }}
+                                onClick={() => { resetScanner(); setSelectedTickers(allTickers); }}
                                 className="text-[10px] uppercase font-bold text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 Select All
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => { setTrendDirection("off"); setSelectedTickers([]); }}
+                                onClick={() => { resetScanner(); setSelectedTickers([]); }}
                                 className="text-[10px] uppercase font-bold text-red-400 hover:text-red-300 transition-colors"
                             >
                                 Clear
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => { setTrendDirection("off"); setSelectedTickers([]); }}
+                                onClick={() => { resetScanner(); setSelectedTickers([]); }}
                                 className="text-[10px] uppercase font-bold text-slate-400 hover:text-slate-300 transition-colors"
                             >
                                 Reset

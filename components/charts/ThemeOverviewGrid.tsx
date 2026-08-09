@@ -1,10 +1,11 @@
 // components/charts/ThemeOverviewGrid.tsx
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { MiniIndexChart } from "@/components/charts/MiniIndexChart";
 import { CategoryFilter } from "@/components/common/CategoryFilter";
+import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import type { ThemeBreadthSummary } from "@/lib/data";
 import type { PerformanceRow } from "@/types";
 import { ArrowUpDown, ArrowDownAZ, ArrowUpAZ, TrendingUp, TrendingDown, Calendar, Search, X, Check } from "lucide-react";
@@ -47,6 +48,8 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
     const [selectedThemes, setSelectedThemes] = useState<Set<string>>(new Set());
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     
+    const containerRef = useRef<HTMLDivElement>(null);
+
     // Category Filters
     const [showBroadMarket, setShowBroadMarket] = useState(true);
     const [showSectors, setShowSectors] = useState(true);
@@ -153,9 +156,9 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
     const losers = totalThemes - gainers;
 
     return (
-        <div>
+        <div ref={containerRef} className="p-1">
             {/* Search and Filter Bar */}
-            <div className="relative mb-6 z-10">
+            <div className="relative mb-6 z-10 capture-exclude">
                 <div className="flex flex-col gap-2">
                     <div className="relative flex items-center">
                         <Search className="absolute left-3 h-4 w-4 text-slate-500" />
@@ -272,7 +275,7 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     {/* Time Range Selector */}
                     <div className="flex items-center gap-0.5 bg-[#111118] border border-[#1e1e2e] rounded-lg p-0.5 overflow-x-auto max-w-[280px] sm:max-w-none no-scrollbar">
                         <Calendar className="h-3 w-3 text-slate-500 ml-1.5 mr-0.5 shrink-0" />
@@ -307,6 +310,13 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                         {sortBy === "perf-desc" && <><TrendingUp className="h-3 w-3" />Best ▼</>}
                         {sortBy === "perf-asc" && <><TrendingDown className="h-3 w-3" />Worst ▲</>}
                     </button>
+
+                    {/* Screenshot Capture Button */}
+                    <CaptureScreenshot
+                        targetRef={containerRef}
+                        filename={`Theme_Overview_${timeRange}`}
+                        label="Capture Overview"
+                    />
                 </div>
             </div>
 
@@ -315,13 +325,14 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
                 {processedThemes.map((theme) => (
                     <div
                         key={theme.id}
-                        className="block transition-transform hover:scale-[1.02]"
+                        className="block transition-transform hover:scale-[1.01]"
                     >
                         <MiniIndexChart
                             title={theme.title}
                             data={theme.trimmedData}
                             changePercent={theme.change}
                             href={`/${theme.category}/${theme.id}`}
+                            timeRange={timeRange}
                         />
                     </div>
                 ))}
@@ -329,3 +340,4 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
         </div>
     );
 }
+

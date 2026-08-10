@@ -7,7 +7,9 @@
 // tab on that theme's page will silently disappear. Always check data.ts ALIASES
 // or add a new alias there if an exact match is not possible.
 
-import type { IndexConfig, MetricOption, ThemeCategory, QuadrantType, TimeframeType } from "@/types";
+import type { IndexConfig, MetricOption, ThemeCategory, QuadrantType, TimeframeType, OriginDistanceType } from "@/types";
+import { ORIGIN_RADIUS_MAP } from "@/types";
+export { ORIGIN_RADIUS_MAP };
 
 // Global Constants
 export const CATEGORIES: ThemeCategory[] = ["broad-market", "sectors", "industries"];

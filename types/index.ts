@@ -59,6 +59,16 @@ export type ThemeCategory = "broad-market" | "sectors" | "industries";
 export type QuadrantType = "Leading" | "Weakening" | "Lagging" | "Improving";
 export type TimeframeType = "D" | "W" | "M";
 export type TrendMetricDirectionType = "off" | "rising" | "falling";
+export type OriginDistanceType = "off" | "tight" | "moderate" | "broad";
+export type SuperTrendPresetType = "off" | "near_origin" | "mtf_aligned" | "super_trend" | "improving" | "leading" | "weakening" | "lagging";
+
+export const ORIGIN_RADIUS_MAP: Record<OriginDistanceType, number | null> = {
+    off: null,
+    tight: 1.5,
+    moderate: 3.0,
+    broad: 5.0,
+};
+
 
 export interface IndexConfig {
     id: string;

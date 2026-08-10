@@ -25,13 +25,15 @@ interface RRGChartProps {
     tailLength: number;
     timeframe: string;
     benchmarkName?: string;
+    originRadius?: number | null;
 }
 
-export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChartProps) {
+export function RRGChart({ data, tailLength, timeframe, benchmarkName, originRadius }: RRGChartProps) {
     const [hoverOnlyLabels, setHoverOnlyLabels] = useState(false);
     const [hoveredTicker, setHoveredTicker] = useState<string | null>(null);
     const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
     const [hoveredPoint, setHoveredPoint] = useState<{ name: string; date: string; ratio: number; momentum: number; quadrant: string } | null>(null);
+
 
     const chartData = useMemo(() => {
         if (!data || data.length === 0) return null;
@@ -376,12 +378,33 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName }: RRGChar
                         shapes: [
                             { type: "line", x0: 100, x1: 100, y0: 0, y1: 200, xref: "x", yref: "paper", line: { color: "#334155", width: 1, dash: "dot" } },
                             { type: "line", x0: 0, x1: 200, y0: 100, y1: 100, xref: "paper", yref: "y", line: { color: "#334155", width: 1, dash: "dot" } },
+                            ...(originRadius ? [{
+                                type: "circle" as const,
+                                xref: "x" as const,
+                                yref: "y" as const,
+                                x0: 100 - originRadius,
+                                x1: 100 + originRadius,
+                                y0: 100 - originRadius,
+                                y1: 100 + originRadius,
+                                line: { color: "#a78bfa", width: 1.5, dash: "dash" as const },
+                                fillcolor: "rgba(167, 139, 250, 0.08)",
+                            }] : [])
                         ],
                         annotations: [
                             { x: 0.98, y: 0.98, xref: "paper", yref: "paper", text: "<b>LEADING</b>", showarrow: false, font: { color: "rgba(34, 197, 94, 0.4)", size: 16 } },
                             { x: 0.98, y: 0.02, xref: "paper", yref: "paper", text: "<b>WEAKENING</b>", showarrow: false, font: { color: "rgba(234, 179, 8, 0.4)", size: 16 } },
                             { x: 0.02, y: 0.02, xref: "paper", yref: "paper", text: "<b>LAGGING</b>", showarrow: false, font: { color: "rgba(239, 68, 68, 0.4)", size: 16 } },
                             { x: 0.02, y: 0.98, xref: "paper", yref: "paper", text: "<b>IMPROVING</b>", showarrow: false, font: { color: "rgba(59, 130, 246, 0.4)", size: 16 } },
+                            ...(originRadius ? [{
+                                x: 100,
+                                y: 100 + originRadius + 0.3,
+                                text: `<b>🎯 Launchpad Zone (±${originRadius})</b>`,
+                                showarrow: false,
+                                font: { color: "#a78bfa", size: 11 },
+                                bgcolor: "rgba(15, 23, 42, 0.7)",
+                                bordercolor: "#7c3aed",
+                                borderpad: 3,
+                            }] : [])
                         ],
                         margin: { l: 45, r: 25, t: 40, b: 45 },
                         autosize: true,

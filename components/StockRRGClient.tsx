@@ -3,8 +3,9 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { RRGChart } from "@/components/charts/RRGChart";
-import type { RRGDataPoint, TimeframeType, QuadrantType, TrendMetricDirectionType } from "@/types";
-import { QUADRANTS, QUADRANT_COLORS, TIMEFRAMES } from "@/lib/config";
+import type { RRGDataPoint, TimeframeType, QuadrantType, TrendMetricDirectionType, OriginDistanceType, SuperTrendPresetType } from "@/types";
+import { QUADRANTS, QUADRANT_COLORS, TIMEFRAMES, ORIGIN_RADIUS_MAP } from "@/lib/config";
+import { calculateOriginDistance, calculateSuperTrendScore } from "@/lib/rrg";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import type { StockRRGPayload } from "@/lib/data";
 
@@ -34,10 +35,14 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     const [selectedQuadrants, setSelectedQuadrants] = useState<QuadrantType[]>([...QUADRANTS]);
     const [expandedQuadrant, setExpandedQuadrant] = useState<QuadrantType | null>(null);
 
-    // Trend Scanner state — independent per-metric direction
+    // Trend Scanner state — independent per-metric direction & Origin Distance
     const [momentumDir, setMomentumDir] = useState<TrendMetricDirectionType>("off");
     const [ratioDir, setRatioDir] = useState<TrendMetricDirectionType>("off");
+    const [originDist, setOriginDist] = useState<OriginDistanceType>("off");
+    const [superTrendPreset, setSuperTrendPreset] = useState<SuperTrendPresetType>("off");
     const [trendLookback, setTrendLookback] = useState(5);
+    const [isCopied, setIsCopied] = useState(false);
+
 
     // Build normalized set of constituent tickers for this specific index/theme
     const constituentSet = useMemo(() => {
@@ -146,23 +151,36 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
         return grouped;
     }, [rawData]);
 
-    // Trend Scanner: independent per-metric direction
-    const scannerIsActive = momentumDir !== "off" || ratioDir !== "off";
+    // Trend Scanner: independent per-metric direction & Origin Distance
+    const scannerIsActive = momentumDir !== "off" || ratioDir !== "off" || originDist !== "off" || superTrendPreset !== "off";
 
     const resetScanner = useCallback(() => {
         setMomentumDir("off");
         setRatioDir("off");
+        setOriginDist("off");
+        setSuperTrendPreset("off");
     }, []);
 
     const trendMatchingTickers = useMemo(() => {
-        if (momentumDir === "off" && ratioDir === "off") return null;
+        if (momentumDir === "off" && ratioDir === "off" && originDist === "off" && superTrendPreset === "off") return null;
 
         const matches: string[] = [];
+        const radiusLimit = ORIGIN_RADIUS_MAP[originDist];
+
         for (const ticker of allTickers) {
             const points = groupedByTicker[ticker];
             if (!points || points.length < trendLookback + 1) continue;
 
             const tail = points.slice(-(trendLookback + 1));
+            const head = tail[tail.length - 1];
+
+            // 1. Origin Distance Check
+            if (radiusLimit !== null) {
+                const dist = calculateOriginDistance(head.RS_Ratio, head.RS_Momentum);
+                if (dist > radiusLimit) continue;
+            }
+
+            // 2. Metric Direction Check
             let isMatch = true;
 
             for (let i = 1; i < tail.length; i++) {
@@ -180,16 +198,16 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             if (isMatch) matches.push(ticker);
         }
         return matches;
-    }, [momentumDir, ratioDir, trendLookback, allTickers, groupedByTicker]);
+    }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, allTickers, groupedByTicker]);
 
     // Derive active preset from current toggle states
-    const activePreset = useMemo(() => {
-        if (momentumDir === "rising"  && ratioDir === "rising")  return "improving";
-        if (momentumDir === "falling" && ratioDir === "rising")  return "leading";
-        if (momentumDir === "falling" && ratioDir === "falling") return "weakening";
-        if (momentumDir === "rising"  && ratioDir === "falling") return "lagging";
-        return null;
-    }, [momentumDir, ratioDir]);
+    const activePreset = superTrendPreset !== "off" ? superTrendPreset : useMemo(() => {
+        if (momentumDir === "rising"  && ratioDir === "rising" && originDist === "off")  return "improving";
+        if (momentumDir === "falling" && ratioDir === "rising" && originDist === "off")  return "leading";
+        if (momentumDir === "falling" && ratioDir === "falling" && originDist === "off") return "weakening";
+        if (momentumDir === "rising"  && ratioDir === "falling" && originDist === "off") return "lagging";
+        return "off";
+    }, [momentumDir, ratioDir, originDist]);
 
     const applyTrendScanner = useCallback(() => {
         if (trendMatchingTickers) {
@@ -201,7 +219,8 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
         if (scannerIsActive && trendMatchingTickers) {
             applyTrendScanner();
         }
-    }, [momentumDir, ratioDir, trendLookback, applyTrendScanner, trendMatchingTickers, scannerIsActive]);
+    }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, applyTrendScanner, trendMatchingTickers, scannerIsActive]);
+
 
     const filteredData = rawData.filter(
         (d) =>
@@ -311,45 +330,71 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
                 {/* Trend Scanner */}
                 <div className="border-t border-[#1e1e2e] pt-4">
-                    <div className="flex items-center gap-3 mb-4">
-                        <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Trend Scanner</h3>
-                        {scannerIsActive && (
-                            <span className="text-[11px] font-bold bg-violet-500/20 text-violet-300 px-2 py-0.5 rounded-full animate-pulse">
-                                {matchCount} match{matchCount !== 1 ? "es" : ""}
-                            </span>
-                        )}
-                        {scannerIsActive && (
-                            <button
-                                onClick={resetScanner}
-                                className="text-[11px] font-semibold text-slate-500 hover:text-slate-300 transition-colors ml-auto"
-                            >
-                                Reset ✕
-                            </button>
-                        )}
+                    <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Trend Scanner & Super Trend Suite</h3>
+                            {scannerIsActive && (
+                                <span className="text-[11px] font-bold bg-violet-500/20 text-violet-300 border border-violet-500/40 px-2 py-0.5 rounded-full animate-pulse">
+                                    {matchCount} candidate{matchCount !== 1 ? "s" : ""}
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {scannerIsActive && matchCount > 0 && (
+                                <button
+                                    onClick={() => {
+                                        if (!trendMatchingTickers) return;
+                                        const formatted = trendMatchingTickers.map(t => toTVSymbol(t)).join(", ");
+                                        navigator.clipboard.writeText(formatted).then(() => {
+                                            setIsCopied(true);
+                                            setTimeout(() => setIsCopied(false), 2000);
+                                        });
+                                    }}
+                                    className={`flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-all ${
+                                        isCopied ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300" : "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20"
+                                    }`}
+                                >
+                                    {isCopied ? "✓ Copied!" : "📋 Copy Matches"}
+                                </button>
+                            )}
+                            {scannerIsActive && (
+                                <button
+                                    onClick={resetScanner}
+                                    className="text-[11px] font-semibold text-slate-500 hover:text-slate-300 transition-colors"
+                                >
+                                    Reset ✕
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     {/* Quick Presets */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-4">
-                        {([
-                            { id: "improving",  label: "Improving ↗",  mDir: "rising" as const,  rDir: "rising" as const,  color: "text-emerald-400 border-emerald-500/40", activeBg: "bg-emerald-500/20" },
-                            { id: "leading",    label: "Leading ★",    mDir: "falling" as const, rDir: "rising" as const,  color: "text-blue-400 border-blue-500/40",    activeBg: "bg-blue-500/20" },
-                            { id: "weakening",  label: "Weakening ↘",  mDir: "falling" as const, rDir: "falling" as const, color: "text-red-400 border-red-500/40",     activeBg: "bg-red-500/20" },
-                            { id: "lagging",    label: "Lagging ↙",    mDir: "rising" as const,  rDir: "falling" as const, color: "text-amber-400 border-amber-500/40",  activeBg: "bg-amber-500/20" },
-                        ]).map(p => (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 mb-4">
+                        {[
+                            { id: "near_origin", label: "Near Origin 🎯", origin: "moderate" as const, mDir: "rising" as const, rDir: "off" as const, color: "text-violet-400 border-violet-500/50", activeBg: "bg-violet-500/20 shadow-sm shadow-violet-500/20" },
+                            { id: "mtf_aligned", label: "⚡ MTF Aligned", origin: "off" as const, mDir: "rising" as const, rDir: "rising" as const, color: "text-cyan-400 border-cyan-500/50", activeBg: "bg-cyan-500/20 shadow-sm shadow-cyan-500/20" },
+                            { id: "super_trend", label: "🚀 Super Trend 🔥", origin: "moderate" as const, mDir: "rising" as const, rDir: "rising" as const, color: "text-emerald-300 border-emerald-500/50", activeBg: "bg-emerald-500/25 shadow-sm shadow-emerald-500/20" },
+                            { id: "improving",  label: "Improving ↗",  origin: "off" as const, mDir: "rising" as const,  rDir: "rising" as const,  color: "text-emerald-400 border-emerald-500/40", activeBg: "bg-emerald-500/20" },
+                            { id: "leading",    label: "Leading ★",    origin: "off" as const, mDir: "falling" as const, rDir: "rising" as const,  color: "text-blue-400 border-blue-500/40",    activeBg: "bg-blue-500/20" },
+                            { id: "weakening",  label: "Weakening ↘",  origin: "off" as const, mDir: "falling" as const, rDir: "falling" as const, color: "text-red-400 border-red-500/40",     activeBg: "bg-red-500/20" },
+                            { id: "lagging",    label: "Lagging ↙",    origin: "off" as const, mDir: "rising" as const,  rDir: "falling" as const, color: "text-amber-400 border-amber-500/40",  activeBg: "bg-amber-500/20" },
+                        ].map(p => (
                             <button
                                 key={p.id}
                                 onClick={() => {
                                     if (activePreset === p.id) {
                                         resetScanner();
                                     } else {
+                                        setOriginDist(p.origin);
                                         setMomentumDir(p.mDir);
                                         setRatioDir(p.rDir);
+                                        setSuperTrendPreset(p.id as SuperTrendPresetType);
                                     }
                                 }}
-                                className={`text-[11px] sm:text-[12px] font-semibold py-2 sm:py-1.5 px-2.5 rounded-lg border transition-all duration-200 ${
+                                className={`text-[11px] font-semibold py-2 px-2.5 rounded-lg border transition-all duration-200 ${
                                     activePreset === p.id
                                         ? `${p.color} ${p.activeBg}`
-                                        : "text-slate-500 border-slate-700/60 bg-[#1a1a2e]/60 hover:border-slate-600"
+                                        : "text-slate-400 border-slate-700/60 bg-[#1a1a2e]/60 hover:border-slate-600 hover:text-slate-200"
                                 }`}
                             >
                                 {p.label}
@@ -357,26 +402,55 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                         ))}
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {/* RS-Momentum Direction */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Origin Distance Radius */}
                         <div>
-                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Momentum <span className="text-slate-600">(Y-axis)</span></label>
-                            <div className="flex bg-[#1a1a2e] border border-slate-700 rounded p-0.5">
-                                {(["off", "rising", "falling"] as TrendMetricDirectionType[]).map((dir) => (
+                            <label className="block text-[11px] text-slate-400 mb-1.5 font-semibold">Origin Distance <span className="text-violet-400">(Launchpad Zone)</span></label>
+                            <div className="flex gap-1">
+                                {[
+                                    { value: "off" as const, label: "Off", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "tight" as const, label: "Tight ±1.5", activeColor: "text-violet-300 bg-violet-500/20 border-violet-500/50" },
+                                    { value: "moderate" as const, label: "Mod ±3.0", activeColor: "text-violet-300 bg-violet-500/20 border-violet-500/50" },
+                                    { value: "broad" as const, label: "Broad ±5.0", activeColor: "text-violet-300 bg-violet-500/20 border-violet-500/50" },
+                                ].map(opt => (
                                     <button
-                                        key={dir}
-                                        onClick={() => setMomentumDir(dir)}
-                                        className={`flex-1 py-1.5 sm:py-1 text-xs rounded font-medium capitalize transition-colors ${
-                                            momentumDir === dir
-                                                ? dir === "rising"
-                                                    ? "bg-emerald-600 text-white"
-                                                    : dir === "falling"
-                                                    ? "bg-red-600 text-white"
-                                                    : "bg-slate-700 text-white"
-                                                : "text-slate-400 hover:text-slate-200"
+                                        key={opt.value}
+                                        onClick={() => {
+                                            setOriginDist(opt.value);
+                                            if (superTrendPreset !== "off") setSuperTrendPreset("off");
+                                        }}
+                                        className={`flex-1 text-[11px] font-semibold py-1.5 px-1.5 rounded border transition-all duration-200 ${
+                                            originDist === opt.value
+                                                ? opt.activeColor
+                                                : "text-slate-500 border-slate-700 bg-[#1a1a2e] hover:text-slate-300"
                                         }`}
                                     >
-                                        {dir}
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* RS-Momentum Direction */}
+                        <div>
+                            <label className="block text-[11px] text-slate-400 mb-1.5 font-semibold">RS-Momentum <span className="text-slate-500">(Y-axis)</span></label>
+                            <div className="flex gap-1">
+                                {[
+                                    { value: "off" as const, label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "rising" as const, label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
+                                    { value: "falling" as const, label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
+                                ].map(opt => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => {
+                                            setMomentumDir(opt.value);
+                                            if (superTrendPreset !== "off") setSuperTrendPreset("off");
+                                        }}
+                                        className={`flex-1 text-[11px] font-semibold py-1.5 px-1.5 rounded border transition-all duration-200 ${
+                                            momentumDir === opt.value ? opt.activeColor : opt.color
+                                        } hover:brightness-110`}
+                                    >
+                                        <span className="mr-0.5">{opt.icon}</span>{opt.label}
                                     </button>
                                 ))}
                             </div>
@@ -384,32 +458,34 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
                         {/* RS-Ratio Direction */}
                         <div>
-                            <label className="block text-[11px] text-slate-500 mb-1.5 font-semibold">RS-Ratio <span className="text-slate-600">(X-axis)</span></label>
-                            <div className="flex bg-[#1a1a2e] border border-slate-700 rounded p-0.5">
-                                {(["off", "rising", "falling"] as TrendMetricDirectionType[]).map((dir) => (
+                            <label className="block text-[11px] text-slate-400 mb-1.5 font-semibold">RS-Ratio <span className="text-slate-500">(X-axis)</span></label>
+                            <div className="flex gap-1">
+                                {[
+                                    { value: "off" as const, label: "Off", icon: "⊘", color: "text-slate-400 border-slate-600 bg-slate-800/50", activeColor: "text-white bg-slate-700 border-slate-500" },
+                                    { value: "rising" as const, label: "Rising", icon: "↑", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-emerald-300 bg-emerald-500/20 border-emerald-500/40" },
+                                    { value: "falling" as const, label: "Falling", icon: "↓", color: "text-slate-500 border-slate-700 bg-[#1a1a2e]", activeColor: "text-red-300 bg-red-500/20 border-red-500/40" },
+                                ].map(opt => (
                                     <button
-                                        key={dir}
-                                        onClick={() => setRatioDir(dir)}
-                                        className={`flex-1 py-1.5 sm:py-1 text-xs rounded font-medium capitalize transition-colors ${
-                                            ratioDir === dir
-                                                ? dir === "rising"
-                                                    ? "bg-emerald-600 text-white"
-                                                    : dir === "falling"
-                                                    ? "bg-red-600 text-white"
-                                                    : "bg-slate-700 text-white"
-                                                : "text-slate-400 hover:text-slate-200"
-                                        }`}
+                                        key={opt.value}
+                                        onClick={() => {
+                                            setRatioDir(opt.value);
+                                            if (superTrendPreset !== "off") setSuperTrendPreset("off");
+                                        }}
+                                        className={`flex-1 text-[11px] font-semibold py-1.5 px-1.5 rounded border transition-all duration-200 ${
+                                            ratioDir === opt.value ? opt.activeColor : opt.color
+                                        } hover:brightness-110`}
                                     >
-                                        {dir}
+                                        <span className="mr-0.5">{opt.icon}</span>{opt.label}
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Lookback Slider */}
-                        <div>
-                            <label className="block text-xs text-slate-400 mb-1">
-                                Lookback: <span className="text-blue-400 font-semibold">{trendLookback}</span> periods
+                        <div className={`transition-opacity duration-200 ${scannerIsActive ? "opacity-100" : "opacity-40 pointer-events-none"}`}>
+                            <label className="block text-[11px] text-slate-400 mb-1.5 font-semibold flex justify-between">
+                                <span>Lookback Periods</span>
+                                <span className="text-violet-400">{trendLookback} <span className="text-slate-600">(max {tailLength})</span></span>
                             </label>
                             <input
                                 type="range"
@@ -511,8 +587,69 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                     tailLength={tailLength}
                     timeframe={TIMEFRAMES[timeframe]}
                     benchmarkName={title}
+                    originRadius={ORIGIN_RADIUS_MAP[originDist]}
                 />
             </div>
+
+            {/* Super Trend Candidate Leaderboard Table */}
+            {scannerIsActive && matchCount > 0 && (
+                <div className="mb-6 bg-[#111118] border border-violet-500/30 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                                🏆 Super Trend Candidates Leaderboard
+                            </h3>
+                            <span className="text-[10px] bg-violet-500/20 text-violet-300 font-semibold px-2 py-0.5 rounded-full border border-violet-500/30">
+                                {matchCount} candidates
+                            </span>
+                        </div>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                            <thead className="text-[11px] text-slate-400 uppercase bg-[#1a1a2e] border-b border-slate-700/60">
+                                <tr>
+                                    <th className="py-2.5 px-3">Stock Ticker</th>
+                                    <th className="py-2.5 px-3">Quadrant</th>
+                                    <th className="py-2.5 px-3">RS-Ratio</th>
+                                    <th className="py-2.5 px-3">RS-Mom</th>
+                                    <th className="py-2.5 px-3">Origin Distance</th>
+                                    <th className="py-2.5 px-3">Tail Accel</th>
+                                    <th className="py-2.5 px-3">Super Trend Score</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800/60">
+                                {trendMatchingTickers?.map((ticker) => {
+                                    const pts = groupedByTicker[ticker] || [];
+                                    const metrics = calculateSuperTrendScore(pts);
+                                    const head = pts[pts.length - 1];
+                                    const quad = tickerQuadrants[ticker] || "Unknown";
+                                    const cleanName = cleanTicker(ticker);
+                                    return (
+                                        <tr key={ticker} className="hover:bg-slate-800/40 transition-colors font-mono">
+                                            <td className="py-2.5 px-3 font-semibold text-blue-400 font-sans">{cleanName}</td>
+                                            <td className="py-2.5 px-3">
+                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                                                    quad === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
+                                                    quad === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
+                                                    quad === "Lagging" ? "bg-red-500/20 text-red-300" :
+                                                    "bg-blue-500/20 text-blue-300"
+                                                }`}>{quad}</span>
+                                            </td>
+                                            <td className="py-2.5 px-3 text-slate-200">{head?.RS_Ratio.toFixed(2) ?? "—"}</td>
+                                            <td className="py-2.5 px-3 text-slate-200">{head?.RS_Momentum.toFixed(2) ?? "—"}</td>
+                                            <td className="py-2.5 px-3 text-violet-300">{metrics.distance.toFixed(2)} pts</td>
+                                            <td className="py-2.5 px-3 text-emerald-400">{metrics.accel.toFixed(2)}x</td>
+                                            <td className="py-2.5 px-3 font-bold text-emerald-300">
+                                                {metrics.score} / 100 🔥
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
 
             {/* Premium Constituent Stock Chips Selector Grid with Quadrant Filter & Select/Deselect All */}
             <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-4 mb-6">

@@ -141,7 +141,6 @@
             "ALKEM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -222,7 +221,6 @@
             "FIVESTAR.NS",
             "FLUOROCHEM.NS",
             "FORTIS.NS",
-            "FSL.NS",
             "GABRIEL.NS",
             "GAIL.NS",
             "GESHIP.NS",
@@ -432,6 +430,7 @@
             "AFCONS.NS",
             "AMBER.NS",
             "AMBUJACEM.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -485,6 +484,7 @@
             "FACT.NS",
             "FIRSTCRY.NS",
             "FORCEMOT.NS",
+            "FSL.NS",
             "GALLANTT.NS",
             "GICRE.NS",
             "GILLETTE.NS",
@@ -799,7 +799,6 @@
             "ALKEM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -861,7 +860,6 @@
             "FIVESTAR.NS",
             "FLUOROCHEM.NS",
             "FORTIS.NS",
-            "FSL.NS",
             "GABRIEL.NS",
             "GESHIP.NS",
             "GLAND.NS",
@@ -1077,6 +1075,7 @@
             "FACT.NS",
             "FIRSTCRY.NS",
             "FORCEMOT.NS",
+            "FSL.NS",
             "GALLANTT.NS",
             "GICRE.NS",
             "GILLETTE.NS",
@@ -1198,7 +1197,6 @@
             "AFFLE.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ARE&M.NS",
             "ASTERDM.NS",
             "ATHERENERG.NS",
@@ -1238,7 +1236,6 @@
             "ENGINERSIN.NS",
             "FINCABLES.NS",
             "FIVESTAR.NS",
-            "FSL.NS",
             "GABRIEL.NS",
             "GESHIP.NS",
             "GLAND.NS",
@@ -1377,6 +1374,7 @@
             "FACT.NS",
             "FIRSTCRY.NS",
             "FORCEMOT.NS",
+            "FSL.NS",
             "GALLANTT.NS",
             "GILLETTE.NS",
             "GODIGIT.NS",
@@ -1978,7 +1976,6 @@
             "BSE.NS",
             "MCX.NS",
             "CAMS.NS",
-            "ANGELONE.NS",
             "MOTILALOFS.NS",
             "IIFLCAPS.NS",
             "GEOJITFSL.NS",
@@ -1987,7 +1984,8 @@
         "below": [
             "IEX.NS",
             "CDSL.NS",
-            "KFINTECH.NS"
+            "KFINTECH.NS",
+            "ANGELONE.NS"
         ],
         "new_stock": []
     },
@@ -2081,10 +2079,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS",
-            "METROPOLIS.NS"
+            "VIJAYA.NS"
         ],
         "below": [
+            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2132,12 +2130,12 @@
     "Fintech": {
         "above": [
             "PAYTM.NS",
-            "CAMS.NS",
-            "FSL.NS"
+            "CAMS.NS"
         ],
         "below": [
             "POLICYBZR.NS",
             "CDSL.NS",
+            "FSL.NS",
             "JIOFIN.NS"
         ],
         "new_stock": [
@@ -2529,14 +2527,14 @@
             "JKPAPER.NS",
             "WSTCSTPAPR.NS",
             "TNPL.NS",
+            "KUANTUM.NS",
             "STARPAPER.NS",
             "EMAMIPAP.NS"
         ],
         "below": [
             "ANDHRAPAP.NS",
             "ORIENTPPR.NS",
-            "SESHAPAPER.NS",
-            "KUANTUM.NS"
+            "SESHAPAPER.NS"
         ],
         "new_stock": []
     },

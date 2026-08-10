@@ -165,7 +165,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
         if (momentumDir === "off" && ratioDir === "off" && originDist === "off" && superTrendPreset === "off") return null;
 
         const matches: string[] = [];
-        const radiusLimit = ORIGIN_RADIUS_MAP[originDist];
+        const radiusLimit = ORIGIN_RADIUS_MAP[originDist as keyof typeof ORIGIN_RADIUS_MAP] ?? null;
 
         for (const ticker of allTickers) {
             const points = groupedByTicker[ticker];
@@ -587,7 +587,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                     tailLength={tailLength}
                     timeframe={TIMEFRAMES[timeframe]}
                     benchmarkName={title}
-                    originRadius={ORIGIN_RADIUS_MAP[originDist]}
+                    originRadius={ORIGIN_RADIUS_MAP[originDist as keyof typeof ORIGIN_RADIUS_MAP] ?? null}
                 />
             </div>
 
@@ -635,12 +635,12 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
                                                     "bg-blue-500/20 text-blue-300"
                                                 }`}>{quad}</span>
                                             </td>
-                                            <td className="py-2.5 px-3 text-slate-200">{head?.RS_Ratio.toFixed(2) ?? "—"}</td>
-                                            <td className="py-2.5 px-3 text-slate-200">{head?.RS_Momentum.toFixed(2) ?? "—"}</td>
-                                            <td className="py-2.5 px-3 text-violet-300">{metrics.distance.toFixed(2)} pts</td>
-                                            <td className="py-2.5 px-3 text-emerald-400">{metrics.accel.toFixed(2)}x</td>
+                                            <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Ratio === "number" ? head.RS_Ratio.toFixed(2) : "—"}</td>
+                                            <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Momentum === "number" ? head.RS_Momentum.toFixed(2) : "—"}</td>
+                                            <td className="py-2.5 px-3 text-violet-300">{typeof metrics?.distance === "number" ? metrics.distance.toFixed(2) : "—"} pts</td>
+                                            <td className="py-2.5 px-3 text-emerald-400">{typeof metrics?.accel === "number" ? metrics.accel.toFixed(2) : "—"}x</td>
                                             <td className="py-2.5 px-3 font-bold text-emerald-300">
-                                                {metrics.score} / 100 🔥
+                                                {metrics?.score ?? 50} / 100 🔥
                                             </td>
                                         </tr>
                                     );

@@ -1,37 +1,34 @@
 import { useState, useEffect } from "react";
 
 export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T, (value: T | ((val: T) => T)) => void] {
-    // State to store our value
-    // Pass initial state function to useState so logic is only executed once
-    const [storedValue, setStoredValue] = useState<T>(() => {
-        if (typeof window === "undefined") {
-            return initialValue instanceof Function ? initialValue() : initialValue;
-        }
+    const getInitial = () => (initialValue instanceof Function ? initialValue() : initialValue);
+
+    const [storedValue, setStoredValue] = useState<T>(getInitial);
+
+    // Sync from localStorage after hydration (client-side only)
+    useEffect(() => {
         try {
             const item = window.localStorage.getItem(key);
-            if (item) {
-                return JSON.parse(item);
+            if (item !== null) {
+                const parsed = JSON.parse(item);
+                if (parsed !== undefined) {
+                    setStoredValue(parsed);
+                }
             }
-            return initialValue instanceof Function ? initialValue() : initialValue;
         } catch (error) {
             console.warn(`Error reading localStorage key "${key}":`, error);
-            return initialValue instanceof Function ? initialValue() : initialValue;
         }
-    });
+    }, [key]);
 
-    // Return a wrapped version of useState's setter function that ...
-    // ... persists the new value to localStorage.
     const setValue = (value: T | ((val: T) => T)) => {
         try {
             setStoredValue((currentValue) => {
-                // Evaluate the new value using the most recent state
                 const valueToStore = value instanceof Function ? value(currentValue) : value;
-                
-                // Persist it
+
                 if (typeof window !== "undefined") {
                     window.localStorage.setItem(key, JSON.stringify(valueToStore));
                 }
-                
+
                 return valueToStore;
             });
         } catch (error) {
@@ -41,3 +38,4 @@ export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T
 
     return [storedValue, setValue];
 }
+

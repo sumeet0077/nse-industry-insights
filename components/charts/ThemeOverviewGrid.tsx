@@ -101,24 +101,28 @@ export function ThemeOverviewGrid({ themes, performanceData }: ThemeOverviewGrid
 
         return filtered
             .map((theme) => {
-                let trimmed = theme.data;
-                if (timeRange === "YTD" && theme.data.length > 0) {
-                    const latestDateStr = theme.data[theme.data.length - 1].Date;
-                    const latestYear = new Date(latestDateStr + "T00:00:00").getFullYear();
-                    const targetDateStr = `${latestYear - 1}-12-31`;
-                    const startIndex = theme.data.findIndex((d) => d.Date >= targetDateStr);
-                    if (startIndex !== -1) {
-                        trimmed = theme.data.slice(startIndex);
+                let trimmed = theme.data || [];
+                if (timeRange === "YTD" && trimmed.length > 0) {
+                    const latestDateStr = trimmed[trimmed.length - 1]?.Date;
+                    if (latestDateStr) {
+                        const latestYear = new Date(latestDateStr + "T00:00:00").getFullYear();
+                        const targetDateStr = `${latestYear - 1}-12-31`;
+                        const startIndex = trimmed.findIndex((d) => d.Date >= targetDateStr);
+                        if (startIndex !== -1) {
+                            trimmed = trimmed.slice(startIndex);
+                        }
                     }
-                } else if (timeRange !== "ALL" && theme.data.length > 0) {
-                    const latestDateStr = theme.data[theme.data.length - 1].Date;
-                    const latestDate = new Date(latestDateStr + "T00:00:00");
-                    latestDate.setDate(latestDate.getDate() - maxDays);
-                    const targetDateStr = latestDate.toISOString().split("T")[0];
-                    
-                    const startIndex = theme.data.findIndex((d) => d.Date >= targetDateStr);
-                    if (startIndex !== -1) {
-                        trimmed = theme.data.slice(startIndex);
+                } else if (timeRange !== "ALL" && trimmed.length > 0) {
+                    const latestDateStr = trimmed[trimmed.length - 1]?.Date;
+                    if (latestDateStr) {
+                        const latestDate = new Date(latestDateStr + "T00:00:00");
+                        latestDate.setDate(latestDate.getDate() - maxDays);
+                        const targetDateStr = latestDate.toISOString().split("T")[0];
+                        
+                        const startIndex = trimmed.findIndex((d) => d.Date >= targetDateStr);
+                        if (startIndex !== -1) {
+                            trimmed = trimmed.slice(startIndex);
+                        }
                     }
                 }
                 

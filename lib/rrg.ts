@@ -58,8 +58,12 @@ export function computeRRGData(
     timeframe: TimeframeType,
     tailLengthLimit: number = 35
 ): RRGDataPoint[] {
-    // 1. Locate benchmark
-    const benchEntry = allThemeData.find((t) => t.id === benchmarkId || t.id.replace(/^market_breadth_/, "") === benchmarkId.replace(/^market_breadth_/, ""));
+    if (!allThemeData || !Array.isArray(allThemeData) || allThemeData.length === 0) {
+        return [];
+    }
+
+    const cleanBenchId = (benchmarkId || "").replace(/^market_breadth_/, "");
+    const benchEntry = allThemeData.find((t) => t && t.id && (t.id === benchmarkId || t.id.replace(/^market_breadth_/, "") === cleanBenchId));
     if (!benchEntry || !benchEntry.data || benchEntry.data.length === 0) {
         return [];
     }

@@ -242,21 +242,16 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName, originRad
         };
     }, [data, tailLength, hoverOnlyLabels, hoveredTicker, hoveredPointIndex]);
 
-    if (!data || data.length === 0) {
+    if (!data || data.length === 0 || !chartData || !chartData.traces || chartData.traces.length === 0) {
         return (
-            <div className="w-full h-[850px] flex items-center justify-center bg-slate-900/40 text-slate-400 rounded-lg border border-slate-800">
-                <div className="text-center">
-                    <p className="font-semibold text-lg text-slate-300 mb-2">No selections active</p>
-                    <p className="text-sm">Please select indices/themes to display the Relative Rotation Graph.</p>
+            <div className="w-full h-[550px] sm:h-[800px] flex flex-col items-center justify-center bg-[#0d0d14] border border-[#1e1e2e] rounded-lg p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-3 text-violet-400 font-bold text-lg">
+                    🎯
                 </div>
-            </div>
-        );
-    }
-
-    if (!chartData) {
-        return (
-            <div className="bg-[#111118] border border-[#1e1e2e] rounded-lg p-3 h-[850px] flex items-center justify-center">
-                <p className="text-slate-400">Loading RRG Data...</p>
+                <p className="font-bold text-slate-200 mb-1">No Matching Candidates Found</p>
+                <p className="text-xs text-slate-400 max-w-sm">
+                    No items match the currently selected graph options or trend filters. Try enabling more quadrants or resetting the Trend Scanner.
+                </p>
             </div>
         );
     }
@@ -295,9 +290,9 @@ export function RRGChart({ data, tailLength, timeframe, benchmarkName, originRad
                             <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className="text-slate-300 font-mono font-medium">Date: {hoveredPoint.date}</span>
                             <span className="text-slate-600 hidden sm:inline">•</span>
-                            <span className="text-slate-300 font-mono font-medium">RS-Ratio: {hoveredPoint.ratio.toFixed(2)}</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Ratio: {typeof hoveredPoint.ratio === "number" ? hoveredPoint.ratio.toFixed(2) : "—"}</span>
                             <span className="text-slate-600 hidden sm:inline">•</span>
-                            <span className="text-slate-300 font-mono font-medium">RS-Mom: {hoveredPoint.momentum.toFixed(2)}</span>
+                            <span className="text-slate-300 font-mono font-medium">RS-Mom: {typeof hoveredPoint.momentum === "number" ? hoveredPoint.momentum.toFixed(2) : "—"}</span>
                             <span className="text-slate-600 hidden sm:inline">•</span>
                             <span className={`font-semibold uppercase text-[10px] px-1.5 py-0.5 rounded ${
                                 hoveredPoint.quadrant === "Leading" ? "bg-emerald-500/20 text-emerald-300" :

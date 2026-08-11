@@ -22,7 +22,6 @@
             "SBIN.NS",
             "SHRIRAMFIN.NS",
             "SUNPHARMA.NS",
-            "TATASTEEL.NS",
             "TECHM.NS",
             "TITAN.NS",
             "TRENT.NS",
@@ -50,6 +49,7 @@
             "RELIANCE.NS",
             "SBILIFE.NS",
             "TATACONSUM.NS",
+            "TATASTEEL.NS",
             "TCS.NS",
             "TMPV.NS",
             "WIPRO.NS"
@@ -138,7 +138,6 @@
             "AIAENG.NS",
             "AIIL.NS",
             "AJANTPHARM.NS",
-            "ALKEM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
             "ANGELONE.NS",
@@ -383,7 +382,6 @@
             "TATACAP.NS",
             "TATACOMM.NS",
             "TATAINVEST.NS",
-            "TATASTEEL.NS",
             "TATATECH.NS",
             "TBOTEK.NS",
             "TECHM.NS",
@@ -425,6 +423,7 @@
             "ABREL.NS",
             "ACC.NS",
             "AFCONS.NS",
+            "ALKEM.NS",
             "AMBER.NS",
             "AMBUJACEM.NS",
             "ANURAS.NS",
@@ -597,6 +596,7 @@
             "TATACONSUM.NS",
             "TATAELXSI.NS",
             "TATAPOWER.NS",
+            "TATASTEEL.NS",
             "TCS.NS",
             "TECHNOE.NS",
             "TEGA.NS",
@@ -629,7 +629,6 @@
             "AIAENG.NS",
             "AIIL.NS",
             "AJANTPHARM.NS",
-            "ALKEM.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -712,12 +711,12 @@
             "TATACOMM.NS",
             "TATAINVEST.NS",
             "THERMAX.NS",
-            "TIINDIA.NS",
             "UNOMINDA.NS",
             "YESBANK.NS"
         ],
         "below": [
             "ACC.NS",
+            "ALKEM.NS",
             "APOLLOTYRE.NS",
             "ASTRAL.NS",
             "AWL.NS",
@@ -768,6 +767,7 @@
             "SUZLON.NS",
             "SWIGGY.NS",
             "TATAELXSI.NS",
+            "TIINDIA.NS",
             "TORNTPOWER.NS",
             "UBL.NS",
             "UPL.NS",
@@ -796,7 +796,6 @@
             "AIAENG.NS",
             "AIIL.NS",
             "AJANTPHARM.NS",
-            "ALKEM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
             "ANGELONE.NS",
@@ -1030,7 +1029,9 @@
             "ABREL.NS",
             "ACC.NS",
             "AFCONS.NS",
+            "ALKEM.NS",
             "AMBER.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -1344,6 +1345,7 @@
             "ABREL.NS",
             "AFCONS.NS",
             "AMBER.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APTUS.NS",
             "ASAHIINDIA.NS",
@@ -1453,12 +1455,12 @@
             "M&M.NS",
             "MOTHERSON.NS",
             "SONACOMS.NS",
-            "TIINDIA.NS",
             "TVSMOTOR.NS",
             "UNOMINDA.NS"
         ],
         "below": [
             "MARUTI.NS",
+            "TIINDIA.NS",
             "TMPV.NS"
         ],
         "new_stock": []
@@ -1536,7 +1538,6 @@
     "NIFTY HEALTHCARE": {
         "above": [
             "ABBOTINDIA.NS",
-            "ALKEM.NS",
             "APOLLOHOSP.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
@@ -1554,6 +1555,7 @@
             "ZYDUSLIFE.NS"
         ],
         "below": [
+            "ALKEM.NS",
             "DRREDDY.NS",
             "MAXHEALTH.NS",
             "SYNGENE.NS"
@@ -1606,7 +1608,6 @@
             "NATIONALUM.NS",
             "NMDC.NS",
             "SAIL.NS",
-            "TATASTEEL.NS",
             "VEDL.NS",
             "WELCORP.NS"
         ],
@@ -1620,7 +1621,6 @@
         "above": [
             "ABBOTINDIA.NS",
             "AJANTPHARM.NS",
-            "ALKEM.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
             "CIPLA.NS",
@@ -1639,6 +1639,7 @@
             "ZYDUSLIFE.NS"
         ],
         "below": [
+            "ALKEM.NS",
             "DRREDDY.NS"
         ],
         "new_stock": []
@@ -1870,7 +1871,6 @@
             "BOSCHLTD.NS",
             "BHARATFORG.NS",
             "UNOMINDA.NS",
-            "TIINDIA.NS",
             "SCHAEFFLER.NS",
             "SONACOMS.NS",
             "ENDURANCE.NS",
@@ -1887,6 +1887,7 @@
             "TALBROAUTO.NS"
         ],
         "below": [
+            "TIINDIA.NS",
             "MSUMI.NS",
             "CIEINDIA.NS"
         ],
@@ -2376,7 +2377,6 @@
     },
     "Metals & Mining": {
         "above": [
-            "TATASTEEL.NS",
             "JSWSTEEL.NS",
             "HINDALCO.NS",
             "VEDL.NS",
@@ -2581,7 +2581,6 @@
             "LUPIN.NS",
             "AUROPHARMA.NS",
             "ZYDUSLIFE.NS",
-            "ALKEM.NS",
             "GLENMARK.NS",
             "ABBOTINDIA.NS",
             "IPCALAB.NS",
@@ -2593,6 +2592,7 @@
         ],
         "below": [
             "DRREDDY.NS",
+            "ALKEM.NS",
             "NATCOPHARM.NS",
             "ERIS.NS",
             "SANOFI.NS"

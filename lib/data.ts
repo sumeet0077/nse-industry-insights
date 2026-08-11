@@ -124,9 +124,10 @@ export interface ThemeBreadthSummary {
 
 /**
  * Load Index_Close time series for every industry theme.
- * Runs at build time (SSG). Returns full history so client can slice dynamically.
+ * Runs at build time (SSG). Slices history to the last N entries (default 600)
+ * to keep RSC payload size optimal and prevent client hydration crashes.
  */
-export function getAllThemeBreadthData(): ThemeBreadthSummary[] {
+export function getAllThemeBreadthData(limit: number = 600): ThemeBreadthSummary[] {
     const results: ThemeBreadthSummary[] = [];
     const configs = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
 
@@ -134,9 +135,13 @@ export function getAllThemeBreadthData(): ThemeBreadthSummary[] {
         const raw = getBreadthData(config.dataFile);
         if (!raw || raw.length === 0) continue;
 
-        const trimmed = raw
+        let trimmed = raw
             .filter((d) => d.Index_Close != null)
             .map((d) => ({ Date: d.Date, Index_Close: d.Index_Close! }));
+
+        if (limit > 0 && trimmed.length > limit) {
+            trimmed = trimmed.slice(-limit);
+        }
 
         if (trimmed.length > 0) {
             results.push({ id: config.id, title: config.title, category: config.category, data: trimmed });

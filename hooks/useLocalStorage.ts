@@ -5,14 +5,33 @@ export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T
 
     const [storedValue, setStoredValue] = useState<T>(getInitial);
 
-    // Sync from localStorage after hydration (client-side only)
+    // Sync from localStorage after hydration (client-side only) with strict type validation
     useEffect(() => {
         try {
             const item = window.localStorage.getItem(key);
-            if (item !== null) {
+            if (item !== null && item !== "undefined" && item !== "null") {
                 const parsed = JSON.parse(item);
-                if (parsed !== undefined) {
-                    setStoredValue(parsed);
+                const defaultVal = getInitial();
+
+                // Ensure restored item matches type of initial default value
+                if (Array.isArray(defaultVal)) {
+                    if (Array.isArray(parsed)) {
+                        setStoredValue(parsed as T);
+                    }
+                } else if (typeof defaultVal === "number") {
+                    if (typeof parsed === "number" && !isNaN(parsed)) {
+                        setStoredValue(parsed as T);
+                    }
+                } else if (typeof defaultVal === "boolean") {
+                    if (typeof parsed === "boolean") {
+                        setStoredValue(parsed as T);
+                    }
+                } else if (typeof defaultVal === "string") {
+                    if (typeof parsed === "string") {
+                        setStoredValue(parsed as T);
+                    }
+                } else if (parsed !== null && parsed !== undefined) {
+                    setStoredValue(parsed as T);
                 }
             }
         } catch (error) {
@@ -38,4 +57,5 @@ export function useLocalStorage<T>(key: string, initialValue: T | (() => T)): [T
 
     return [storedValue, setValue];
 }
+
 

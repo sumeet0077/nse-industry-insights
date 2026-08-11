@@ -282,9 +282,10 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     }
 
     // Filter by BOTH active tickers, active quadrants, and active Top N filter
-    const filteredData = currentData.filter(d =>
-        selectedTickers.includes(d.Ticker) &&
-        selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
+    const filteredData = (currentData || []).filter(d =>
+        d && d.Ticker &&
+        (selectedTickers || []).includes(d.Ticker) &&
+        (selectedQuadrants || []).includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
         (!activeTopNSet || activeTopNSet.has(d.Ticker))
     );
 

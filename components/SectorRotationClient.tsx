@@ -251,13 +251,14 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, allTickers, groupedByTicker]);
 
     // Derive active preset from current toggle states
-    const activePreset = superTrendPreset !== "off" ? superTrendPreset : useMemo(() => {
+    const activePreset = useMemo(() => {
+        if (superTrendPreset !== "off") return superTrendPreset;
         if (momentumDir === "rising"  && ratioDir === "rising" && originDist === "off")  return "improving";
         if (momentumDir === "falling" && ratioDir === "rising" && originDist === "off")  return "leading";
         if (momentumDir === "falling" && ratioDir === "falling" && originDist === "off") return "weakening";
         if (momentumDir === "rising"  && ratioDir === "falling" && originDist === "off") return "lagging";
         return "off";
-    }, [momentumDir, ratioDir, originDist]);
+    }, [superTrendPreset, momentumDir, ratioDir, originDist]);
 
     // Apply the trend scanner: auto-select matching tickers
     const applyTrendScanner = useCallback(() => {

@@ -190,11 +190,14 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
         # Python's built-in json.dump writes literal 'NaN' which breaks JS parsers.
         df_summary = pd.DataFrame(summary_data)
         
+        # Deduplicate rows by Theme/Index to prevent duplicate table rows
+        df_summary = df_summary.drop_duplicates(subset=["Theme/Index"], keep="first")
+        
         # Replace python NaNs to None for safe serialization just in case
         df_summary = df_summary.where(pd.notna(df_summary), None)
         df_summary.to_json(out_path, orient="records", date_format="iso", indent=2)
         
-        print(f"  OK   performance_summary.json ({len(summary_data)} rows)")
+        print(f"  OK   performance_summary.json ({len(df_summary)} rows)")
     else:
         print("  ERR  Could not generate performance_summary.json")
 

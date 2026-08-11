@@ -61,7 +61,17 @@ export function getAppVersionInfo(): AppVersionInfo {
 }
 
 export function getPerformanceSummary(): PerformanceRow[] {
-    return readJson<PerformanceRow[]>("performance/performance_summary.json") ?? [];
+    const raw = readJson<PerformanceRow[]>("performance/performance_summary.json") ?? [];
+    const seen = new Set<string>();
+    const unique: PerformanceRow[] = [];
+    for (const row of raw) {
+        const title = row["Theme/Index"];
+        if (title && !seen.has(title)) {
+            seen.add(title);
+            unique.push(row);
+        }
+    }
+    return unique;
 }
 
 export function getMarketStatus(): MarketStatus {

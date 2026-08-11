@@ -282,12 +282,13 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     }
 
     // Filter by BOTH active tickers, active quadrants, and active Top N filter
-    const filteredData = (currentData || []).filter(d =>
-        d && d.Ticker &&
-        (selectedTickers || []).includes(d.Ticker) &&
-        (selectedQuadrants || []).includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
-        (!activeTopNSet || activeTopNSet.has(d.Ticker))
-    );
+    const filteredData = (currentData || []).filter(d => {
+        if (!d || !d.Ticker) return false;
+        const tickerMatch = !selectedTickers || selectedTickers.length === 0 || selectedTickers.includes(d.Ticker);
+        const quadMatch = !selectedQuadrants || selectedQuadrants.length === 0 || selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType);
+        const topNMatch = !activeTopNSet || activeTopNSet.has(d.Ticker);
+        return tickerMatch && quadMatch && topNMatch;
+    });
 
     // Search-filtered tickers for the selector panel
     const filteredAllTickers = searchQuery.trim()

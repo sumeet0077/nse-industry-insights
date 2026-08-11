@@ -222,12 +222,13 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, applyTrendScanner, trendMatchingTickers, scannerIsActive]);
 
 
-    const filteredData = rawData.filter(
-        (d) =>
-            selectedTickers.includes(d.Ticker) &&
-            selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType) &&
-            (!activeTopNSet || activeTopNSet.has(d.Ticker))
-    );
+    const filteredData = (rawData || []).filter(d => {
+        if (!d || !d.Ticker) return false;
+        const tickerMatch = !selectedTickers || selectedTickers.length === 0 || selectedTickers.includes(d.Ticker);
+        const quadMatch = !selectedQuadrants || selectedQuadrants.length === 0 || selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType);
+        const topNMatch = !activeTopNSet || activeTopNSet.has(d.Ticker);
+        return tickerMatch && quadMatch && topNMatch;
+    });
 
     const filteredAllTickers = useMemo(() => {
         return searchQuery.trim()

@@ -318,10 +318,11 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
     // Final filtered chart dataset
     const finalChartData = useMemo(() => {
-        return watchlistRawData.filter((pt) => {
+        return (watchlistRawData || []).filter((pt) => {
+            if (!pt || !pt.Ticker) return false;
             const quad = tickerQuadrants[pt.Ticker];
-            if (!quad || !selectedQuadrants.includes(quad)) return false;
-            if (!selectedTickers.includes(pt.Ticker)) return false;
+            if (quad && selectedQuadrants && selectedQuadrants.length > 0 && !selectedQuadrants.includes(quad)) return false;
+            if (selectedTickers && selectedTickers.length > 0 && !selectedTickers.includes(pt.Ticker)) return false;
             if (activeTopNSet && !activeTopNSet.has(pt.Ticker)) return false;
             return true;
         });

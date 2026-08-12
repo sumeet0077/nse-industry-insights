@@ -319,11 +319,18 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
     // Final filtered chart dataset
     const finalChartData = useMemo(() => {
-        return (watchlistRawData || []).filter((pt) => {
+        if (!watchlistRawData || watchlistRawData.length === 0) return [];
+        if (!selectedQuadrants || selectedQuadrants.length === 0) return [];
+        if (!selectedTickers || selectedTickers.length === 0) return [];
+
+        const quadSet = new Set(selectedQuadrants);
+        const tickerSet = new Set(selectedTickers);
+
+        return watchlistRawData.filter((pt) => {
             if (!pt || !pt.Ticker) return false;
             const quad = tickerQuadrants[pt.Ticker];
-            if (quad && selectedQuadrants && selectedQuadrants.length > 0 && !selectedQuadrants.includes(quad)) return false;
-            if (selectedTickers && selectedTickers.length > 0 && !selectedTickers.includes(pt.Ticker)) return false;
+            if (!quad || !quadSet.has(quad)) return false;
+            if (!tickerSet.has(pt.Ticker)) return false;
             if (activeTopNSet && !activeTopNSet.has(pt.Ticker)) return false;
             return true;
         });
@@ -1000,22 +1007,16 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => {
-                            if (scannerIsActive) resetScanner();
-                            setSelectedTickers([...activeWatchlist.tickers]);
-                        }}
+                        onClick={() => setSelectedQuadrants([...QUADRANTS])}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1 rounded font-medium transition-colors"
                     >
-                        Select All ({activeWatchlist.tickers.length})
+                        Select All (4 Quadrants)
                     </button>
                     <button
-                        onClick={() => {
-                            if (scannerIsActive) resetScanner();
-                            setSelectedTickers([]);
-                        }}
+                        onClick={() => setSelectedQuadrants([])}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-red-400 px-3 py-1 rounded font-medium transition-colors"
                     >
-                        Deselect All
+                        Deselect All Quadrants
                     </button>
                 </div>
             </div>

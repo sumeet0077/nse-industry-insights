@@ -223,13 +223,22 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
     }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, applyTrendScanner, trendMatchingTickers, scannerIsActive]);
 
 
-    const filteredData = (rawData || []).filter(d => {
-        if (!d || !d.Ticker) return false;
-        const tickerMatch = !selectedTickers || selectedTickers.length === 0 || selectedTickers.includes(d.Ticker);
-        const quadMatch = !selectedQuadrants || selectedQuadrants.length === 0 || selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType);
-        const topNMatch = !activeTopNSet || activeTopNSet.has(d.Ticker);
-        return tickerMatch && quadMatch && topNMatch;
-    });
+    const filteredData = useMemo(() => {
+        if (!rawData || rawData.length === 0) return [];
+        if (!selectedQuadrants || selectedQuadrants.length === 0) return [];
+        if (!selectedTickers || selectedTickers.length === 0) return [];
+
+        const quadSet = new Set(selectedQuadrants);
+        const tickerSet = new Set(selectedTickers);
+
+        return rawData.filter((d) => {
+            if (!d || !d.Ticker) return false;
+            if (!quadSet.has(tickerQuadrants[d.Ticker] as QuadrantType)) return false;
+            if (!tickerSet.has(d.Ticker)) return false;
+            if (activeTopNSet && !activeTopNSet.has(d.Ticker)) return false;
+            return true;
+        });
+    }, [rawData, selectedQuadrants, selectedTickers, tickerQuadrants, activeTopNSet]);
 
     const filteredAllTickers = useMemo(() => {
         return searchQuery.trim()
@@ -562,22 +571,16 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
                 <div className="flex items-center gap-2">
                     <button
-                        onClick={() => {
-                            if (scannerIsActive) resetScanner();
-                            setSelectedTickers([...allTickers]);
-                        }}
+                        onClick={() => setSelectedQuadrants([...QUADRANTS])}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-3 py-1 rounded font-medium transition-colors"
                     >
-                        Select All ({allTickers.length})
+                        Select All (4 Quadrants)
                     </button>
                     <button
-                        onClick={() => {
-                            if (scannerIsActive) resetScanner();
-                            setSelectedTickers([]);
-                        }}
+                        onClick={() => setSelectedQuadrants([])}
                         className="text-xs bg-slate-800 hover:bg-slate-700 text-red-400 px-3 py-1 rounded font-medium transition-colors"
                     >
-                        Deselect All
+                        Deselect All Quadrants
                     </button>
                 </div>
             </div>

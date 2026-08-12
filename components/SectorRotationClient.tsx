@@ -283,13 +283,23 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     }
 
     // Filter by BOTH active tickers, active quadrants, and active Top N filter
-    const filteredData = (currentData || []).filter(d => {
-        if (!d || !d.Ticker) return false;
-        const tickerMatch = !selectedTickers || selectedTickers.length === 0 || selectedTickers.includes(d.Ticker);
-        const quadMatch = !selectedQuadrants || selectedQuadrants.length === 0 || selectedQuadrants.includes(tickerQuadrants[d.Ticker] as QuadrantType);
-        const topNMatch = !activeTopNSet || activeTopNSet.has(d.Ticker);
-        return tickerMatch && quadMatch && topNMatch;
-    });
+    const filteredData = useMemo(() => {
+        if (!currentData || currentData.length === 0) return [];
+        if (!selectedQuadrants || selectedQuadrants.length === 0) return [];
+        if (selectedTickers !== null && selectedTickers.length === 0) return [];
+
+        const quadSet = new Set(selectedQuadrants);
+        const activeTickersArr = selectedTickers ?? allTickers;
+        const tickerSet = new Set(activeTickersArr);
+
+        return currentData.filter(d => {
+            if (!d || !d.Ticker) return false;
+            if (!quadSet.has(tickerQuadrants[d.Ticker] as QuadrantType)) return false;
+            if (!tickerSet.has(d.Ticker)) return false;
+            if (activeTopNSet && !activeTopNSet.has(d.Ticker)) return false;
+            return true;
+        });
+    }, [currentData, selectedQuadrants, selectedTickers, allTickers, tickerQuadrants, activeTopNSet]);
 
     // Search-filtered tickers for the selector panel
     const filteredAllTickers = searchQuery.trim()
@@ -298,10 +308,11 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
 
     const toggleTicker = (ticker: string) => {
         if (scannerIsActive) resetScanner();
-        if (selectedTickers.includes(ticker)) {
-            setSelectedTickers(selectedTickers.filter(t => t !== ticker));
+        const currentList = selectedTickers ?? allTickers;
+        if (currentList.includes(ticker)) {
+            setSelectedTickers(currentList.filter(t => t !== ticker));
         } else {
-            setSelectedTickers([...selectedTickers, ticker]);
+            setSelectedTickers([...currentList, ticker]);
         }
     };
 
@@ -609,57 +620,73 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                         </div>
                     </div>
 
-                    <div className="mb-4 flex flex-wrap gap-4">
-                        {QUADRANTS.map(q => {
-                            const textColors: Record<QuadrantType, string> = {
-                                Leading: "text-emerald-400",
-                                Weakening: "text-yellow-400",
-                                Lagging: "text-red-400",
-                                Improving: "text-blue-400"
-                            };
-                            const colorClass = textColors[q];
-                            return (
-                                <label key={q} className="flex items-center gap-1.5 cursor-pointer group">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedQuadrants.includes(q)}
-                                        onChange={() => toggleQuadrant(q)}
-                                        className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
-                                    />
-                                    <span className={`text-[13px] font-semibold ${colorClass}`}>
-                                        {q}
-                                    </span>
-                                    <span className="text-[11px] text-slate-500 font-medium bg-[#1a1a2e] px-1.5 py-0.5 rounded ml-1">
-                                        {quadrantPcts[q as keyof typeof quadrantPcts]}%
-                                    </span>
-                                </label>
-                            );
-                        })}
+                    <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex flex-wrap gap-4">
+                            {QUADRANTS.map(q => {
+                                const textColors: Record<QuadrantType, string> = {
+                                    Leading: "text-emerald-400",
+                                    Weakening: "text-yellow-400",
+                                    Lagging: "text-red-400",
+                                    Improving: "text-blue-400"
+                                };
+                                const colorClass = textColors[q];
+                                return (
+                                    <label key={q} className="flex items-center gap-1.5 cursor-pointer group">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedQuadrants.includes(q)}
+                                            onChange={() => toggleQuadrant(q)}
+                                            className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
+                                        />
+                                        <span className={`text-[13px] font-semibold ${colorClass}`}>
+                                            {q}
+                                        </span>
+                                        <span className="text-[11px] text-slate-500 font-medium bg-[#1a1a2e] px-1.5 py-0.5 rounded ml-1">
+                                            {quadrantPcts[q as keyof typeof quadrantPcts]}%
+                                        </span>
+                                    </label>
+                                );
+                            })}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setSelectedQuadrants([...QUADRANTS])}
+                                className="text-[11px] font-medium text-blue-400 hover:text-blue-300 bg-slate-800/60 px-2.5 py-0.5 rounded border border-slate-700/50 transition-colors"
+                            >
+                                Select All (4 Quadrants)
+                            </button>
+                            <button
+                                onClick={() => setSelectedQuadrants([])}
+                                className="text-[11px] font-medium text-red-400 hover:text-red-300 bg-slate-800/60 px-2.5 py-0.5 rounded border border-slate-700/50 transition-colors"
+                            >
+                                Deselect All Quadrants
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex justify-between items-center mb-3">
                         <label className="text-xs text-slate-400 font-semibold cursor-pointer select-none"
                             onClick={() => setIsSelecting(!isSelecting)}
                         >
-                            Select Themes/Indices for RRG {isSelecting ? "▼" : "▶"} ({selectedTickers.length}/{allTickers.length})
+                            Select Themes/Indices for RRG {isSelecting ? "▼" : "▶"} ({(selectedTickers ?? allTickers).length}/{allTickers.length})
                         </label>
                         <div className="flex gap-2">
                             <button
-                                onClick={() => { resetScanner(); setSelectedTickers(allTickers); }}
+                                onClick={() => { resetScanner(); setSelectedTickers([...allTickers]); }}
                                 className="text-[10px] uppercase font-bold text-blue-400 hover:text-blue-300 transition-colors"
                             >
-                                Select All
+                                Select All ({allTickers.length})
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
                                 onClick={() => { resetScanner(); setSelectedTickers([]); }}
                                 className="text-[10px] uppercase font-bold text-red-400 hover:text-red-300 transition-colors"
                             >
-                                Clear
+                                Deselect All
                             </button>
                             <span className="text-slate-600">|</span>
                             <button
-                                onClick={() => { resetScanner(); setSelectedTickers([]); }}
+                                onClick={() => { resetScanner(); setSelectedTickers([...allTickers]); setSelectedQuadrants([...QUADRANTS]); }}
                                 className="text-[10px] uppercase font-bold text-slate-400 hover:text-slate-300 transition-colors"
                             >
                                 Reset
@@ -709,12 +736,12 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                                         <label key={ticker} className="flex items-center gap-2 cursor-pointer group">
                                             <input
                                                 type="checkbox"
-                                                checked={selectedTickers.includes(ticker)}
+                                                checked={(selectedTickers ?? allTickers).includes(ticker)}
                                                 onChange={() => toggleTicker(ticker)}
                                                 className="h-3.5 w-3.5 rounded bg-[#1a1a2e] border-slate-700 text-blue-500 focus:ring-blue-500/50 cursor-pointer"
                                             />
                                             <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} title={q} />
-                                            <span className={`text-[13px] truncate transition-colors ${selectedTickers.includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
+                                            <span className={`text-[13px] truncate transition-colors ${(selectedTickers ?? allTickers).includes(ticker) ? "text-slate-200" : "text-slate-500 group-hover:text-slate-400"}`}>
                                                 {ticker}
                                             </span>
                                         </label>

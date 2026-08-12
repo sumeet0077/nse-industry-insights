@@ -141,7 +141,6 @@
             "AJANTPHARM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -223,7 +222,6 @@
             "FLUOROCHEM.NS",
             "GABRIEL.NS",
             "GAIL.NS",
-            "GESHIP.NS",
             "GLAND.NS",
             "GLAXO.NS",
             "GLENMARK.NS",
@@ -384,6 +382,7 @@
             "SYRMA.NS",
             "TATACAP.NS",
             "TATACOMM.NS",
+            "TATAINVEST.NS",
             "TATATECH.NS",
             "TBOTEK.NS",
             "TECHM.NS",
@@ -427,6 +426,7 @@
             "ALKEM.NS",
             "AMBER.NS",
             "AMBUJACEM.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -483,6 +483,7 @@
             "FORTIS.NS",
             "FSL.NS",
             "GALLANTT.NS",
+            "GESHIP.NS",
             "GICRE.NS",
             "GILLETTE.NS",
             "GODFRYPHLP.NS",
@@ -594,7 +595,6 @@
             "TATACHEM.NS",
             "TATACONSUM.NS",
             "TATAELXSI.NS",
-            "TATAINVEST.NS",
             "TATAPOWER.NS",
             "TATASTEEL.NS",
             "TCS.NS",
@@ -710,6 +710,7 @@
             "SAIL.NS",
             "SCHAEFFLER.NS",
             "TATACOMM.NS",
+            "TATAINVEST.NS",
             "THERMAX.NS",
             "TIINDIA.NS",
             "UNOMINDA.NS",
@@ -767,7 +768,6 @@
             "SUZLON.NS",
             "SWIGGY.NS",
             "TATAELXSI.NS",
-            "TATAINVEST.NS",
             "TORNTPOWER.NS",
             "UBL.NS",
             "UPL.NS",
@@ -799,7 +799,6 @@
             "AJANTPHARM.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -861,7 +860,6 @@
             "FIVESTAR.NS",
             "FLUOROCHEM.NS",
             "GABRIEL.NS",
-            "GESHIP.NS",
             "GLAND.NS",
             "GLAXO.NS",
             "GLENMARK.NS",
@@ -999,6 +997,7 @@
             "SUMICHEM.NS",
             "SYRMA.NS",
             "TATACOMM.NS",
+            "TATAINVEST.NS",
             "TATATECH.NS",
             "TBOTEK.NS",
             "TEJASNET.NS",
@@ -1030,6 +1029,7 @@
             "AFCONS.NS",
             "ALKEM.NS",
             "AMBER.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -1079,6 +1079,7 @@
             "FORTIS.NS",
             "FSL.NS",
             "GALLANTT.NS",
+            "GESHIP.NS",
             "GICRE.NS",
             "GILLETTE.NS",
             "GODFRYPHLP.NS",
@@ -1164,7 +1165,6 @@
             "TARIL.NS",
             "TATACHEM.NS",
             "TATAELXSI.NS",
-            "TATAINVEST.NS",
             "TECHNOE.NS",
             "TEGA.NS",
             "TENNIND.NS",
@@ -1199,7 +1199,6 @@
             "AFFLE.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ARE&M.NS",
             "ASTERDM.NS",
             "ATHERENERG.NS",
@@ -1239,7 +1238,6 @@
             "FINCABLES.NS",
             "FIVESTAR.NS",
             "GABRIEL.NS",
-            "GESHIP.NS",
             "GLAND.NS",
             "GMDCLTD.NS",
             "GRANULES.NS",
@@ -1343,6 +1341,7 @@
             "ABREL.NS",
             "AFCONS.NS",
             "AMBER.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APTUS.NS",
             "ASAHIINDIA.NS",
@@ -1378,6 +1377,7 @@
             "FORCEMOT.NS",
             "FSL.NS",
             "GALLANTT.NS",
+            "GESHIP.NS",
             "GILLETTE.NS",
             "GODIGIT.NS",
             "GPIL.NS",
@@ -1978,7 +1978,6 @@
             "BSE.NS",
             "MCX.NS",
             "CAMS.NS",
-            "ANGELONE.NS",
             "MOTILALOFS.NS",
             "IIFLCAPS.NS",
             "GEOJITFSL.NS",
@@ -1987,7 +1986,8 @@
         "below": [
             "IEX.NS",
             "CDSL.NS",
-            "KFINTECH.NS"
+            "KFINTECH.NS",
+            "ANGELONE.NS"
         ],
         "new_stock": []
     },
@@ -2081,10 +2081,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS",
-            "METROPOLIS.NS"
+            "VIJAYA.NS"
         ],
         "below": [
+            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2320,6 +2320,7 @@
             "MAHLOG.NS",
             "JSWINFRA.NS",
             "DELHIVERY.NS",
+            "TCIEXP.NS",
             "VRLLOG.NS",
             "TVSSCS.NS",
             "AEGISLOG.NS"
@@ -2328,7 +2329,6 @@
             "GATEWAY.NS",
             "BLUEDART.NS",
             "TCI.NS",
-            "TCIEXP.NS",
             "SNOWMAN.NS"
         ],
         "new_stock": [
@@ -2353,10 +2353,11 @@
         "above": [
             "SEAMECLTD.NS",
             "DREDGECORP.NS",
-            "SHREEJISPG.NS",
+            "SHREEJISPG.NS"
+        ],
+        "below": [
             "GESHIP.NS"
         ],
-        "below": [],
         "new_stock": []
     },
     "Media & Broadcasting": {
@@ -2838,10 +2839,11 @@
         "above": [
             "REDINGTON.NS",
             "RPTECH.NS",
-            "OPTIEMUS.NS",
+            "OPTIEMUS.NS"
+        ],
+        "below": [
             "DLINKINDIA.NS"
         ],
-        "below": [],
         "new_stock": []
     },
     "Telecom Infra": {

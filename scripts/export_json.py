@@ -395,16 +395,30 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                     df_pivot[col] = s_copy
 
         # Load Nifty 50 for Relative Strength calculations
-        nifty_file = source_dir / "market_breadth_nifty50.csv"
+        nifty_paths = [
+            source_dir / "market_breadth_nifty50.csv",
+            source_dir / "breadth" / "market_breadth_nifty50.csv",
+            source_dir / "market_breadth_nifty50.json",
+            source_dir / "breadth" / "market_breadth_nifty50.json",
+            Path("/home/ubuntu/nifty-breadth/market_breadth_nifty50.csv"),
+            Path("/Users/sumeetdas/Projects/nifty-breadth/market_breadth_nifty50.csv"),
+        ]
         nifty_ser = None
-        if nifty_file.exists():
-            try:
-                b_df = pd.read_csv(nifty_file)
-                if not b_df.empty and 'Index_Close' in b_df.columns:
-                    b_df['Date'] = pd.to_datetime(b_df['Date'])
-                    nifty_ser = b_df.set_index('Date')['Index_Close'].dropna()
-            except Exception:
-                pass
+        for n_path in nifty_paths:
+            if n_path.exists():
+                try:
+                    if n_path.suffix == ".json":
+                        with open(n_path) as f:
+                            b_data = json.load(f)
+                        b_df = pd.DataFrame(b_data)
+                    else:
+                        b_df = pd.read_csv(n_path)
+                    if not b_df.empty and 'Index_Close' in b_df.columns:
+                        b_df['Date'] = pd.to_datetime(b_df['Date'])
+                        nifty_ser = b_df.set_index('Date')['Index_Close'].dropna()
+                        break
+                except Exception as e:
+                    print(f"  WARN Failed to load Nifty baseline from {n_path}: {e}")
 
         nifty_latest = float(nifty_ser.iloc[-1]) if nifty_ser is not None and len(nifty_ser) >= 1 else 0
         nifty_5d = float(nifty_ser.iloc[-6]) if nifty_ser is not None and len(nifty_ser) >= 6 else 0

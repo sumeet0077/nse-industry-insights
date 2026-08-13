@@ -161,9 +161,20 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             },
         ];
         for (const col of returnCols) {
+            const mappedField = fieldMap[col];
             cols.push({
                 headerName: col,
-                field: fieldMap[col],
+                field: mappedField,
+                valueGetter: (params) => {
+                    if (!params.data) return null;
+                    const data = params.data as Record<string, unknown>;
+                    if (data[mappedField] !== undefined && data[mappedField] !== null) return data[mappedField];
+                    if (data[col] !== undefined && data[col] !== null) return data[col];
+                    const lowerMapped = mappedField.toLowerCase();
+                    const lowerCol = col.toLowerCase();
+                    const key = Object.keys(data).find(k => k.toLowerCase() === lowerMapped || k.toLowerCase() === lowerCol);
+                    return key ? data[key] : null;
+                },
                 hide: !visibleColumns[col],
                 width: col.startsWith("RS") ? 120 : 110,
                 valueFormatter: returnFormatter,

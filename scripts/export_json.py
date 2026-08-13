@@ -111,6 +111,8 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
                 continue
                 
             df['Date'] = pd.to_datetime(df['Date'])
+            if hasattr(df['Date'].dt, 'tz') and df['Date'].dt.tz is not None:
+                df['Date'] = df['Date'].dt.tz_localize(None)
             latest = df.iloc[-1]
             current_price = latest['Index_Close']
             current_date = latest['Date']
@@ -347,6 +349,8 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"])
         df_pivot = df_master.pivot(index="trade_date", columns="symbol_ns", values="close").sort_index()
         df_pivot.index = pd.to_datetime(df_pivot.index)
+        if hasattr(df_pivot.index, 'tz') and df_pivot.index.tz is not None:
+            df_pivot.index = df_pivot.index.tz_localize(None)
 
         # Apply corporate action split/bonus ratio adjustments (pct < -0.45 and pct > +0.80)
         for col in df_pivot.columns:

@@ -328,6 +328,7 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
 
     parquet_paths = [
         source_dir / "nse_master_adjusted_2014_onwards.parquet",
+        Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
         Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_bhav_with_delivery_2014_onwards.parquet"),
     ]
     parquet_file = next((p for p in parquet_paths if p.exists()), None)

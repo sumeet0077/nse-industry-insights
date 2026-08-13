@@ -6,6 +6,7 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { PerformanceRow, MarketStatus } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
+import { formatMetricReturn } from "@/lib/metrics";
 import { makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
 import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
@@ -56,10 +57,7 @@ function getHeatmapStyle(params: CellClassParams): { [key: string]: string } | u
 }
 
 function returnFormatter(params: ValueFormatterParams): string {
-    if (params.value === null || params.value === undefined || params.value === "") return "—";
-    const v = Number(params.value);
-    if (isNaN(v)) return "—";
-    return `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`;
+    return formatMetricReturn(params.value == null || params.value === "" ? undefined : Number(params.value));
 }
 
 const returnColumns = METRIC_CONFIG.map(m => m.label);

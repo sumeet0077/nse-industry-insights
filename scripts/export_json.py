@@ -493,7 +493,9 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         with open(out_file, "w") as f:
             json.dump(result, f, indent=2)
 
-        print(f"  OK   constituent_performance_latest.json ({len(result)} stocks)")
+        ytd_valid = sum(1 for r in result.values() if r.get("YTD") is not None)
+        rs20_valid = sum(1 for r in result.values() if r.get("RS (20D)") is not None)
+        print(f"  OK   constituent_performance_latest.json ({len(result)} stocks | YTD valid: {ytd_valid} | RS(20D) valid: {rs20_valid})")
     except Exception as e:
         print(f"  ERR  Calculating constituent performance: {e}")
         export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")

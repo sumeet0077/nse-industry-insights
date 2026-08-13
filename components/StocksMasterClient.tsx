@@ -4,7 +4,8 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Settings2, Filter } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
-import { getTickerLabel, makeTradingViewUrl, formatReturn, getReturnColor, resolveDataKey } from "@/lib/utils";
+import { getTickerLabel, makeTradingViewUrl, resolveDataKey } from "@/lib/utils";
+import { getMetricValue, formatMetricReturn, getMetricColor } from "@/lib/metrics";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
@@ -182,8 +183,8 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
             // Sort Stocks
             stocks.sort((a, b) => {
-                const valA = a.perf ? (a.perf[stockSortCol as keyof ConstituentPerformance] as number) || 0 : 0;
-                const valB = b.perf ? (b.perf[stockSortCol as keyof ConstituentPerformance] as number) || 0 : 0;
+                const valA = a.perf ? (getMetricValue(a.perf as any, stockSortCol) || 0) : 0;
+                const valB = b.perf ? (getMetricValue(b.perf as any, stockSortCol) || 0) : 0;
                 return stockSortDesc ? valB - valA : valA - valB;
             });
 
@@ -458,7 +459,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 (secVal as number) < 0 ? "bg-red-500/10 text-red-400" : 
                                                 "bg-slate-500/10 text-slate-400"
                                             }`}>
-                                                {formatReturn(secVal as number)}
+                                                {formatMetricReturn(secVal as number)}
                                             </div>
                                             <div className="relative">
                                                 <button 
@@ -533,11 +534,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         </td>
                                                         {/* Dynamic Cells */}
                                                         {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue)).map(opt => {
-                                                            const val = stock.perf?.[opt.stockValue as keyof ConstituentPerformance] as number;
+                                                            const val = stock.perf ? getMetricValue(stock.perf as any, opt.stockValue) : null;
 
                                                             return (
-                                                                <td key={opt.stockValue} className={`px-3 py-2 text-right ${getReturnColor(val)}`}>
-                                                                    {formatReturn(val)}
+                                                                <td key={opt.stockValue} className={`px-3 py-2 text-right ${getMetricColor(val)}`}>
+                                                                    {formatMetricReturn(val)}
                                                                 </td>
                                                             );
                                                         })}

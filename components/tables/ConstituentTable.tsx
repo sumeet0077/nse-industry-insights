@@ -2,10 +2,10 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent, GridApi } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol, formatReturn, getReturnColor } from "@/lib/utils";
+import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol } from "@/lib/utils";
+import { getMetricValue, formatMetricReturn, getMetricColor, METRIC_DEFINITIONS } from "@/lib/metrics";
 import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
-import { METRIC_CONFIG } from "@/lib/config";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -20,10 +20,10 @@ interface ConstituentTableProps {
     showCagr?: boolean;
 }
 
-const returnCols = METRIC_CONFIG.map(m => m.label);
+const returnCols = METRIC_DEFINITIONS.map(m => m.label);
 
 const fieldMap: Record<string, string> = {};
-METRIC_CONFIG.forEach(m => {
+METRIC_DEFINITIONS.forEach(m => {
     fieldMap[m.label] = m.stockValue;
 });
 
@@ -41,14 +41,14 @@ const myTheme = themeQuartz.withParams({
 });
 
 function returnFormatter(params: ValueFormatterParams): string {
-    return formatReturn(params.value == null || params.value === "" ? undefined : Number(params.value));
+    return formatMetricReturn(params.value == null || params.value === "" ? undefined : Number(params.value));
 }
 
 function returnCellClass(params: CellClassParams): string {
     if (params.value === null || params.value === undefined) return "text-gray-500";
     const v = Number(params.value);
     if (isNaN(v)) return "text-gray-500";
-    const base = getReturnColor(v);
+    const base = getMetricColor(v);
     return v !== 0 ? `${base} font-medium` : base;
 }
 
@@ -165,16 +165,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             cols.push({
                 headerName: col,
                 field: mappedField,
-                valueGetter: (params) => {
-                    if (!params.data) return null;
-                    const data = params.data as Record<string, unknown>;
-                    if (data[mappedField] !== undefined && data[mappedField] !== null) return data[mappedField];
-                    if (data[col] !== undefined && data[col] !== null) return data[col];
-                    const lowerMapped = mappedField.toLowerCase();
-                    const lowerCol = col.toLowerCase();
-                    const key = Object.keys(data).find(k => k.toLowerCase() === lowerMapped || k.toLowerCase() === lowerCol);
-                    return key ? data[key] : null;
-                },
+                valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
                 hide: !visibleColumns[col],
                 width: col.startsWith("RS") ? 120 : 110,
                 valueFormatter: returnFormatter,

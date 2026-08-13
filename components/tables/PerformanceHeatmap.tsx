@@ -567,11 +567,15 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                             try {
                                 const parsed = JSON.parse(storedState);
                                 if (Array.isArray(parsed)) {
-                                    // Strip the hide property so it doesn't override React-driven visibility
-                                    const cleanedState = parsed.map(({ hide, ...rest }: any) => rest);
-                                    params.api.applyColumnState({ state: cleanedState, applyOrder: true });
+                                    // Only restore sort state, do NOT override canonical column order
+                                    const sortState = parsed
+                                        .filter((s: any) => s.sort != null)
+                                        .map((s: any) => ({ colId: s.colId, sort: s.sort, sortIndex: s.sortIndex }));
+                                    if (sortState.length > 0) {
+                                        params.api.applyColumnState({ state: sortState, applyOrder: false });
+                                    }
                                 }
-                            } catch (e) { console.warn("Failed to apply AG grid state", e); }
+                            } catch (e) { console.warn("Failed to apply AG grid sort state", e); }
                         }
                         params.api.forEachNode((node: IRowNode) => {
                             if (selectedThemes.has(node.data["Theme/Index"])) node.setSelected(true);
@@ -580,7 +584,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     onSortChanged={() => {
                         if (gridRef.current?.api) {
                             const state = gridRef.current.api.getColumnState();
-                            window.localStorage.setItem("agGridState_heatmap", JSON.stringify(state));
+                            const sortOnlyState = state
+                                .filter((s: any) => s.sort != null)
+                                .map((s: any) => ({ colId: s.colId, sort: s.sort, sortIndex: s.sortIndex }));
+                            window.localStorage.setItem("agGridState_heatmap", JSON.stringify(sortOnlyState));
                         }
                     }}
                 />

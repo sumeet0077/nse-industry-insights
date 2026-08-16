@@ -52,7 +52,7 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     const [ratioDir, setRatioDir] = useLocalStorage<TrendMetricDirectionType>("sr_ratioDir", "off");
     const [originDist, setOriginDist] = useLocalStorage<OriginDistanceType>("sr_originDist", "off");
     const [superTrendPreset, setSuperTrendPreset] = useLocalStorage<SuperTrendPresetType>("sr_preset", "off");
-    const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 5);
+    const [trendLookback, setTrendLookback] = useLocalStorage("sr_trendLookback", 3);
     const [isCopied, setIsCopied] = useState(false);
 
     // Category filters
@@ -102,6 +102,37 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
             return true;
         });
     }, [currentDataRaw, showBroadMarket, showSectors, showIndustries, getLabel]);
+
+    // Daily dataset for true Multi-Timeframe (MTF) Alignment
+    const dailyDataRaw = useMemo(() => {
+        if (allThemeData && allThemeData.length > 0) {
+            const dynamicDaily = computeRRGData(allThemeData, benchmarkId, "D");
+            if (dynamicDaily && dynamicDaily.length > 0) return dynamicDaily;
+        }
+        return dataD;
+    }, [allThemeData, benchmarkId, dataD]);
+
+    const dailyGroupedByTicker = useMemo(() => {
+        const acc: Record<string, RRGDataPoint[]> = {};
+        if (!dailyDataRaw) return acc;
+        for (const pt of dailyDataRaw) {
+            const label = getLabel(pt.Ticker);
+            if (!acc[label]) acc[label] = [];
+            acc[label].push(pt);
+        }
+        return acc;
+    }, [dailyDataRaw, getLabel]);
+
+    // Check if daily momentum is rising or in leadership for MTF alignment
+    const isMtfAligned = useCallback((ticker: string): boolean => {
+        const dPoints = dailyGroupedByTicker[ticker];
+        if (!dPoints || dPoints.length < 2) return true; // Graceful fallback if daily not yet loaded
+        const effectiveLookback = Math.min(3, dPoints.length - 1);
+        const dTail = dPoints.slice(-(effectiveLookback + 1));
+        const dHead = dTail[dTail.length - 1];
+        const dStart = dTail[0];
+        return (dHead.RS_Momentum > dStart.RS_Momentum) || (dHead.RS_Momentum >= 100);
+    }, [dailyGroupedByTicker]);
 
     // Group by Ticker
     const groupedByTicker = useMemo(() => {
@@ -220,10 +251,13 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
 
         for (const ticker of allTickers) {
             const points = groupedByTicker[ticker];
-            if (!points || points.length < trendLookback + 1) continue;
+            if (!points || points.length < 2) continue;
 
-            const tail = points.slice(-(trendLookback + 1));
+            const effectiveLookback = Math.min(trendLookback, points.length - 1);
+            const tail = points.slice(-(effectiveLookback + 1));
             const head = tail[tail.length - 1];
+            const start = tail[0];
+            const prev = tail.length >= 2 ? tail[tail.length - 2] : start;
 
             // 1. Origin Distance Check
             if (radiusLimit !== null) {
@@ -231,24 +265,37 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                 if (dist > radiusLimit) continue;
             }
 
-            // 2. Metric Direction Check
-            let isMatch = true;
-            for (let i = 1; i < tail.length; i++) {
-                const currM = tail[i].RS_Momentum;
-                const prevM = tail[i - 1].RS_Momentum;
-                const currR = tail[i].RS_Ratio;
-                const prevR = tail[i - 1].RS_Ratio;
+            // 2. Net Vector Trajectory & Recency Check
+            const deltaM = head.RS_Momentum - start.RS_Momentum;
+            const deltaR = head.RS_Ratio - start.RS_Ratio;
+            const recencyM = head.RS_Momentum - prev.RS_Momentum;
+            const recencyR = head.RS_Ratio - prev.RS_Ratio;
 
-                if (momentumDir === "rising"  && currM <= prevM) { isMatch = false; break; }
-                if (momentumDir === "falling" && currM > prevM)  { isMatch = false; break; }
-                if (ratioDir === "rising"     && currR <= prevR) { isMatch = false; break; }
-                if (ratioDir === "falling"    && currR > prevR)  { isMatch = false; break; }
+            let isMatch = true;
+
+            if (momentumDir === "rising") {
+                if (deltaM <= 0 && recencyM <= 0) isMatch = false;
+            } else if (momentumDir === "falling") {
+                if (deltaM >= 0 && recencyM >= 0) isMatch = false;
+            }
+
+            if (ratioDir === "rising") {
+                if (deltaR <= 0 && recencyR <= 0) isMatch = false;
+            } else if (ratioDir === "falling") {
+                if (deltaR >= 0 && recencyR >= 0) isMatch = false;
+            }
+
+            // 3. Multi-Timeframe (MTF) Alignment for Presets
+            if (isMatch && (superTrendPreset === "mtf_aligned" || superTrendPreset === "super_trend")) {
+                if (!isMtfAligned(ticker)) {
+                    isMatch = false;
+                }
             }
 
             if (isMatch) matches.push(ticker);
         }
         return matches;
-    }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, allTickers, groupedByTicker]);
+    }, [momentumDir, ratioDir, originDist, superTrendPreset, trendLookback, allTickers, groupedByTicker, isMtfAligned]);
 
     // Derive active preset from current toggle states
     const activePreset = useMemo(() => {
@@ -793,32 +840,45 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-800/60">
-                                {trendMatchingTickers?.map((ticker) => {
-                                    const pts = groupedByTicker[ticker] || [];
-                                    const metrics = calculateSuperTrendScore(pts);
-                                    const head = pts[pts.length - 1];
-                                    const quad = tickerQuadrants[ticker] || "Unknown";
-                                    return (
-                                        <tr key={ticker} className="hover:bg-slate-800/40 transition-colors font-mono">
-                                            <td className="py-2.5 px-3 font-semibold text-blue-400 font-sans">{ticker}</td>
-                                            <td className="py-2.5 px-3">
-                                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                                                    quad === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
-                                                    quad === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
-                                                    quad === "Lagging" ? "bg-red-500/20 text-red-300" :
-                                                    "bg-blue-500/20 text-blue-300"
-                                                }`}>{quad}</span>
-                                            </td>
-                                            <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Ratio === "number" ? head.RS_Ratio.toFixed(2) : "—"}</td>
-                                            <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Momentum === "number" ? head.RS_Momentum.toFixed(2) : "—"}</td>
-                                            <td className="py-2.5 px-3 text-violet-300">{typeof metrics?.distance === "number" ? metrics.distance.toFixed(2) : "—"} pts</td>
-                                            <td className="py-2.5 px-3 text-emerald-400">{typeof metrics?.accel === "number" ? metrics.accel.toFixed(2) : "—"}x</td>
-                                            <td className="py-2.5 px-3 font-bold text-emerald-300">
-                                                {metrics?.score ?? 50} / 100 🔥
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                {trendMatchingTickers
+                                    ?.map((ticker) => {
+                                        const pts = groupedByTicker[ticker] || [];
+                                        const mtf = isMtfAligned(ticker);
+                                        const metrics = calculateSuperTrendScore(pts, mtf);
+                                        const head = pts[pts.length - 1];
+                                        const quad = tickerQuadrants[ticker] || "Unknown";
+                                        return { ticker, pts, mtf, metrics, head, quad };
+                                    })
+                                    .sort((a, b) => (b.metrics?.score ?? 0) - (a.metrics?.score ?? 0))
+                                    .map(({ ticker, mtf, metrics, head, quad }) => {
+                                        return (
+                                            <tr key={ticker} className="hover:bg-slate-800/40 transition-colors font-mono">
+                                                <td className="py-2.5 px-3 font-semibold text-blue-400 font-sans flex items-center gap-1.5">
+                                                    <span>{ticker}</span>
+                                                    {mtf && (
+                                                        <span className="text-[9px] bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-medium" title="Weekly + Daily Momentum Aligned">
+                                                            ⚡ MTF
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="py-2.5 px-3">
+                                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                                                        quad === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
+                                                        quad === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
+                                                        quad === "Lagging" ? "bg-red-500/20 text-red-300" :
+                                                        "bg-blue-500/20 text-blue-300"
+                                                    }`}>{quad}</span>
+                                                </td>
+                                                <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Ratio === "number" ? head.RS_Ratio.toFixed(2) : "—"}</td>
+                                                <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Momentum === "number" ? head.RS_Momentum.toFixed(2) : "—"}</td>
+                                                <td className="py-2.5 px-3 text-violet-300">{typeof metrics?.distance === "number" ? metrics.distance.toFixed(2) : "—"} pts</td>
+                                                <td className="py-2.5 px-3 text-emerald-400">{typeof metrics?.accel === "number" ? metrics.accel.toFixed(2) : "—"}x</td>
+                                                <td className="py-2.5 px-3 font-bold text-emerald-300">
+                                                    {metrics?.score ?? 50} / 100 🔥
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                             </tbody>
                         </table>
                     </div>

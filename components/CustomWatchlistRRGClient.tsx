@@ -89,7 +89,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const [ratioDir, setRatioDir] = useLocalStorage<TrendMetricDirectionType>("cw_ratioDir", "off");
     const [originDist, setOriginDist] = useLocalStorage<OriginDistanceType>("cw_originDist", "off");
     const [superTrendPreset, setSuperTrendPreset] = useLocalStorage<SuperTrendPresetType>("cw_preset", "off");
-    const [trendLookback, setTrendLookback] = useLocalStorage<number>("cw_trendLookback", 5);
+    const [trendLookback, setTrendLookback] = useLocalStorage<number>("cw_trendLookback", 3);
     const [isCopied, setIsCopied] = useState(false);
 
 
@@ -263,10 +263,13 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
         for (const ticker of activeWatchlist.tickers) {
             const points = groupedByTicker[ticker];
-            if (!points || points.length < trendLookback + 1) continue;
+            if (!points || points.length < 2) continue;
 
-            const tail = points.slice(-(trendLookback + 1));
+            const effectiveLookback = Math.min(trendLookback, points.length - 1);
+            const tail = points.slice(-(effectiveLookback + 1));
             const head = tail[tail.length - 1];
+            const start = tail[0];
+            const prev = tail.length >= 2 ? tail[tail.length - 2] : start;
 
             // 1. Origin Distance Check
             if (radiusLimit !== null) {
@@ -274,19 +277,24 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 if (dist > radiusLimit) continue;
             }
 
-            // 2. Metric Direction Check
+            // 2. Net Vector Trajectory & Recency Check
+            const deltaM = head.RS_Momentum - start.RS_Momentum;
+            const deltaR = head.RS_Ratio - start.RS_Ratio;
+            const recencyM = head.RS_Momentum - prev.RS_Momentum;
+            const recencyR = head.RS_Ratio - prev.RS_Ratio;
+
             let isMatch = true;
 
-            for (let i = 1; i < tail.length; i++) {
-                const currM = tail[i].RS_Momentum;
-                const prevM = tail[i - 1].RS_Momentum;
-                const currR = tail[i].RS_Ratio;
-                const prevR = tail[i - 1].RS_Ratio;
+            if (momentumDir === "rising") {
+                if (deltaM <= 0 && recencyM <= 0) isMatch = false;
+            } else if (momentumDir === "falling") {
+                if (deltaM >= 0 && recencyM >= 0) isMatch = false;
+            }
 
-                if (momentumDir === "rising"  && currM <= prevM) { isMatch = false; break; }
-                if (momentumDir === "falling" && currM > prevM)  { isMatch = false; break; }
-                if (ratioDir === "rising"     && currR <= prevR) { isMatch = false; break; }
-                if (ratioDir === "falling"    && currR > prevR)  { isMatch = false; break; }
+            if (ratioDir === "rising") {
+                if (deltaR <= 0 && recencyR <= 0) isMatch = false;
+            } else if (ratioDir === "falling") {
+                if (deltaR >= 0 && recencyR >= 0) isMatch = false;
             }
 
             if (isMatch) matches.push(ticker);

@@ -12,6 +12,7 @@ import type { StockRRGPayload } from "@/lib/data";
 interface StockRRGClientProps {
     title: string;
     stockRRGData: StockRRGPayload | null;
+    fallbackConstituents?: string[];
 }
 
 function cleanTicker(ticker: string): string {
@@ -23,7 +24,7 @@ function toTVSymbol(ticker: string): string {
     return `NSE:${clean.replace(/[&\-\s]/g, "_")}`;
 }
 
-export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
+export function StockRRGClient({ title, stockRRGData, fallbackConstituents }: StockRRGClientProps) {
     const [timeframe, setTimeframe] = useState<TimeframeType>("W");
     const [tailLength, setTailLength] = useState<number>(5);
     const [searchQuery, setSearchQuery] = useState("");
@@ -46,9 +47,13 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
 
     // Build normalized set of constituent tickers for this specific index/theme
     const constituentSet = useMemo(() => {
-        if (!stockRRGData || !stockRRGData.constituents || stockRRGData.constituents.length === 0) return null;
+        const list = (stockRRGData?.constituents && stockRRGData.constituents.length > 0)
+            ? stockRRGData.constituents
+            : fallbackConstituents;
+
+        if (!list || list.length === 0) return null;
         const set = new Set<string>();
-        for (const s of stockRRGData.constituents) {
+        for (const s of list) {
             const upper = s.toUpperCase();
             const clean = cleanTicker(s).toUpperCase();
             set.add(upper);
@@ -56,7 +61,7 @@ export function StockRRGClient({ title, stockRRGData }: StockRRGClientProps) {
             if (!upper.endsWith(".NS")) set.add(`${upper}.NS`);
         }
         return set;
-    }, [stockRRGData]);
+    }, [stockRRGData, fallbackConstituents]);
 
     const rawData: RRGDataPoint[] = useMemo(() => {
         if (!stockRRGData) return [];

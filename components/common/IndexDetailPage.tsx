@@ -187,7 +187,15 @@ export function IndexDetailPage({
 
             {/* Tab content */}
             {activeTab === "rrg" && (
-                <StockRRGClient title={title} stockRRGData={stockRRGData ?? null} />
+                <StockRRGClient
+                    title={title}
+                    stockRRGData={stockRRGData ?? null}
+                    fallbackConstituents={
+                        marketStatus
+                            ? [...(marketStatus.above || []), ...(marketStatus.below || []), ...(marketStatus.new_stock || [])]
+                            : constituentData?.map(c => c.ticker) || []
+                    }
+                />
             )}
 
             {activeTab === "chart" && (

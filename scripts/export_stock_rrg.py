@@ -181,7 +181,7 @@ def main():
             found_val = ms_by_norm_key.get(norm_dataFile)
 
         if not found_val and dataFile == "breadth_oilgas":
-            found_val = market_status.get("NIFTY OIL & GAS")
+            found_val = market_status.get("NIFTY OIL AND GAS") or market_status.get("NIFTY OIL & GAS") or ms_by_norm_key.get("niftyoilgas")
 
         if found_val and isinstance(found_val, dict):
             c_set = set(found_val.get("above", []) + found_val.get("below", []) + found_val.get("new_stock", []))

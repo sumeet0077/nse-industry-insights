@@ -1,0 +1,2142 @@
+{
+  "Copper": {
+    "id": "breadth_theme_copper",
+    "title": "Copper",
+    "description": "Copper Producers & Processors",
+    "dataFile": "breadth_theme_copper",
+    "stock_count": 5,
+    "constituents": [
+      "ADANIENT.NS",
+      "BHAGYANGR.NS",
+      "HINDALCO.NS",
+      "HINDCOPPER.NS",
+      "PRECWIRE.NS"
+    ],
+    "clean_symbols": [
+      "ADANIENT",
+      "BHAGYANGR",
+      "HINDALCO",
+      "HINDCOPPER",
+      "PRECWIRE"
+    ]
+  },
+  "Defence & Aerospace": {
+    "id": "breadth_theme_defence_and_aerospace",
+    "title": "Defence & Aerospace",
+    "description": "Defence Equipment & Services",
+    "dataFile": "breadth_theme_defence_and_aerospace",
+    "stock_count": 15,
+    "constituents": [
+      "ASTRAMICRO.NS",
+      "BDL.NS",
+      "BEL.NS",
+      "COCHINSHIP.NS",
+      "DATAPATTNS.NS",
+      "DCXINDIA.NS",
+      "GRSE.NS",
+      "HAL.NS",
+      "IDEAFORGE.NS",
+      "KRISHNADEF.NS",
+      "MAZDOCK.NS",
+      "MTARTECH.NS",
+      "PARAS.NS",
+      "SOLARINDS.NS",
+      "ZENTEC.NS"
+    ],
+    "clean_symbols": [
+      "ASTRAMICRO",
+      "BDL",
+      "BEL",
+      "COCHINSHIP",
+      "DATAPATTNS",
+      "DCXINDIA",
+      "GRSE",
+      "HAL",
+      "IDEAFORGE",
+      "KRISHNADEF",
+      "MAZDOCK",
+      "MTARTECH",
+      "PARAS",
+      "SOLARINDS",
+      "ZENTEC"
+    ]
+  },
+  "Railways & Infrastructure": {
+    "id": "breadth_theme_railways_and_infrastructure",
+    "title": "Railways & Infrastructure",
+    "description": "Railway Infra & Rolling Stock",
+    "dataFile": "breadth_theme_railways_and_infrastructure",
+    "stock_count": 11,
+    "constituents": [
+      "BEML.NS",
+      "CONCOR.NS",
+      "IRCON.NS",
+      "IRCTC.NS",
+      "IRFC.NS",
+      "JWL.NS",
+      "RAILTEL.NS",
+      "RITES.NS",
+      "RVNL.NS",
+      "TEXRAIL.NS",
+      "TITAGARH.NS"
+    ],
+    "clean_symbols": [
+      "BEML",
+      "CONCOR",
+      "IRCON",
+      "IRCTC",
+      "IRFC",
+      "JWL",
+      "RAILTEL",
+      "RITES",
+      "RVNL",
+      "TEXRAIL",
+      "TITAGARH"
+    ]
+  },
+  "Power T&D": {
+    "id": "breadth_theme_power_tandd",
+    "title": "Power T&D",
+    "description": "Power Transmission & Distribution",
+    "dataFile": "breadth_theme_power_tandd",
+    "stock_count": 16,
+    "constituents": [
+      "ADANIENSOL.NS",
+      "APARINDS.NS",
+      "CGPOWER.NS",
+      "ENRIN.NS",
+      "GENUSPOWER.NS",
+      "GVT&D.NS",
+      "KEC.NS",
+      "KPIL.NS",
+      "POWERGRID.NS",
+      "POWERINDIA.NS",
+      "QPOWER.NS",
+      "SCHNEIDER.NS",
+      "SIEMENS.NS",
+      "SKIPPER.NS",
+      "TRANSRAILL.NS",
+      "VOLTAMP.NS"
+    ],
+    "clean_symbols": [
+      "ADANIENSOL",
+      "APARINDS",
+      "CGPOWER",
+      "ENRIN",
+      "GENUSPOWER",
+      "GVT&D",
+      "KEC",
+      "KPIL",
+      "POWERGRID",
+      "POWERINDIA",
+      "QPOWER",
+      "SCHNEIDER",
+      "SIEMENS",
+      "SKIPPER",
+      "TRANSRAILL",
+      "VOLTAMP"
+    ]
+  },
+  "Life Insurance": {
+    "id": "breadth_theme_life_insurance",
+    "title": "Life Insurance",
+    "description": "Life Insurance Companies",
+    "dataFile": "breadth_theme_life_insurance",
+    "stock_count": 5,
+    "constituents": [
+      "HDFCLIFE.NS",
+      "ICICIPRULI.NS",
+      "LICI.NS",
+      "MFSL.NS",
+      "SBILIFE.NS"
+    ],
+    "clean_symbols": [
+      "HDFCLIFE",
+      "ICICIPRULI",
+      "LICI",
+      "MFSL",
+      "SBILIFE"
+    ]
+  },
+  "General Insurance": {
+    "id": "breadth_theme_general_insurance",
+    "title": "General Insurance",
+    "description": "General Insurance Companies",
+    "dataFile": "breadth_theme_general_insurance",
+    "stock_count": 7,
+    "constituents": [
+      "GICRE.NS",
+      "GODIGIT.NS",
+      "ICICIGI.NS",
+      "MEDIASSIST.NS",
+      "NIACL.NS",
+      "NIVABUPA.NS",
+      "STARHEALTH.NS"
+    ],
+    "clean_symbols": [
+      "GICRE",
+      "GODIGIT",
+      "ICICIGI",
+      "MEDIASSIST",
+      "NIACL",
+      "NIVABUPA",
+      "STARHEALTH"
+    ]
+  },
+  "Private Banking": {
+    "id": "breadth_theme_private_banking",
+    "title": "Private Banking",
+    "description": "Private Sector Banks",
+    "dataFile": "breadth_theme_private_banking",
+    "stock_count": 13,
+    "constituents": [
+      "AUBANK.NS",
+      "AXISBANK.NS",
+      "BANDHANBNK.NS",
+      "FEDERALBNK.NS",
+      "HDFCBANK.NS",
+      "ICICIBANK.NS",
+      "IDFCFIRSTB.NS",
+      "INDUSINDBK.NS",
+      "J&KBANK.NS",
+      "KARURVYSYA.NS",
+      "KOTAKBANK.NS",
+      "RBLBANK.NS",
+      "YESBANK.NS"
+    ],
+    "clean_symbols": [
+      "AUBANK",
+      "AXISBANK",
+      "BANDHANBNK",
+      "FEDERALBNK",
+      "HDFCBANK",
+      "ICICIBANK",
+      "IDFCFIRSTB",
+      "INDUSINDBK",
+      "J&KBANK",
+      "KARURVYSYA",
+      "KOTAKBANK",
+      "RBLBANK",
+      "YESBANK"
+    ]
+  },
+  "PSU Banking": {
+    "id": "breadth_theme_psu_banking",
+    "title": "PSU Banking",
+    "description": "Public Sector Banks",
+    "dataFile": "breadth_theme_psu_banking",
+    "stock_count": 12,
+    "constituents": [
+      "BANKBARODA.NS",
+      "BANKINDIA.NS",
+      "CANBK.NS",
+      "CENTRALBK.NS",
+      "INDIANB.NS",
+      "IOB.NS",
+      "MAHABANK.NS",
+      "PNB.NS",
+      "PSB.NS",
+      "SBIN.NS",
+      "UCOBANK.NS",
+      "UNIONBANK.NS"
+    ],
+    "clean_symbols": [
+      "BANKBARODA",
+      "BANKINDIA",
+      "CANBK",
+      "CENTRALBK",
+      "INDIANB",
+      "IOB",
+      "MAHABANK",
+      "PNB",
+      "PSB",
+      "SBIN",
+      "UCOBANK",
+      "UNIONBANK"
+    ]
+  },
+  "Housing Finance": {
+    "id": "breadth_theme_housing_finance",
+    "title": "Housing Finance",
+    "description": "Housing Finance Companies",
+    "dataFile": "breadth_theme_housing_finance",
+    "stock_count": 12,
+    "constituents": [
+      "AADHARHFC.NS",
+      "AAVAS.NS",
+      "APTUS.NS",
+      "BAJAJHFL.NS",
+      "CANFINHOME.NS",
+      "HOMEFIRST.NS",
+      "HUDCO.NS",
+      "INDIASHLTR.NS",
+      "LICHSGFIN.NS",
+      "PNBHOUSING.NS",
+      "REPCOHOME.NS",
+      "SAMMAANCAP.NS"
+    ],
+    "clean_symbols": [
+      "AADHARHFC",
+      "AAVAS",
+      "APTUS",
+      "BAJAJHFL",
+      "CANFINHOME",
+      "HOMEFIRST",
+      "HUDCO",
+      "INDIASHLTR",
+      "LICHSGFIN",
+      "PNBHOUSING",
+      "REPCOHOME",
+      "SAMMAANCAP"
+    ]
+  },
+  "NBFC": {
+    "id": "breadth_theme_nbfc",
+    "title": "NBFC",
+    "description": "Non-Banking Financial Companies",
+    "dataFile": "breadth_theme_nbfc",
+    "stock_count": 17,
+    "constituents": [
+      "BAJAJFINSV.NS",
+      "BAJFINANCE.NS",
+      "CGCL.NS",
+      "CHOLAFIN.NS",
+      "CREDITACC.NS",
+      "IFCI.NS",
+      "LICHSGFIN.NS",
+      "M&MFIN.NS",
+      "MANAPPURAM.NS",
+      "MUTHOOTFIN.NS",
+      "PFC.NS",
+      "PIRAMALFIN.NS",
+      "POONAWALLA.NS",
+      "RECLTD.NS",
+      "SHRIRAMFIN.NS",
+      "SUNDARMFIN.NS",
+      "TATACAP.NS"
+    ],
+    "clean_symbols": [
+      "BAJAJFINSV",
+      "BAJFINANCE",
+      "CGCL",
+      "CHOLAFIN",
+      "CREDITACC",
+      "IFCI",
+      "LICHSGFIN",
+      "M&MFIN",
+      "MANAPPURAM",
+      "MUTHOOTFIN",
+      "PFC",
+      "PIRAMALFIN",
+      "POONAWALLA",
+      "RECLTD",
+      "SHRIRAMFIN",
+      "SUNDARMFIN",
+      "TATACAP"
+    ]
+  },
+  "Retail & E-Commerce": {
+    "id": "breadth_theme_retail_and_e_commerce",
+    "title": "Retail & E-Commerce",
+    "description": "Retail and Online Commerce",
+    "dataFile": "breadth_theme_retail_and_e_commerce",
+    "stock_count": 11,
+    "constituents": [
+      "ABFRL.NS",
+      "DMART.NS",
+      "EMIL.NS",
+      "ETERNAL.NS",
+      "MEESHO.NS",
+      "METROBRAND.NS",
+      "NYKAA.NS",
+      "RELIANCE.NS",
+      "SWIGGY.NS",
+      "TRENT.NS",
+      "VBL.NS"
+    ],
+    "clean_symbols": [
+      "ABFRL",
+      "DMART",
+      "EMIL",
+      "ETERNAL",
+      "MEESHO",
+      "METROBRAND",
+      "NYKAA",
+      "RELIANCE",
+      "SWIGGY",
+      "TRENT",
+      "VBL"
+    ]
+  },
+  "Asset Management": {
+    "id": "breadth_theme_asset_management",
+    "title": "Asset Management",
+    "description": "Asset Management Companies",
+    "dataFile": "breadth_theme_asset_management",
+    "stock_count": 5,
+    "constituents": [
+      "ABSLAMC.NS",
+      "HDFCAMC.NS",
+      "ICICIAMC.NS",
+      "NAM-INDIA.NS",
+      "UTIAMC.NS"
+    ],
+    "clean_symbols": [
+      "ABSLAMC",
+      "HDFCAMC",
+      "ICICIAMC",
+      "NAM-INDIA",
+      "UTIAMC"
+    ]
+  },
+  "Wealth Management": {
+    "id": "breadth_theme_wealth_management",
+    "title": "Wealth Management",
+    "description": "Wealth Management Firms",
+    "dataFile": "breadth_theme_wealth_management",
+    "stock_count": 4,
+    "constituents": [
+      "360ONE.NS",
+      "ANANDRATHI.NS",
+      "NUVAMA.NS",
+      "PRUDENT.NS"
+    ],
+    "clean_symbols": [
+      "360ONE",
+      "ANANDRATHI",
+      "NUVAMA",
+      "PRUDENT"
+    ]
+  },
+  "Capital Market": {
+    "id": "breadth_theme_capital_market",
+    "title": "Capital Market",
+    "description": "Capital Market Intermediaries",
+    "dataFile": "breadth_theme_capital_market",
+    "stock_count": 11,
+    "constituents": [
+      "5PAISA.NS",
+      "ANGELONE.NS",
+      "BSE.NS",
+      "CAMS.NS",
+      "CDSL.NS",
+      "GEOJITFSL.NS",
+      "IEX.NS",
+      "IIFLCAPS.NS",
+      "KFINTECH.NS",
+      "MCX.NS",
+      "MOTILALOFS.NS"
+    ],
+    "clean_symbols": [
+      "5PAISA",
+      "ANGELONE",
+      "BSE",
+      "CAMS",
+      "CDSL",
+      "GEOJITFSL",
+      "IEX",
+      "IIFLCAPS",
+      "KFINTECH",
+      "MCX",
+      "MOTILALOFS"
+    ]
+  },
+  "Capital Goods": {
+    "id": "breadth_theme_capital_goods",
+    "title": "Capital Goods",
+    "description": "Heavy Engineering & Industrial Equipment",
+    "dataFile": "breadth_theme_capital_goods",
+    "stock_count": 24,
+    "constituents": [
+      "ABB.NS",
+      "AIAENG.NS",
+      "APARINDS.NS",
+      "BEL.NS",
+      "BHEL.NS",
+      "CARBORUNIV.NS",
+      "CGPOWER.NS",
+      "CUMMINSIND.NS",
+      "ELGIEQUIP.NS",
+      "GENUSPOWER.NS",
+      "GRINDWELL.NS",
+      "HONAUT.NS",
+      "ISGEC.NS",
+      "JYOTICNC.NS",
+      "KIRLOSENG.NS",
+      "LT.NS",
+      "PTCIL.NS",
+      "SCHAEFFLER.NS",
+      "SIEMENS.NS",
+      "SKFINDIA.NS",
+      "TDPOWERSYS.NS",
+      "THERMAX.NS",
+      "TIMKEN.NS",
+      "TRITURBINE.NS"
+    ],
+    "clean_symbols": [
+      "ABB",
+      "AIAENG",
+      "APARINDS",
+      "BEL",
+      "BHEL",
+      "CARBORUNIV",
+      "CGPOWER",
+      "CUMMINSIND",
+      "ELGIEQUIP",
+      "GENUSPOWER",
+      "GRINDWELL",
+      "HONAUT",
+      "ISGEC",
+      "JYOTICNC",
+      "KIRLOSENG",
+      "LT",
+      "PTCIL",
+      "SCHAEFFLER",
+      "SIEMENS",
+      "SKFINDIA",
+      "TDPOWERSYS",
+      "THERMAX",
+      "TIMKEN",
+      "TRITURBINE"
+    ]
+  },
+  "Personal Care & Wellness": {
+    "id": "breadth_theme_personal_care_and_wellness",
+    "title": "Personal Care & Wellness",
+    "description": "Health, Hygiene & Consumer Wellness",
+    "dataFile": "breadth_theme_personal_care_and_wellness",
+    "stock_count": 7,
+    "constituents": [
+      "BAJAJCON.NS",
+      "CUPID.NS",
+      "EMAMILTD.NS",
+      "GILLETTE.NS",
+      "JHS.NS",
+      "PGHH.NS",
+      "ZYDUSWELL.NS"
+    ],
+    "clean_symbols": [
+      "BAJAJCON",
+      "CUPID",
+      "EMAMILTD",
+      "GILLETTE",
+      "JHS",
+      "PGHH",
+      "ZYDUSWELL"
+    ]
+  },
+  "Alcohols & Breweries": {
+    "id": "breadth_theme_alcohols_and_breweries",
+    "title": "Alcohols & Breweries",
+    "description": "Alcohol & Brewery Companies",
+    "dataFile": "breadth_theme_alcohols_and_breweries",
+    "stock_count": 9,
+    "constituents": [
+      "ASALCBR.NS",
+      "GLOBUSSPR.NS",
+      "PICCADIL.NS",
+      "RADICO.NS",
+      "SDBL.NS",
+      "SULA.NS",
+      "TI.NS",
+      "UBL.NS",
+      "UNITDSPR.NS"
+    ],
+    "clean_symbols": [
+      "ASALCBR",
+      "GLOBUSSPR",
+      "PICCADIL",
+      "RADICO",
+      "SDBL",
+      "SULA",
+      "TI",
+      "UBL",
+      "UNITDSPR"
+    ]
+  },
+  "Oil & Gas Downstream": {
+    "id": "breadth_theme_oil_and_gas_downstream",
+    "title": "Oil & Gas Downstream",
+    "description": "Oil Refining & Marketing",
+    "dataFile": "breadth_theme_oil_and_gas_downstream",
+    "stock_count": 6,
+    "constituents": [
+      "BPCL.NS",
+      "CASTROLIND.NS",
+      "CONFIPET.NS",
+      "HINDPETRO.NS",
+      "IOC.NS",
+      "MRPL.NS"
+    ],
+    "clean_symbols": [
+      "BPCL",
+      "CASTROLIND",
+      "CONFIPET",
+      "HINDPETRO",
+      "IOC",
+      "MRPL"
+    ]
+  },
+  "Oil & Gas Upstream": {
+    "id": "breadth_theme_oil_and_gas_upstream",
+    "title": "Oil & Gas Upstream",
+    "description": "Oil Exploration & Production",
+    "dataFile": "breadth_theme_oil_and_gas_upstream",
+    "stock_count": 4,
+    "constituents": [
+      "OIL.NS",
+      "ONGC.NS",
+      "RELIANCE.NS",
+      "VOGL.NS"
+    ],
+    "clean_symbols": [
+      "OIL",
+      "ONGC",
+      "RELIANCE",
+      "VOGL"
+    ]
+  },
+  "Cement": {
+    "id": "breadth_theme_cement",
+    "title": "Cement",
+    "description": "Cement Manufacturers",
+    "dataFile": "breadth_theme_cement",
+    "stock_count": 8,
+    "constituents": [
+      "ACC.NS",
+      "AMBUJACEM.NS",
+      "DALBHARAT.NS",
+      "GRASIM.NS",
+      "JKCEMENT.NS",
+      "RAMCOCEM.NS",
+      "SHREECEM.NS",
+      "ULTRACEMCO.NS"
+    ],
+    "clean_symbols": [
+      "ACC",
+      "AMBUJACEM",
+      "DALBHARAT",
+      "GRASIM",
+      "JKCEMENT",
+      "RAMCOCEM",
+      "SHREECEM",
+      "ULTRACEMCO"
+    ]
+  },
+  "Solar Manufacturing": {
+    "id": "breadth_theme_solar_manufacturing",
+    "title": "Solar Manufacturing",
+    "description": "Solar Cells, Modules & EPC",
+    "dataFile": "breadth_theme_solar_manufacturing",
+    "stock_count": 8,
+    "constituents": [
+      "BORORENEW.NS",
+      "EMMVEE.NS",
+      "INA.NS",
+      "PREMIERENE.NS",
+      "UTLSOLAR.NS",
+      "VIKRAMSOLR.NS",
+      "WAAREEENER.NS",
+      "WEBELSOLAR.NS"
+    ],
+    "clean_symbols": [
+      "BORORENEW",
+      "EMMVEE",
+      "INA",
+      "PREMIERENE",
+      "UTLSOLAR",
+      "VIKRAMSOLR",
+      "WAAREEENER",
+      "WEBELSOLAR"
+    ]
+  },
+  "Semiconductors & EMS": {
+    "id": "breadth_theme_semiconductors_and_ems",
+    "title": "Semiconductors & EMS",
+    "description": "Semiconductor & Electronic Manufacturing",
+    "dataFile": "breadth_theme_semiconductors_and_ems",
+    "stock_count": 13,
+    "constituents": [
+      "AMBER.NS",
+      "AVALON.NS",
+      "BEL.NS",
+      "CGPOWER.NS",
+      "CYIENT.NS",
+      "CYIENTDLM.NS",
+      "DIXON.NS",
+      "KAYNES.NS",
+      "LTTS.NS",
+      "MOSCHIP.NS",
+      "PGEL.NS",
+      "SYRMA.NS",
+      "TATAELXSI.NS"
+    ],
+    "clean_symbols": [
+      "AMBER",
+      "AVALON",
+      "BEL",
+      "CGPOWER",
+      "CYIENT",
+      "CYIENTDLM",
+      "DIXON",
+      "KAYNES",
+      "LTTS",
+      "MOSCHIP",
+      "PGEL",
+      "SYRMA",
+      "TATAELXSI"
+    ]
+  },
+  "Infrastructure & EPC": {
+    "id": "breadth_theme_infrastructure_and_epc",
+    "title": "Infrastructure & EPC",
+    "description": "Infrastructure & Engineering",
+    "dataFile": "breadth_theme_infrastructure_and_epc",
+    "stock_count": 10,
+    "constituents": [
+      "ADANIPORTS.NS",
+      "GMRAIRPORT.NS",
+      "IRB.NS",
+      "JSWINFRA.NS",
+      "KEC.NS",
+      "KNRCON.NS",
+      "LT.NS",
+      "NCC.NS",
+      "PNCINFRA.NS",
+      "PSPPROJECT.NS"
+    ],
+    "clean_symbols": [
+      "ADANIPORTS",
+      "GMRAIRPORT",
+      "IRB",
+      "JSWINFRA",
+      "KEC",
+      "KNRCON",
+      "LT",
+      "NCC",
+      "PNCINFRA",
+      "PSPPROJECT"
+    ]
+  },
+  "Fintech": {
+    "id": "breadth_theme_fintech",
+    "title": "Fintech",
+    "description": "Financial Technology",
+    "dataFile": "breadth_theme_fintech",
+    "stock_count": 8,
+    "constituents": [
+      "ALGOQUANT.NS",
+      "CAMS.NS",
+      "CDSL.NS",
+      "FSL.NS",
+      "JIOFIN.NS",
+      "PAYTM.NS",
+      "POLICYBZR.NS",
+      "SBICARD.NS"
+    ],
+    "clean_symbols": [
+      "ALGOQUANT",
+      "CAMS",
+      "CDSL",
+      "FSL",
+      "JIOFIN",
+      "PAYTM",
+      "POLICYBZR",
+      "SBICARD"
+    ]
+  },
+  "EV Ecosystem": {
+    "id": "breadth_theme_ev_ecosystem",
+    "title": "EV Ecosystem",
+    "description": "Electric Vehicle Ecosystem",
+    "dataFile": "breadth_theme_ev_ecosystem",
+    "stock_count": 14,
+    "constituents": [
+      "ARE&M.NS",
+      "ATHERENERG.NS",
+      "BAJAJ-AUTO.NS",
+      "EXICOM.NS",
+      "EXIDEIND.NS",
+      "HEROMOTOCO.NS",
+      "JBMA.NS",
+      "MOTHERSON.NS",
+      "OLAELEC.NS",
+      "OLECTRA.NS",
+      "SONACOMS.NS",
+      "TMCV.NS",
+      "TMPV.NS",
+      "TVSMOTOR.NS"
+    ],
+    "clean_symbols": [
+      "ARE&M",
+      "ATHERENERG",
+      "BAJAJ-AUTO",
+      "EXICOM",
+      "EXIDEIND",
+      "HEROMOTOCO",
+      "JBMA",
+      "MOTHERSON",
+      "OLAELEC",
+      "OLECTRA",
+      "SONACOMS",
+      "TMCV",
+      "TMPV",
+      "TVSMOTOR"
+    ]
+  },
+  "Renewable Energy Generation": {
+    "id": "breadth_theme_renewable_energy_generation",
+    "title": "Renewable Energy Generation",
+    "description": "Renewable Energy Generation",
+    "dataFile": "breadth_theme_renewable_energy_generation",
+    "stock_count": 10,
+    "constituents": [
+      "ADANIGREEN.NS",
+      "INOXWIND.NS",
+      "JSWENERGY.NS",
+      "NHPC.NS",
+      "NTPC.NS",
+      "NTPCGREEN.NS",
+      "SJVN.NS",
+      "SUZLON.NS",
+      "TATAPOWER.NS",
+      "WAAREERTL.NS"
+    ],
+    "clean_symbols": [
+      "ADANIGREEN",
+      "INOXWIND",
+      "JSWENERGY",
+      "NHPC",
+      "NTPC",
+      "NTPCGREEN",
+      "SJVN",
+      "SUZLON",
+      "TATAPOWER",
+      "WAAREERTL"
+    ]
+  },
+  "Green Hydrogen": {
+    "id": "breadth_theme_green_hydrogen",
+    "title": "Green Hydrogen",
+    "description": "Green Hydrogen Companies",
+    "dataFile": "breadth_theme_green_hydrogen",
+    "stock_count": 5,
+    "constituents": [
+      "ADANIGREEN.NS",
+      "GAIL.NS",
+      "JSWENERGY.NS",
+      "NTPC.NS",
+      "TATAPOWER.NS"
+    ],
+    "clean_symbols": [
+      "ADANIGREEN",
+      "GAIL",
+      "JSWENERGY",
+      "NTPC",
+      "TATAPOWER"
+    ]
+  },
+  "Data Centre and AI": {
+    "id": "breadth_theme_data_centre_and_ai",
+    "title": "Data Centre and AI",
+    "description": "Data Centre & Artificial Intelligence",
+    "dataFile": "breadth_theme_data_centre_and_ai",
+    "stock_count": 7,
+    "constituents": [
+      "ANANTRAJ.NS",
+      "AURIONPRO.NS",
+      "E2E.NS",
+      "NETWEB.NS",
+      "SCHNEIDER.NS",
+      "TATACOMM.NS",
+      "TECHNOE.NS"
+    ],
+    "clean_symbols": [
+      "ANANTRAJ",
+      "AURIONPRO",
+      "E2E",
+      "NETWEB",
+      "SCHNEIDER",
+      "TATACOMM",
+      "TECHNOE"
+    ]
+  },
+  "Aviation": {
+    "id": "breadth_theme_aviation",
+    "title": "Aviation",
+    "description": "Airlines & Aviation",
+    "dataFile": "breadth_theme_aviation",
+    "stock_count": 3,
+    "constituents": [
+      "ADANIENT.NS",
+      "GMRAIRPORT.NS",
+      "INDIGO.NS"
+    ],
+    "clean_symbols": [
+      "ADANIENT",
+      "GMRAIRPORT",
+      "INDIGO"
+    ]
+  },
+  "Logistics": {
+    "id": "breadth_theme_logistics",
+    "title": "Logistics",
+    "description": "Logistics & Supply Chain",
+    "dataFile": "breadth_theme_logistics",
+    "stock_count": 15,
+    "constituents": [
+      "ADANIPORTS.NS",
+      "AEGISLOG.NS",
+      "ALLCARGO.NS",
+      "BLUEDART.NS",
+      "CONCOR.NS",
+      "DELHIVERY.NS",
+      "GATEWAY.NS",
+      "JSWINFRA.NS",
+      "MAHLOG.NS",
+      "SHADOWFAX.NS",
+      "SNOWMAN.NS",
+      "TCI.NS",
+      "TCIEXP.NS",
+      "TVSSCS.NS",
+      "VRLLOG.NS"
+    ],
+    "clean_symbols": [
+      "ADANIPORTS",
+      "AEGISLOG",
+      "ALLCARGO",
+      "BLUEDART",
+      "CONCOR",
+      "DELHIVERY",
+      "GATEWAY",
+      "JSWINFRA",
+      "MAHLOG",
+      "SHADOWFAX",
+      "SNOWMAN",
+      "TCI",
+      "TCIEXP",
+      "TVSSCS",
+      "VRLLOG"
+    ]
+  },
+  "Hospitals": {
+    "id": "breadth_theme_hospitals",
+    "title": "Hospitals",
+    "description": "Hospital Chains",
+    "dataFile": "breadth_theme_hospitals",
+    "stock_count": 10,
+    "constituents": [
+      "APOLLOHOSP.NS",
+      "ASTERDM.NS",
+      "FORTIS.NS",
+      "KIMS.NS",
+      "MAXHEALTH.NS",
+      "MEDANTA.NS",
+      "NH.NS",
+      "RAINBOW.NS",
+      "SHALBY.NS",
+      "YATHARTH.NS"
+    ],
+    "clean_symbols": [
+      "APOLLOHOSP",
+      "ASTERDM",
+      "FORTIS",
+      "KIMS",
+      "MAXHEALTH",
+      "MEDANTA",
+      "NH",
+      "RAINBOW",
+      "SHALBY",
+      "YATHARTH"
+    ]
+  },
+  "Pharma Formulations": {
+    "id": "breadth_theme_pharma_formulations",
+    "title": "Pharma Formulations",
+    "description": "Pharma Formulation Companies",
+    "dataFile": "breadth_theme_pharma_formulations",
+    "stock_count": 21,
+    "constituents": [
+      "ABBOTINDIA.NS",
+      "AJANTPHARM.NS",
+      "ALKEM.NS",
+      "AUROPHARMA.NS",
+      "CIPLA.NS",
+      "DRREDDY.NS",
+      "ERIS.NS",
+      "GLAXO.NS",
+      "GLENMARK.NS",
+      "GRANULES.NS",
+      "IPCALAB.NS",
+      "LINCOLN.NS",
+      "LUPIN.NS",
+      "MANKIND.NS",
+      "NATCOPHARM.NS",
+      "PFIZER.NS",
+      "SANOFI.NS",
+      "SUNPHARMA.NS",
+      "TORNTPHARM.NS",
+      "WOCKPHARMA.NS",
+      "ZYDUSLIFE.NS"
+    ],
+    "clean_symbols": [
+      "ABBOTINDIA",
+      "AJANTPHARM",
+      "ALKEM",
+      "AUROPHARMA",
+      "CIPLA",
+      "DRREDDY",
+      "ERIS",
+      "GLAXO",
+      "GLENMARK",
+      "GRANULES",
+      "IPCALAB",
+      "LINCOLN",
+      "LUPIN",
+      "MANKIND",
+      "NATCOPHARM",
+      "PFIZER",
+      "SANOFI",
+      "SUNPHARMA",
+      "TORNTPHARM",
+      "WOCKPHARMA",
+      "ZYDUSLIFE"
+    ]
+  },
+  "Pharma CDMO & API": {
+    "id": "breadth_theme_pharma_cdmo_and_api",
+    "title": "Pharma CDMO & API",
+    "description": "Contract Manufacturing & API Players",
+    "dataFile": "breadth_theme_pharma_cdmo_and_api",
+    "stock_count": 12,
+    "constituents": [
+      "AARTIPHARM.NS",
+      "BIOCON.NS",
+      "CONCORDBIO.NS",
+      "DIVISLAB.NS",
+      "GLAND.NS",
+      "JUBLPHARMA.NS",
+      "LAURUSLABS.NS",
+      "NEULANDLAB.NS",
+      "PPLPHARMA.NS",
+      "RUBICON.NS",
+      "SAILIFE.NS",
+      "SYNGENE.NS"
+    ],
+    "clean_symbols": [
+      "AARTIPHARM",
+      "BIOCON",
+      "CONCORDBIO",
+      "DIVISLAB",
+      "GLAND",
+      "JUBLPHARMA",
+      "LAURUSLABS",
+      "NEULANDLAB",
+      "PPLPHARMA",
+      "RUBICON",
+      "SAILIFE",
+      "SYNGENE"
+    ]
+  },
+  "Specialty Chemicals": {
+    "id": "breadth_theme_specialty_chemicals",
+    "title": "Specialty Chemicals",
+    "description": "Specialty Chemical Companies",
+    "dataFile": "breadth_theme_specialty_chemicals",
+    "stock_count": 10,
+    "constituents": [
+      "AARTIIND.NS",
+      "ATUL.NS",
+      "DEEPAKNTR.NS",
+      "DIAMINESQ.NS",
+      "FINEORG.NS",
+      "HSCL.NS",
+      "NAVINFLUOR.NS",
+      "PIDILITIND.NS",
+      "PIIND.NS",
+      "SRF.NS"
+    ],
+    "clean_symbols": [
+      "AARTIIND",
+      "ATUL",
+      "DEEPAKNTR",
+      "DIAMINESQ",
+      "FINEORG",
+      "HSCL",
+      "NAVINFLUOR",
+      "PIDILITIND",
+      "PIIND",
+      "SRF"
+    ]
+  },
+  "Agrochemicals & Fertilisers": {
+    "id": "breadth_theme_agrochemicals_and_fertilisers",
+    "title": "Agrochemicals & Fertilisers",
+    "description": "Agrochemicals & Fertiliser Companies",
+    "dataFile": "breadth_theme_agrochemicals_and_fertilisers",
+    "stock_count": 7,
+    "constituents": [
+      "BAYERCROP.NS",
+      "COROMANDEL.NS",
+      "DEEPAKFERT.NS",
+      "DHANUKA.NS",
+      "GSFC.NS",
+      "RALLIS.NS",
+      "UPL.NS"
+    ],
+    "clean_symbols": [
+      "BAYERCROP",
+      "COROMANDEL",
+      "DEEPAKFERT",
+      "DHANUKA",
+      "GSFC",
+      "RALLIS",
+      "UPL"
+    ]
+  },
+  "Textiles": {
+    "id": "breadth_theme_textiles",
+    "title": "Textiles",
+    "description": "Textile Companies",
+    "dataFile": "breadth_theme_textiles",
+    "stock_count": 7,
+    "constituents": [
+      "ABFRL.NS",
+      "KPRMILL.NS",
+      "LUXIND.NS",
+      "PAGEIND.NS",
+      "PGIL.NS",
+      "TRIDENT.NS",
+      "WELSPUNLIV.NS"
+    ],
+    "clean_symbols": [
+      "ABFRL",
+      "KPRMILL",
+      "LUXIND",
+      "PAGEIND",
+      "PGIL",
+      "TRIDENT",
+      "WELSPUNLIV"
+    ]
+  },
+  "Paints": {
+    "id": "breadth_theme_paints",
+    "title": "Paints",
+    "description": "Paint Companies",
+    "dataFile": "breadth_theme_paints",
+    "stock_count": 7,
+    "constituents": [
+      "ASIANPAINT.NS",
+      "BERGEPAINT.NS",
+      "INDIGOPNTS.NS",
+      "KAMOPAINTS.NS",
+      "KANSAINER.NS",
+      "SHALPAINTS.NS",
+      "SIRCA.NS"
+    ],
+    "clean_symbols": [
+      "ASIANPAINT",
+      "BERGEPAINT",
+      "INDIGOPNTS",
+      "KAMOPAINTS",
+      "KANSAINER",
+      "SHALPAINTS",
+      "SIRCA"
+    ]
+  },
+  "Jewellery & Gold": {
+    "id": "breadth_theme_jewellery_and_gold",
+    "title": "Jewellery & Gold",
+    "description": "Jewellery & Gold Retailers",
+    "dataFile": "breadth_theme_jewellery_and_gold",
+    "stock_count": 7,
+    "constituents": [
+      "GOLDIAM.NS",
+      "KALYANKJIL.NS",
+      "PNGJL.NS",
+      "SENCO.NS",
+      "SKYGOLD.NS",
+      "THANGAMAYL.NS",
+      "TITAN.NS"
+    ],
+    "clean_symbols": [
+      "GOLDIAM",
+      "KALYANKJIL",
+      "PNGJL",
+      "SENCO",
+      "SKYGOLD",
+      "THANGAMAYL",
+      "TITAN"
+    ]
+  },
+  "Silver": {
+    "id": "breadth_theme_silver",
+    "title": "Silver",
+    "description": "Silver Producers",
+    "dataFile": "breadth_theme_silver",
+    "stock_count": 2,
+    "constituents": [
+      "HINDZINC.NS",
+      "VEDL.NS"
+    ],
+    "clean_symbols": [
+      "HINDZINC",
+      "VEDL"
+    ]
+  },
+  "Critical Minerals": {
+    "id": "breadth_theme_critical_minerals",
+    "title": "Critical Minerals",
+    "description": "Critical Mineral Companies",
+    "dataFile": "breadth_theme_critical_minerals",
+    "stock_count": 6,
+    "constituents": [
+      "ARE&M.NS",
+      "HINDZINC.NS",
+      "MOIL.NS",
+      "NATIONALUM.NS",
+      "NMDC.NS",
+      "VEDL.NS"
+    ],
+    "clean_symbols": [
+      "ARE&M",
+      "HINDZINC",
+      "MOIL",
+      "NATIONALUM",
+      "NMDC",
+      "VEDL"
+    ]
+  },
+  "Metals & Mining": {
+    "id": "breadth_theme_metals_and_mining",
+    "title": "Metals & Mining",
+    "description": "Metals & Mining Companies",
+    "dataFile": "breadth_theme_metals_and_mining",
+    "stock_count": 12,
+    "constituents": [
+      "COALINDIA.NS",
+      "HINDALCO.NS",
+      "JINDALSTEL.NS",
+      "JSL.NS",
+      "JSWSTEEL.NS",
+      "LLOYDSME.NS",
+      "NMDC.NS",
+      "SAIL.NS",
+      "TATASTEEL.NS",
+      "VAML.NS",
+      "VEDL.NS",
+      "VISL.NS"
+    ],
+    "clean_symbols": [
+      "COALINDIA",
+      "HINDALCO",
+      "JINDALSTEL",
+      "JSL",
+      "JSWSTEEL",
+      "LLOYDSME",
+      "NMDC",
+      "SAIL",
+      "TATASTEEL",
+      "VAML",
+      "VEDL",
+      "VISL"
+    ]
+  },
+  "Telecom Services": {
+    "id": "breadth_theme_telecom_services",
+    "title": "Telecom Services",
+    "description": "Telecom Service Providers",
+    "dataFile": "breadth_theme_telecom_services",
+    "stock_count": 3,
+    "constituents": [
+      "BHARTIARTL.NS",
+      "IDEA.NS",
+      "TATACOMM.NS"
+    ],
+    "clean_symbols": [
+      "BHARTIARTL",
+      "IDEA",
+      "TATACOMM"
+    ]
+  },
+  "Telecom Infra": {
+    "id": "breadth_theme_telecom_infra",
+    "title": "Telecom Infra",
+    "description": "Telecom Infrastructure",
+    "dataFile": "breadth_theme_telecom_infra",
+    "stock_count": 3,
+    "constituents": [
+      "HFCL.NS",
+      "INDUSTOWER.NS",
+      "TEJASNET.NS"
+    ],
+    "clean_symbols": [
+      "HFCL",
+      "INDUSTOWER",
+      "TEJASNET"
+    ]
+  },
+  "Media & Broadcasting": {
+    "id": "breadth_theme_media_and_broadcasting",
+    "title": "Media & Broadcasting",
+    "description": "Media & Broadcasting",
+    "dataFile": "breadth_theme_media_and_broadcasting",
+    "stock_count": 10,
+    "constituents": [
+      "DBCORP.NS",
+      "DEN.NS",
+      "DISHTV.NS",
+      "HATHWAY.NS",
+      "NDTV.NS",
+      "NETWORK18.NS",
+      "PFOCUS.NS",
+      "PVRINOX.NS",
+      "SUNTV.NS",
+      "ZEEL.NS"
+    ],
+    "clean_symbols": [
+      "DBCORP",
+      "DEN",
+      "DISHTV",
+      "HATHWAY",
+      "NDTV",
+      "NETWORK18",
+      "PFOCUS",
+      "PVRINOX",
+      "SUNTV",
+      "ZEEL"
+    ]
+  },
+  "Music & Content": {
+    "id": "breadth_theme_music_and_content",
+    "title": "Music & Content",
+    "description": "Music & Content Platforms",
+    "dataFile": "breadth_theme_music_and_content",
+    "stock_count": 4,
+    "constituents": [
+      "NAZARA.NS",
+      "SAREGAMA.NS",
+      "SHEMAROO.NS",
+      "TIPSMUSIC.NS"
+    ],
+    "clean_symbols": [
+      "NAZARA",
+      "SAREGAMA",
+      "SHEMAROO",
+      "TIPSMUSIC"
+    ]
+  },
+  "Luxury": {
+    "id": "breadth_theme_luxury",
+    "title": "Luxury",
+    "description": "Luxury Brands",
+    "dataFile": "breadth_theme_luxury",
+    "stock_count": 7,
+    "constituents": [
+      "ETHOSLTD.NS",
+      "LANDMARK.NS",
+      "METROBRAND.NS",
+      "PAGEIND.NS",
+      "SULA.NS",
+      "TITAN.NS",
+      "TRENT.NS"
+    ],
+    "clean_symbols": [
+      "ETHOSLTD",
+      "LANDMARK",
+      "METROBRAND",
+      "PAGEIND",
+      "SULA",
+      "TITAN",
+      "TRENT"
+    ]
+  },
+  "QSR": {
+    "id": "breadth_theme_qsr",
+    "title": "QSR",
+    "description": "Quick Service Restaurants",
+    "dataFile": "breadth_theme_qsr",
+    "stock_count": 6,
+    "constituents": [
+      "DEVYANI.NS",
+      "JUBLFOOD.NS",
+      "RBA.NS",
+      "SAPPHIRE.NS",
+      "UFBL.NS",
+      "WESTLIFE.NS"
+    ],
+    "clean_symbols": [
+      "DEVYANI",
+      "JUBLFOOD",
+      "RBA",
+      "SAPPHIRE",
+      "UFBL",
+      "WESTLIFE"
+    ]
+  },
+  "FMCG Staples": {
+    "id": "breadth_theme_fmcg_staples",
+    "title": "FMCG Staples",
+    "description": "FMCG Staples",
+    "dataFile": "breadth_theme_fmcg_staples",
+    "stock_count": 13,
+    "constituents": [
+      "BRITANNIA.NS",
+      "CCL.NS",
+      "COFFEEDAY.NS",
+      "COLPAL.NS",
+      "DABUR.NS",
+      "GODREJCP.NS",
+      "HINDUNILVR.NS",
+      "ITC.NS",
+      "MARICO.NS",
+      "NESTLEIND.NS",
+      "PATANJALI.NS",
+      "TATACONSUM.NS",
+      "VINCOFE.NS"
+    ],
+    "clean_symbols": [
+      "BRITANNIA",
+      "CCL",
+      "COFFEEDAY",
+      "COLPAL",
+      "DABUR",
+      "GODREJCP",
+      "HINDUNILVR",
+      "ITC",
+      "MARICO",
+      "NESTLEIND",
+      "PATANJALI",
+      "TATACONSUM",
+      "VINCOFE"
+    ]
+  },
+  "IT Services": {
+    "id": "breadth_theme_it_services",
+    "title": "IT Services",
+    "description": "IT Services Companies",
+    "dataFile": "breadth_theme_it_services",
+    "stock_count": 13,
+    "constituents": [
+      "COFORGE.NS",
+      "HCLTECH.NS",
+      "INFY.NS",
+      "KPITTECH.NS",
+      "LTIM.NS",
+      "MPHASIS.NS",
+      "NEWGEN.NS",
+      "OFSS.NS",
+      "PERSISTENT.NS",
+      "TCS.NS",
+      "TECHM.NS",
+      "WIPRO.NS",
+      "ZENSARTECH.NS"
+    ],
+    "clean_symbols": [
+      "COFORGE",
+      "HCLTECH",
+      "INFY",
+      "KPITTECH",
+      "LTIM",
+      "MPHASIS",
+      "NEWGEN",
+      "OFSS",
+      "PERSISTENT",
+      "TCS",
+      "TECHM",
+      "WIPRO",
+      "ZENSARTECH"
+    ]
+  },
+  "Auto Passenger & CV": {
+    "id": "breadth_theme_auto_passenger_and_cv",
+    "title": "Auto Passenger & CV",
+    "description": "Passenger Vehicles & Commercial Vehicles",
+    "dataFile": "breadth_theme_auto_passenger_and_cv",
+    "stock_count": 7,
+    "constituents": [
+      "ASHOKLEY.NS",
+      "EICHERMOT.NS",
+      "HYUNDAI.NS",
+      "M&M.NS",
+      "MARUTI.NS",
+      "TMCV.NS",
+      "TMPV.NS"
+    ],
+    "clean_symbols": [
+      "ASHOKLEY",
+      "EICHERMOT",
+      "HYUNDAI",
+      "M&M",
+      "MARUTI",
+      "TMCV",
+      "TMPV"
+    ]
+  },
+  "Two & Three Wheelers": {
+    "id": "breadth_theme_two_and_three_wheelers",
+    "title": "Two & Three Wheelers",
+    "description": "Two & Three Wheeler Manufacturers",
+    "dataFile": "breadth_theme_two_and_three_wheelers",
+    "stock_count": 5,
+    "constituents": [
+      "BAJAJ-AUTO.NS",
+      "EICHERMOT.NS",
+      "HEROMOTOCO.NS",
+      "OLAELEC.NS",
+      "TVSMOTOR.NS"
+    ],
+    "clean_symbols": [
+      "BAJAJ-AUTO",
+      "EICHERMOT",
+      "HEROMOTOCO",
+      "OLAELEC",
+      "TVSMOTOR"
+    ]
+  },
+  "Auto Ancillary": {
+    "id": "breadth_theme_auto_ancillary",
+    "title": "Auto Ancillary",
+    "description": "Companies manufacturing automotive components",
+    "dataFile": "breadth_theme_auto_ancillary",
+    "stock_count": 21,
+    "constituents": [
+      "ARE&M.NS",
+      "BHARATFORG.NS",
+      "BOSCHLTD.NS",
+      "CIEINDIA.NS",
+      "CRAFTSMAN.NS",
+      "ENDURANCE.NS",
+      "EXIDEIND.NS",
+      "GABRIEL.NS",
+      "LUMAXTECH.NS",
+      "MINDACORP.NS",
+      "MOTHERSON.NS",
+      "MSUMI.NS",
+      "SANSERA.NS",
+      "SCHAEFFLER.NS",
+      "SONACOMS.NS",
+      "SUNDRMFAST.NS",
+      "SUPRAJIT.NS",
+      "TALBROAUTO.NS",
+      "TIINDIA.NS",
+      "UNOMINDA.NS",
+      "ZFCVINDIA.NS"
+    ],
+    "clean_symbols": [
+      "ARE&M",
+      "BHARATFORG",
+      "BOSCHLTD",
+      "CIEINDIA",
+      "CRAFTSMAN",
+      "ENDURANCE",
+      "EXIDEIND",
+      "GABRIEL",
+      "LUMAXTECH",
+      "MINDACORP",
+      "MOTHERSON",
+      "MSUMI",
+      "SANSERA",
+      "SCHAEFFLER",
+      "SONACOMS",
+      "SUNDRMFAST",
+      "SUPRAJIT",
+      "TALBROAUTO",
+      "TIINDIA",
+      "UNOMINDA",
+      "ZFCVINDIA"
+    ]
+  },
+  "Tyres & Rubber Products": {
+    "id": "breadth_theme_tyres_and_rubber_products",
+    "title": "Tyres & Rubber Products",
+    "description": "Tyre and Rubber manufacturers",
+    "dataFile": "breadth_theme_tyres_and_rubber_products",
+    "stock_count": 9,
+    "constituents": [
+      "APOLLOTYRE.NS",
+      "BALKRISIND.NS",
+      "CEATLTD.NS",
+      "GOODYEAR.NS",
+      "JKTYRE.NS",
+      "MODIRUBBER.NS",
+      "MRF.NS",
+      "TOLINS.NS",
+      "TVSSRICHAK.NS"
+    ],
+    "clean_symbols": [
+      "APOLLOTYRE",
+      "BALKRISIND",
+      "CEATLTD",
+      "GOODYEAR",
+      "JKTYRE",
+      "MODIRUBBER",
+      "MRF",
+      "TOLINS",
+      "TVSSRICHAK"
+    ]
+  },
+  "Sugar": {
+    "id": "breadth_theme_sugar",
+    "title": "Sugar",
+    "description": "Sugar and Bio-organics Manufacturers",
+    "dataFile": "breadth_theme_sugar",
+    "stock_count": 12,
+    "constituents": [
+      "AVADHSUGAR.NS",
+      "BAJAJHIND.NS",
+      "BALRAMCHIN.NS",
+      "DALMIASUG.NS",
+      "DBOL.NS",
+      "DCMNVL.NS",
+      "DHAMPURSUG.NS",
+      "EIDPARRY.NS",
+      "RENUKA.NS",
+      "TRIVENI.NS",
+      "UGARSUGAR.NS",
+      "UTTAMSUGAR.NS"
+    ],
+    "clean_symbols": [
+      "AVADHSUGAR",
+      "BAJAJHIND",
+      "BALRAMCHIN",
+      "DALMIASUG",
+      "DBOL",
+      "DCMNVL",
+      "DHAMPURSUG",
+      "EIDPARRY",
+      "RENUKA",
+      "TRIVENI",
+      "UGARSUGAR",
+      "UTTAMSUGAR"
+    ]
+  },
+  "Paper": {
+    "id": "breadth_theme_paper",
+    "title": "Paper",
+    "description": "Paper and Packaging Manufacturers",
+    "dataFile": "breadth_theme_paper",
+    "stock_count": 9,
+    "constituents": [
+      "ANDHRAPAP.NS",
+      "EMAMIPAP.NS",
+      "JKPAPER.NS",
+      "KUANTUM.NS",
+      "ORIENTPPR.NS",
+      "SESHAPAPER.NS",
+      "STARPAPER.NS",
+      "TNPL.NS",
+      "WSTCSTPAPR.NS"
+    ],
+    "clean_symbols": [
+      "ANDHRAPAP",
+      "EMAMIPAP",
+      "JKPAPER",
+      "KUANTUM",
+      "ORIENTPPR",
+      "SESHAPAPER",
+      "STARPAPER",
+      "TNPL",
+      "WSTCSTPAPR"
+    ]
+  },
+  "Wires and Cables": {
+    "id": "breadth_theme_wires_and_cables",
+    "title": "Wires and Cables",
+    "description": "Cables, Wires & Electrical Equipment",
+    "dataFile": "breadth_theme_wires_and_cables",
+    "stock_count": 8,
+    "constituents": [
+      "APARINDS.NS",
+      "BANSALWIRE.NS",
+      "FINCABLES.NS",
+      "KEI.NS",
+      "POLYCAB.NS",
+      "RRKABEL.NS",
+      "UNIVCABLES.NS",
+      "VGUARD.NS"
+    ],
+    "clean_symbols": [
+      "APARINDS",
+      "BANSALWIRE",
+      "FINCABLES",
+      "KEI",
+      "POLYCAB",
+      "RRKABEL",
+      "UNIVCABLES",
+      "VGUARD"
+    ]
+  },
+  "Hotels & Hospitality": {
+    "id": "breadth_theme_hotels_and_hospitality",
+    "title": "Hotels & Hospitality",
+    "description": "Hotels, Resorts, and Tourism",
+    "dataFile": "breadth_theme_hotels_and_hospitality",
+    "stock_count": 10,
+    "constituents": [
+      "BYKE.NS",
+      "CHALET.NS",
+      "EIHOTEL.NS",
+      "HLVLTD.NS",
+      "INDHOTEL.NS",
+      "ITCHOTELS.NS",
+      "LEMONTREE.NS",
+      "MHRIL.NS",
+      "ORIENTHOT.NS",
+      "TAJGVK.NS"
+    ],
+    "clean_symbols": [
+      "BYKE",
+      "CHALET",
+      "EIHOTEL",
+      "HLVLTD",
+      "INDHOTEL",
+      "ITCHOTELS",
+      "LEMONTREE",
+      "MHRIL",
+      "ORIENTHOT",
+      "TAJGVK"
+    ]
+  },
+  "PVC Pipes & Plumbing": {
+    "id": "breadth_theme_pvc_pipes_and_plumbing",
+    "title": "PVC Pipes & Plumbing",
+    "description": "PVC Pipes & Sanitaryware",
+    "dataFile": "breadth_theme_pvc_pipes_and_plumbing",
+    "stock_count": 7,
+    "constituents": [
+      "APOLLOPIPE.NS",
+      "ASTRAL.NS",
+      "FINPIPE.NS",
+      "JINDALPOLY.NS",
+      "PRAKASH.NS",
+      "PRINCEPIPE.NS",
+      "SUPREMEIND.NS"
+    ],
+    "clean_symbols": [
+      "APOLLOPIPE",
+      "ASTRAL",
+      "FINPIPE",
+      "JINDALPOLY",
+      "PRAKASH",
+      "PRINCEPIPE",
+      "SUPREMEIND"
+    ]
+  },
+  "Building Materials": {
+    "id": "breadth_theme_building_materials",
+    "title": "Building Materials",
+    "description": "Ceramics, Tiles and Plywood",
+    "dataFile": "breadth_theme_building_materials",
+    "stock_count": 10,
+    "constituents": [
+      "AGI.NS",
+      "APLAPOLLO.NS",
+      "CARYSIL.NS",
+      "CENTURYPLY.NS",
+      "CERA.NS",
+      "GREENPANEL.NS",
+      "GREENPLY.NS",
+      "KAJARIACER.NS",
+      "RUSHIL.NS",
+      "SOMANYCERA.NS"
+    ],
+    "clean_symbols": [
+      "AGI",
+      "APLAPOLLO",
+      "CARYSIL",
+      "CENTURYPLY",
+      "CERA",
+      "GREENPANEL",
+      "GREENPLY",
+      "KAJARIACER",
+      "RUSHIL",
+      "SOMANYCERA"
+    ]
+  },
+  "White Goods & Durables": {
+    "id": "breadth_theme_white_goods_and_durables",
+    "title": "White Goods & Durables",
+    "description": "Consumer Electronics and Appliances",
+    "dataFile": "breadth_theme_white_goods_and_durables",
+    "stock_count": 13,
+    "constituents": [
+      "BAJAJELEC.NS",
+      "BLUESTARCO.NS",
+      "BPL.NS",
+      "CROMPTON.NS",
+      "DIXON.NS",
+      "EUREKAFORB.NS",
+      "HAVELLS.NS",
+      "LGEINDIA.NS",
+      "SYMPHONY.NS",
+      "TTKPRESTIG.NS",
+      "VGUARD.NS",
+      "VOLTAS.NS",
+      "WHIRLPOOL.NS"
+    ],
+    "clean_symbols": [
+      "BAJAJELEC",
+      "BLUESTARCO",
+      "BPL",
+      "CROMPTON",
+      "DIXON",
+      "EUREKAFORB",
+      "HAVELLS",
+      "LGEINDIA",
+      "SYMPHONY",
+      "TTKPRESTIG",
+      "VGUARD",
+      "VOLTAS",
+      "WHIRLPOOL"
+    ]
+  },
+  "Footwear": {
+    "id": "breadth_theme_footwear",
+    "title": "Footwear",
+    "description": "Footwear and Leather Products",
+    "dataFile": "breadth_theme_footwear",
+    "stock_count": 7,
+    "constituents": [
+      "BATAINDIA.NS",
+      "CAMPUS.NS",
+      "KHADIM.NS",
+      "LIBERTSHOE.NS",
+      "METROBRAND.NS",
+      "MIRZAINT.NS",
+      "RELAXO.NS"
+    ],
+    "clean_symbols": [
+      "BATAINDIA",
+      "CAMPUS",
+      "KHADIM",
+      "LIBERTSHOE",
+      "METROBRAND",
+      "MIRZAINT",
+      "RELAXO"
+    ]
+  },
+  "Diagnostics & Pathology": {
+    "id": "breadth_theme_diagnostics_and_pathology",
+    "title": "Diagnostics & Pathology",
+    "description": "Diagnostic Clinics and Pathology Labs",
+    "dataFile": "breadth_theme_diagnostics_and_pathology",
+    "stock_count": 5,
+    "constituents": [
+      "KRSNAA.NS",
+      "LALPATHLAB.NS",
+      "METROPOLIS.NS",
+      "THYROCARE.NS",
+      "VIJAYA.NS"
+    ],
+    "clean_symbols": [
+      "KRSNAA",
+      "LALPATHLAB",
+      "METROPOLIS",
+      "THYROCARE",
+      "VIJAYA"
+    ]
+  },
+  "Packaging Solutions": {
+    "id": "breadth_theme_packaging_solutions",
+    "title": "Packaging Solutions",
+    "description": "Specialty Packaging Solutions",
+    "dataFile": "breadth_theme_packaging_solutions",
+    "stock_count": 9,
+    "constituents": [
+      "EPL.NS",
+      "GARFIBRES.NS",
+      "HINDCOMPOS.NS",
+      "HUHTAMAKI.NS",
+      "JINDALPOLY.NS",
+      "MOLDTKPAC.NS",
+      "POLYPLEX.NS",
+      "TCPLPACK.NS",
+      "UFLEX.NS"
+    ],
+    "clean_symbols": [
+      "EPL",
+      "GARFIBRES",
+      "HINDCOMPOS",
+      "HUHTAMAKI",
+      "JINDALPOLY",
+      "MOLDTKPAC",
+      "POLYPLEX",
+      "TCPLPACK",
+      "UFLEX"
+    ]
+  },
+  "Shipbuilding": {
+    "id": "breadth_theme_shipbuilding",
+    "title": "Shipbuilding",
+    "description": "Commercial and Defence Shipbuilding",
+    "dataFile": "breadth_theme_shipbuilding",
+    "stock_count": 4,
+    "constituents": [
+      "COCHINSHIP.NS",
+      "GRSE.NS",
+      "MAZDOCK.NS",
+      "SCI.NS"
+    ],
+    "clean_symbols": [
+      "COCHINSHIP",
+      "GRSE",
+      "MAZDOCK",
+      "SCI"
+    ]
+  },
+  "Marine & Offshore Services": {
+    "id": "breadth_theme_marine_and_offshore_services",
+    "title": "Marine & Offshore Services",
+    "description": "Offshore Support, Diving & Port Services",
+    "dataFile": "breadth_theme_marine_and_offshore_services",
+    "stock_count": 4,
+    "constituents": [
+      "DREDGECORP.NS",
+      "GESHIP.NS",
+      "SEAMECLTD.NS",
+      "SHREEJISPG.NS"
+    ],
+    "clean_symbols": [
+      "DREDGECORP",
+      "GESHIP",
+      "SEAMECLTD",
+      "SHREEJISPG"
+    ]
+  },
+  "Power Generation": {
+    "id": "breadth_theme_power_generation",
+    "title": "Power Generation",
+    "description": "Thermal, Hydro & Integrated Power Utilities",
+    "dataFile": "breadth_theme_power_generation",
+    "stock_count": 14,
+    "constituents": [
+      "ADANIPOWER.NS",
+      "CESC.NS",
+      "ENRIN.NS",
+      "JPPOWER.NS",
+      "JSWENERGY.NS",
+      "NAVA.NS",
+      "NHPC.NS",
+      "NLCINDIA.NS",
+      "NTPC.NS",
+      "RPOWER.NS",
+      "SJVN.NS",
+      "TATAPOWER.NS",
+      "TORNTPOWER.NS",
+      "VEDPOWER.NS"
+    ],
+    "clean_symbols": [
+      "ADANIPOWER",
+      "CESC",
+      "ENRIN",
+      "JPPOWER",
+      "JSWENERGY",
+      "NAVA",
+      "NHPC",
+      "NLCINDIA",
+      "NTPC",
+      "RPOWER",
+      "SJVN",
+      "TATAPOWER",
+      "TORNTPOWER",
+      "VEDPOWER"
+    ]
+  },
+  "Carbon and Graphite": {
+    "id": "breadth_theme_carbon_and_graphite",
+    "title": "Carbon and Graphite",
+    "description": "Carbon and Graphite Manufacturers",
+    "dataFile": "breadth_theme_carbon_and_graphite",
+    "stock_count": 5,
+    "constituents": [
+      "GOACARBON.NS",
+      "GRAPHITE.NS",
+      "HEG.NS",
+      "HSCL.NS",
+      "PCBL.NS"
+    ],
+    "clean_symbols": [
+      "GOACARBON",
+      "GRAPHITE",
+      "HEG",
+      "HSCL",
+      "PCBL"
+    ]
+  },
+  "Oil & Gas Midstream": {
+    "id": "breadth_theme_oil_and_gas_midstream",
+    "title": "Oil & Gas Midstream",
+    "description": "Gas Transmission, LNG & City Gas Distribution",
+    "dataFile": "breadth_theme_oil_and_gas_midstream",
+    "stock_count": 6,
+    "constituents": [
+      "ATGL.NS",
+      "DEEPINDS.NS",
+      "GAIL.NS",
+      "IGL.NS",
+      "MGL.NS",
+      "PETRONET.NS"
+    ],
+    "clean_symbols": [
+      "ATGL",
+      "DEEPINDS",
+      "GAIL",
+      "IGL",
+      "MGL",
+      "PETRONET"
+    ]
+  },
+  "Travel & Tourism": {
+    "id": "breadth_theme_travel_and_tourism",
+    "title": "Travel & Tourism",
+    "description": "Travel, Tourism and Amusement Parks",
+    "dataFile": "breadth_theme_travel_and_tourism",
+    "stock_count": 8,
+    "constituents": [
+      "BLS.NS",
+      "IMAGICAA.NS",
+      "IRCTC.NS",
+      "IXIGO.NS",
+      "TBOTEK.NS",
+      "THOMASCOOK.NS",
+      "WONDERLA.NS",
+      "YATRA.NS"
+    ],
+    "clean_symbols": [
+      "BLS",
+      "IMAGICAA",
+      "IRCTC",
+      "IXIGO",
+      "TBOTEK",
+      "THOMASCOOK",
+      "WONDERLA",
+      "YATRA"
+    ]
+  },
+  "Business Services": {
+    "id": "breadth_theme_business_services",
+    "title": "Business Services",
+    "description": "Business Services & Outsourcing",
+    "dataFile": "breadth_theme_business_services",
+    "stock_count": 4,
+    "constituents": [
+      "CMSINFO.NS",
+      "QUESS.NS",
+      "SIS.NS",
+      "TEAMLEASE.NS"
+    ],
+    "clean_symbols": [
+      "CMSINFO",
+      "QUESS",
+      "SIS",
+      "TEAMLEASE"
+    ]
+  },
+  "Technology Hardware Distribution": {
+    "id": "breadth_theme_technology_hardware_distribution",
+    "title": "Technology Hardware Distribution",
+    "description": "IT Hardware, Networking & Mobility Distributors",
+    "dataFile": "breadth_theme_technology_hardware_distribution",
+    "stock_count": 4,
+    "constituents": [
+      "DLINKINDIA.NS",
+      "OPTIEMUS.NS",
+      "REDINGTON.NS",
+      "RPTECH.NS"
+    ],
+    "clean_symbols": [
+      "DLINKINDIA",
+      "OPTIEMUS",
+      "REDINGTON",
+      "RPTECH"
+    ]
+  },
+  "IT Hardware & Peripherals": {
+    "id": "breadth_theme_it_hardware_and_peripherals",
+    "title": "IT Hardware & Peripherals",
+    "description": "Niche IT Manufacturers & Peripherals",
+    "dataFile": "breadth_theme_it_hardware_and_peripherals",
+    "stock_count": 7,
+    "constituents": [
+      "CONTROLPR.NS",
+      "DCI.NS",
+      "EBGNG.NS",
+      "ESCONET.NS",
+      "PANACHE.NS",
+      "SMARTLINK.NS",
+      "TVSELECT.NS"
+    ],
+    "clean_symbols": [
+      "CONTROLPR",
+      "DCI",
+      "EBGNG",
+      "ESCONET",
+      "PANACHE",
+      "SMARTLINK",
+      "TVSELECT"
+    ]
+  },
+  "Water & Irrigation Infrastructure": {
+    "id": "breadth_theme_water_and_irrigation_infrastructure",
+    "title": "Water & Irrigation Infrastructure",
+    "description": "Water Infrastructure, Treatment & Irrigation",
+    "dataFile": "breadth_theme_water_and_irrigation_infrastructure",
+    "stock_count": 9,
+    "constituents": [
+      "IONEXCHANG.NS",
+      "JISLJALEQS.NS",
+      "KIRLOSBROS.NS",
+      "KSB.NS",
+      "ROTO.NS",
+      "SHAKTIPUMP.NS",
+      "WABAG.NS",
+      "WELCORP.NS",
+      "WPIL.NS"
+    ],
+    "clean_symbols": [
+      "IONEXCHANG",
+      "JISLJALEQS",
+      "KIRLOSBROS",
+      "KSB",
+      "ROTO",
+      "SHAKTIPUMP",
+      "WABAG",
+      "WELCORP",
+      "WPIL"
+    ]
+  },
+  "Real Estate & Realty": {
+    "id": "breadth_theme_real_estate_and_realty",
+    "title": "Real Estate & Realty",
+    "description": "Residential & Commercial Real Estate Developers",
+    "dataFile": "breadth_theme_real_estate_and_realty",
+    "stock_count": 11,
+    "constituents": [
+      "ABREL.NS",
+      "ANANTRAJ.NS",
+      "BRIGADE.NS",
+      "DLF.NS",
+      "GODREJPROP.NS",
+      "LODHA.NS",
+      "OBEROIRLTY.NS",
+      "PHOENIXLTD.NS",
+      "PRESTIGE.NS",
+      "SIGNATURE.NS",
+      "SOBHA.NS"
+    ],
+    "clean_symbols": [
+      "ABREL",
+      "ANANTRAJ",
+      "BRIGADE",
+      "DLF",
+      "GODREJPROP",
+      "LODHA",
+      "OBEROIRLTY",
+      "PHOENIXLTD",
+      "PRESTIGE",
+      "SIGNATURE",
+      "SOBHA"
+    ]
+  }
+}

@@ -270,6 +270,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "ABSLAMC": [
@@ -790,6 +795,11 @@
       "id": "breadth_theme_data_centre_and_ai",
       "title": "Data Centre and AI",
       "category": "industries"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "ANDHRAPAP": [
@@ -907,6 +917,11 @@
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_building_materials",
+      "title": "Building Materials",
+      "category": "industries"
     }
   ],
   "APOLLOHOSP": [
@@ -1234,6 +1249,11 @@
       "id": "breadth_bank",
       "title": "Nifty Bank",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_private_banking",
+      "title": "Private Banking",
+      "category": "industries"
     }
   ],
   "AURIONPRO": [
@@ -1394,6 +1414,11 @@
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_nbfc",
+      "title": "NBFC",
+      "category": "industries"
     }
   ],
   "BAJAJHFL": [
@@ -2092,6 +2117,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "BRITANNIA": [
@@ -2350,6 +2380,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_oil_and_gas_downstream",
+      "title": "Oil & Gas Downstream",
+      "category": "industries"
     }
   ],
   "CCL": [
@@ -3227,6 +3262,11 @@
       "id": "breadth_media",
       "title": "Nifty Media",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_media_and_broadcasting",
+      "title": "Media & Broadcasting",
+      "category": "industries"
     }
   ],
   "DBOL": [
@@ -3483,6 +3523,11 @@
       "id": "breadth_infra",
       "title": "Nifty Infrastructure",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "DLINKINDIA": [
@@ -4584,6 +4629,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "GOLDIAM": [
@@ -4676,6 +4726,11 @@
       "id": "breadth_infra",
       "title": "Nifty Infrastructure",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_cement",
+      "title": "Cement",
+      "category": "industries"
     }
   ],
   "GRAVITA": [
@@ -4787,6 +4842,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_tandd",
+      "title": "Power T&D",
+      "category": "industries"
     }
   ],
   "HAL": [
@@ -6442,6 +6502,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
     }
   ],
   "JSL": [
@@ -6464,6 +6529,11 @@
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
     }
   ],
   "JSWCEMENT": [
@@ -7202,6 +7272,11 @@
       "id": "breadth_consumer",
       "title": "Nifty Consumer Durables",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "LIBERTSHOE": [
@@ -7309,6 +7384,11 @@
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
     }
   ],
   "LODHA": [
@@ -7326,6 +7406,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "LT": [
@@ -8242,6 +8327,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
     }
   ],
   "NAVINFLUOR": [
@@ -8655,6 +8745,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_renewable_energy_generation",
+      "title": "Renewable Energy Generation",
+      "category": "industries"
     }
   ],
   "NUVAMA": [
@@ -8738,6 +8833,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "OFSS": [
@@ -8760,6 +8860,11 @@
       "id": "breadth_it",
       "title": "Nifty IT",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_it_services",
+      "title": "IT Services",
+      "category": "industries"
     }
   ],
   "OIL": [
@@ -8981,6 +9086,11 @@
       "id": "breadth_fmcg",
       "title": "Nifty FMCG",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fmcg_staples",
+      "title": "FMCG Staples",
+      "category": "industries"
     }
   ],
   "PAYTM": [
@@ -9213,6 +9323,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "PICCADIL": [
@@ -9595,6 +9710,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "PRINCEPIPE": [
@@ -10024,6 +10144,11 @@
       "id": "breadth_energy",
       "title": "Nifty Energy",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_power_generation",
+      "title": "Power Generation",
+      "category": "industries"
     }
   ],
   "RPTECH": [
@@ -10128,6 +10253,11 @@
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_metals_and_mining",
+      "title": "Metals & Mining",
+      "category": "industries"
     }
   ],
   "SAILIFE": [
@@ -10150,6 +10280,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_cdmo_and_api",
+      "title": "Pharma CDMO & API",
+      "category": "industries"
     }
   ],
   "SAMMAANCAP": [
@@ -10291,6 +10426,11 @@
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_fintech",
+      "title": "Fintech",
+      "category": "industries"
     }
   ],
   "SBILIFE": [
@@ -10596,6 +10736,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "SIRCA": [
@@ -10699,6 +10844,11 @@
       "id": "breadth_realty",
       "title": "Nifty Realty",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_real_estate_and_realty",
+      "title": "Real Estate & Realty",
+      "category": "industries"
     }
   ],
   "SOLARINDS": [
@@ -12533,6 +12683,11 @@
       "id": "breadth_metal",
       "title": "Nifty Metal",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_water_and_irrigation_infrastructure",
+      "title": "Water & Irrigation Infrastructure",
+      "category": "industries"
     }
   ],
   "WELSPUNLIV": [
@@ -12633,6 +12788,11 @@
       "id": "breadth_pharma",
       "title": "Nifty Pharma",
       "category": "sectors"
+    },
+    {
+      "id": "breadth_theme_pharma_formulations",
+      "title": "Pharma Formulations",
+      "category": "industries"
     }
   ],
   "WONDERLA": [

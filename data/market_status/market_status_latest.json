@@ -138,6 +138,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
+            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -186,7 +187,6 @@
             "CIPLA.NS",
             "CLEAN.NS",
             "COFORGE.NS",
-            "COHANCE.NS",
             "CONCOR.NS",
             "CONCORDBIO.NS",
             "CPPLUS.NS",
@@ -286,6 +286,7 @@
             "LT.NS",
             "LTF.NS",
             "LTFOODS.NS",
+            "LUPIN.NS",
             "M&M.NS",
             "M&MFIN.NS",
             "MAHABANK.NS",
@@ -300,7 +301,6 @@
             "MINDACORP.NS",
             "MOTHERSON.NS",
             "MOTILALOFS.NS",
-            "MPHASIS.NS",
             "MRPL.NS",
             "NAM-INDIA.NS",
             "NATIONALUM.NS",
@@ -416,7 +416,6 @@
             "AFCONS.NS",
             "ALKEM.NS",
             "AMBUJACEM.NS",
-            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -451,6 +450,7 @@
             "CIEINDIA.NS",
             "COALINDIA.NS",
             "COCHINSHIP.NS",
+            "COHANCE.NS",
             "COLPAL.NS",
             "COROMANDEL.NS",
             "CROMPTON.NS",
@@ -535,12 +535,12 @@
             "LICHSGFIN.NS",
             "LTIM.NS",
             "LTTS.NS",
-            "LUPIN.NS",
             "MAPMYINDIA.NS",
             "MARUTI.NS",
             "MAXHEALTH.NS",
             "MFSL.NS",
             "MMTC.NS",
+            "MPHASIS.NS",
             "MRF.NS",
             "MSUMI.NS",
             "MUTHOOTFIN.NS",
@@ -677,6 +677,7 @@
             "LINDEINDIA.NS",
             "LLOYDSME.NS",
             "LTF.NS",
+            "LUPIN.NS",
             "M&MFIN.NS",
             "MAHABANK.NS",
             "MANKIND.NS",
@@ -684,7 +685,6 @@
             "MCX.NS",
             "MEDANTA.NS",
             "MOTILALOFS.NS",
-            "MPHASIS.NS",
             "NAM-INDIA.NS",
             "NATIONALUM.NS",
             "NAUKRI.NS",
@@ -749,8 +749,8 @@
             "KPITTECH.NS",
             "LICHSGFIN.NS",
             "LTTS.NS",
-            "LUPIN.NS",
             "MFSL.NS",
+            "MPHASIS.NS",
             "MRF.NS",
             "NHPC.NS",
             "NLCINDIA.NS",
@@ -796,6 +796,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
+            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
@@ -834,7 +835,6 @@
             "CHOICEIN.NS",
             "CLEAN.NS",
             "COFORGE.NS",
-            "COHANCE.NS",
             "CONCOR.NS",
             "CONCORDBIO.NS",
             "CPPLUS.NS",
@@ -917,6 +917,7 @@
             "LLOYDSME.NS",
             "LTF.NS",
             "LTFOODS.NS",
+            "LUPIN.NS",
             "M&MFIN.NS",
             "MAHABANK.NS",
             "MANAPPURAM.NS",
@@ -928,7 +929,6 @@
             "MGL.NS",
             "MINDACORP.NS",
             "MOTILALOFS.NS",
-            "MPHASIS.NS",
             "MRPL.NS",
             "NAM-INDIA.NS",
             "NATIONALUM.NS",
@@ -1024,7 +1024,6 @@
             "ACC.NS",
             "AFCONS.NS",
             "ALKEM.NS",
-            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
@@ -1051,6 +1050,7 @@
             "CHOLAHLDNG.NS",
             "CIEINDIA.NS",
             "COCHINSHIP.NS",
+            "COHANCE.NS",
             "COLPAL.NS",
             "COROMANDEL.NS",
             "CROMPTON.NS",
@@ -1118,10 +1118,10 @@
             "LEMONTREE.NS",
             "LICHSGFIN.NS",
             "LTTS.NS",
-            "LUPIN.NS",
             "MAPMYINDIA.NS",
             "MFSL.NS",
             "MMTC.NS",
+            "MPHASIS.NS",
             "MRF.NS",
             "MSUMI.NS",
             "NATCOPHARM.NS",
@@ -1198,6 +1198,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
+            "ANGELONE.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
             "ASTERDM.NS",
@@ -1221,7 +1222,6 @@
             "CHENNPETRO.NS",
             "CHOICEIN.NS",
             "CLEAN.NS",
-            "COHANCE.NS",
             "CONCORDBIO.NS",
             "CPPLUS.NS",
             "CRAFTSMAN.NS",
@@ -1338,7 +1338,6 @@
             "ABLBL.NS",
             "ABREL.NS",
             "AFCONS.NS",
-            "ANGELONE.NS",
             "ANURAS.NS",
             "APTUS.NS",
             "BANDHANBNK.NS",
@@ -1357,6 +1356,7 @@
             "CHAMBLFERT.NS",
             "CHOLAHLDNG.NS",
             "CIEINDIA.NS",
+            "COHANCE.NS",
             "CROMPTON.NS",
             "CYIENT.NS",
             "DCMSHRIRAM.NS",
@@ -1543,6 +1543,7 @@
             "GLENMARK.NS",
             "IPCALAB.NS",
             "LAURUSLABS.NS",
+            "LUPIN.NS",
             "MANKIND.NS",
             "PPLPHARMA.NS",
             "SUNPHARMA.NS",
@@ -1554,7 +1555,6 @@
             "ALKEM.NS",
             "DRREDDY.NS",
             "FORTIS.NS",
-            "LUPIN.NS",
             "MAXHEALTH.NS",
             "SYNGENE.NS"
         ],
@@ -1563,7 +1563,6 @@
     "NIFTY IT": {
         "above": [
             "COFORGE.NS",
-            "MPHASIS.NS",
             "OFSS.NS",
             "PERSISTENT.NS",
             "TECHM.NS"
@@ -1572,6 +1571,7 @@
             "HCLTECH.NS",
             "INFY.NS",
             "LTIM.NS",
+            "MPHASIS.NS",
             "TCS.NS",
             "WIPRO.NS"
         ],
@@ -1627,6 +1627,7 @@
             "GLENMARK.NS",
             "IPCALAB.NS",
             "LAURUSLABS.NS",
+            "LUPIN.NS",
             "MANKIND.NS",
             "PPLPHARMA.NS",
             "SAILIFE.NS",
@@ -1638,8 +1639,7 @@
         "below": [
             "ABBOTINDIA.NS",
             "ALKEM.NS",
-            "DRREDDY.NS",
-            "LUPIN.NS"
+            "DRREDDY.NS"
         ],
         "new_stock": []
     },
@@ -1979,6 +1979,7 @@
             "BSE.NS",
             "MCX.NS",
             "CAMS.NS",
+            "ANGELONE.NS",
             "MOTILALOFS.NS",
             "IIFLCAPS.NS",
             "GEOJITFSL.NS",
@@ -1987,8 +1988,7 @@
         "below": [
             "IEX.NS",
             "CDSL.NS",
-            "KFINTECH.NS",
-            "ANGELONE.NS"
+            "KFINTECH.NS"
         ],
         "new_stock": []
     },
@@ -2083,10 +2083,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS"
+            "VIJAYA.NS",
+            "METROPOLIS.NS"
         ],
         "below": [
-            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2136,8 +2136,7 @@
         "above": [
             "PAYTM.NS",
             "POLICYBZR.NS",
-            "CAMS.NS",
-            "ALGOQUANT.NS"
+            "CAMS.NS"
         ],
         "below": [
             "CDSL.NS",
@@ -2145,7 +2144,9 @@
             "JIOFIN.NS",
             "SBICARD.NS"
         ],
-        "new_stock": []
+        "new_stock": [
+            "ALGOQUANT.NS"
+        ]
     },
     "Footwear": {
         "above": [
@@ -2258,7 +2259,6 @@
         "above": [
             "TECHM.NS",
             "PERSISTENT.NS",
-            "MPHASIS.NS",
             "COFORGE.NS",
             "OFSS.NS"
         ],
@@ -2268,6 +2268,7 @@
             "HCLTECH.NS",
             "WIPRO.NS",
             "LTIM.NS",
+            "MPHASIS.NS",
             "KPITTECH.NS",
             "NEWGEN.NS",
             "ZENSARTECH.NS"
@@ -2295,14 +2296,13 @@
         "above": [
             "TITAN.NS",
             "KALYANKJIL.NS",
+            "SENCO.NS",
             "PNGJL.NS",
             "SKYGOLD.NS",
             "GOLDIAM.NS",
             "THANGAMAYL.NS"
         ],
-        "below": [
-            "SENCO.NS"
-        ],
+        "below": [],
         "new_stock": []
     },
     "Life Insurance": {
@@ -2325,7 +2325,6 @@
             "MAHLOG.NS",
             "JSWINFRA.NS",
             "DELHIVERY.NS",
-            "TCIEXP.NS",
             "VRLLOG.NS",
             "TVSSCS.NS",
             "AEGISLOG.NS"
@@ -2334,6 +2333,7 @@
             "GATEWAY.NS",
             "BLUEDART.NS",
             "TCI.NS",
+            "TCIEXP.NS",
             "SNOWMAN.NS"
         ],
         "new_stock": [
@@ -2591,6 +2591,7 @@
             "CIPLA.NS",
             "TORNTPHARM.NS",
             "MANKIND.NS",
+            "LUPIN.NS",
             "AUROPHARMA.NS",
             "ZYDUSLIFE.NS",
             "GLENMARK.NS",
@@ -2604,7 +2605,6 @@
         ],
         "below": [
             "DRREDDY.NS",
-            "LUPIN.NS",
             "ALKEM.NS",
             "ABBOTINDIA.NS",
             "NATCOPHARM.NS",

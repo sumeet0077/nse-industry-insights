@@ -36,6 +36,17 @@ export function IndexDetailPage({
     stockRRGData,
 }: IndexDetailPageProps) {
     const [activeTab, setActiveTab] = useState<"chart" | "constituents" | "price" | "rrg">("constituents");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get("tab");
+            if (tab === "rrg" || tab === "chart" || tab === "constituents" || tab === "price") {
+                setActiveTab(tab);
+            }
+        }
+    }, []);
+
     const [showCagr, setShowCagr] = useState(false);
     const contentRef = useRef<HTMLDivElement>(null);
 

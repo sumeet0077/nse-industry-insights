@@ -63,6 +63,12 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
     // Top N per-quadrant filter state
     const [topNCount, setTopNCount] = useLocalStorage<number | "All">("sr_topNCount", "All");
 
+    // Leaderboard sorting & filtering state
+    type LeaderboardSortField = "ticker" | "quadrant" | "ratio" | "momentum" | "distance" | "accel" | "score";
+    const [leaderboardSortField, setLeaderboardSortField] = useState<LeaderboardSortField>("score");
+    const [leaderboardSortAsc, setLeaderboardSortAsc] = useState<boolean>(false);
+    const [leaderboardQuadFilter, setLeaderboardQuadFilter] = useState<"All" | QuadrantType>("All");
+
     const currentDataRaw = useMemo(() => {
         if (allThemeData && allThemeData.length > 0) {
             const dynamicData = computeRRGData(allThemeData, benchmarkId, timeframe);
@@ -814,59 +820,220 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
             />
 
             {/* Super Trend Candidate Leaderboard Table */}
-            {scannerIsActive && matchCount > 0 && (
-                <div className="mt-6 bg-[#111118] border border-violet-500/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                                🏆 Super Trend Candidates Leaderboard
-                            </h3>
-                            <span className="text-[10px] bg-violet-500/20 text-violet-300 font-semibold px-2 py-0.5 rounded-full border border-violet-500/30">
-                                {matchCount} candidates
-                            </span>
+            {scannerIsActive && matchCount > 0 && (() => {
+                const rawCandidates = (trendMatchingTickers || []).map((ticker) => {
+                    const pts = groupedByTicker[ticker] || [];
+                    const mtf = isMtfAligned(ticker);
+                    const metrics = calculateSuperTrendScore(pts, mtf);
+                    const head = pts[pts.length - 1];
+                    const quad = tickerQuadrants[ticker] || "Unknown";
+                    const config = titleToConfig.get(ticker) || ALL_CONFIGS.find(c => c.title.toLowerCase() === ticker.toLowerCase() || c.id === ticker);
+                    const href = config ? `/${config.category}/${config.id}?tab=rrg` : null;
+                    return { ticker, pts, mtf, metrics, head, quad, href };
+                });
+
+                const quadCounts: Record<"All" | QuadrantType, number> = {
+                    All: rawCandidates.length,
+                    Leading: 0,
+                    Improving: 0,
+                    Weakening: 0,
+                    Lagging: 0,
+                };
+                for (const c of rawCandidates) {
+                    if (c.quad in quadCounts) {
+                        quadCounts[c.quad as QuadrantType]++;
+                    }
+                }
+
+                let filtered = rawCandidates;
+                if (leaderboardQuadFilter !== "All") {
+                    filtered = filtered.filter(c => c.quad === leaderboardQuadFilter);
+                }
+
+                const quadrantRank: Record<string, number> = { Leading: 4, Improving: 3, Weakening: 2, Lagging: 1, Unknown: 0 };
+
+                const sorted = [...filtered].sort((a, b) => {
+                    let diff = 0;
+                    switch (leaderboardSortField) {
+                        case "ticker":
+                            diff = a.ticker.localeCompare(b.ticker);
+                            break;
+                        case "quadrant":
+                            diff = (quadrantRank[b.quad] || 0) - (quadrantRank[a.quad] || 0);
+                            break;
+                        case "ratio":
+                            diff = (a.head?.RS_Ratio ?? 0) - (b.head?.RS_Ratio ?? 0);
+                            break;
+                        case "momentum":
+                            diff = (a.head?.RS_Momentum ?? 0) - (b.head?.RS_Momentum ?? 0);
+                            break;
+                        case "distance":
+                            diff = (a.metrics?.distance ?? 0) - (b.metrics?.distance ?? 0);
+                            break;
+                        case "accel":
+                            diff = (a.metrics?.accel ?? 0) - (b.metrics?.accel ?? 0);
+                            break;
+                        case "score":
+                        default:
+                            diff = (a.metrics?.score ?? 0) - (b.metrics?.score ?? 0);
+                            break;
+                    }
+                    return leaderboardSortAsc ? diff : -diff;
+                });
+
+                const handleSort = (field: typeof leaderboardSortField) => {
+                    if (leaderboardSortField === field) {
+                        setLeaderboardSortAsc(!leaderboardSortAsc);
+                    } else {
+                        setLeaderboardSortField(field);
+                        setLeaderboardSortAsc(field === "ticker" || field === "distance");
+                    }
+                };
+
+                const renderSortIcon = (field: typeof leaderboardSortField) => {
+                    if (leaderboardSortField !== field) {
+                        return <span className="text-slate-600 ml-1 text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">↕</span>;
+                    }
+                    return <span className="text-blue-400 ml-1 font-bold">{leaderboardSortAsc ? "▲" : "▼"}</span>;
+                };
+
+                return (
+                    <div className="mt-6 bg-[#111118] border border-violet-500/30 rounded-lg p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-3 mb-3 border-b border-slate-800/80 pb-3">
+                            <div className="flex items-center gap-2">
+                                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                                    🏆 Super Trend Candidates Leaderboard
+                                </h3>
+                                <span className="text-[10px] bg-violet-500/20 text-violet-300 font-semibold px-2 py-0.5 rounded-full border border-violet-500/30">
+                                    {filtered.length} of {matchCount} candidates
+                                </span>
+                            </div>
+
+                            {/* Quadrant Filter Pills */}
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="text-[11px] text-slate-400 font-semibold mr-1">Filter Quadrant:</span>
+                                {(["All", "Leading", "Improving", "Weakening", "Lagging"] as const).map((q) => {
+                                    const count = quadCounts[q] || 0;
+                                    const isActive = leaderboardQuadFilter === q;
+                                    const colorMap: Record<string, string> = {
+                                        All: isActive ? "bg-violet-600 text-white border-violet-500" : "text-slate-400 border-slate-700 bg-[#1a1a2e]",
+                                        Leading: isActive ? "bg-emerald-600 text-white border-emerald-500" : "text-emerald-400 border-slate-700 bg-[#1a1a2e]",
+                                        Improving: isActive ? "bg-blue-600 text-white border-blue-500" : "text-blue-400 border-slate-700 bg-[#1a1a2e]",
+                                        Weakening: isActive ? "bg-yellow-600 text-white border-yellow-500" : "text-yellow-400 border-slate-700 bg-[#1a1a2e]",
+                                        Lagging: isActive ? "bg-red-600 text-white border-red-500" : "text-red-400 border-slate-700 bg-[#1a1a2e]",
+                                    };
+                                    return (
+                                        <button
+                                            key={q}
+                                            onClick={() => setLeaderboardQuadFilter(q)}
+                                            className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border transition-all ${colorMap[q]} hover:brightness-110 flex items-center gap-1`}
+                                        >
+                                            <span>{q}</span>
+                                            <span className="text-[9px] opacity-75 font-mono">({count})</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                            <thead className="text-[11px] text-slate-400 uppercase bg-[#1a1a2e] border-b border-slate-700/60">
-                                <tr>
-                                    <th className="py-2.5 px-3">Ticker / Theme</th>
-                                    <th className="py-2.5 px-3">Quadrant</th>
-                                    <th className="py-2.5 px-3">RS-Ratio</th>
-                                    <th className="py-2.5 px-3">RS-Mom</th>
-                                    <th className="py-2.5 px-3">Origin Distance</th>
-                                    <th className="py-2.5 px-3">Tail Accel</th>
-                                    <th className="py-2.5 px-3">Super Trend Score</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800/60">
-                                {trendMatchingTickers
-                                    ?.map((ticker) => {
-                                        const pts = groupedByTicker[ticker] || [];
-                                        const mtf = isMtfAligned(ticker);
-                                        const metrics = calculateSuperTrendScore(pts, mtf);
-                                        const head = pts[pts.length - 1];
-                                        const quad = tickerQuadrants[ticker] || "Unknown";
-                                        return { ticker, pts, mtf, metrics, head, quad };
-                                    })
-                                    .sort((a, b) => (b.metrics?.score ?? 0) - (a.metrics?.score ?? 0))
-                                    .map(({ ticker, mtf, metrics, head, quad }) => {
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left text-xs">
+                                <thead className="text-[11px] text-slate-400 uppercase bg-[#1a1a2e] border-b border-slate-700/60 select-none">
+                                    <tr>
+                                        <th
+                                            onClick={() => handleSort("ticker")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Ticker / Theme</span>
+                                                {renderSortIcon("ticker")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("quadrant")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Quadrant</span>
+                                                {renderSortIcon("quadrant")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("ratio")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>RS-Ratio</span>
+                                                {renderSortIcon("ratio")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("momentum")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>RS-Mom</span>
+                                                {renderSortIcon("momentum")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("distance")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Origin Distance</span>
+                                                {renderSortIcon("distance")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("accel")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Tail Accel</span>
+                                                {renderSortIcon("accel")}
+                                            </div>
+                                        </th>
+                                        <th
+                                            onClick={() => handleSort("score")}
+                                            className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors group"
+                                        >
+                                            <div className="flex items-center">
+                                                <span>Super Trend Score</span>
+                                                {renderSortIcon("score")}
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-800/60">
+                                    {sorted.map(({ ticker, mtf, metrics, head, quad, href }) => {
                                         return (
                                             <tr key={ticker} className="hover:bg-slate-800/40 transition-colors font-mono">
-                                                <td className="py-2.5 px-3 font-semibold text-blue-400 font-sans flex items-center gap-1.5">
-                                                    <span>{ticker}</span>
+                                                <td className="py-2.5 px-3 font-semibold font-sans flex items-center gap-1.5">
+                                                    {href ? (
+                                                        <Link
+                                                            href={href}
+                                                            className="text-blue-400 hover:text-blue-300 hover:underline transition-colors flex items-center gap-1 group"
+                                                            title={`Open ${ticker} RRG Dashboard`}
+                                                        >
+                                                            <span>{ticker}</span>
+                                                            <span className="text-[10px] text-blue-500 group-hover:text-blue-300 transition-colors">↗</span>
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="text-blue-400">{ticker}</span>
+                                                    )}
                                                     {mtf && (
-                                                        <span className="text-[9px] bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-medium" title="Weekly + Daily Momentum Aligned">
+                                                        <span className="text-[9px] bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-medium shrink-0" title="Weekly + Daily Momentum Aligned">
                                                             ⚡ MTF
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="py-2.5 px-3">
                                                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                                                        quad === "Leading" ? "bg-emerald-500/20 text-emerald-300" :
-                                                        quad === "Weakening" ? "bg-yellow-500/20 text-yellow-300" :
-                                                        quad === "Lagging" ? "bg-red-500/20 text-red-300" :
-                                                        "bg-blue-500/20 text-blue-300"
+                                                        quad === "Leading" ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30" :
+                                                        quad === "Weakening" ? "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30" :
+                                                        quad === "Lagging" ? "bg-red-500/20 text-red-300 border border-red-500/30" :
+                                                        "bg-blue-500/20 text-blue-300 border border-blue-500/30"
                                                     }`}>{quad}</span>
                                                 </td>
                                                 <td className="py-2.5 px-3 text-slate-200">{typeof head?.RS_Ratio === "number" ? head.RS_Ratio.toFixed(2) : "—"}</td>
@@ -879,11 +1046,19 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
                                             </tr>
                                         );
                                     })}
-                            </tbody>
-                        </table>
+                                    {sorted.length === 0 && (
+                                        <tr>
+                                            <td colSpan={7} className="py-6 text-center text-slate-500 text-xs font-sans">
+                                                No candidates in the {leaderboardQuadFilter} quadrant.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
 
 
             {/* Selected Indices Listed by Quadrant Below Graph */}

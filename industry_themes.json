@@ -340,7 +340,7 @@
     "title": "Retail & E-Commerce",
     "description": "Retail and Online Commerce",
     "dataFile": "breadth_theme_retail_and_e_commerce",
-    "stock_count": 11,
+    "stock_count": 10,
     "constituents": [
       "ABFRL.NS",
       "DMART.NS",
@@ -351,8 +351,7 @@
       "NYKAA.NS",
       "RELIANCE.NS",
       "SWIGGY.NS",
-      "TRENT.NS",
-      "VBL.NS"
+      "TRENT.NS"
     ],
     "clean_symbols": [
       "ABFRL",
@@ -364,8 +363,7 @@
       "NYKAA",
       "RELIANCE",
       "SWIGGY",
-      "TRENT",
-      "VBL"
+      "TRENT"
     ]
   },
   "Asset Management": {
@@ -1379,7 +1377,7 @@
     "title": "FMCG Staples",
     "description": "FMCG Staples",
     "dataFile": "breadth_theme_fmcg_staples",
-    "stock_count": 13,
+    "stock_count": 14,
     "constituents": [
       "BRITANNIA.NS",
       "CCL.NS",
@@ -1393,6 +1391,7 @@
       "NESTLEIND.NS",
       "PATANJALI.NS",
       "TATACONSUM.NS",
+      "VBL.NS",
       "VINCOFE.NS"
     ],
     "clean_symbols": [
@@ -1408,6 +1407,7 @@
       "NESTLEIND",
       "PATANJALI",
       "TATACONSUM",
+      "VBL",
       "VINCOFE"
     ]
   },
@@ -1552,7 +1552,7 @@
     "title": "Tyres & Rubber Products",
     "description": "Tyre and Rubber manufacturers",
     "dataFile": "breadth_theme_tyres_and_rubber_products",
-    "stock_count": 9,
+    "stock_count": 10,
     "constituents": [
       "APOLLOTYRE.NS",
       "BALKRISIND.NS",
@@ -1562,7 +1562,8 @@
       "MODIRUBBER.NS",
       "MRF.NS",
       "TOLINS.NS",
-      "TVSSRICHAK.NS"
+      "TVSSRICHAK.NS",
+      "VIAZ.NS"
     ],
     "clean_symbols": [
       "APOLLOTYRE",
@@ -1573,7 +1574,8 @@
       "MODIRUBBER",
       "MRF",
       "TOLINS",
-      "TVSSRICHAK"
+      "TVSSRICHAK",
+      "VIAZ"
     ]
   },
   "Sugar": {

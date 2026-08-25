@@ -35,7 +35,7 @@ INDUSTRY_THEMES = {
         "BAJAJFINSV.NS", "BAJFINANCE.NS", "CGCL.NS", "CHOLAFIN.NS", "CREDITACC.NS", "IFCI.NS", "LICHSGFIN.NS", "M&MFIN.NS", "MANAPPURAM.NS", "MUTHOOTFIN.NS", "PFC.NS", "PIRAMALFIN.NS", "POONAWALLA.NS", "RECLTD.NS", "SHRIRAMFIN.NS", "SUNDARMFIN.NS", "TATACAP.NS"
     ],
     "Retail & E-Commerce": [
-        "ABFRL.NS", "DMART.NS", "EMIL.NS", "ETERNAL.NS", "MEESHO.NS", "METROBRAND.NS", "NYKAA.NS", "RELIANCE.NS", "SWIGGY.NS", "TRENT.NS", "VBL.NS"
+        "ABFRL.NS", "DMART.NS", "EMIL.NS", "ETERNAL.NS", "MEESHO.NS", "METROBRAND.NS", "NYKAA.NS", "RELIANCE.NS", "SWIGGY.NS", "TRENT.NS"
     ],
     "Asset Management": [
         "ABSLAMC.NS", "HDFCAMC.NS", "ICICIAMC.NS", "NAM-INDIA.NS", "UTIAMC.NS"
@@ -146,7 +146,7 @@ INDUSTRY_THEMES = {
         "DEVYANI.NS", "JUBLFOOD.NS", "RBA.NS", "SAPPHIRE.NS", "UFBL.NS", "WESTLIFE.NS"
     ],
     "FMCG Staples": [
-        "BRITANNIA.NS", "CCL.NS", "COFFEEDAY.NS", "COLPAL.NS", "DABUR.NS", "GODREJCP.NS", "HINDUNILVR.NS", "ITC.NS", "MARICO.NS", "NESTLEIND.NS", "PATANJALI.NS", "TATACONSUM.NS", "VINCOFE.NS"
+        "BRITANNIA.NS", "CCL.NS", "COFFEEDAY.NS", "COLPAL.NS", "DABUR.NS", "GODREJCP.NS", "HINDUNILVR.NS", "ITC.NS", "MARICO.NS", "NESTLEIND.NS", "PATANJALI.NS", "TATACONSUM.NS", "VBL.NS", "VINCOFE.NS"
     ],
     "IT Services": [
         "COFORGE.NS", "HCLTECH.NS", "INFY.NS", "KPITTECH.NS", "LTIM.NS", "MPHASIS.NS", "NEWGEN.NS", "OFSS.NS", "PERSISTENT.NS", "TCS.NS", "TECHM.NS", "WIPRO.NS", "ZENSARTECH.NS"
@@ -161,7 +161,7 @@ INDUSTRY_THEMES = {
         "ARE&M.NS", "BHARATFORG.NS", "BOSCHLTD.NS", "CIEINDIA.NS", "CRAFTSMAN.NS", "ENDURANCE.NS", "EXIDEIND.NS", "GABRIEL.NS", "LUMAXTECH.NS", "MINDACORP.NS", "MOTHERSON.NS", "MSUMI.NS", "SANSERA.NS", "SCHAEFFLER.NS", "SONACOMS.NS", "SUNDRMFAST.NS", "SUPRAJIT.NS", "TALBROAUTO.NS", "TIINDIA.NS", "UNOMINDA.NS", "ZFCVINDIA.NS"
     ],
     "Tyres & Rubber Products": [
-        "APOLLOTYRE.NS", "BALKRISIND.NS", "CEATLTD.NS", "GOODYEAR.NS", "JKTYRE.NS", "MODIRUBBER.NS", "MRF.NS", "TOLINS.NS", "TVSSRICHAK.NS"
+        "APOLLOTYRE.NS", "BALKRISIND.NS", "CEATLTD.NS", "GOODYEAR.NS", "JKTYRE.NS", "MODIRUBBER.NS", "MRF.NS", "TOLINS.NS", "TVSSRICHAK.NS", "VIAZ.NS"
     ],
     "Sugar": [
         "AVADHSUGAR.NS", "BAJAJHIND.NS", "BALRAMCHIN.NS", "DALMIASUG.NS", "DBOL.NS", "DCMNVL.NS", "DHAMPURSUG.NS", "EIDPARRY.NS", "RENUKA.NS", "TRIVENI.NS", "UGARSUGAR.NS", "UTTAMSUGAR.NS"
@@ -293,7 +293,7 @@ THEME_METADATA = {
         "id": "breadth_theme_retail_and_e_commerce",
         "description": "Retail and Online Commerce",
         "dataFile": "breadth_theme_retail_and_e_commerce",
-        "stock_count": 11,
+        "stock_count": 10,
     },
     "Asset Management": {
         "id": "breadth_theme_asset_management",
@@ -515,7 +515,7 @@ THEME_METADATA = {
         "id": "breadth_theme_fmcg_staples",
         "description": "FMCG Staples",
         "dataFile": "breadth_theme_fmcg_staples",
-        "stock_count": 13,
+        "stock_count": 14,
     },
     "IT Services": {
         "id": "breadth_theme_it_services",
@@ -545,7 +545,7 @@ THEME_METADATA = {
         "id": "breadth_theme_tyres_and_rubber_products",
         "description": "Tyre and Rubber manufacturers",
         "dataFile": "breadth_theme_tyres_and_rubber_products",
-        "stock_count": 9,
+        "stock_count": 10,
     },
     "Sugar": {
         "id": "breadth_theme_sugar",

@@ -120,6 +120,23 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
             if (stockData["RS (20D)"] === null || stockData["RS (20D)"] === undefined) missingRs20d++;
             if (stockData["1D"] === null || stockData["1D"] === undefined) missing1D++;
             if (stockData["1Y"] === null || stockData["1Y"] === undefined) missing1Y++;
+
+            // Validate IBD RS Rating bounds
+            if (stockData.ibd_rs_rating !== null && stockData.ibd_rs_rating !== undefined) {
+                if (typeof stockData.ibd_rs_rating !== "number" || stockData.ibd_rs_rating < 1 || stockData.ibd_rs_rating > 99) {
+                    errors.push(`Invalid IBD RS Rating for "${ticker}": ${stockData.ibd_rs_rating} (Must be integer 1-99)`);
+                }
+            }
+
+            // Validate RS Lead Breakout boolean
+            if (stockData.rs_lead_breakout !== undefined && typeof stockData.rs_lead_breakout !== "boolean") {
+                errors.push(`Invalid rs_lead_breakout type for "${ticker}": expected boolean`);
+            }
+
+            // Validate IPO fields
+            if (stockData.is_ipo !== undefined && typeof stockData.is_ipo !== "boolean") {
+                errors.push(`Invalid is_ipo type for "${ticker}": expected boolean`);
+            }
         });
 
         if (missingYtd > 20) {

@@ -147,31 +147,69 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 headerName: "Ticker",
                 field: "ticker",
                 pinned: "left",
-                width: 140,
-                cellRenderer: (params: { value: string }) => {
+                width: 180,
+                cellRenderer: (params: { value: string; data: Record<string, unknown> }) => {
                     if (!params.value) return null;
                     const url = makeTradingViewUrl(params.value);
                     const label = getTickerLabel(params.value);
+                    const isIpo = Boolean(params.data?.is_ipo);
+                    const isLead = Boolean(params.data?.rs_lead_breakout);
                     return (
-                        <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
-                            {label}
-                        </a>
+                        <div className="flex items-center gap-1.5 font-sans">
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline font-medium">
+                                {label}
+                            </a>
+                            {isIpo && (
+                                <span className="px-1 py-0.2 bg-amber-950/80 text-amber-300 border border-amber-800/60 rounded text-[9px] font-mono" title="Recent IPO (< 1 Year)">
+                                    IPO
+                                </span>
+                            )}
+                            {isLead && (
+                                <span className="px-1.5 py-0.2 bg-blue-950/90 text-blue-300 border border-blue-700/80 rounded text-[9px] font-semibold" title="Absolute RS Line at 52-week High ahead of price">
+                                    RS Lead
+                                </span>
+                            )}
+                        </div>
                     );
                 },
             },
         ];
         for (const col of returnCols) {
             const mappedField = fieldMap[col];
-            cols.push({
-                headerName: col,
-                field: mappedField,
-                valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
-                hide: !visibleColumns[col],
-                width: col.startsWith("RS") ? 120 : 110,
-                valueFormatter: returnFormatter,
-                cellClass: returnCellClass,
-                sortable: true,
-            });
+            if (col === "IBD RS Rating") {
+                cols.push({
+                    headerName: "IBD RS Rating",
+                    field: "ibd_rs_rating",
+                    valueGetter: (params) => params.data?.ibd_rs_rating ?? null,
+                    hide: !visibleColumns[col],
+                    width: 130,
+                    cellRenderer: (params: { value: number | null }) => {
+                        if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                        const rating = Number(params.value);
+                        let bg = "bg-slate-800/80 text-slate-300 border-slate-700";
+                        if (rating >= 90) bg = "bg-emerald-950/80 text-emerald-300 border-emerald-700/80";
+                        else if (rating >= 80) bg = "bg-cyan-950/80 text-cyan-300 border-cyan-700/80";
+                        else if (rating < 50) bg = "bg-red-950/40 text-red-400 border-red-900/50";
+                        return (
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono border ${bg}`}>
+                                RS {rating}
+                            </span>
+                        );
+                    },
+                    sortable: true,
+                });
+            } else {
+                cols.push({
+                    headerName: col,
+                    field: mappedField,
+                    valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
+                    hide: !visibleColumns[col],
+                    width: col.startsWith("RS") ? 120 : 110,
+                    valueFormatter: returnFormatter,
+                    cellClass: returnCellClass,
+                    sortable: true,
+                });
+            }
         }
         return cols;
     }, [visibleColumns]);

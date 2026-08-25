@@ -43,6 +43,15 @@ export interface ConstituentPerformance {
     "RS (10D)"?: number | null;
     "RS (20D)"?: number | null;
     "RS (50D)"?: number | null;
+    ibd_rs_rating?: number | null;
+    rs_raw_score?: number | null;
+    rs_line_52w_high?: boolean;
+    price_52w_high?: boolean;
+    rs_lead_breakout?: boolean;
+    rs_dist_52w_pct?: number | null;
+    price_dist_52w_pct?: number | null;
+    is_ipo?: boolean;
+    listing_days?: number;
 }
 
 export interface MarketStatusEntry {

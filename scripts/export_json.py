@@ -16,6 +16,7 @@ import argparse
 import glob
 import shutil
 import pandas as pd
+import numpy as np
 from pathlib import Path
 
 from datetime import timedelta
@@ -440,6 +441,8 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         }
 
         result = {}
+        raw_scores = {}
+
         for col in df_pivot.columns:
             ser = df_pivot[col].dropna()
             if ser.empty:
@@ -448,7 +451,13 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             if curr_price <= 0:
                 continue
 
-            c_row = {}
+            listing_days = int(len(ser))
+            is_ipo = bool(listing_days < 252)
+
+            c_row = {
+                "listing_days": listing_days,
+                "is_ipo": is_ipo,
+            }
             for p_name, days in periods.items():
                 if p_name == "1D":
                     if len(ser) >= 2:
@@ -473,7 +482,7 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                     else:
                         c_row[p_name] = None
 
-            # Relative Strength
+            # Relative Strength against Nifty 50
             for num_days, label in [(6, "RS (5D)"), (11, "RS (10D)"), (21, "RS (20D)"), (51, "RS (50D)")]:
                 nifty_past = nifty_5d if num_days == 6 else (nifty_10d if num_days == 11 else (nifty_20d if num_days == 21 else nifty_50d))
                 if nifty_latest > 0 and nifty_past > 0 and len(ser) >= num_days:
@@ -488,14 +497,104 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                 else:
                     c_row[label] = None
 
+            # IBD RS 4-Quarter Weighted Score
+            # Q1 (63 trading days), Q2 (126 trading days), Q3 (189 trading days), Q4 (252 trading days)
+            q1_ret, q2_ret, q3_ret, q4_ret = None, None, None, None
+            if listing_days >= 64:
+                p_q1 = float(ser.iloc[-64])
+                if p_q1 > 0:
+                    q1_ret = ((curr_price - p_q1) / p_q1) * 100
+            if listing_days >= 127:
+                p_q1 = float(ser.iloc[-64])
+                p_q2 = float(ser.iloc[-127])
+                if p_q2 > 0:
+                    q2_ret = ((p_q1 - p_q2) / p_q2) * 100
+            if listing_days >= 190:
+                p_q2 = float(ser.iloc[-127])
+                p_q3 = float(ser.iloc[-190])
+                if p_q3 > 0:
+                    q3_ret = ((p_q2 - p_q3) / p_q3) * 100
+            if listing_days >= 253:
+                p_q3 = float(ser.iloc[-190])
+                p_q4 = float(ser.iloc[-253])
+                if p_q4 > 0:
+                    q4_ret = ((p_q3 - p_q4) / p_q4) * 100
+
+            rs_raw = None
+            if q1_ret is not None and q2_ret is not None and q3_ret is not None and q4_ret is not None:
+                rs_raw = (0.4 * q1_ret) + (0.2 * q2_ret) + (0.2 * q3_ret) + (0.2 * q4_ret)
+            elif q1_ret is not None and q2_ret is not None and q3_ret is not None:
+                rs_raw = (0.5 * q1_ret) + (0.25 * q2_ret) + (0.25 * q3_ret)
+            elif q1_ret is not None and q2_ret is not None:
+                rs_raw = (0.6 * q1_ret) + (0.4 * q2_ret)
+            elif q1_ret is not None:
+                rs_raw = 1.0 * q1_ret
+
+            c_row["rs_raw_score"] = round(rs_raw, 2) if rs_raw is not None else None
+            if rs_raw is not None:
+                raw_scores[col] = rs_raw
+
+            # Absolute RS Line vs Nifty 50 & 52-Week Lead Breakout Detection
+            rs_52w_high = False
+            price_52w_high = False
+            rs_lead = False
+            rs_dist_pct = None
+            price_dist_pct = None
+
+            if nifty_ser is not None and len(nifty_ser) > 0:
+                # Align on common trading dates
+                aligned = pd.concat([ser.rename("stock"), nifty_ser.rename("nifty")], axis=1, join="inner").dropna()
+                if len(aligned) >= 20:
+                    rs_line = (aligned["stock"] / aligned["nifty"]) * 1000.0
+                    lookback_len = min(252, len(rs_line))
+                    
+                    rs_curr = float(rs_line.iloc[-1])
+                    price_curr = float(aligned["stock"].iloc[-1])
+                    
+                    if lookback_len > 1:
+                        rs_prior_max = float(rs_line.iloc[-lookback_len:-1].max())
+                        price_prior_max = float(aligned["stock"].iloc[-lookback_len:-1].max())
+                        
+                        rs_52w_high = bool(rs_curr >= rs_prior_max)
+                        price_52w_high = bool(price_curr >= price_prior_max)
+                        # RS Lead: RS line is at/above 52W high while stock price is at least 0.5% below its 52W high
+                        rs_lead = bool(rs_52w_high and price_curr < price_prior_max * 0.995)
+                        
+                        if rs_prior_max > 0:
+                            rs_dist_pct = round(((rs_curr - rs_prior_max) / rs_prior_max) * 100, 2)
+                        if price_prior_max > 0:
+                            price_dist_pct = round(((price_curr - price_prior_max) / price_prior_max) * 100, 2)
+
+            c_row["rs_line_52w_high"] = rs_52w_high
+            c_row["price_52w_high"] = price_52w_high
+            c_row["rs_lead_breakout"] = rs_lead
+            c_row["rs_dist_52w_pct"] = rs_dist_pct
+            c_row["price_dist_52w_pct"] = price_dist_pct
+
             result[col] = c_row
+
+        # Calculate Percentile-Ranked IBD RS Rating (1-99)
+        if raw_scores:
+            score_series = pd.Series(raw_scores)
+            ranks = score_series.rank(pct=True, method="average")
+            rs_ratings = (ranks * 98).round().astype(int) + 1
+            for sym, rating in rs_ratings.items():
+                if sym in result:
+                    result[sym]["ibd_rs_rating"] = int(np.clip(rating, 1, 99))
+
+        for sym, r in result.items():
+            if "ibd_rs_rating" not in r:
+                r["ibd_rs_rating"] = None
 
         with open(out_file, "w") as f:
             json.dump(result, f, indent=2)
 
         ytd_valid = sum(1 for r in result.values() if r.get("YTD") is not None)
         rs20_valid = sum(1 for r in result.values() if r.get("RS (20D)") is not None)
-        print(f"  OK   constituent_performance_latest.json ({len(result)} stocks | YTD valid: {ytd_valid} | RS(20D) valid: {rs20_valid})")
+        ibd_valid = sum(1 for r in result.values() if r.get("ibd_rs_rating") is not None)
+        rs_lead_count = sum(1 for r in result.values() if r.get("rs_lead_breakout") is True)
+        ipo_count = sum(1 for r in result.values() if r.get("is_ipo") is True)
+        print(f"  OK   constituent_performance_latest.json ({len(result)} stocks | IBD RS valid: {ibd_valid} | RS Lead Breakouts: {rs_lead_count} | IPOs: {ipo_count} | YTD valid: {ytd_valid})")
     except Exception as e:
         print(f"  ERR  Calculating constituent performance: {e}")
         export_json_file(output_dir, source_dir, "constituent_performance_latest.json", "constituent_performance", "constituent_performance_latest.json")

@@ -17,6 +17,7 @@ export const METRIC_DEFINITIONS: MetricOption[] = [
     { label: "RS (10D)", value: "RS (10D)", stockValue: "RS (10D)" },
     { label: "RS (20D)", value: "RS (20D)", stockValue: "RS (20D)" },
     { label: "RS (50D)", value: "RS (50D)", stockValue: "RS (50D)" },
+    { label: "IBD RS Rating", value: "IBD RS Rating", stockValue: "ibd_rs_rating" },
 ];
 
 export const REQUIRED_CONSTITUENT_METRICS = [

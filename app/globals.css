@@ -37,6 +37,25 @@ body {
   background: #334155;
 }
 
+/* High-Performance Smooth Scrolling for Subwindows, Modals & Drawers */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) var(--surface);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  contain: paint layout;
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+/* Ensure all overflow containers have hardware acceleration & no scroll chaining */
+[class*="overflow-y-auto"],
+[class*="overflow-x-auto"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  transform: translateZ(0);
+}
+
 /* AG Grid dark theme overrides */
 .ag-theme-alpine-dark {
   --ag-background-color: var(--surface);

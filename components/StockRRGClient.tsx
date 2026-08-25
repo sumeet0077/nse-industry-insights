@@ -1037,8 +1037,8 @@ export function StockRRGClient({ title, stockRRGData, fallbackConstituents }: St
 
                             {expandedQuadrant === q ? (
                                 // Full overlay modal view
-                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
-                                    <div className="bg-[#111118] border border-slate-800 rounded-xl p-6 max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/95 flex items-center justify-center p-4 sm:p-8 overscroll-contain">
+                                    <div className="bg-[#111118] border border-slate-800 rounded-xl p-6 max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl transform-gpu">
                                         <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
                                             <div className="flex items-center gap-3">
                                                 <h2 className={`text-xl font-bold ${textStyles[q]}`}>{q} Quadrant Stocks</h2>

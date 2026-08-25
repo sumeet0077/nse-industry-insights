@@ -139,7 +139,7 @@ export function StockSearch({ searchIndex }: StockSearchProps) {
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
+                className="fixed inset-0 z-[100] bg-black/80 overscroll-contain"
                 onClick={() => setIsOpen(false)}
             />
 

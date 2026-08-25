@@ -1102,8 +1102,8 @@ export function SectorRotationClient({ dataD, dataW, dataM, allThemeData }: Sect
 
                             {expandedQuadrant === q ? (
                                 // Full overlay view for screenshots
-                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8">
-                                    <div className={`w-full max-w-4xl max-h-[90vh] flex flex-col border rounded-xl shadow-2xl ${tabStyles[q]}`}>
+                                <div className="fixed inset-0 z-50 bg-[#0d0d14]/95 flex items-center justify-center p-4 sm:p-8 overscroll-contain">
+                                    <div className={`w-full max-w-4xl max-h-[90vh] flex flex-col border rounded-xl shadow-2xl transform-gpu ${tabStyles[q]}`}>
                                         <div className="flex justify-between items-center p-4 border-b border-white/10 bg-[#111118]/80">
                                             <h3 className={`text-xl font-bold flex items-center gap-3 ${textStyles[q]}`}>
                                                 {q} Quadrant Themes

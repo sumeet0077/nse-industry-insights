@@ -138,9 +138,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
-            "ANURAS.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
             "APOLLOHOSP.NS",
@@ -211,7 +209,6 @@
             "DIVISLAB.NS",
             "DIXON.NS",
             "DLF.NS",
-            "ECLERX.NS",
             "EICHERMOT.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
@@ -366,6 +363,7 @@
             "RAINBOW.NS",
             "RBLBANK.NS",
             "REDINGTON.NS",
+            "RITES.NS",
             "RKFORGE.NS",
             "RRKABEL.NS",
             "SAIL.NS",
@@ -436,6 +434,8 @@
             "AFCONS.NS",
             "ALKEM.NS",
             "AMBUJACEM.NS",
+            "ANGELONE.NS",
+            "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
             "AWL.NS",
@@ -473,6 +473,7 @@
             "DMART.NS",
             "DOMS.NS",
             "DRREDDY.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -570,7 +571,6 @@
             "RECLTD.NS",
             "RELIANCE.NS",
             "RHIM.NS",
-            "RITES.NS",
             "RPOWER.NS",
             "RVNL.NS",
             "SAGILITY.NS",
@@ -796,9 +796,7 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
-            "ANURAS.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
             "ARE&M.NS",
@@ -856,7 +854,6 @@
             "DELHIVERY.NS",
             "DEVYANI.NS",
             "DIXON.NS",
-            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -987,6 +984,7 @@
             "RAINBOW.NS",
             "RBLBANK.NS",
             "REDINGTON.NS",
+            "RITES.NS",
             "RKFORGE.NS",
             "RRKABEL.NS",
             "SAIL.NS",
@@ -1039,6 +1037,8 @@
             "ACC.NS",
             "AFCONS.NS",
             "ALKEM.NS",
+            "ANGELONE.NS",
+            "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
             "AWL.NS",
@@ -1066,6 +1066,7 @@
             "DALBHARAT.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1143,7 +1144,6 @@
             "RAILTEL.NS",
             "RAMCOCEM.NS",
             "RHIM.NS",
-            "RITES.NS",
             "RPOWER.NS",
             "RVNL.NS",
             "SAGILITY.NS",
@@ -1198,8 +1198,6 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
-            "ANURAS.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
             "ASTERDM.NS",
@@ -1237,7 +1235,6 @@
             "DEEPAKNTR.NS",
             "DELHIVERY.NS",
             "DEVYANI.NS",
-            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -1311,6 +1308,7 @@
             "RAINBOW.NS",
             "RBLBANK.NS",
             "REDINGTON.NS",
+            "RITES.NS",
             "RKFORGE.NS",
             "RRKABEL.NS",
             "SAILIFE.NS",
@@ -1353,6 +1351,8 @@
             "ABLBL.NS",
             "ABREL.NS",
             "AFCONS.NS",
+            "ANGELONE.NS",
+            "ANURAS.NS",
             "APTUS.NS",
             "BATAINDIA.NS",
             "BAYERCROP.NS",
@@ -1371,6 +1371,7 @@
             "CROMPTON.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1417,7 +1418,6 @@
             "RAILTEL.NS",
             "RAMCOCEM.NS",
             "RHIM.NS",
-            "RITES.NS",
             "RPOWER.NS",
             "SAGILITY.NS",
             "SAMMAANCAP.NS",
@@ -1982,14 +1982,14 @@
             "CDSL.NS",
             "CAMS.NS",
             "KFINTECH.NS",
-            "ANGELONE.NS",
             "MOTILALOFS.NS",
             "IIFLCAPS.NS",
             "GEOJITFSL.NS",
             "5PAISA.NS"
         ],
         "below": [
-            "IEX.NS"
+            "IEX.NS",
+            "ANGELONE.NS"
         ],
         "new_stock": []
     },
@@ -2071,11 +2071,11 @@
             "ASTRAMICRO.NS",
             "MTARTECH.NS",
             "IDEAFORGE.NS",
-            "ZENTEC.NS",
-            "KRISHNADEF.NS"
+            "ZENTEC.NS"
         ],
         "below": [
             "BEL.NS",
+            "KRISHNADEF.NS",
             "DCXINDIA.NS"
         ],
         "new_stock": []
@@ -2084,10 +2084,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS",
-            "METROPOLIS.NS"
+            "VIJAYA.NS"
         ],
         "below": [
+            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2542,6 +2542,7 @@
         "above": [
             "JKPAPER.NS",
             "WSTCSTPAPR.NS",
+            "STARPAPER.NS",
             "EMAMIPAP.NS"
         ],
         "below": [
@@ -2549,8 +2550,7 @@
             "ANDHRAPAP.NS",
             "ORIENTPPR.NS",
             "SESHAPAPER.NS",
-            "KUANTUM.NS",
-            "STARPAPER.NS"
+            "KUANTUM.NS"
         ],
         "new_stock": []
     },
@@ -2696,13 +2696,13 @@
         "above": [
             "CONCOR.NS",
             "TITAGARH.NS",
+            "RITES.NS",
             "BEML.NS"
         ],
         "below": [
             "IRFC.NS",
             "RVNL.NS",
             "IRCTC.NS",
-            "RITES.NS",
             "IRCON.NS",
             "RAILTEL.NS",
             "JWL.NS",

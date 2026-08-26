@@ -120,11 +120,6 @@
   ],
   "ABB": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -374,11 +369,6 @@
   ],
   "ADANIENSOL": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -422,11 +412,6 @@
     }
   ],
   "ADANIGREEN": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -481,11 +466,6 @@
     }
   ],
   "ADANIPOWER": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -727,11 +707,6 @@
     }
   ],
   "AMBUJACEM": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -1452,11 +1427,6 @@
   ],
   "BAJAJHLDNG": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -1556,11 +1526,6 @@
     }
   ],
   "BANKBARODA": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -2043,11 +2008,6 @@
   ],
   "BOSCHLTD": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -2064,11 +2024,6 @@
     }
   ],
   "BPCL": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -2125,11 +2080,6 @@
     }
   ],
   "BRITANNIA": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -2232,11 +2182,6 @@
     }
   ],
   "CANBK": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -2567,11 +2512,6 @@
   ],
   "CGPOWER": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -2676,11 +2616,6 @@
     }
   ],
   "CHOLAFIN": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -3123,11 +3058,6 @@
   ],
   "CUMMINSIND": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -3446,11 +3376,6 @@
   ],
   "DIVISLAB": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -3505,11 +3430,6 @@
   ],
   "DLF": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -3538,11 +3458,6 @@
     }
   ],
   "DMART": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -3866,11 +3781,6 @@
     }
   ],
   "ENRIN": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -4246,11 +4156,6 @@
   ],
   "GAIL": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -4572,11 +4477,6 @@
   ],
   "GODREJCP": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -4851,11 +4751,6 @@
   ],
   "HAL": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -4962,11 +4857,6 @@
     }
   ],
   "HDFCAMC": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -5242,11 +5132,6 @@
   ],
   "HINDZINC": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -5392,11 +5277,6 @@
     }
   ],
   "HYUNDAI": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -5751,11 +5631,6 @@
   ],
   "INDHOTEL": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -6022,11 +5897,6 @@
   ],
   "IOC": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -6175,11 +6045,6 @@
     }
   ],
   "IRFC": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -6364,11 +6229,6 @@
     }
   ],
   "JINDALSTEL": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -7393,11 +7253,6 @@
   ],
   "LODHA": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -7475,11 +7330,6 @@
     }
   ],
   "LTIM": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -7791,11 +7641,6 @@
   ],
   "MAZDOCK": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -8045,11 +7890,6 @@
   ],
   "MOTHERSON": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -8198,11 +8038,6 @@
     }
   ],
   "MUTHOOTFIN": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -9193,11 +9028,6 @@
   ],
   "PFC": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -9339,11 +9169,6 @@
   ],
   "PIDILITIND": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -9416,11 +9241,6 @@
     }
   ],
   "PNB": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -9965,11 +9785,6 @@
     }
   ],
   "RECLTD": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -10628,11 +10443,6 @@
   ],
   "SHREECEM": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -10695,11 +10505,6 @@
     }
   ],
   "SIEMENS": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -10852,11 +10657,6 @@
     }
   ],
   "SOLARINDS": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -11293,11 +11093,6 @@
   ],
   "TATACAP": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -11414,11 +11209,6 @@
     }
   ],
   "TATAPOWER": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -11859,11 +11649,6 @@
   ],
   "TMCV": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -11921,11 +11706,6 @@
     }
   ],
   "TORNTPHARM": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -12104,11 +11884,6 @@
   ],
   "TVSMOTOR": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -12242,11 +12017,6 @@
   ],
   "UNIONBANK": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -12268,11 +12038,6 @@
     }
   ],
   "UNITDSPR": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -12424,11 +12189,6 @@
   ],
   "VBL": [
     {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
-    {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
@@ -12445,11 +12205,6 @@
     }
   ],
   "VEDL": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -12963,11 +12718,6 @@
     }
   ],
   "ZYDUSLIFE": [
-    {
-      "id": "market_breadth_niftynext50",
-      "title": "Nifty Next 50",
-      "category": "broad-market"
-    },
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",

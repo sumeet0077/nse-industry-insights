@@ -341,14 +341,65 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
 
     print("  Calculating Constituent Performance from Parquet Bhavcopy...")
     try:
-        try:
-            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"])
-        except Exception:
-            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "adj_close"])
-            df_master = df_master.rename(columns={"adj_close": "close"})
+        # ── Read parquet with 'series' column for proper multi-series dedup ──
+        # Partitioned parquet datasets can overflow pyarrow's int8 dictionary
+        # indices when unifying the 'series' column across year partitions.
+        # Workaround: read each partition file individually and concatenate.
+        has_series = False
+        _want_cols = ["symbol", "trade_date", "close", "series"]
+        _want_cols_adj = ["symbol", "trade_date", "adj_close", "series"]
+
+        if parquet_file.is_dir():
+            # Partitioned dataset — read per-partition to avoid int8 overflow
+            import glob as _glob
+            _parts = sorted(_glob.glob(str(parquet_file / "**" / "*.parquet"), recursive=True))
+            if _parts:
+                _frames = []
+                for _pf in _parts:
+                    try:
+                        _frames.append(pd.read_parquet(_pf, columns=_want_cols))
+                    except Exception:
+                        try:
+                            _df_tmp = pd.read_parquet(_pf, columns=_want_cols_adj)
+                            _df_tmp = _df_tmp.rename(columns={"adj_close": "close"})
+                            _frames.append(_df_tmp)
+                        except Exception:
+                            try:
+                                _frames.append(pd.read_parquet(_pf, columns=["symbol", "trade_date", "close"]))
+                            except Exception:
+                                _df_tmp = pd.read_parquet(_pf, columns=["symbol", "trade_date", "adj_close"])
+                                _df_tmp = _df_tmp.rename(columns={"adj_close": "close"})
+                                _frames.append(_df_tmp)
+                df_master = pd.concat(_frames, ignore_index=True)
+                has_series = "series" in df_master.columns
+            else:
+                df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"])
+        else:
+            # Single file
+            try:
+                df_master = pd.read_parquet(parquet_file, columns=_want_cols)
+                has_series = True
+            except Exception:
+                try:
+                    df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"])
+                except Exception:
+                    df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "adj_close"])
+                    df_master = df_master.rename(columns={"adj_close": "close"})
 
         df_master["symbol_ns"] = df_master["symbol"].astype(str).apply(lambda s: s if s.endswith(".NS") else f"{s}.NS")
-        df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"])
+
+        # Prefer EQ series when multiple series (EQ, BL, P1, T0, etc.) exist for the
+        # same (symbol, date).  Block-deal (BL) and auction (P1) close prices differ
+        # from the regular EQ close — using them silently corrupts 1D/1W returns.
+        if has_series:
+            _series_priority = {"EQ": 0, "BE": 1}  # EQ first, BE second, everything else last
+            df_master["_sprio"] = df_master["series"].map(lambda s: _series_priority.get(s, 99) if isinstance(s, str) else 99)
+            df_master = df_master.sort_values(["symbol_ns", "trade_date", "_sprio"])
+            df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"], keep="first")
+            df_master = df_master.drop(columns=["_sprio", "series"])
+            print(f"    (Series-aware dedup applied — EQ preferred over BL/P1/T0)")
+        else:
+            df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"])
         df_pivot = df_master.pivot(index="trade_date", columns="symbol_ns", values="close").sort_index()
         df_pivot.index = pd.to_datetime(df_pivot.index)
         if hasattr(df_pivot.index, 'tz') and df_pivot.index.tz is not None:

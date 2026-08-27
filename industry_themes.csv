@@ -1,665 +1,672 @@
-Theme,Theme_ID,Ticker,Symbol,Description
-"Copper","breadth_theme_copper","ADANIENT.NS","ADANIENT","Copper Producers & Processors"
-"Copper","breadth_theme_copper","BHAGYANGR.NS","BHAGYANGR","Copper Producers & Processors"
-"Copper","breadth_theme_copper","HINDALCO.NS","HINDALCO","Copper Producers & Processors"
-"Copper","breadth_theme_copper","HINDCOPPER.NS","HINDCOPPER","Copper Producers & Processors"
-"Copper","breadth_theme_copper","PRECWIRE.NS","PRECWIRE","Copper Producers & Processors"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","ASTRAMICRO.NS","ASTRAMICRO","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","BDL.NS","BDL","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","BEL.NS","BEL","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","COCHINSHIP.NS","COCHINSHIP","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","DATAPATTNS.NS","DATAPATTNS","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","DCXINDIA.NS","DCXINDIA","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","GRSE.NS","GRSE","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","HAL.NS","HAL","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","IDEAFORGE.NS","IDEAFORGE","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","KRISHNADEF.NS","KRISHNADEF","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","MAZDOCK.NS","MAZDOCK","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","MTARTECH.NS","MTARTECH","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","PARAS.NS","PARAS","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","SOLARINDS.NS","SOLARINDS","Defence Equipment & Services"
-"Defence & Aerospace","breadth_theme_defence_and_aerospace","ZENTEC.NS","ZENTEC","Defence Equipment & Services"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","BEML.NS","BEML","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","CONCOR.NS","CONCOR","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","IRCON.NS","IRCON","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","IRCTC.NS","IRCTC","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","IRFC.NS","IRFC","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","JWL.NS","JWL","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","RAILTEL.NS","RAILTEL","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","RITES.NS","RITES","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","RVNL.NS","RVNL","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","TEXRAIL.NS","TEXRAIL","Railway Infra & Rolling Stock"
-"Railways & Infrastructure","breadth_theme_railways_and_infrastructure","TITAGARH.NS","TITAGARH","Railway Infra & Rolling Stock"
-"Power T&D","breadth_theme_power_tandd","ADANIENSOL.NS","ADANIENSOL","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","APARINDS.NS","APARINDS","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","CGPOWER.NS","CGPOWER","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","ENRIN.NS","ENRIN","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","GENUSPOWER.NS","GENUSPOWER","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","GVT&D.NS","GVT&D","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","KEC.NS","KEC","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","KPIL.NS","KPIL","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","POWERGRID.NS","POWERGRID","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","POWERINDIA.NS","POWERINDIA","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","QPOWER.NS","QPOWER","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","SCHNEIDER.NS","SCHNEIDER","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","SIEMENS.NS","SIEMENS","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","SKIPPER.NS","SKIPPER","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","TRANSRAILL.NS","TRANSRAILL","Power Transmission & Distribution"
-"Power T&D","breadth_theme_power_tandd","VOLTAMP.NS","VOLTAMP","Power Transmission & Distribution"
-"Life Insurance","breadth_theme_life_insurance","HDFCLIFE.NS","HDFCLIFE","Life Insurance Companies"
-"Life Insurance","breadth_theme_life_insurance","ICICIPRULI.NS","ICICIPRULI","Life Insurance Companies"
-"Life Insurance","breadth_theme_life_insurance","LICI.NS","LICI","Life Insurance Companies"
-"Life Insurance","breadth_theme_life_insurance","MFSL.NS","MFSL","Life Insurance Companies"
-"Life Insurance","breadth_theme_life_insurance","SBILIFE.NS","SBILIFE","Life Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","GICRE.NS","GICRE","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","GODIGIT.NS","GODIGIT","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","ICICIGI.NS","ICICIGI","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","MEDIASSIST.NS","MEDIASSIST","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","NIACL.NS","NIACL","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","NIVABUPA.NS","NIVABUPA","General Insurance Companies"
-"General Insurance","breadth_theme_general_insurance","STARHEALTH.NS","STARHEALTH","General Insurance Companies"
-"Private Banking","breadth_theme_private_banking","AUBANK.NS","AUBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","AXISBANK.NS","AXISBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","BANDHANBNK.NS","BANDHANBNK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","FEDERALBNK.NS","FEDERALBNK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","HDFCBANK.NS","HDFCBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","ICICIBANK.NS","ICICIBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","IDFCFIRSTB.NS","IDFCFIRSTB","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","INDUSINDBK.NS","INDUSINDBK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","J&KBANK.NS","J&KBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","KARURVYSYA.NS","KARURVYSYA","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","KOTAKBANK.NS","KOTAKBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","RBLBANK.NS","RBLBANK","Private Sector Banks"
-"Private Banking","breadth_theme_private_banking","YESBANK.NS","YESBANK","Private Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","BANKBARODA.NS","BANKBARODA","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","BANKINDIA.NS","BANKINDIA","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","CANBK.NS","CANBK","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","CENTRALBK.NS","CENTRALBK","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","INDIANB.NS","INDIANB","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","IOB.NS","IOB","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","MAHABANK.NS","MAHABANK","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","PNB.NS","PNB","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","PSB.NS","PSB","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","SBIN.NS","SBIN","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","UCOBANK.NS","UCOBANK","Public Sector Banks"
-"PSU Banking","breadth_theme_psu_banking","UNIONBANK.NS","UNIONBANK","Public Sector Banks"
-"Housing Finance","breadth_theme_housing_finance","AADHARHFC.NS","AADHARHFC","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","AAVAS.NS","AAVAS","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","APTUS.NS","APTUS","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","BAJAJHFL.NS","BAJAJHFL","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","CANFINHOME.NS","CANFINHOME","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","HOMEFIRST.NS","HOMEFIRST","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","HUDCO.NS","HUDCO","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","INDIASHLTR.NS","INDIASHLTR","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","LICHSGFIN.NS","LICHSGFIN","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","PNBHOUSING.NS","PNBHOUSING","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","REPCOHOME.NS","REPCOHOME","Housing Finance Companies"
-"Housing Finance","breadth_theme_housing_finance","SAMMAANCAP.NS","SAMMAANCAP","Housing Finance Companies"
-"NBFC","breadth_theme_nbfc","BAJAJFINSV.NS","BAJAJFINSV","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","BAJFINANCE.NS","BAJFINANCE","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","CGCL.NS","CGCL","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","CHOLAFIN.NS","CHOLAFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","CREDITACC.NS","CREDITACC","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","IFCI.NS","IFCI","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","LICHSGFIN.NS","LICHSGFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","M&MFIN.NS","M&MFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","MANAPPURAM.NS","MANAPPURAM","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","MUTHOOTFIN.NS","MUTHOOTFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","PFC.NS","PFC","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","PIRAMALFIN.NS","PIRAMALFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","POONAWALLA.NS","POONAWALLA","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","RECLTD.NS","RECLTD","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","SHRIRAMFIN.NS","SHRIRAMFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","SUNDARMFIN.NS","SUNDARMFIN","Non-Banking Financial Companies"
-"NBFC","breadth_theme_nbfc","TATACAP.NS","TATACAP","Non-Banking Financial Companies"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","ABFRL.NS","ABFRL","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","DMART.NS","DMART","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","EMIL.NS","EMIL","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","ETERNAL.NS","ETERNAL","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","MEESHO.NS","MEESHO","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","METROBRAND.NS","METROBRAND","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","NYKAA.NS","NYKAA","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","RELIANCE.NS","RELIANCE","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","SWIGGY.NS","SWIGGY","Retail and Online Commerce"
-"Retail & E-Commerce","breadth_theme_retail_and_e_commerce","TRENT.NS","TRENT","Retail and Online Commerce"
-"Asset Management","breadth_theme_asset_management","ABSLAMC.NS","ABSLAMC","Asset Management Companies"
-"Asset Management","breadth_theme_asset_management","HDFCAMC.NS","HDFCAMC","Asset Management Companies"
-"Asset Management","breadth_theme_asset_management","ICICIAMC.NS","ICICIAMC","Asset Management Companies"
-"Asset Management","breadth_theme_asset_management","NAM-INDIA.NS","NAM-INDIA","Asset Management Companies"
-"Asset Management","breadth_theme_asset_management","UTIAMC.NS","UTIAMC","Asset Management Companies"
-"Wealth Management","breadth_theme_wealth_management","360ONE.NS","360ONE","Wealth Management Firms"
-"Wealth Management","breadth_theme_wealth_management","ANANDRATHI.NS","ANANDRATHI","Wealth Management Firms"
-"Wealth Management","breadth_theme_wealth_management","NUVAMA.NS","NUVAMA","Wealth Management Firms"
-"Wealth Management","breadth_theme_wealth_management","PRUDENT.NS","PRUDENT","Wealth Management Firms"
-"Capital Market","breadth_theme_capital_market","5PAISA.NS","5PAISA","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","ANGELONE.NS","ANGELONE","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","BSE.NS","BSE","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","CAMS.NS","CAMS","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","CDSL.NS","CDSL","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","GEOJITFSL.NS","GEOJITFSL","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","IEX.NS","IEX","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","IIFLCAPS.NS","IIFLCAPS","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","KFINTECH.NS","KFINTECH","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","MCX.NS","MCX","Capital Market Intermediaries"
-"Capital Market","breadth_theme_capital_market","MOTILALOFS.NS","MOTILALOFS","Capital Market Intermediaries"
-"Capital Goods","breadth_theme_capital_goods","ABB.NS","ABB","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","AIAENG.NS","AIAENG","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","APARINDS.NS","APARINDS","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","BEL.NS","BEL","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","BHEL.NS","BHEL","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","CARBORUNIV.NS","CARBORUNIV","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","CGPOWER.NS","CGPOWER","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","CUMMINSIND.NS","CUMMINSIND","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","ELGIEQUIP.NS","ELGIEQUIP","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","GENUSPOWER.NS","GENUSPOWER","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","GRINDWELL.NS","GRINDWELL","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","HONAUT.NS","HONAUT","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","ISGEC.NS","ISGEC","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","JYOTICNC.NS","JYOTICNC","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","KIRLOSENG.NS","KIRLOSENG","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","LT.NS","LT","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","PTCIL.NS","PTCIL","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","SCHAEFFLER.NS","SCHAEFFLER","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","SIEMENS.NS","SIEMENS","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","SKFINDIA.NS","SKFINDIA","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","TDPOWERSYS.NS","TDPOWERSYS","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","THERMAX.NS","THERMAX","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","TIMKEN.NS","TIMKEN","Heavy Engineering & Industrial Equipment"
-"Capital Goods","breadth_theme_capital_goods","TRITURBINE.NS","TRITURBINE","Heavy Engineering & Industrial Equipment"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","BAJAJCON.NS","BAJAJCON","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","CUPID.NS","CUPID","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","EMAMILTD.NS","EMAMILTD","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","GILLETTE.NS","GILLETTE","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","JHS.NS","JHS","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","PGHH.NS","PGHH","Health, Hygiene & Consumer Wellness"
-"Personal Care & Wellness","breadth_theme_personal_care_and_wellness","ZYDUSWELL.NS","ZYDUSWELL","Health, Hygiene & Consumer Wellness"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","ASALCBR.NS","ASALCBR","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","GLOBUSSPR.NS","GLOBUSSPR","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","PICCADIL.NS","PICCADIL","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","RADICO.NS","RADICO","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","SDBL.NS","SDBL","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","SULA.NS","SULA","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","TI.NS","TI","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","UBL.NS","UBL","Alcohol & Brewery Companies"
-"Alcohols & Breweries","breadth_theme_alcohols_and_breweries","UNITDSPR.NS","UNITDSPR","Alcohol & Brewery Companies"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","BPCL.NS","BPCL","Oil Refining & Marketing"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","CASTROLIND.NS","CASTROLIND","Oil Refining & Marketing"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","CONFIPET.NS","CONFIPET","Oil Refining & Marketing"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","HINDPETRO.NS","HINDPETRO","Oil Refining & Marketing"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","IOC.NS","IOC","Oil Refining & Marketing"
-"Oil & Gas Downstream","breadth_theme_oil_and_gas_downstream","MRPL.NS","MRPL","Oil Refining & Marketing"
-"Oil & Gas Upstream","breadth_theme_oil_and_gas_upstream","OIL.NS","OIL","Oil Exploration & Production"
-"Oil & Gas Upstream","breadth_theme_oil_and_gas_upstream","ONGC.NS","ONGC","Oil Exploration & Production"
-"Oil & Gas Upstream","breadth_theme_oil_and_gas_upstream","RELIANCE.NS","RELIANCE","Oil Exploration & Production"
-"Oil & Gas Upstream","breadth_theme_oil_and_gas_upstream","VOGL.NS","VOGL","Oil Exploration & Production"
-"Cement","breadth_theme_cement","ACC.NS","ACC","Cement Manufacturers"
-"Cement","breadth_theme_cement","AMBUJACEM.NS","AMBUJACEM","Cement Manufacturers"
-"Cement","breadth_theme_cement","DALBHARAT.NS","DALBHARAT","Cement Manufacturers"
-"Cement","breadth_theme_cement","GRASIM.NS","GRASIM","Cement Manufacturers"
-"Cement","breadth_theme_cement","JKCEMENT.NS","JKCEMENT","Cement Manufacturers"
-"Cement","breadth_theme_cement","RAMCOCEM.NS","RAMCOCEM","Cement Manufacturers"
-"Cement","breadth_theme_cement","SHREECEM.NS","SHREECEM","Cement Manufacturers"
-"Cement","breadth_theme_cement","ULTRACEMCO.NS","ULTRACEMCO","Cement Manufacturers"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","BORORENEW.NS","BORORENEW","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","EMMVEE.NS","EMMVEE","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","INA.NS","INA","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","PREMIERENE.NS","PREMIERENE","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","UTLSOLAR.NS","UTLSOLAR","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","VIKRAMSOLR.NS","VIKRAMSOLR","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","WAAREEENER.NS","WAAREEENER","Solar Cells, Modules & EPC"
-"Solar Manufacturing","breadth_theme_solar_manufacturing","WEBELSOLAR.NS","WEBELSOLAR","Solar Cells, Modules & EPC"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","AMBER.NS","AMBER","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","AVALON.NS","AVALON","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","BEL.NS","BEL","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","CGPOWER.NS","CGPOWER","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","CYIENT.NS","CYIENT","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","CYIENTDLM.NS","CYIENTDLM","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","DIXON.NS","DIXON","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","KAYNES.NS","KAYNES","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","LTTS.NS","LTTS","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","MOSCHIP.NS","MOSCHIP","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","PGEL.NS","PGEL","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","SYRMA.NS","SYRMA","Semiconductor & Electronic Manufacturing"
-"Semiconductors & EMS","breadth_theme_semiconductors_and_ems","TATAELXSI.NS","TATAELXSI","Semiconductor & Electronic Manufacturing"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","ADANIPORTS.NS","ADANIPORTS","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","GMRAIRPORT.NS","GMRAIRPORT","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","IRB.NS","IRB","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","JSWINFRA.NS","JSWINFRA","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","KEC.NS","KEC","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","KNRCON.NS","KNRCON","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","LT.NS","LT","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","NCC.NS","NCC","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","PNCINFRA.NS","PNCINFRA","Infrastructure & Engineering"
-"Infrastructure & EPC","breadth_theme_infrastructure_and_epc","PSPPROJECT.NS","PSPPROJECT","Infrastructure & Engineering"
-"Fintech","breadth_theme_fintech","ALGOQUANT.NS","ALGOQUANT","Financial Technology"
-"Fintech","breadth_theme_fintech","CAMS.NS","CAMS","Financial Technology"
-"Fintech","breadth_theme_fintech","CDSL.NS","CDSL","Financial Technology"
-"Fintech","breadth_theme_fintech","FSL.NS","FSL","Financial Technology"
-"Fintech","breadth_theme_fintech","JIOFIN.NS","JIOFIN","Financial Technology"
-"Fintech","breadth_theme_fintech","PAYTM.NS","PAYTM","Financial Technology"
-"Fintech","breadth_theme_fintech","POLICYBZR.NS","POLICYBZR","Financial Technology"
-"Fintech","breadth_theme_fintech","SBICARD.NS","SBICARD","Financial Technology"
-"EV Ecosystem","breadth_theme_ev_ecosystem","ARE&M.NS","ARE&M","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","ATHERENERG.NS","ATHERENERG","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","BAJAJ-AUTO.NS","BAJAJ-AUTO","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","EXICOM.NS","EXICOM","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","EXIDEIND.NS","EXIDEIND","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","HEROMOTOCO.NS","HEROMOTOCO","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","JBMA.NS","JBMA","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","MOTHERSON.NS","MOTHERSON","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","OLAELEC.NS","OLAELEC","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","OLECTRA.NS","OLECTRA","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","SONACOMS.NS","SONACOMS","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","TMCV.NS","TMCV","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","TMPV.NS","TMPV","Electric Vehicle Ecosystem"
-"EV Ecosystem","breadth_theme_ev_ecosystem","TVSMOTOR.NS","TVSMOTOR","Electric Vehicle Ecosystem"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","ADANIGREEN.NS","ADANIGREEN","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","INOXWIND.NS","INOXWIND","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","JSWENERGY.NS","JSWENERGY","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","NHPC.NS","NHPC","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","NTPC.NS","NTPC","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","NTPCGREEN.NS","NTPCGREEN","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","SJVN.NS","SJVN","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","SUZLON.NS","SUZLON","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","TATAPOWER.NS","TATAPOWER","Renewable Energy Generation"
-"Renewable Energy Generation","breadth_theme_renewable_energy_generation","WAAREERTL.NS","WAAREERTL","Renewable Energy Generation"
-"Green Hydrogen","breadth_theme_green_hydrogen","ADANIGREEN.NS","ADANIGREEN","Green Hydrogen Companies"
-"Green Hydrogen","breadth_theme_green_hydrogen","GAIL.NS","GAIL","Green Hydrogen Companies"
-"Green Hydrogen","breadth_theme_green_hydrogen","JSWENERGY.NS","JSWENERGY","Green Hydrogen Companies"
-"Green Hydrogen","breadth_theme_green_hydrogen","NTPC.NS","NTPC","Green Hydrogen Companies"
-"Green Hydrogen","breadth_theme_green_hydrogen","TATAPOWER.NS","TATAPOWER","Green Hydrogen Companies"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","ANANTRAJ.NS","ANANTRAJ","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","AURIONPRO.NS","AURIONPRO","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","E2E.NS","E2E","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","NETWEB.NS","NETWEB","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","SCHNEIDER.NS","SCHNEIDER","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","TATACOMM.NS","TATACOMM","Data Centre & Artificial Intelligence"
-"Data Centre and AI","breadth_theme_data_centre_and_ai","TECHNOE.NS","TECHNOE","Data Centre & Artificial Intelligence"
-"Aviation","breadth_theme_aviation","ADANIENT.NS","ADANIENT","Airlines & Aviation"
-"Aviation","breadth_theme_aviation","GMRAIRPORT.NS","GMRAIRPORT","Airlines & Aviation"
-"Aviation","breadth_theme_aviation","INDIGO.NS","INDIGO","Airlines & Aviation"
-"Logistics","breadth_theme_logistics","ADANIPORTS.NS","ADANIPORTS","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","AEGISLOG.NS","AEGISLOG","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","ALLCARGO.NS","ALLCARGO","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","BLUEDART.NS","BLUEDART","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","CONCOR.NS","CONCOR","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","DELHIVERY.NS","DELHIVERY","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","GATEWAY.NS","GATEWAY","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","JSWINFRA.NS","JSWINFRA","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","MAHLOG.NS","MAHLOG","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","SHADOWFAX.NS","SHADOWFAX","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","SNOWMAN.NS","SNOWMAN","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","TCI.NS","TCI","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","TCIEXP.NS","TCIEXP","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","TVSSCS.NS","TVSSCS","Logistics & Supply Chain"
-"Logistics","breadth_theme_logistics","VRLLOG.NS","VRLLOG","Logistics & Supply Chain"
-"Hospitals","breadth_theme_hospitals","APOLLOHOSP.NS","APOLLOHOSP","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","ASTERDM.NS","ASTERDM","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","FORTIS.NS","FORTIS","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","KIMS.NS","KIMS","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","MAXHEALTH.NS","MAXHEALTH","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","MEDANTA.NS","MEDANTA","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","NH.NS","NH","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","RAINBOW.NS","RAINBOW","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","SHALBY.NS","SHALBY","Hospital Chains"
-"Hospitals","breadth_theme_hospitals","YATHARTH.NS","YATHARTH","Hospital Chains"
-"Pharma Formulations","breadth_theme_pharma_formulations","ABBOTINDIA.NS","ABBOTINDIA","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","AJANTPHARM.NS","AJANTPHARM","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","ALKEM.NS","ALKEM","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","AUROPHARMA.NS","AUROPHARMA","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","CIPLA.NS","CIPLA","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","DRREDDY.NS","DRREDDY","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","ERIS.NS","ERIS","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","GLAXO.NS","GLAXO","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","GLENMARK.NS","GLENMARK","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","GRANULES.NS","GRANULES","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","IPCALAB.NS","IPCALAB","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","LINCOLN.NS","LINCOLN","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","LUPIN.NS","LUPIN","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","MANKIND.NS","MANKIND","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","NATCOPHARM.NS","NATCOPHARM","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","PFIZER.NS","PFIZER","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","SANOFI.NS","SANOFI","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","SUNPHARMA.NS","SUNPHARMA","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","TORNTPHARM.NS","TORNTPHARM","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","WOCKPHARMA.NS","WOCKPHARMA","Pharma Formulation Companies"
-"Pharma Formulations","breadth_theme_pharma_formulations","ZYDUSLIFE.NS","ZYDUSLIFE","Pharma Formulation Companies"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","AARTIPHARM.NS","AARTIPHARM","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","BIOCON.NS","BIOCON","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","CONCORDBIO.NS","CONCORDBIO","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","DIVISLAB.NS","DIVISLAB","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","GLAND.NS","GLAND","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","JUBLPHARMA.NS","JUBLPHARMA","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","LAURUSLABS.NS","LAURUSLABS","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","NEULANDLAB.NS","NEULANDLAB","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","PPLPHARMA.NS","PPLPHARMA","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","RUBICON.NS","RUBICON","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","SAILIFE.NS","SAILIFE","Contract Manufacturing & API Players"
-"Pharma CDMO & API","breadth_theme_pharma_cdmo_and_api","SYNGENE.NS","SYNGENE","Contract Manufacturing & API Players"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","AARTIIND.NS","AARTIIND","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","ATUL.NS","ATUL","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","DEEPAKNTR.NS","DEEPAKNTR","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","DIAMINESQ.NS","DIAMINESQ","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","FINEORG.NS","FINEORG","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","HSCL.NS","HSCL","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","NAVINFLUOR.NS","NAVINFLUOR","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","PIDILITIND.NS","PIDILITIND","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","PIIND.NS","PIIND","Specialty Chemical Companies"
-"Specialty Chemicals","breadth_theme_specialty_chemicals","SRF.NS","SRF","Specialty Chemical Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","BAYERCROP.NS","BAYERCROP","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","COROMANDEL.NS","COROMANDEL","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","DEEPAKFERT.NS","DEEPAKFERT","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","DHANUKA.NS","DHANUKA","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","GSFC.NS","GSFC","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","RALLIS.NS","RALLIS","Agrochemicals & Fertiliser Companies"
-"Agrochemicals & Fertilisers","breadth_theme_agrochemicals_and_fertilisers","UPL.NS","UPL","Agrochemicals & Fertiliser Companies"
-"Textiles","breadth_theme_textiles","ABFRL.NS","ABFRL","Textile Companies"
-"Textiles","breadth_theme_textiles","KPRMILL.NS","KPRMILL","Textile Companies"
-"Textiles","breadth_theme_textiles","LUXIND.NS","LUXIND","Textile Companies"
-"Textiles","breadth_theme_textiles","PAGEIND.NS","PAGEIND","Textile Companies"
-"Textiles","breadth_theme_textiles","PGIL.NS","PGIL","Textile Companies"
-"Textiles","breadth_theme_textiles","TRIDENT.NS","TRIDENT","Textile Companies"
-"Textiles","breadth_theme_textiles","WELSPUNLIV.NS","WELSPUNLIV","Textile Companies"
-"Paints","breadth_theme_paints","ASIANPAINT.NS","ASIANPAINT","Paint Companies"
-"Paints","breadth_theme_paints","BERGEPAINT.NS","BERGEPAINT","Paint Companies"
-"Paints","breadth_theme_paints","INDIGOPNTS.NS","INDIGOPNTS","Paint Companies"
-"Paints","breadth_theme_paints","KAMOPAINTS.NS","KAMOPAINTS","Paint Companies"
-"Paints","breadth_theme_paints","KANSAINER.NS","KANSAINER","Paint Companies"
-"Paints","breadth_theme_paints","SHALPAINTS.NS","SHALPAINTS","Paint Companies"
-"Paints","breadth_theme_paints","SIRCA.NS","SIRCA","Paint Companies"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","GOLDIAM.NS","GOLDIAM","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","KALYANKJIL.NS","KALYANKJIL","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","PNGJL.NS","PNGJL","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","SENCO.NS","SENCO","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","SKYGOLD.NS","SKYGOLD","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","THANGAMAYL.NS","THANGAMAYL","Jewellery & Gold Retailers"
-"Jewellery & Gold","breadth_theme_jewellery_and_gold","TITAN.NS","TITAN","Jewellery & Gold Retailers"
-"Silver","breadth_theme_silver","HINDZINC.NS","HINDZINC","Silver Producers"
-"Silver","breadth_theme_silver","VEDL.NS","VEDL","Silver Producers"
-"Critical Minerals","breadth_theme_critical_minerals","ARE&M.NS","ARE&M","Critical Mineral Companies"
-"Critical Minerals","breadth_theme_critical_minerals","HINDZINC.NS","HINDZINC","Critical Mineral Companies"
-"Critical Minerals","breadth_theme_critical_minerals","MOIL.NS","MOIL","Critical Mineral Companies"
-"Critical Minerals","breadth_theme_critical_minerals","NATIONALUM.NS","NATIONALUM","Critical Mineral Companies"
-"Critical Minerals","breadth_theme_critical_minerals","NMDC.NS","NMDC","Critical Mineral Companies"
-"Critical Minerals","breadth_theme_critical_minerals","VEDL.NS","VEDL","Critical Mineral Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","COALINDIA.NS","COALINDIA","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","HINDALCO.NS","HINDALCO","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","JINDALSTEL.NS","JINDALSTEL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","JSL.NS","JSL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","JSWSTEEL.NS","JSWSTEEL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","LLOYDSME.NS","LLOYDSME","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","NMDC.NS","NMDC","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","SAIL.NS","SAIL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","TATASTEEL.NS","TATASTEEL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","VAML.NS","VAML","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","VEDL.NS","VEDL","Metals & Mining Companies"
-"Metals & Mining","breadth_theme_metals_and_mining","VISL.NS","VISL","Metals & Mining Companies"
-"Telecom Services","breadth_theme_telecom_services","BHARTIARTL.NS","BHARTIARTL","Telecom Service Providers"
-"Telecom Services","breadth_theme_telecom_services","IDEA.NS","IDEA","Telecom Service Providers"
-"Telecom Services","breadth_theme_telecom_services","TATACOMM.NS","TATACOMM","Telecom Service Providers"
-"Telecom Infra","breadth_theme_telecom_infra","HFCL.NS","HFCL","Telecom Infrastructure"
-"Telecom Infra","breadth_theme_telecom_infra","INDUSTOWER.NS","INDUSTOWER","Telecom Infrastructure"
-"Telecom Infra","breadth_theme_telecom_infra","TEJASNET.NS","TEJASNET","Telecom Infrastructure"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","DBCORP.NS","DBCORP","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","DEN.NS","DEN","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","DISHTV.NS","DISHTV","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","HATHWAY.NS","HATHWAY","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","NDTV.NS","NDTV","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","NETWORK18.NS","NETWORK18","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","PFOCUS.NS","PFOCUS","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","PVRINOX.NS","PVRINOX","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","SUNTV.NS","SUNTV","Media & Broadcasting"
-"Media & Broadcasting","breadth_theme_media_and_broadcasting","ZEEL.NS","ZEEL","Media & Broadcasting"
-"Music & Content","breadth_theme_music_and_content","NAZARA.NS","NAZARA","Music & Content Platforms"
-"Music & Content","breadth_theme_music_and_content","SAREGAMA.NS","SAREGAMA","Music & Content Platforms"
-"Music & Content","breadth_theme_music_and_content","SHEMAROO.NS","SHEMAROO","Music & Content Platforms"
-"Music & Content","breadth_theme_music_and_content","TIPSMUSIC.NS","TIPSMUSIC","Music & Content Platforms"
-"Luxury","breadth_theme_luxury","ETHOSLTD.NS","ETHOSLTD","Luxury Brands"
-"Luxury","breadth_theme_luxury","LANDMARK.NS","LANDMARK","Luxury Brands"
-"Luxury","breadth_theme_luxury","METROBRAND.NS","METROBRAND","Luxury Brands"
-"Luxury","breadth_theme_luxury","PAGEIND.NS","PAGEIND","Luxury Brands"
-"Luxury","breadth_theme_luxury","SULA.NS","SULA","Luxury Brands"
-"Luxury","breadth_theme_luxury","TITAN.NS","TITAN","Luxury Brands"
-"Luxury","breadth_theme_luxury","TRENT.NS","TRENT","Luxury Brands"
-"QSR","breadth_theme_qsr","DEVYANI.NS","DEVYANI","Quick Service Restaurants"
-"QSR","breadth_theme_qsr","JUBLFOOD.NS","JUBLFOOD","Quick Service Restaurants"
-"QSR","breadth_theme_qsr","RBA.NS","RBA","Quick Service Restaurants"
-"QSR","breadth_theme_qsr","SAPPHIRE.NS","SAPPHIRE","Quick Service Restaurants"
-"QSR","breadth_theme_qsr","UFBL.NS","UFBL","Quick Service Restaurants"
-"QSR","breadth_theme_qsr","WESTLIFE.NS","WESTLIFE","Quick Service Restaurants"
-"FMCG Staples","breadth_theme_fmcg_staples","BRITANNIA.NS","BRITANNIA","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","CCL.NS","CCL","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","COFFEEDAY.NS","COFFEEDAY","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","COLPAL.NS","COLPAL","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","DABUR.NS","DABUR","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","GODREJCP.NS","GODREJCP","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","HINDUNILVR.NS","HINDUNILVR","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","ITC.NS","ITC","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","MARICO.NS","MARICO","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","NESTLEIND.NS","NESTLEIND","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","PATANJALI.NS","PATANJALI","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","TATACONSUM.NS","TATACONSUM","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","VBL.NS","VBL","FMCG Staples"
-"FMCG Staples","breadth_theme_fmcg_staples","VINCOFE.NS","VINCOFE","FMCG Staples"
-"IT Services","breadth_theme_it_services","COFORGE.NS","COFORGE","IT Services Companies"
-"IT Services","breadth_theme_it_services","HCLTECH.NS","HCLTECH","IT Services Companies"
-"IT Services","breadth_theme_it_services","INFY.NS","INFY","IT Services Companies"
-"IT Services","breadth_theme_it_services","KPITTECH.NS","KPITTECH","IT Services Companies"
-"IT Services","breadth_theme_it_services","LTIM.NS","LTIM","IT Services Companies"
-"IT Services","breadth_theme_it_services","MPHASIS.NS","MPHASIS","IT Services Companies"
-"IT Services","breadth_theme_it_services","NEWGEN.NS","NEWGEN","IT Services Companies"
-"IT Services","breadth_theme_it_services","OFSS.NS","OFSS","IT Services Companies"
-"IT Services","breadth_theme_it_services","PERSISTENT.NS","PERSISTENT","IT Services Companies"
-"IT Services","breadth_theme_it_services","TCS.NS","TCS","IT Services Companies"
-"IT Services","breadth_theme_it_services","TECHM.NS","TECHM","IT Services Companies"
-"IT Services","breadth_theme_it_services","WIPRO.NS","WIPRO","IT Services Companies"
-"IT Services","breadth_theme_it_services","ZENSARTECH.NS","ZENSARTECH","IT Services Companies"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","ASHOKLEY.NS","ASHOKLEY","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","EICHERMOT.NS","EICHERMOT","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","HYUNDAI.NS","HYUNDAI","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","M&M.NS","M&M","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","MARUTI.NS","MARUTI","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","TMCV.NS","TMCV","Passenger Vehicles & Commercial Vehicles"
-"Auto Passenger & CV","breadth_theme_auto_passenger_and_cv","TMPV.NS","TMPV","Passenger Vehicles & Commercial Vehicles"
-"Two & Three Wheelers","breadth_theme_two_and_three_wheelers","BAJAJ-AUTO.NS","BAJAJ-AUTO","Two & Three Wheeler Manufacturers"
-"Two & Three Wheelers","breadth_theme_two_and_three_wheelers","EICHERMOT.NS","EICHERMOT","Two & Three Wheeler Manufacturers"
-"Two & Three Wheelers","breadth_theme_two_and_three_wheelers","HEROMOTOCO.NS","HEROMOTOCO","Two & Three Wheeler Manufacturers"
-"Two & Three Wheelers","breadth_theme_two_and_three_wheelers","OLAELEC.NS","OLAELEC","Two & Three Wheeler Manufacturers"
-"Two & Three Wheelers","breadth_theme_two_and_three_wheelers","TVSMOTOR.NS","TVSMOTOR","Two & Three Wheeler Manufacturers"
-"Auto Ancillary","breadth_theme_auto_ancillary","ARE&M.NS","ARE&M","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","BHARATFORG.NS","BHARATFORG","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","BOSCHLTD.NS","BOSCHLTD","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","CIEINDIA.NS","CIEINDIA","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","CRAFTSMAN.NS","CRAFTSMAN","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","ENDURANCE.NS","ENDURANCE","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","EXIDEIND.NS","EXIDEIND","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","GABRIEL.NS","GABRIEL","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","LUMAXTECH.NS","LUMAXTECH","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","MINDACORP.NS","MINDACORP","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","MOTHERSON.NS","MOTHERSON","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","MSUMI.NS","MSUMI","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","SANSERA.NS","SANSERA","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","SCHAEFFLER.NS","SCHAEFFLER","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","SONACOMS.NS","SONACOMS","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","SUNDRMFAST.NS","SUNDRMFAST","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","SUPRAJIT.NS","SUPRAJIT","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","TALBROAUTO.NS","TALBROAUTO","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","TIINDIA.NS","TIINDIA","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","UNOMINDA.NS","UNOMINDA","Companies manufacturing automotive components"
-"Auto Ancillary","breadth_theme_auto_ancillary","ZFCVINDIA.NS","ZFCVINDIA","Companies manufacturing automotive components"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","APOLLOTYRE.NS","APOLLOTYRE","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","BALKRISIND.NS","BALKRISIND","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","CEATLTD.NS","CEATLTD","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","GOODYEAR.NS","GOODYEAR","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","JKTYRE.NS","JKTYRE","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","MODIRUBBER.NS","MODIRUBBER","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","MRF.NS","MRF","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","TOLINS.NS","TOLINS","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","TVSSRICHAK.NS","TVSSRICHAK","Tyre and Rubber manufacturers"
-"Tyres & Rubber Products","breadth_theme_tyres_and_rubber_products","VIAZ.NS","VIAZ","Tyre and Rubber manufacturers"
-"Sugar","breadth_theme_sugar","AVADHSUGAR.NS","AVADHSUGAR","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","BAJAJHIND.NS","BAJAJHIND","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","BALRAMCHIN.NS","BALRAMCHIN","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","DALMIASUG.NS","DALMIASUG","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","DBOL.NS","DBOL","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","DCMNVL.NS","DCMNVL","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","DHAMPURSUG.NS","DHAMPURSUG","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","EIDPARRY.NS","EIDPARRY","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","RENUKA.NS","RENUKA","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","TRIVENI.NS","TRIVENI","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","UGARSUGAR.NS","UGARSUGAR","Sugar and Bio-organics Manufacturers"
-"Sugar","breadth_theme_sugar","UTTAMSUGAR.NS","UTTAMSUGAR","Sugar and Bio-organics Manufacturers"
-"Paper","breadth_theme_paper","ANDHRAPAP.NS","ANDHRAPAP","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","EMAMIPAP.NS","EMAMIPAP","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","JKPAPER.NS","JKPAPER","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","KUANTUM.NS","KUANTUM","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","ORIENTPPR.NS","ORIENTPPR","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","SESHAPAPER.NS","SESHAPAPER","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","STARPAPER.NS","STARPAPER","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","TNPL.NS","TNPL","Paper and Packaging Manufacturers"
-"Paper","breadth_theme_paper","WSTCSTPAPR.NS","WSTCSTPAPR","Paper and Packaging Manufacturers"
-"Wires and Cables","breadth_theme_wires_and_cables","APARINDS.NS","APARINDS","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","BANSALWIRE.NS","BANSALWIRE","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","FINCABLES.NS","FINCABLES","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","KEI.NS","KEI","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","POLYCAB.NS","POLYCAB","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","RRKABEL.NS","RRKABEL","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","UNIVCABLES.NS","UNIVCABLES","Cables, Wires & Electrical Equipment"
-"Wires and Cables","breadth_theme_wires_and_cables","VGUARD.NS","VGUARD","Cables, Wires & Electrical Equipment"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","BYKE.NS","BYKE","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","CHALET.NS","CHALET","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","EIHOTEL.NS","EIHOTEL","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","HLVLTD.NS","HLVLTD","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","INDHOTEL.NS","INDHOTEL","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","ITCHOTELS.NS","ITCHOTELS","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","LEMONTREE.NS","LEMONTREE","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","MHRIL.NS","MHRIL","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","ORIENTHOT.NS","ORIENTHOT","Hotels, Resorts, and Tourism"
-"Hotels & Hospitality","breadth_theme_hotels_and_hospitality","TAJGVK.NS","TAJGVK","Hotels, Resorts, and Tourism"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","APOLLOPIPE.NS","APOLLOPIPE","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","ASTRAL.NS","ASTRAL","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","FINPIPE.NS","FINPIPE","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","JINDALPOLY.NS","JINDALPOLY","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","PRAKASH.NS","PRAKASH","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","PRINCEPIPE.NS","PRINCEPIPE","PVC Pipes & Sanitaryware"
-"PVC Pipes & Plumbing","breadth_theme_pvc_pipes_and_plumbing","SUPREMEIND.NS","SUPREMEIND","PVC Pipes & Sanitaryware"
-"Building Materials","breadth_theme_building_materials","AGI.NS","AGI","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","APLAPOLLO.NS","APLAPOLLO","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","CARYSIL.NS","CARYSIL","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","CENTURYPLY.NS","CENTURYPLY","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","CERA.NS","CERA","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","GREENPANEL.NS","GREENPANEL","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","GREENPLY.NS","GREENPLY","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","KAJARIACER.NS","KAJARIACER","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","RUSHIL.NS","RUSHIL","Ceramics, Tiles and Plywood"
-"Building Materials","breadth_theme_building_materials","SOMANYCERA.NS","SOMANYCERA","Ceramics, Tiles and Plywood"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","BAJAJELEC.NS","BAJAJELEC","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","BLUESTARCO.NS","BLUESTARCO","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","BPL.NS","BPL","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","CROMPTON.NS","CROMPTON","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","DIXON.NS","DIXON","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","EUREKAFORB.NS","EUREKAFORB","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","HAVELLS.NS","HAVELLS","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","LGEINDIA.NS","LGEINDIA","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","SYMPHONY.NS","SYMPHONY","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","TTKPRESTIG.NS","TTKPRESTIG","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","VGUARD.NS","VGUARD","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","VOLTAS.NS","VOLTAS","Consumer Electronics and Appliances"
-"White Goods & Durables","breadth_theme_white_goods_and_durables","WHIRLPOOL.NS","WHIRLPOOL","Consumer Electronics and Appliances"
-"Footwear","breadth_theme_footwear","BATAINDIA.NS","BATAINDIA","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","CAMPUS.NS","CAMPUS","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","KHADIM.NS","KHADIM","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","LIBERTSHOE.NS","LIBERTSHOE","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","METROBRAND.NS","METROBRAND","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","MIRZAINT.NS","MIRZAINT","Footwear and Leather Products"
-"Footwear","breadth_theme_footwear","RELAXO.NS","RELAXO","Footwear and Leather Products"
-"Diagnostics & Pathology","breadth_theme_diagnostics_and_pathology","KRSNAA.NS","KRSNAA","Diagnostic Clinics and Pathology Labs"
-"Diagnostics & Pathology","breadth_theme_diagnostics_and_pathology","LALPATHLAB.NS","LALPATHLAB","Diagnostic Clinics and Pathology Labs"
-"Diagnostics & Pathology","breadth_theme_diagnostics_and_pathology","METROPOLIS.NS","METROPOLIS","Diagnostic Clinics and Pathology Labs"
-"Diagnostics & Pathology","breadth_theme_diagnostics_and_pathology","THYROCARE.NS","THYROCARE","Diagnostic Clinics and Pathology Labs"
-"Diagnostics & Pathology","breadth_theme_diagnostics_and_pathology","VIJAYA.NS","VIJAYA","Diagnostic Clinics and Pathology Labs"
-"Packaging Solutions","breadth_theme_packaging_solutions","EPL.NS","EPL","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","GARFIBRES.NS","GARFIBRES","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","HINDCOMPOS.NS","HINDCOMPOS","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","HUHTAMAKI.NS","HUHTAMAKI","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","JINDALPOLY.NS","JINDALPOLY","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","MOLDTKPAC.NS","MOLDTKPAC","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","POLYPLEX.NS","POLYPLEX","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","TCPLPACK.NS","TCPLPACK","Specialty Packaging Solutions"
-"Packaging Solutions","breadth_theme_packaging_solutions","UFLEX.NS","UFLEX","Specialty Packaging Solutions"
-"Shipbuilding","breadth_theme_shipbuilding","COCHINSHIP.NS","COCHINSHIP","Commercial and Defence Shipbuilding"
-"Shipbuilding","breadth_theme_shipbuilding","GRSE.NS","GRSE","Commercial and Defence Shipbuilding"
-"Shipbuilding","breadth_theme_shipbuilding","MAZDOCK.NS","MAZDOCK","Commercial and Defence Shipbuilding"
-"Shipbuilding","breadth_theme_shipbuilding","SCI.NS","SCI","Commercial and Defence Shipbuilding"
-"Marine & Offshore Services","breadth_theme_marine_and_offshore_services","DREDGECORP.NS","DREDGECORP","Offshore Support, Diving & Port Services"
-"Marine & Offshore Services","breadth_theme_marine_and_offshore_services","GESHIP.NS","GESHIP","Offshore Support, Diving & Port Services"
-"Marine & Offshore Services","breadth_theme_marine_and_offshore_services","SEAMECLTD.NS","SEAMECLTD","Offshore Support, Diving & Port Services"
-"Marine & Offshore Services","breadth_theme_marine_and_offshore_services","SHREEJISPG.NS","SHREEJISPG","Offshore Support, Diving & Port Services"
-"Power Generation","breadth_theme_power_generation","ADANIPOWER.NS","ADANIPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","CESC.NS","CESC","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","ENRIN.NS","ENRIN","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","JPPOWER.NS","JPPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","JSWENERGY.NS","JSWENERGY","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","NAVA.NS","NAVA","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","NHPC.NS","NHPC","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","NLCINDIA.NS","NLCINDIA","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","NTPC.NS","NTPC","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","RPOWER.NS","RPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","SJVN.NS","SJVN","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","TATAPOWER.NS","TATAPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","TORNTPOWER.NS","TORNTPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Power Generation","breadth_theme_power_generation","VEDPOWER.NS","VEDPOWER","Thermal, Hydro & Integrated Power Utilities"
-"Carbon and Graphite","breadth_theme_carbon_and_graphite","GOACARBON.NS","GOACARBON","Carbon and Graphite Manufacturers"
-"Carbon and Graphite","breadth_theme_carbon_and_graphite","GRAPHITE.NS","GRAPHITE","Carbon and Graphite Manufacturers"
-"Carbon and Graphite","breadth_theme_carbon_and_graphite","HEG.NS","HEG","Carbon and Graphite Manufacturers"
-"Carbon and Graphite","breadth_theme_carbon_and_graphite","HSCL.NS","HSCL","Carbon and Graphite Manufacturers"
-"Carbon and Graphite","breadth_theme_carbon_and_graphite","PCBL.NS","PCBL","Carbon and Graphite Manufacturers"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","ATGL.NS","ATGL","Gas Transmission, LNG & City Gas Distribution"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","DEEPINDS.NS","DEEPINDS","Gas Transmission, LNG & City Gas Distribution"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","GAIL.NS","GAIL","Gas Transmission, LNG & City Gas Distribution"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","IGL.NS","IGL","Gas Transmission, LNG & City Gas Distribution"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","MGL.NS","MGL","Gas Transmission, LNG & City Gas Distribution"
-"Oil & Gas Midstream","breadth_theme_oil_and_gas_midstream","PETRONET.NS","PETRONET","Gas Transmission, LNG & City Gas Distribution"
-"Travel & Tourism","breadth_theme_travel_and_tourism","BLS.NS","BLS","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","IMAGICAA.NS","IMAGICAA","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","IRCTC.NS","IRCTC","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","IXIGO.NS","IXIGO","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","TBOTEK.NS","TBOTEK","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","THOMASCOOK.NS","THOMASCOOK","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","WONDERLA.NS","WONDERLA","Travel, Tourism and Amusement Parks"
-"Travel & Tourism","breadth_theme_travel_and_tourism","YATRA.NS","YATRA","Travel, Tourism and Amusement Parks"
-"Business Services","breadth_theme_business_services","CMSINFO.NS","CMSINFO","Business Services & Outsourcing"
-"Business Services","breadth_theme_business_services","QUESS.NS","QUESS","Business Services & Outsourcing"
-"Business Services","breadth_theme_business_services","SIS.NS","SIS","Business Services & Outsourcing"
-"Business Services","breadth_theme_business_services","TEAMLEASE.NS","TEAMLEASE","Business Services & Outsourcing"
-"Technology Hardware Distribution","breadth_theme_technology_hardware_distribution","DLINKINDIA.NS","DLINKINDIA","IT Hardware, Networking & Mobility Distributors"
-"Technology Hardware Distribution","breadth_theme_technology_hardware_distribution","OPTIEMUS.NS","OPTIEMUS","IT Hardware, Networking & Mobility Distributors"
-"Technology Hardware Distribution","breadth_theme_technology_hardware_distribution","REDINGTON.NS","REDINGTON","IT Hardware, Networking & Mobility Distributors"
-"Technology Hardware Distribution","breadth_theme_technology_hardware_distribution","RPTECH.NS","RPTECH","IT Hardware, Networking & Mobility Distributors"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","CONTROLPR.NS","CONTROLPR","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","DCI.NS","DCI","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","EBGNG.NS","EBGNG","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","ESCONET.NS","ESCONET","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","PANACHE.NS","PANACHE","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","SMARTLINK.NS","SMARTLINK","Niche IT Manufacturers & Peripherals"
-"IT Hardware & Peripherals","breadth_theme_it_hardware_and_peripherals","TVSELECT.NS","TVSELECT","Niche IT Manufacturers & Peripherals"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","IONEXCHANG.NS","IONEXCHANG","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","JISLJALEQS.NS","JISLJALEQS","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","KIRLOSBROS.NS","KIRLOSBROS","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","KSB.NS","KSB","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","ROTO.NS","ROTO","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","SHAKTIPUMP.NS","SHAKTIPUMP","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","WABAG.NS","WABAG","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","WELCORP.NS","WELCORP","Water Infrastructure, Treatment & Irrigation"
-"Water & Irrigation Infrastructure","breadth_theme_water_and_irrigation_infrastructure","WPIL.NS","WPIL","Water Infrastructure, Treatment & Irrigation"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","ABREL.NS","ABREL","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","ANANTRAJ.NS","ANANTRAJ","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","BRIGADE.NS","BRIGADE","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","DLF.NS","DLF","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","GODREJPROP.NS","GODREJPROP","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","LODHA.NS","LODHA","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","OBEROIRLTY.NS","OBEROIRLTY","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","PHOENIXLTD.NS","PHOENIXLTD","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","PRESTIGE.NS","PRESTIGE","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","SIGNATURE.NS","SIGNATURE","Residential & Commercial Real Estate Developers"
-"Real Estate & Realty","breadth_theme_real_estate_and_realty","SOBHA.NS","SOBHA","Residential & Commercial Real Estate Developers"
+theme,symbol,clean_symbol
+Copper,ADANIENT.NS,ADANIENT
+Copper,BHAGYANGR.NS,BHAGYANGR
+Copper,HINDALCO.NS,HINDALCO
+Copper,HINDCOPPER.NS,HINDCOPPER
+Copper,PRECWIRE.NS,PRECWIRE
+Defence & Aerospace,ASTRAMICRO.NS,ASTRAMICRO
+Defence & Aerospace,BDL.NS,BDL
+Defence & Aerospace,BEL.NS,BEL
+Defence & Aerospace,COCHINSHIP.NS,COCHINSHIP
+Defence & Aerospace,DATAPATTNS.NS,DATAPATTNS
+Defence & Aerospace,DCXINDIA.NS,DCXINDIA
+Defence & Aerospace,GRSE.NS,GRSE
+Defence & Aerospace,HAL.NS,HAL
+Defence & Aerospace,IDEAFORGE.NS,IDEAFORGE
+Defence & Aerospace,KRISHNADEF.NS,KRISHNADEF
+Defence & Aerospace,MAZDOCK.NS,MAZDOCK
+Defence & Aerospace,MTARTECH.NS,MTARTECH
+Defence & Aerospace,PARAS.NS,PARAS
+Defence & Aerospace,SOLARINDS.NS,SOLARINDS
+Defence & Aerospace,ZENTEC.NS,ZENTEC
+Railways & Infrastructure,BEML.NS,BEML
+Railways & Infrastructure,CONCOR.NS,CONCOR
+Railways & Infrastructure,IRCON.NS,IRCON
+Railways & Infrastructure,IRCTC.NS,IRCTC
+Railways & Infrastructure,IRFC.NS,IRFC
+Railways & Infrastructure,JWL.NS,JWL
+Railways & Infrastructure,RAILTEL.NS,RAILTEL
+Railways & Infrastructure,RITES.NS,RITES
+Railways & Infrastructure,RVNL.NS,RVNL
+Railways & Infrastructure,TEXRAIL.NS,TEXRAIL
+Railways & Infrastructure,TITAGARH.NS,TITAGARH
+Power T&D,ADANIENSOL.NS,ADANIENSOL
+Power T&D,APARINDS.NS,APARINDS
+Power T&D,CGPOWER.NS,CGPOWER
+Power T&D,ENRIN.NS,ENRIN
+Power T&D,GENUSPOWER.NS,GENUSPOWER
+Power T&D,GVT&D.NS,GVT&D
+Power T&D,KEC.NS,KEC
+Power T&D,KPIL.NS,KPIL
+Power T&D,POWERGRID.NS,POWERGRID
+Power T&D,POWERINDIA.NS,POWERINDIA
+Power T&D,QPOWER.NS,QPOWER
+Power T&D,SCHNEIDER.NS,SCHNEIDER
+Power T&D,SIEMENS.NS,SIEMENS
+Power T&D,SKIPPER.NS,SKIPPER
+Power T&D,TRANSRAILL.NS,TRANSRAILL
+Power T&D,VOLTAMP.NS,VOLTAMP
+Life Insurance,HDFCLIFE.NS,HDFCLIFE
+Life Insurance,ICICIPRULI.NS,ICICIPRULI
+Life Insurance,LICI.NS,LICI
+Life Insurance,MFSL.NS,MFSL
+Life Insurance,SBILIFE.NS,SBILIFE
+General Insurance,GICRE.NS,GICRE
+General Insurance,GODIGIT.NS,GODIGIT
+General Insurance,ICICIGI.NS,ICICIGI
+General Insurance,MEDIASSIST.NS,MEDIASSIST
+General Insurance,NIACL.NS,NIACL
+General Insurance,NIVABUPA.NS,NIVABUPA
+General Insurance,STARHEALTH.NS,STARHEALTH
+Private Banking,AUBANK.NS,AUBANK
+Private Banking,AXISBANK.NS,AXISBANK
+Private Banking,BANDHANBNK.NS,BANDHANBNK
+Private Banking,FEDERALBNK.NS,FEDERALBNK
+Private Banking,HDFCBANK.NS,HDFCBANK
+Private Banking,ICICIBANK.NS,ICICIBANK
+Private Banking,IDFCFIRSTB.NS,IDFCFIRSTB
+Private Banking,INDUSINDBK.NS,INDUSINDBK
+Private Banking,J&KBANK.NS,J&KBANK
+Private Banking,KARURVYSYA.NS,KARURVYSYA
+Private Banking,KOTAKBANK.NS,KOTAKBANK
+Private Banking,RBLBANK.NS,RBLBANK
+Private Banking,YESBANK.NS,YESBANK
+PSU Banking,BANKBARODA.NS,BANKBARODA
+PSU Banking,BANKINDIA.NS,BANKINDIA
+PSU Banking,CANBK.NS,CANBK
+PSU Banking,CENTRALBK.NS,CENTRALBK
+PSU Banking,INDIANB.NS,INDIANB
+PSU Banking,IOB.NS,IOB
+PSU Banking,MAHABANK.NS,MAHABANK
+PSU Banking,PNB.NS,PNB
+PSU Banking,PSB.NS,PSB
+PSU Banking,SBIN.NS,SBIN
+PSU Banking,UCOBANK.NS,UCOBANK
+PSU Banking,UNIONBANK.NS,UNIONBANK
+Housing Finance,AADHARHFC.NS,AADHARHFC
+Housing Finance,AAVAS.NS,AAVAS
+Housing Finance,APTUS.NS,APTUS
+Housing Finance,BAJAJHFL.NS,BAJAJHFL
+Housing Finance,CANFINHOME.NS,CANFINHOME
+Housing Finance,HOMEFIRST.NS,HOMEFIRST
+Housing Finance,HUDCO.NS,HUDCO
+Housing Finance,INDIASHLTR.NS,INDIASHLTR
+Housing Finance,LICHSGFIN.NS,LICHSGFIN
+Housing Finance,PNBHOUSING.NS,PNBHOUSING
+Housing Finance,REPCOHOME.NS,REPCOHOME
+Housing Finance,SAMMAANCAP.NS,SAMMAANCAP
+NBFC,BAJAJFINSV.NS,BAJAJFINSV
+NBFC,BAJFINANCE.NS,BAJFINANCE
+NBFC,CGCL.NS,CGCL
+NBFC,CHOLAFIN.NS,CHOLAFIN
+NBFC,CREDITACC.NS,CREDITACC
+NBFC,IFCI.NS,IFCI
+NBFC,LICHSGFIN.NS,LICHSGFIN
+NBFC,M&MFIN.NS,M&MFIN
+NBFC,MANAPPURAM.NS,MANAPPURAM
+NBFC,MUTHOOTFIN.NS,MUTHOOTFIN
+NBFC,PFC.NS,PFC
+NBFC,PIRAMALFIN.NS,PIRAMALFIN
+NBFC,POONAWALLA.NS,POONAWALLA
+NBFC,RECLTD.NS,RECLTD
+NBFC,SHRIRAMFIN.NS,SHRIRAMFIN
+NBFC,SUNDARMFIN.NS,SUNDARMFIN
+NBFC,TATACAP.NS,TATACAP
+Retail & E-Commerce,ABFRL.NS,ABFRL
+Retail & E-Commerce,DMART.NS,DMART
+Retail & E-Commerce,EMIL.NS,EMIL
+Retail & E-Commerce,ETERNAL.NS,ETERNAL
+Retail & E-Commerce,MEESHO.NS,MEESHO
+Retail & E-Commerce,METROBRAND.NS,METROBRAND
+Retail & E-Commerce,NYKAA.NS,NYKAA
+Retail & E-Commerce,RELIANCE.NS,RELIANCE
+Retail & E-Commerce,SWIGGY.NS,SWIGGY
+Retail & E-Commerce,TRENT.NS,TRENT
+Asset Management,ABSLAMC.NS,ABSLAMC
+Asset Management,HDFCAMC.NS,HDFCAMC
+Asset Management,ICICIAMC.NS,ICICIAMC
+Asset Management,NAM-INDIA.NS,NAM-INDIA
+Asset Management,UTIAMC.NS,UTIAMC
+Wealth Management,360ONE.NS,360ONE
+Wealth Management,ANANDRATHI.NS,ANANDRATHI
+Wealth Management,NUVAMA.NS,NUVAMA
+Wealth Management,PRUDENT.NS,PRUDENT
+Capital Market,5PAISA.NS,5PAISA
+Capital Market,ANGELONE.NS,ANGELONE
+Capital Market,BSE.NS,BSE
+Capital Market,CAMS.NS,CAMS
+Capital Market,CDSL.NS,CDSL
+Capital Market,GEOJITFSL.NS,GEOJITFSL
+Capital Market,IEX.NS,IEX
+Capital Market,IIFLCAPS.NS,IIFLCAPS
+Capital Market,KFINTECH.NS,KFINTECH
+Capital Market,MCX.NS,MCX
+Capital Market,MOTILALOFS.NS,MOTILALOFS
+Capital Goods,ABB.NS,ABB
+Capital Goods,AIAENG.NS,AIAENG
+Capital Goods,APARINDS.NS,APARINDS
+Capital Goods,BEL.NS,BEL
+Capital Goods,BHEL.NS,BHEL
+Capital Goods,CARBORUNIV.NS,CARBORUNIV
+Capital Goods,CGPOWER.NS,CGPOWER
+Capital Goods,CUMMINSIND.NS,CUMMINSIND
+Capital Goods,ELGIEQUIP.NS,ELGIEQUIP
+Capital Goods,GENUSPOWER.NS,GENUSPOWER
+Capital Goods,GRINDWELL.NS,GRINDWELL
+Capital Goods,HONAUT.NS,HONAUT
+Capital Goods,ISGEC.NS,ISGEC
+Capital Goods,JYOTICNC.NS,JYOTICNC
+Capital Goods,KIRLOSENG.NS,KIRLOSENG
+Capital Goods,LT.NS,LT
+Capital Goods,PTCIL.NS,PTCIL
+Capital Goods,SCHAEFFLER.NS,SCHAEFFLER
+Capital Goods,SIEMENS.NS,SIEMENS
+Capital Goods,SKFINDIA.NS,SKFINDIA
+Capital Goods,TDPOWERSYS.NS,TDPOWERSYS
+Capital Goods,THERMAX.NS,THERMAX
+Capital Goods,TIMKEN.NS,TIMKEN
+Capital Goods,TRITURBINE.NS,TRITURBINE
+Personal Care & Wellness,BAJAJCON.NS,BAJAJCON
+Personal Care & Wellness,CUPID.NS,CUPID
+Personal Care & Wellness,EMAMILTD.NS,EMAMILTD
+Personal Care & Wellness,GILLETTE.NS,GILLETTE
+Personal Care & Wellness,JHS.NS,JHS
+Personal Care & Wellness,PGHH.NS,PGHH
+Personal Care & Wellness,ZYDUSWELL.NS,ZYDUSWELL
+Alcohols & Breweries,ASALCBR.NS,ASALCBR
+Alcohols & Breweries,GLOBUSSPR.NS,GLOBUSSPR
+Alcohols & Breweries,PICCADIL.NS,PICCADIL
+Alcohols & Breweries,RADICO.NS,RADICO
+Alcohols & Breweries,SDBL.NS,SDBL
+Alcohols & Breweries,SULA.NS,SULA
+Alcohols & Breweries,TI.NS,TI
+Alcohols & Breweries,UBL.NS,UBL
+Alcohols & Breweries,UNITDSPR.NS,UNITDSPR
+Oil & Gas Downstream,BPCL.NS,BPCL
+Oil & Gas Downstream,CASTROLIND.NS,CASTROLIND
+Oil & Gas Downstream,CONFIPET.NS,CONFIPET
+Oil & Gas Downstream,HINDPETRO.NS,HINDPETRO
+Oil & Gas Downstream,IOC.NS,IOC
+Oil & Gas Downstream,MRPL.NS,MRPL
+Oil & Gas Upstream,OIL.NS,OIL
+Oil & Gas Upstream,ONGC.NS,ONGC
+Oil & Gas Upstream,RELIANCE.NS,RELIANCE
+Oil & Gas Upstream,VOGL.NS,VOGL
+Cement,ACC.NS,ACC
+Cement,AMBUJACEM.NS,AMBUJACEM
+Cement,DALBHARAT.NS,DALBHARAT
+Cement,GRASIM.NS,GRASIM
+Cement,JKCEMENT.NS,JKCEMENT
+Cement,RAMCOCEM.NS,RAMCOCEM
+Cement,SHREECEM.NS,SHREECEM
+Cement,ULTRACEMCO.NS,ULTRACEMCO
+Solar Manufacturing,BORORENEW.NS,BORORENEW
+Solar Manufacturing,EMMVEE.NS,EMMVEE
+Solar Manufacturing,INA.NS,INA
+Solar Manufacturing,PREMIERENE.NS,PREMIERENE
+Solar Manufacturing,UTLSOLAR.NS,UTLSOLAR
+Solar Manufacturing,VIKRAMSOLR.NS,VIKRAMSOLR
+Solar Manufacturing,WAAREEENER.NS,WAAREEENER
+Solar Manufacturing,WEBELSOLAR.NS,WEBELSOLAR
+Semiconductors & EMS,AMBER.NS,AMBER
+Semiconductors & EMS,AVALON.NS,AVALON
+Semiconductors & EMS,BEL.NS,BEL
+Semiconductors & EMS,CGPOWER.NS,CGPOWER
+Semiconductors & EMS,CYIENT.NS,CYIENT
+Semiconductors & EMS,CYIENTDLM.NS,CYIENTDLM
+Semiconductors & EMS,DIXON.NS,DIXON
+Semiconductors & EMS,ELIN.NS,ELIN
+Semiconductors & EMS,KAYNES.NS,KAYNES
+Semiconductors & EMS,LTTS.NS,LTTS
+Semiconductors & EMS,MOSCHIP.NS,MOSCHIP
+Semiconductors & EMS,PGEL.NS,PGEL
+Semiconductors & EMS,SYRMA.NS,SYRMA
+Semiconductors & EMS,TATAELXSI.NS,TATAELXSI
+Infrastructure & EPC,ADANIPORTS.NS,ADANIPORTS
+Infrastructure & EPC,GMRAIRPORT.NS,GMRAIRPORT
+Infrastructure & EPC,IRB.NS,IRB
+Infrastructure & EPC,JSWINFRA.NS,JSWINFRA
+Infrastructure & EPC,KEC.NS,KEC
+Infrastructure & EPC,KNRCON.NS,KNRCON
+Infrastructure & EPC,LT.NS,LT
+Infrastructure & EPC,NCC.NS,NCC
+Infrastructure & EPC,PNCINFRA.NS,PNCINFRA
+Infrastructure & EPC,PSPPROJECT.NS,PSPPROJECT
+Fintech,ALGOQUANT.NS,ALGOQUANT
+Fintech,CAMS.NS,CAMS
+Fintech,CDSL.NS,CDSL
+Fintech,FSL.NS,FSL
+Fintech,JIOFIN.NS,JIOFIN
+Fintech,PAYTM.NS,PAYTM
+Fintech,POLICYBZR.NS,POLICYBZR
+Fintech,SBICARD.NS,SBICARD
+EV Ecosystem,ARE&M.NS,ARE&M
+EV Ecosystem,ATHERENERG.NS,ATHERENERG
+EV Ecosystem,BAJAJ-AUTO.NS,BAJAJ-AUTO
+EV Ecosystem,EXICOM.NS,EXICOM
+EV Ecosystem,EXIDEIND.NS,EXIDEIND
+EV Ecosystem,HEROMOTOCO.NS,HEROMOTOCO
+EV Ecosystem,JBMA.NS,JBMA
+EV Ecosystem,MOTHERSON.NS,MOTHERSON
+EV Ecosystem,OLAELEC.NS,OLAELEC
+EV Ecosystem,OLECTRA.NS,OLECTRA
+EV Ecosystem,SONACOMS.NS,SONACOMS
+EV Ecosystem,TMCV.NS,TMCV
+EV Ecosystem,TMPV.NS,TMPV
+EV Ecosystem,TVSMOTOR.NS,TVSMOTOR
+Renewable Energy Generation,ADANIGREEN.NS,ADANIGREEN
+Renewable Energy Generation,INOXWIND.NS,INOXWIND
+Renewable Energy Generation,JSWENERGY.NS,JSWENERGY
+Renewable Energy Generation,NHPC.NS,NHPC
+Renewable Energy Generation,NTPC.NS,NTPC
+Renewable Energy Generation,NTPCGREEN.NS,NTPCGREEN
+Renewable Energy Generation,SJVN.NS,SJVN
+Renewable Energy Generation,SUZLON.NS,SUZLON
+Renewable Energy Generation,TATAPOWER.NS,TATAPOWER
+Renewable Energy Generation,WAAREERTL.NS,WAAREERTL
+Green Hydrogen,ADANIGREEN.NS,ADANIGREEN
+Green Hydrogen,GAIL.NS,GAIL
+Green Hydrogen,JSWENERGY.NS,JSWENERGY
+Green Hydrogen,NTPC.NS,NTPC
+Green Hydrogen,TATAPOWER.NS,TATAPOWER
+Data Centre and AI,ANANTRAJ.NS,ANANTRAJ
+Data Centre and AI,AURIONPRO.NS,AURIONPRO
+Data Centre and AI,E2E.NS,E2E
+Data Centre and AI,NETWEB.NS,NETWEB
+Data Centre and AI,SCHNEIDER.NS,SCHNEIDER
+Data Centre and AI,TATACOMM.NS,TATACOMM
+Data Centre and AI,TECHNOE.NS,TECHNOE
+Aviation,ADANIENT.NS,ADANIENT
+Aviation,GMRAIRPORT.NS,GMRAIRPORT
+Aviation,INDIGO.NS,INDIGO
+Logistics,ADANIPORTS.NS,ADANIPORTS
+Logistics,AEGISLOG.NS,AEGISLOG
+Logistics,ALLCARGO.NS,ALLCARGO
+Logistics,BLUEDART.NS,BLUEDART
+Logistics,CONCOR.NS,CONCOR
+Logistics,DELHIVERY.NS,DELHIVERY
+Logistics,GATEWAY.NS,GATEWAY
+Logistics,JSWINFRA.NS,JSWINFRA
+Logistics,MAHLOG.NS,MAHLOG
+Logistics,SHADOWFAX.NS,SHADOWFAX
+Logistics,SNOWMAN.NS,SNOWMAN
+Logistics,TCI.NS,TCI
+Logistics,TCIEXP.NS,TCIEXP
+Logistics,TVSSCS.NS,TVSSCS
+Logistics,VRLLOG.NS,VRLLOG
+Hospitals,APOLLOHOSP.NS,APOLLOHOSP
+Hospitals,ASTERDM.NS,ASTERDM
+Hospitals,FORTIS.NS,FORTIS
+Hospitals,KIMS.NS,KIMS
+Hospitals,MAXHEALTH.NS,MAXHEALTH
+Hospitals,MEDANTA.NS,MEDANTA
+Hospitals,NH.NS,NH
+Hospitals,RAINBOW.NS,RAINBOW
+Hospitals,SHALBY.NS,SHALBY
+Hospitals,YATHARTH.NS,YATHARTH
+Pharma Formulations,ABBOTINDIA.NS,ABBOTINDIA
+Pharma Formulations,AJANTPHARM.NS,AJANTPHARM
+Pharma Formulations,ALKEM.NS,ALKEM
+Pharma Formulations,AUROPHARMA.NS,AUROPHARMA
+Pharma Formulations,CIPLA.NS,CIPLA
+Pharma Formulations,DRREDDY.NS,DRREDDY
+Pharma Formulations,ERIS.NS,ERIS
+Pharma Formulations,GLAXO.NS,GLAXO
+Pharma Formulations,GLENMARK.NS,GLENMARK
+Pharma Formulations,GRANULES.NS,GRANULES
+Pharma Formulations,IPCALAB.NS,IPCALAB
+Pharma Formulations,LINCOLN.NS,LINCOLN
+Pharma Formulations,LUPIN.NS,LUPIN
+Pharma Formulations,MANKIND.NS,MANKIND
+Pharma Formulations,NATCOPHARM.NS,NATCOPHARM
+Pharma Formulations,PFIZER.NS,PFIZER
+Pharma Formulations,SANOFI.NS,SANOFI
+Pharma Formulations,SUNPHARMA.NS,SUNPHARMA
+Pharma Formulations,TORNTPHARM.NS,TORNTPHARM
+Pharma Formulations,WOCKPHARMA.NS,WOCKPHARMA
+Pharma Formulations,ZYDUSLIFE.NS,ZYDUSLIFE
+Pharma CDMO & API,AARTIPHARM.NS,AARTIPHARM
+Pharma CDMO & API,BIOCON.NS,BIOCON
+Pharma CDMO & API,CONCORDBIO.NS,CONCORDBIO
+Pharma CDMO & API,DIVISLAB.NS,DIVISLAB
+Pharma CDMO & API,GLAND.NS,GLAND
+Pharma CDMO & API,JUBLPHARMA.NS,JUBLPHARMA
+Pharma CDMO & API,LAURUSLABS.NS,LAURUSLABS
+Pharma CDMO & API,NEULANDLAB.NS,NEULANDLAB
+Pharma CDMO & API,PPLPHARMA.NS,PPLPHARMA
+Pharma CDMO & API,RUBICON.NS,RUBICON
+Pharma CDMO & API,SAILIFE.NS,SAILIFE
+Pharma CDMO & API,SYNGENE.NS,SYNGENE
+Specialty Chemicals,AARTIIND.NS,AARTIIND
+Specialty Chemicals,ATUL.NS,ATUL
+Specialty Chemicals,DEEPAKNTR.NS,DEEPAKNTR
+Specialty Chemicals,DIAMINESQ.NS,DIAMINESQ
+Specialty Chemicals,FINEORG.NS,FINEORG
+Specialty Chemicals,HSCL.NS,HSCL
+Specialty Chemicals,NAVINFLUOR.NS,NAVINFLUOR
+Specialty Chemicals,PIDILITIND.NS,PIDILITIND
+Specialty Chemicals,PIIND.NS,PIIND
+Specialty Chemicals,SRF.NS,SRF
+Agrochemicals & Fertilisers,BAYERCROP.NS,BAYERCROP
+Agrochemicals & Fertilisers,COROMANDEL.NS,COROMANDEL
+Agrochemicals & Fertilisers,DEEPAKFERT.NS,DEEPAKFERT
+Agrochemicals & Fertilisers,DHANUKA.NS,DHANUKA
+Agrochemicals & Fertilisers,GSFC.NS,GSFC
+Agrochemicals & Fertilisers,RALLIS.NS,RALLIS
+Agrochemicals & Fertilisers,UPL.NS,UPL
+Textiles,ABFRL.NS,ABFRL
+Textiles,KPRMILL.NS,KPRMILL
+Textiles,LUXIND.NS,LUXIND
+Textiles,PAGEIND.NS,PAGEIND
+Textiles,PGIL.NS,PGIL
+Textiles,TRIDENT.NS,TRIDENT
+Textiles,WELSPUNLIV.NS,WELSPUNLIV
+Paints,ASIANPAINT.NS,ASIANPAINT
+Paints,BERGEPAINT.NS,BERGEPAINT
+Paints,INDIGOPNTS.NS,INDIGOPNTS
+Paints,KAMOPAINTS.NS,KAMOPAINTS
+Paints,KANSAINER.NS,KANSAINER
+Paints,SHALPAINTS.NS,SHALPAINTS
+Paints,SIRCA.NS,SIRCA
+Jewellery & Gold,GOLDIAM.NS,GOLDIAM
+Jewellery & Gold,KALYANKJIL.NS,KALYANKJIL
+Jewellery & Gold,PNGJL.NS,PNGJL
+Jewellery & Gold,SENCO.NS,SENCO
+Jewellery & Gold,SKYGOLD.NS,SKYGOLD
+Jewellery & Gold,THANGAMAYL.NS,THANGAMAYL
+Jewellery & Gold,TITAN.NS,TITAN
+Silver,HINDZINC.NS,HINDZINC
+Silver,VEDL.NS,VEDL
+Critical Minerals,ARE&M.NS,ARE&M
+Critical Minerals,HINDZINC.NS,HINDZINC
+Critical Minerals,MOIL.NS,MOIL
+Critical Minerals,NATIONALUM.NS,NATIONALUM
+Critical Minerals,NMDC.NS,NMDC
+Critical Minerals,VEDL.NS,VEDL
+Metals & Mining,COALINDIA.NS,COALINDIA
+Metals & Mining,HINDALCO.NS,HINDALCO
+Metals & Mining,JINDALSTEL.NS,JINDALSTEL
+Metals & Mining,JSL.NS,JSL
+Metals & Mining,JSWSTEEL.NS,JSWSTEEL
+Metals & Mining,LLOYDSME.NS,LLOYDSME
+Metals & Mining,NMDC.NS,NMDC
+Metals & Mining,SAIL.NS,SAIL
+Metals & Mining,TATASTEEL.NS,TATASTEEL
+Metals & Mining,VAML.NS,VAML
+Metals & Mining,VEDL.NS,VEDL
+Metals & Mining,VISL.NS,VISL
+Telecom Services,BHARTIARTL.NS,BHARTIARTL
+Telecom Services,IDEA.NS,IDEA
+Telecom Services,TATACOMM.NS,TATACOMM
+Telecom Infra,HFCL.NS,HFCL
+Telecom Infra,INDUSTOWER.NS,INDUSTOWER
+Telecom Infra,TEJASNET.NS,TEJASNET
+Media & Broadcasting,DBCORP.NS,DBCORP
+Media & Broadcasting,DEN.NS,DEN
+Media & Broadcasting,DISHTV.NS,DISHTV
+Media & Broadcasting,HATHWAY.NS,HATHWAY
+Media & Broadcasting,NDTV.NS,NDTV
+Media & Broadcasting,NETWORK18.NS,NETWORK18
+Media & Broadcasting,PFOCUS.NS,PFOCUS
+Media & Broadcasting,PVRINOX.NS,PVRINOX
+Media & Broadcasting,SUNTV.NS,SUNTV
+Media & Broadcasting,ZEEL.NS,ZEEL
+Music & Content,NAZARA.NS,NAZARA
+Music & Content,SAREGAMA.NS,SAREGAMA
+Music & Content,SHEMAROO.NS,SHEMAROO
+Music & Content,TIPSMUSIC.NS,TIPSMUSIC
+Luxury,ETHOSLTD.NS,ETHOSLTD
+Luxury,LANDMARK.NS,LANDMARK
+Luxury,METROBRAND.NS,METROBRAND
+Luxury,PAGEIND.NS,PAGEIND
+Luxury,SULA.NS,SULA
+Luxury,TITAN.NS,TITAN
+Luxury,TRENT.NS,TRENT
+QSR,DEVYANI.NS,DEVYANI
+QSR,JUBLFOOD.NS,JUBLFOOD
+QSR,RBA.NS,RBA
+QSR,SAPPHIRE.NS,SAPPHIRE
+QSR,UFBL.NS,UFBL
+QSR,WESTLIFE.NS,WESTLIFE
+FMCG Staples,BRITANNIA.NS,BRITANNIA
+FMCG Staples,CCL.NS,CCL
+FMCG Staples,COFFEEDAY.NS,COFFEEDAY
+FMCG Staples,COLPAL.NS,COLPAL
+FMCG Staples,DABUR.NS,DABUR
+FMCG Staples,GODREJCP.NS,GODREJCP
+FMCG Staples,HINDUNILVR.NS,HINDUNILVR
+FMCG Staples,ITC.NS,ITC
+FMCG Staples,MARICO.NS,MARICO
+FMCG Staples,NESTLEIND.NS,NESTLEIND
+FMCG Staples,PATANJALI.NS,PATANJALI
+FMCG Staples,TATACONSUM.NS,TATACONSUM
+FMCG Staples,VBL.NS,VBL
+FMCG Staples,VINCOFE.NS,VINCOFE
+IT Services,COFORGE.NS,COFORGE
+IT Services,HCLTECH.NS,HCLTECH
+IT Services,INFY.NS,INFY
+IT Services,KPITTECH.NS,KPITTECH
+IT Services,LTIM.NS,LTIM
+IT Services,MPHASIS.NS,MPHASIS
+IT Services,NEWGEN.NS,NEWGEN
+IT Services,OFSS.NS,OFSS
+IT Services,PERSISTENT.NS,PERSISTENT
+IT Services,TCS.NS,TCS
+IT Services,TECHM.NS,TECHM
+IT Services,WIPRO.NS,WIPRO
+IT Services,ZENSARTECH.NS,ZENSARTECH
+Auto Passenger & CV,ASHOKLEY.NS,ASHOKLEY
+Auto Passenger & CV,EICHERMOT.NS,EICHERMOT
+Auto Passenger & CV,HYUNDAI.NS,HYUNDAI
+Auto Passenger & CV,M&M.NS,M&M
+Auto Passenger & CV,MARUTI.NS,MARUTI
+Auto Passenger & CV,TMCV.NS,TMCV
+Auto Passenger & CV,TMPV.NS,TMPV
+Two & Three Wheelers,BAJAJ-AUTO.NS,BAJAJ-AUTO
+Two & Three Wheelers,EICHERMOT.NS,EICHERMOT
+Two & Three Wheelers,HEROMOTOCO.NS,HEROMOTOCO
+Two & Three Wheelers,OLAELEC.NS,OLAELEC
+Two & Three Wheelers,TVSMOTOR.NS,TVSMOTOR
+Auto Ancillary,ARE&M.NS,ARE&M
+Auto Ancillary,BHARATFORG.NS,BHARATFORG
+Auto Ancillary,BOSCHLTD.NS,BOSCHLTD
+Auto Ancillary,CIEINDIA.NS,CIEINDIA
+Auto Ancillary,CRAFTSMAN.NS,CRAFTSMAN
+Auto Ancillary,ENDURANCE.NS,ENDURANCE
+Auto Ancillary,EXIDEIND.NS,EXIDEIND
+Auto Ancillary,GABRIEL.NS,GABRIEL
+Auto Ancillary,LUMAXTECH.NS,LUMAXTECH
+Auto Ancillary,MINDACORP.NS,MINDACORP
+Auto Ancillary,MOTHERSON.NS,MOTHERSON
+Auto Ancillary,MSUMI.NS,MSUMI
+Auto Ancillary,SANSERA.NS,SANSERA
+Auto Ancillary,SCHAEFFLER.NS,SCHAEFFLER
+Auto Ancillary,SONACOMS.NS,SONACOMS
+Auto Ancillary,SUNDRMFAST.NS,SUNDRMFAST
+Auto Ancillary,SUPRAJIT.NS,SUPRAJIT
+Auto Ancillary,TALBROAUTO.NS,TALBROAUTO
+Auto Ancillary,TIINDIA.NS,TIINDIA
+Auto Ancillary,UNOMINDA.NS,UNOMINDA
+Auto Ancillary,ZFCVINDIA.NS,ZFCVINDIA
+Tyres & Rubber Products,APOLLOTYRE.NS,APOLLOTYRE
+Tyres & Rubber Products,BALKRISIND.NS,BALKRISIND
+Tyres & Rubber Products,CEATLTD.NS,CEATLTD
+Tyres & Rubber Products,GOODYEAR.NS,GOODYEAR
+Tyres & Rubber Products,JKTYRE.NS,JKTYRE
+Tyres & Rubber Products,MODIRUBBER.NS,MODIRUBBER
+Tyres & Rubber Products,MRF.NS,MRF
+Tyres & Rubber Products,TOLINS.NS,TOLINS
+Tyres & Rubber Products,TVSSRICHAK.NS,TVSSRICHAK
+Tyres & Rubber Products,VIAZ.NS,VIAZ
+Sugar,AVADHSUGAR.NS,AVADHSUGAR
+Sugar,BAJAJHIND.NS,BAJAJHIND
+Sugar,BALRAMCHIN.NS,BALRAMCHIN
+Sugar,DALMIASUG.NS,DALMIASUG
+Sugar,DBOL.NS,DBOL
+Sugar,DCMNVL.NS,DCMNVL
+Sugar,DHAMPURSUG.NS,DHAMPURSUG
+Sugar,EIDPARRY.NS,EIDPARRY
+Sugar,RENUKA.NS,RENUKA
+Sugar,TRIVENI.NS,TRIVENI
+Sugar,UGARSUGAR.NS,UGARSUGAR
+Sugar,UTTAMSUGAR.NS,UTTAMSUGAR
+Paper,ANDHRAPAP.NS,ANDHRAPAP
+Paper,EMAMIPAP.NS,EMAMIPAP
+Paper,JKPAPER.NS,JKPAPER
+Paper,KUANTUM.NS,KUANTUM
+Paper,ORIENTPPR.NS,ORIENTPPR
+Paper,SESHAPAPER.NS,SESHAPAPER
+Paper,STARPAPER.NS,STARPAPER
+Paper,TNPL.NS,TNPL
+Paper,WSTCSTPAPR.NS,WSTCSTPAPR
+Wires and Cables,APARINDS.NS,APARINDS
+Wires and Cables,BANSALWIRE.NS,BANSALWIRE
+Wires and Cables,FINCABLES.NS,FINCABLES
+Wires and Cables,KEI.NS,KEI
+Wires and Cables,POLYCAB.NS,POLYCAB
+Wires and Cables,RRKABEL.NS,RRKABEL
+Wires and Cables,UNIVCABLES.NS,UNIVCABLES
+Wires and Cables,VGUARD.NS,VGUARD
+Hotels & Hospitality,BYKE.NS,BYKE
+Hotels & Hospitality,CHALET.NS,CHALET
+Hotels & Hospitality,EIHOTEL.NS,EIHOTEL
+Hotels & Hospitality,HLVLTD.NS,HLVLTD
+Hotels & Hospitality,INDHOTEL.NS,INDHOTEL
+Hotels & Hospitality,ITCHOTELS.NS,ITCHOTELS
+Hotels & Hospitality,LEMONTREE.NS,LEMONTREE
+Hotels & Hospitality,MHRIL.NS,MHRIL
+Hotels & Hospitality,ORIENTHOT.NS,ORIENTHOT
+Hotels & Hospitality,TAJGVK.NS,TAJGVK
+PVC Pipes & Plumbing,APOLLOPIPE.NS,APOLLOPIPE
+PVC Pipes & Plumbing,ASTRAL.NS,ASTRAL
+PVC Pipes & Plumbing,FINPIPE.NS,FINPIPE
+PVC Pipes & Plumbing,JINDALPOLY.NS,JINDALPOLY
+PVC Pipes & Plumbing,PRAKASH.NS,PRAKASH
+PVC Pipes & Plumbing,PRINCEPIPE.NS,PRINCEPIPE
+PVC Pipes & Plumbing,SUPREMEIND.NS,SUPREMEIND
+Building Materials,AGI.NS,AGI
+Building Materials,APLAPOLLO.NS,APLAPOLLO
+Building Materials,CARYSIL.NS,CARYSIL
+Building Materials,CENTURYPLY.NS,CENTURYPLY
+Building Materials,CERA.NS,CERA
+Building Materials,GREENPANEL.NS,GREENPANEL
+Building Materials,GREENPLY.NS,GREENPLY
+Building Materials,KAJARIACER.NS,KAJARIACER
+Building Materials,RUSHIL.NS,RUSHIL
+Building Materials,SOMANYCERA.NS,SOMANYCERA
+White Goods & Durables,BAJAJELEC.NS,BAJAJELEC
+White Goods & Durables,BLUESTARCO.NS,BLUESTARCO
+White Goods & Durables,BOROLTD.NS,BOROLTD
+White Goods & Durables,BPL.NS,BPL
+White Goods & Durables,BUTTERFLY.NS,BUTTERFLY
+White Goods & Durables,CELLO.NS,CELLO
+White Goods & Durables,CROMPTON.NS,CROMPTON
+White Goods & Durables,EUREKAFORB.NS,EUREKAFORB
+White Goods & Durables,HAVELLS.NS,HAVELLS
+White Goods & Durables,HAWKINSCOOK.NS,HAWKINSCOOK
+White Goods & Durables,IFBIND.NS,IFBIND
+White Goods & Durables,LGEINDIA.NS,LGEINDIA
+White Goods & Durables,ORIENTELEC.NS,ORIENTELEC
+White Goods & Durables,STOVEKRAFT.NS,STOVEKRAFT
+White Goods & Durables,SYMPHONY.NS,SYMPHONY
+White Goods & Durables,TTKPRESTIG.NS,TTKPRESTIG
+White Goods & Durables,VGUARD.NS,VGUARD
+White Goods & Durables,VOLTAS.NS,VOLTAS
+White Goods & Durables,WHIRLPOOL.NS,WHIRLPOOL
+Footwear,BATAINDIA.NS,BATAINDIA
+Footwear,CAMPUS.NS,CAMPUS
+Footwear,KHADIM.NS,KHADIM
+Footwear,LIBERTSHOE.NS,LIBERTSHOE
+Footwear,METROBRAND.NS,METROBRAND
+Footwear,MIRZAINT.NS,MIRZAINT
+Footwear,RELAXO.NS,RELAXO
+Diagnostics & Pathology,KRSNAA.NS,KRSNAA
+Diagnostics & Pathology,LALPATHLAB.NS,LALPATHLAB
+Diagnostics & Pathology,METROPOLIS.NS,METROPOLIS
+Diagnostics & Pathology,THYROCARE.NS,THYROCARE
+Diagnostics & Pathology,VIJAYA.NS,VIJAYA
+Packaging Solutions,EPL.NS,EPL
+Packaging Solutions,GARFIBRES.NS,GARFIBRES
+Packaging Solutions,HINDCOMPOS.NS,HINDCOMPOS
+Packaging Solutions,HUHTAMAKI.NS,HUHTAMAKI
+Packaging Solutions,JINDALPOLY.NS,JINDALPOLY
+Packaging Solutions,MOLDTKPAC.NS,MOLDTKPAC
+Packaging Solutions,POLYPLEX.NS,POLYPLEX
+Packaging Solutions,TCPLPACK.NS,TCPLPACK
+Packaging Solutions,UFLEX.NS,UFLEX
+Shipbuilding,COCHINSHIP.NS,COCHINSHIP
+Shipbuilding,GRSE.NS,GRSE
+Shipbuilding,MAZDOCK.NS,MAZDOCK
+Shipbuilding,SCI.NS,SCI
+Marine & Offshore Services,DREDGECORP.NS,DREDGECORP
+Marine & Offshore Services,GESHIP.NS,GESHIP
+Marine & Offshore Services,SEAMECLTD.NS,SEAMECLTD
+Marine & Offshore Services,SHREEJISPG.NS,SHREEJISPG
+Power Generation,ADANIPOWER.NS,ADANIPOWER
+Power Generation,CESC.NS,CESC
+Power Generation,ENRIN.NS,ENRIN
+Power Generation,JPPOWER.NS,JPPOWER
+Power Generation,JSWENERGY.NS,JSWENERGY
+Power Generation,NAVA.NS,NAVA
+Power Generation,NHPC.NS,NHPC
+Power Generation,NLCINDIA.NS,NLCINDIA
+Power Generation,NTPC.NS,NTPC
+Power Generation,RPOWER.NS,RPOWER
+Power Generation,SJVN.NS,SJVN
+Power Generation,TATAPOWER.NS,TATAPOWER
+Power Generation,TORNTPOWER.NS,TORNTPOWER
+Power Generation,VEDPOWER.NS,VEDPOWER
+Carbon and Graphite,GOACARBON.NS,GOACARBON
+Carbon and Graphite,GRAPHITE.NS,GRAPHITE
+Carbon and Graphite,HEG.NS,HEG
+Carbon and Graphite,HSCL.NS,HSCL
+Carbon and Graphite,PCBL.NS,PCBL
+Oil & Gas Midstream,ATGL.NS,ATGL
+Oil & Gas Midstream,DEEPINDS.NS,DEEPINDS
+Oil & Gas Midstream,GAIL.NS,GAIL
+Oil & Gas Midstream,IGL.NS,IGL
+Oil & Gas Midstream,MGL.NS,MGL
+Oil & Gas Midstream,PETRONET.NS,PETRONET
+Travel & Tourism,BLS.NS,BLS
+Travel & Tourism,IMAGICAA.NS,IMAGICAA
+Travel & Tourism,IRCTC.NS,IRCTC
+Travel & Tourism,IXIGO.NS,IXIGO
+Travel & Tourism,TBOTEK.NS,TBOTEK
+Travel & Tourism,THOMASCOOK.NS,THOMASCOOK
+Travel & Tourism,WONDERLA.NS,WONDERLA
+Travel & Tourism,YATRA.NS,YATRA
+Business Services,CMSINFO.NS,CMSINFO
+Business Services,QUESS.NS,QUESS
+Business Services,SIS.NS,SIS
+Business Services,TEAMLEASE.NS,TEAMLEASE
+Technology Hardware Distribution,DLINKINDIA.NS,DLINKINDIA
+Technology Hardware Distribution,OPTIEMUS.NS,OPTIEMUS
+Technology Hardware Distribution,REDINGTON.NS,REDINGTON
+Technology Hardware Distribution,RPTECH.NS,RPTECH
+IT Hardware & Peripherals,CONTROLPR.NS,CONTROLPR
+IT Hardware & Peripherals,DCI.NS,DCI
+IT Hardware & Peripherals,EBGNG.NS,EBGNG
+IT Hardware & Peripherals,ESCONET.NS,ESCONET
+IT Hardware & Peripherals,PANACHE.NS,PANACHE
+IT Hardware & Peripherals,SMARTLINK.NS,SMARTLINK
+IT Hardware & Peripherals,TVSELECT.NS,TVSELECT
+Water & Irrigation Infrastructure,IONEXCHANG.NS,IONEXCHANG
+Water & Irrigation Infrastructure,JISLJALEQS.NS,JISLJALEQS
+Water & Irrigation Infrastructure,KIRLOSBROS.NS,KIRLOSBROS
+Water & Irrigation Infrastructure,KSB.NS,KSB
+Water & Irrigation Infrastructure,ROTO.NS,ROTO
+Water & Irrigation Infrastructure,SHAKTIPUMP.NS,SHAKTIPUMP
+Water & Irrigation Infrastructure,WABAG.NS,WABAG
+Water & Irrigation Infrastructure,WELCORP.NS,WELCORP
+Water & Irrigation Infrastructure,WPIL.NS,WPIL
+Real Estate & Realty,ABREL.NS,ABREL
+Real Estate & Realty,ANANTRAJ.NS,ANANTRAJ
+Real Estate & Realty,BRIGADE.NS,BRIGADE
+Real Estate & Realty,DLF.NS,DLF
+Real Estate & Realty,GODREJPROP.NS,GODREJPROP
+Real Estate & Realty,LODHA.NS,LODHA
+Real Estate & Realty,OBEROIRLTY.NS,OBEROIRLTY
+Real Estate & Realty,PHOENIXLTD.NS,PHOENIXLTD
+Real Estate & Realty,PRESTIGE.NS,PRESTIGE
+Real Estate & Realty,SIGNATURE.NS,SIGNATURE
+Real Estate & Realty,SOBHA.NS,SOBHA

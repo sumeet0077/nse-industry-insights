@@ -68,7 +68,7 @@ INDUSTRY_THEMES = {
         "BORORENEW.NS", "EMMVEE.NS", "INA.NS", "PREMIERENE.NS", "UTLSOLAR.NS", "VIKRAMSOLR.NS", "WAAREEENER.NS", "WEBELSOLAR.NS"
     ],
     "Semiconductors & EMS": [
-        "AMBER.NS", "AVALON.NS", "BEL.NS", "CGPOWER.NS", "CYIENT.NS", "CYIENTDLM.NS", "DIXON.NS", "KAYNES.NS", "LTTS.NS", "MOSCHIP.NS", "PGEL.NS", "SYRMA.NS", "TATAELXSI.NS"
+        "AMBER.NS", "AVALON.NS", "BEL.NS", "CGPOWER.NS", "CYIENT.NS", "CYIENTDLM.NS", "DIXON.NS", "ELIN.NS", "KAYNES.NS", "LTTS.NS", "MOSCHIP.NS", "PGEL.NS", "SYRMA.NS", "TATAELXSI.NS"
     ],
     "Infrastructure & EPC": [
         "ADANIPORTS.NS", "GMRAIRPORT.NS", "IRB.NS", "JSWINFRA.NS", "KEC.NS", "KNRCON.NS", "LT.NS", "NCC.NS", "PNCINFRA.NS", "PSPPROJECT.NS"
@@ -182,7 +182,7 @@ INDUSTRY_THEMES = {
         "AGI.NS", "APLAPOLLO.NS", "CARYSIL.NS", "CENTURYPLY.NS", "CERA.NS", "GREENPANEL.NS", "GREENPLY.NS", "KAJARIACER.NS", "RUSHIL.NS", "SOMANYCERA.NS"
     ],
     "White Goods & Durables": [
-        "BAJAJELEC.NS", "BLUESTARCO.NS", "BPL.NS", "CROMPTON.NS", "DIXON.NS", "EUREKAFORB.NS", "HAVELLS.NS", "LGEINDIA.NS", "SYMPHONY.NS", "TTKPRESTIG.NS", "VGUARD.NS", "VOLTAS.NS", "WHIRLPOOL.NS"
+        "BAJAJELEC.NS", "BLUESTARCO.NS", "BOROLTD.NS", "BPL.NS", "BUTTERFLY.NS", "CELLO.NS", "CROMPTON.NS", "EUREKAFORB.NS", "HAVELLS.NS", "HAWKINSCOOK.NS", "IFBIND.NS", "LGEINDIA.NS", "ORIENTELEC.NS", "STOVEKRAFT.NS", "SYMPHONY.NS", "TTKPRESTIG.NS", "VGUARD.NS", "VOLTAS.NS", "WHIRLPOOL.NS"
     ],
     "Footwear": [
         "BATAINDIA.NS", "CAMPUS.NS", "KHADIM.NS", "LIBERTSHOE.NS", "METROBRAND.NS", "MIRZAINT.NS", "RELAXO.NS"
@@ -359,7 +359,7 @@ THEME_METADATA = {
         "id": "breadth_theme_semiconductors_and_ems",
         "description": "Semiconductor & Electronic Manufacturing",
         "dataFile": "breadth_theme_semiconductors_and_ems",
-        "stock_count": 13,
+        "stock_count": 14,
     },
     "Infrastructure & EPC": {
         "id": "breadth_theme_infrastructure_and_epc",
@@ -587,7 +587,7 @@ THEME_METADATA = {
         "id": "breadth_theme_white_goods_and_durables",
         "description": "Consumer Electronics and Appliances",
         "dataFile": "breadth_theme_white_goods_and_durables",
-        "stock_count": 13,
+        "stock_count": 19,
     },
     "Footwear": {
         "id": "breadth_theme_footwear",

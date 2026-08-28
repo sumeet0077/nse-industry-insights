@@ -2034,6 +2034,13 @@
       "category": "industries"
     }
   ],
+  "BOROLTD": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
   "BORORENEW": [
     {
       "id": "breadth_theme_solar_manufacturing",
@@ -2188,6 +2195,13 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    }
+  ],
+  "BUTTERFLY": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
     }
   ],
   "BYKE": [
@@ -2455,6 +2469,13 @@
     {
       "id": "breadth_theme_tyres_and_rubber_products",
       "title": "Tyres & Rubber Products",
+      "category": "industries"
+    }
+  ],
+  "CELLO": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],
@@ -3496,11 +3517,6 @@
       "id": "breadth_theme_semiconductors_and_ems",
       "title": "Semiconductors & EMS",
       "category": "industries"
-    },
-    {
-      "id": "breadth_theme_white_goods_and_durables",
-      "title": "White Goods & Durables",
-      "category": "industries"
     }
   ],
   "DLF": [
@@ -3743,6 +3759,13 @@
     {
       "id": "breadth_theme_capital_goods",
       "title": "Capital Goods",
+      "category": "industries"
+    }
+  ],
+  "ELIN": [
+    {
+      "id": "breadth_theme_semiconductors_and_ems",
+      "title": "Semiconductors & EMS",
       "category": "industries"
     }
   ],
@@ -5608,6 +5631,13 @@
     {
       "id": "breadth_theme_capital_market",
       "title": "Capital Market",
+      "category": "industries"
+    }
+  ],
+  "IFBIND": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],
@@ -8994,6 +9024,13 @@
       "category": "industries"
     }
   ],
+  "ORIENTELEC": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
+      "category": "industries"
+    }
+  ],
   "ORIENTHOT": [
     {
       "id": "breadth_theme_hotels_and_hospitality",
@@ -10989,6 +11026,13 @@
     {
       "id": "breadth_theme_paper",
       "title": "Paper",
+      "category": "industries"
+    }
+  ],
+  "STOVEKRAFT": [
+    {
+      "id": "breadth_theme_white_goods_and_durables",
+      "title": "White Goods & Durables",
       "category": "industries"
     }
   ],

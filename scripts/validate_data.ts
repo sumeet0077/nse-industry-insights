@@ -182,6 +182,25 @@ validate("Performance Summary (data/performance/performance_summary.json)", (err
         errors.push(`Found ${duplicates.length} duplicate themes in performance summary: ${duplicates.map((d) => d[0]).join(", ")}`);
     }
 
+    // Validate IBD RS Rating presence and range (1-99)
+    let missingIbdRs = 0;
+    ps.forEach((row) => {
+        const rating = row["IBD RS Rating"];
+        if (rating !== undefined && rating !== null) {
+            if (typeof rating !== "number" || rating < 1 || rating > 99) {
+                errors.push(`Invalid IBD RS Rating "${rating}" for theme "${row["Theme/Index"]}" (expected integer 1-99)`);
+            }
+        } else {
+            missingIbdRs++;
+        }
+    });
+
+    if (missingIbdRs > 10) {
+        errors.push(`Critical: ${missingIbdRs} themes have null/missing IBD RS Rating in performance summary!`);
+    } else if (missingIbdRs > 0) {
+        warnings.push(`${missingIbdRs} themes have null IBD RS Rating (young history).`);
+    }
+
     console.log(`  ✓ Performance Summary contains ${ps.length} unique theme rows.`);
 });
 

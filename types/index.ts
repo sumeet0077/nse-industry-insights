@@ -26,6 +26,8 @@ export interface PerformanceRow {
     "RS (10D)"?: number | null;
     "RS (20D)"?: number | null;
     "RS (50D)"?: number | null;
+    "IBD RS Rating"?: number | null;
+    rs_raw_score?: number | null;
 }
 
 export interface ConstituentPerformance {

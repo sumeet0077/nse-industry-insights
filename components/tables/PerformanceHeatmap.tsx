@@ -266,17 +266,42 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         ];
 
         for (const col of returnColumns) {
-            cols.push({
-                headerName: col,
-                field: col,
-                hide: !visibleColumns[col],
-                width: (col.startsWith("RS")) ? 130 : 110,
-                valueFormatter: returnFormatter,
-                cellStyle: getHeatmapStyle,
-                sortable: true,
-                filter: true,
-                headerTooltip: col === "RS (5D)" ? "Relative Strength against Nifty 50 over 5 Trading Days" : col === "RS (10D)" ? "Relative Strength against Nifty 50 over 10 Trading Days" : col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined
-            });
+            if (col === "IBD RS Rating") {
+                cols.push({
+                    headerName: "IBD RS Rating",
+                    field: "IBD RS Rating",
+                    hide: !visibleColumns[col],
+                    width: 130,
+                    cellRenderer: (params: { value: number | null }) => {
+                        if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                        const rating = Number(params.value);
+                        let bg = "bg-slate-800/80 text-slate-300 border-slate-700";
+                        if (rating >= 90) bg = "bg-emerald-950/80 text-emerald-300 border-emerald-700/80";
+                        else if (rating >= 80) bg = "bg-cyan-950/80 text-cyan-300 border-cyan-700/80";
+                        else if (rating < 50) bg = "bg-red-950/40 text-red-400 border-red-900/50";
+                        return (
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono border ${bg}`}>
+                                RS {rating}
+                            </span>
+                        );
+                    },
+                    sortable: true,
+                    filter: "agNumberColumnFilter",
+                    headerTooltip: "IBD-style Relative Strength Rating (1-99) weighted across 4 quarters (40% Q1, 20% Q2, 20% Q3, 20% Q4) vs all sectors & themes"
+                });
+            } else {
+                cols.push({
+                    headerName: col,
+                    field: col,
+                    hide: !visibleColumns[col],
+                    width: (col.startsWith("RS")) ? 130 : 110,
+                    valueFormatter: returnFormatter,
+                    cellStyle: getHeatmapStyle,
+                    sortable: true,
+                    filter: true,
+                    headerTooltip: col === "RS (5D)" ? "Relative Strength against Nifty 50 over 5 Trading Days" : col === "RS (10D)" ? "Relative Strength against Nifty 50 over 10 Trading Days" : col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined
+                });
+            }
         }
         return cols;
     }, [visibleColumns]);

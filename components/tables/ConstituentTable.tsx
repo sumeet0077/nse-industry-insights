@@ -176,9 +176,9 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         ];
         for (const col of returnCols) {
             const mappedField = fieldMap[col];
-            if (col === "IBD RS Rating") {
+            if (col === "RS Rating" || col === "IBD RS Rating") {
                 cols.push({
-                    headerName: "IBD RS Rating",
+                    headerName: "RS Rating",
                     field: "ibd_rs_rating",
                     valueGetter: (params) => params.data?.ibd_rs_rating ?? null,
                     hide: !visibleColumns[col],

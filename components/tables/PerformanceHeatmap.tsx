@@ -266,10 +266,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         ];
 
         for (const col of returnColumns) {
-            if (col === "IBD RS Rating") {
+            if (col === "RS Rating" || col === "IBD RS Rating") {
                 cols.push({
-                    headerName: "IBD RS Rating",
-                    field: "IBD RS Rating",
+                    headerName: "RS Rating",
+                    field: "RS Rating",
+                    valueGetter: (params) => params.data?.["RS Rating"] ?? params.data?.["IBD RS Rating"] ?? null,
                     hide: !visibleColumns[col],
                     width: 130,
                     cellRenderer: (params: { value: number | null }) => {
@@ -287,7 +288,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     },
                     sortable: true,
                     filter: "agNumberColumnFilter",
-                    headerTooltip: "IBD-style Relative Strength Rating (1-99) weighted across 4 quarters (40% Q1, 20% Q2, 20% Q3, 20% Q4) vs all sectors & themes"
+                    headerTooltip: "Relative Strength Rating (1-99) weighted across 4 quarters (40% Q1, 20% Q2, 20% Q3, 20% Q4) vs all sectors & themes"
                 });
             } else {
                 cols.push({

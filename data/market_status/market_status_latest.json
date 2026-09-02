@@ -198,6 +198,7 @@
             "DIVISLAB.NS",
             "DIXON.NS",
             "DLF.NS",
+            "ECLERX.NS",
             "EICHERMOT.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
@@ -214,6 +215,7 @@
             "FORTIS.NS",
             "GABRIEL.NS",
             "GAIL.NS",
+            "GESHIP.NS",
             "GLAND.NS",
             "GLAXO.NS",
             "GLENMARK.NS",
@@ -452,7 +454,6 @@
             "DMART.NS",
             "DOMS.NS",
             "DRREDDY.NS",
-            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -464,7 +465,6 @@
             "FORCEMOT.NS",
             "FSL.NS",
             "GALLANTT.NS",
-            "GESHIP.NS",
             "GICRE.NS",
             "GILLETTE.NS",
             "GMDCLTD.NS",
@@ -844,6 +844,7 @@
             "DELHIVERY.NS",
             "DEVYANI.NS",
             "DIXON.NS",
+            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -856,6 +857,7 @@
             "FLUOROCHEM.NS",
             "FORTIS.NS",
             "GABRIEL.NS",
+            "GESHIP.NS",
             "GLAND.NS",
             "GLAXO.NS",
             "GLENMARK.NS",
@@ -1050,7 +1052,6 @@
             "DALBHARAT.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
-            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1062,7 +1063,6 @@
             "FORCEMOT.NS",
             "FSL.NS",
             "GALLANTT.NS",
-            "GESHIP.NS",
             "GICRE.NS",
             "GILLETTE.NS",
             "GMDCLTD.NS",
@@ -1233,6 +1233,7 @@
             "DEEPAKNTR.NS",
             "DELHIVERY.NS",
             "DEVYANI.NS",
+            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -1240,6 +1241,7 @@
             "FINCABLES.NS",
             "FIVESTAR.NS",
             "GABRIEL.NS",
+            "GESHIP.NS",
             "GLAND.NS",
             "GRANULES.NS",
             "GRAPHITE.NS",
@@ -1358,7 +1360,6 @@
             "CROMPTON.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
-            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1369,7 +1370,6 @@
             "FORCEMOT.NS",
             "FSL.NS",
             "GALLANTT.NS",
-            "GESHIP.NS",
             "GILLETTE.NS",
             "GMDCLTD.NS",
             "GODIGIT.NS",
@@ -2084,10 +2084,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS"
+            "VIJAYA.NS",
+            "METROPOLIS.NS"
         ],
         "below": [
-            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2358,11 +2358,10 @@
         "above": [
             "SEAMECLTD.NS",
             "DREDGECORP.NS",
-            "SHREEJISPG.NS"
-        ],
-        "below": [
+            "SHREEJISPG.NS",
             "GESHIP.NS"
         ],
+        "below": [],
         "new_stock": []
     },
     "Media & Broadcasting": {
@@ -2946,6 +2945,7 @@
     "Water & Irrigation Infrastructure": {
         "above": [
             "KIRLOSBROS.NS",
+            "KSB.NS",
             "ROTO.NS",
             "WABAG.NS",
             "IONEXCHANG.NS",
@@ -2953,7 +2953,6 @@
         ],
         "below": [
             "SHAKTIPUMP.NS",
-            "KSB.NS",
             "JISLJALEQS.NS"
         ],
         "new_stock": [
@@ -2976,8 +2975,7 @@
             "TTKPRESTIG.NS",
             "LGEINDIA.NS",
             "STOVEKRAFT.NS",
-            "ORIENTELEC.NS",
-            "IFBIND.NS"
+            "ORIENTELEC.NS"
         ],
         "below": [
             "VOLTAS.NS",
@@ -2991,7 +2989,8 @@
             "BPL.NS",
             "BUTTERFLY.NS",
             "CELLO.NS",
-            "BOROLTD.NS"
+            "BOROLTD.NS",
+            "IFBIND.NS"
         ],
         "new_stock": []
     },

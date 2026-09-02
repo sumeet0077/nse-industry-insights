@@ -228,7 +228,7 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     if summary_data:
         out_path = perf_dir / "performance_summary.json"
         
-        # Calculate Percentile-Ranked IBD RS Rating (1-99) across all sectors/themes
+        # Calculate Percentile-Ranked RS Rating (1-99) across all sectors/themes
         raw_scores = {r["Theme/Index"]: r["rs_raw_score"] for r in summary_data if r.get("rs_raw_score") is not None}
         if raw_scores:
             score_series = pd.Series(raw_scores)
@@ -237,11 +237,15 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
             for r in summary_data:
                 t = r["Theme/Index"]
                 if t in rs_ratings:
-                    r["IBD RS Rating"] = int(np.clip(rs_ratings[t], 1, 99))
+                    rating_val = int(np.clip(rs_ratings[t], 1, 99))
+                    r["RS Rating"] = rating_val
+                    r["IBD RS Rating"] = rating_val
                 else:
+                    r["RS Rating"] = None
                     r["IBD RS Rating"] = None
         else:
             for r in summary_data:
+                r["RS Rating"] = None
                 r["IBD RS Rating"] = None
         
         # We must serialize via Pandas to guarantee strictly compliant JSON (NaN -> null). 

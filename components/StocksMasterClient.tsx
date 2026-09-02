@@ -642,7 +642,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                 ? "bg-cyan-600 text-white shadow-sm shadow-cyan-900"
                                 : "bg-slate-800/60 text-cyan-400 hover:text-cyan-300 border border-cyan-800/40"
                         }`}
-                        title="Isolate Top 20% Alpha Leaders with IBD RS Rating >= 80"
+                        title="Isolate Top 20% Alpha Leaders with RS Rating >= 80"
                     >
                         <span>RS Rating ≥ 80 (Top 20%)</span>
                     </button>
@@ -788,10 +788,10 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                         <th 
                                             className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
                                             onClick={() => handleUnifiedSort("ibd_rs_rating")}
-                                            title="Click to sort by IBD 1-99 Relative Strength Percentile Rating"
+                                            title="Click to sort by 1-99 Relative Strength Percentile Rating"
                                         >
                                             <div className="flex items-center justify-center gap-1">
-                                                <span>IBD RS Rating</span>
+                                                <span>RS Rating</span>
                                                 {unifiedSortCol === "ibd_rs_rating" ? (
                                                     <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
                                                 ) : (

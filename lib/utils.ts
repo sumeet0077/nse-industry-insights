@@ -16,8 +16,56 @@ export function formatReturn(value: number | null | undefined, decimals = 2): st
 }
 
 export function toCAGR(absoluteReturn: number | null | undefined, years: number): number | null {
-    if (absoluteReturn === null || absoluteReturn === undefined) return null;
-    return (Math.pow(1 + absoluteReturn / 100, 1 / years) - 1) * 100;
+    if (typeof absoluteReturn !== "number" || isNaN(absoluteReturn)) return null;
+    const base = 1 + absoluteReturn / 100;
+    if (base <= 0) return -100;
+    return (Math.pow(base, 1 / years) - 1) * 100;
+}
+
+export function cleanTicker(ticker: string): string {
+    let t = ticker.trim().replace(/^["'\[\(]+/, "").replace(/["'\]\)]+$/, "").trim();
+    t = t.replace(/^(NSE|BSE):/i, "");
+    t = t.replace(/\.(NS|BO|NSE|BSE)$/i, "");
+    return t.replace(/["'\[\]\(\)]/g, "").trim();
+}
+
+export function normalizeTickerSymbol(input: string): string {
+    const clean = cleanTicker(input).toUpperCase();
+    return clean ? `${clean}.NS` : "";
+}
+
+export function parseBulkTickers(rawText: string, currentTickers: string[] = []): {
+    allParsed: string[];
+    newTickers: string[];
+    existingTickers: string[];
+} {
+    const tokens = rawText
+        .split(/[\r\n,;\t\s]+/)
+        .map((s) => cleanTicker(s).toUpperCase())
+        .filter((s) => s.length > 0);
+
+    const currentCleanSet = new Set(currentTickers.map((t) => cleanTicker(t).toUpperCase()));
+    const seen = new Set<string>();
+    const allParsed: string[] = [];
+    const newTickers: string[] = [];
+    const existingTickers: string[] = [];
+
+    for (const token of tokens) {
+        if (/^[A-Z0-9\-&_]+$/.test(token)) {
+            const formatted = `${token}.NS`;
+            if (!seen.has(token)) {
+                seen.add(token);
+                allParsed.push(formatted);
+                if (currentCleanSet.has(token)) {
+                    existingTickers.push(formatted);
+                } else {
+                    newTickers.push(formatted);
+                }
+            }
+        }
+    }
+
+    return { allParsed, newTickers, existingTickers };
 }
 
 export function getReturnColor(value: number | null | undefined): string {

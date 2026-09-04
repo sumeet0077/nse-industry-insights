@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { cleanTicker, normalizeTickerSymbol } from "@/lib/utils";
 
 export interface Watchlist {
     id: string;
@@ -172,12 +173,14 @@ export function useWatchlists() {
     // Add ticker to active watchlist
     const addTicker = useCallback(
         (ticker: string) => {
-            const formatted = ticker.trim().toUpperCase();
+            const formatted = normalizeTickerSymbol(ticker);
             if (!formatted) return;
+            const targetClean = cleanTicker(formatted).toUpperCase();
 
             const updated = watchlists.map((w) => {
                 if (w.id === activeId) {
-                    if (w.tickers.includes(formatted)) return w;
+                    const cleanSet = new Set(w.tickers.map((t) => cleanTicker(t).toUpperCase()));
+                    if (cleanSet.has(targetClean)) return w;
                     return { ...w, tickers: [...w.tickers, formatted] };
                 }
                 return w;
@@ -190,13 +193,52 @@ export function useWatchlists() {
     // Add multiple tickers to active watchlist
     const addMultipleTickers = useCallback(
         (tickers: string[]) => {
-            const newTickers = tickers.map((t) => t.trim().toUpperCase()).filter(Boolean);
+            const newTickers = tickers.map(normalizeTickerSymbol).filter(Boolean);
             if (newTickers.length === 0) return;
 
             const updated = watchlists.map((w) => {
                 if (w.id === activeId) {
-                    const set = new Set([...w.tickers, ...newTickers]);
-                    return { ...w, tickers: Array.from(set) };
+                    const seen = new Set<string>();
+                    const merged: string[] = [];
+                    for (const t of w.tickers) {
+                        const clean = cleanTicker(t).toUpperCase();
+                        if (clean && !seen.has(clean)) {
+                            seen.add(clean);
+                            merged.push(t.endsWith(".NS") ? t : `${clean}.NS`);
+                        }
+                    }
+                    for (const t of newTickers) {
+                        const clean = cleanTicker(t).toUpperCase();
+                        if (clean && !seen.has(clean)) {
+                            seen.add(clean);
+                            merged.push(t);
+                        }
+                    }
+                    return { ...w, tickers: merged };
+                }
+                return w;
+            });
+            saveWatchlists(updated);
+        },
+        [watchlists, activeId, saveWatchlists]
+    );
+
+    // Replace all tickers in active watchlist
+    const setTickers = useCallback(
+        (tickers: string[]) => {
+            const newTickers = tickers.map(normalizeTickerSymbol).filter(Boolean);
+            const updated = watchlists.map((w) => {
+                if (w.id === activeId) {
+                    const seen = new Set<string>();
+                    const unique: string[] = [];
+                    for (const t of newTickers) {
+                        const clean = cleanTicker(t).toUpperCase();
+                        if (clean && !seen.has(clean)) {
+                            seen.add(clean);
+                            unique.push(t);
+                        }
+                    }
+                    return { ...w, tickers: unique };
                 }
                 return w;
             });
@@ -208,9 +250,10 @@ export function useWatchlists() {
     // Remove ticker from active watchlist
     const removeTicker = useCallback(
         (ticker: string) => {
+            const targetClean = cleanTicker(ticker).toUpperCase();
             const updated = watchlists.map((w) => {
                 if (w.id === activeId) {
-                    return { ...w, tickers: w.tickers.filter((t) => t !== ticker) };
+                    return { ...w, tickers: w.tickers.filter((t) => cleanTicker(t).toUpperCase() !== targetClean) };
                 }
                 return w;
             });
@@ -277,6 +320,7 @@ export function useWatchlists() {
         deleteWatchlist,
         addTicker,
         addMultipleTickers,
+        setTickers,
         removeTicker,
         clearActiveWatchlist,
         resetToDefaults,

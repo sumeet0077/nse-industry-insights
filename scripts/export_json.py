@@ -807,6 +807,39 @@ def export_stock_search_index(output_dir: Path):
     print(f"  OK   stock_search_index.json ({len(sorted_index)} tickers)")
 
 
+def ensure_public_symlinks(output_dir: Path):
+    """Ensure public/data has symlinks to data subdirectories (breadth, stock_rrg, constituent_performance)."""
+    public_data = output_dir.parent / "public" / "data"
+    if not public_data.exists():
+        public_data.mkdir(parents=True, exist_ok=True)
+
+    for sub in ["breadth", "stock_rrg", "constituent_performance"]:
+        link_in_public = public_data / sub
+        target = f"../../data/{sub}"
+        needs_link = False
+
+        if link_in_public.is_symlink():
+            try:
+                curr_target = os.readlink(link_in_public)
+                if curr_target != target or not link_in_public.exists():
+                    link_in_public.unlink()
+                    needs_link = True
+            except OSError:
+                link_in_public.unlink()
+                needs_link = True
+        elif not link_in_public.exists():
+            needs_link = True
+
+        if needs_link:
+            try:
+                link_in_public.symlink_to(target)
+                print(f"  OK   Symlink created: public/data/{sub} -> {target}")
+            except Exception as e:
+                print(f"  WARN Could not create symlink public/data/{sub}: {e}")
+        else:
+            print(f"  OK   Symlink valid: public/data/{sub} -> {target}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Export CSVs to JSON for nse-industry-insights")
     parser.add_argument("--output", required=True, help="Path to nse-industry-insights/data directory")
@@ -850,6 +883,9 @@ def main():
 
     print("\nGenerating stock search index...")
     export_stock_search_index(output_dir)
+
+    print("\nEnsuring public/data symlinks...")
+    ensure_public_symlinks(output_dir)
 
     print(f"\n✓ Export complete → {output_dir.resolve()}")
 

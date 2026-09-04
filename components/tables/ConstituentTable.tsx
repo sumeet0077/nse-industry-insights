@@ -10,9 +10,9 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-interface ConstituentRow {
+export interface ConstituentRow {
     ticker: string;
-    [key: string]: number | string | null | undefined;
+    [key: string]: number | string | boolean | null | undefined;
 }
 
 interface ConstituentTableProps {
@@ -199,8 +199,9 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     sortable: true,
                 });
             } else {
+                const isCagrCol = mappedField === "3Y" || mappedField === "5Y" || col === "3 Years" || col === "5 Years";
                 cols.push({
-                    headerName: col,
+                    headerName: isCagrCol && showCagr ? `${col} (CAGR)` : col,
                     field: mappedField,
                     valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
                     hide: !visibleColumns[col],
@@ -212,7 +213,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
             }
         }
         return cols;
-    }, [visibleColumns]);
+    }, [visibleColumns, showCagr]);
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -465,7 +466,7 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                             } catch (e) { console.warn("Failed to apply AG grid sort state", e); }
                         }
                         params.api.forEachNode((node: IRowNode) => {
-                            if (selectedTickers.has(node.data.ticker)) node.setSelected(true);
+                            if (node.data?.ticker && selectedTickers.has(node.data.ticker)) node.setSelected(true);
                         });
                     }}
                     onSortChanged={() => {

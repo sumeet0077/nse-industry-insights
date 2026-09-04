@@ -4,7 +4,16 @@
 import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { RRGChart } from "@/components/charts/RRGChart";
-import type { RRGDataPoint, TimeframeType, QuadrantType, TrendMetricDirectionType, OriginDistanceType, SuperTrendPresetType } from "@/types";
+import { ConstituentTable, type ConstituentRow } from "@/components/tables/ConstituentTable";
+import type {
+    RRGDataPoint,
+    TimeframeType,
+    QuadrantType,
+    TrendMetricDirectionType,
+    OriginDistanceType,
+    SuperTrendPresetType,
+    ConstituentPerformanceMap,
+} from "@/types";
 import { BROAD_MARKET, SECTORS, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES, ORIGIN_RADIUS_MAP } from "@/lib/config";
 import { calculateOriginDistance, calculateSuperTrendScore } from "@/lib/rrg";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
@@ -35,9 +44,12 @@ interface CustomWatchlistRRGClientProps {
     allStockRRGMap?: Record<string, StockRRGPayload | null>;
 }
 
-function cleanTicker(ticker: string): string {
-    return ticker.replace(/\.NS$/i, "").replace(/\.BO$/i, "");
-}
+import { cleanTicker, normalizeTickerSymbol, parseBulkTickers } from "@/lib/utils";
+export { cleanTicker, normalizeTickerSymbol, parseBulkTickers };
+
+// Module-level cache for constituent performance metrics to avoid refetching on remounts
+let cachedConstituents: ConstituentPerformanceMap | null = null;
+const cachedRRGMap: Record<string, StockRRGPayload> = {};
 
 function toTVSymbol(ticker: string): string {
     const clean = cleanTicker(ticker);
@@ -55,12 +67,36 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         renameWatchlist,
         deleteWatchlist,
         addTicker,
+        addMultipleTickers,
+        setTickers,
         removeTicker,
         clearActiveWatchlist,
         resetToDefaults,
         exportWatchlistsJson,
         importWatchlistsJson,
     } = useWatchlists();
+
+    // 3-way view switcher state: "rrg" | "table" | "split" (persisted in localStorage)
+    type ViewMode = "rrg" | "table" | "split";
+    const [viewMode, setViewMode] = useLocalStorage<ViewMode>("cw_viewMode", "rrg");
+    const [showCagr, setShowCagr] = useLocalStorage<boolean>("cw_showCagr", false);
+
+    // Bulk Ticker Paste Modal states
+    const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
+    const [pasteText, setPasteText] = useState("");
+
+    // Close bulk paste modal on Escape key
+    useEffect(() => {
+        if (!isPasteModalOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setIsPasteModalOpen(false);
+                setPasteText("");
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isPasteModalOpen]);
 
     // Benchmark selection (Default to Nifty 50)
     const [benchmarkId, setBenchmarkId] = useLocalStorage<string>("cw_benchmark", "market_breadth_nifty50");
@@ -74,6 +110,11 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const [editName, setEditName] = useState("");
     const [stockSearchQuery, setStockSearchQuery] = useState("");
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    // Parsed bulk tickers for modal preview and live count badges
+    const parsedBulk = useMemo(() => {
+        return parseBulkTickers(pasteText, activeWatchlist.tickers);
+    }, [pasteText, activeWatchlist.tickers]);
 
     // Chart Filters & Controls
     const [selectedTickers, setSelectedTickers] = useState<string[]>([]);
@@ -117,20 +158,84 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     }, [stockSearchIndex]);
 
     // Dynamic client-side fetch cache for benchmark stock RRG JSON payloads
-    const [dynamicRRGMap, setDynamicRRGMap] = useState<Record<string, StockRRGPayload | null>>(allStockRRGMap);
+    const [dynamicRRGMap, setDynamicRRGMap] = useState<Record<string, StockRRGPayload | null>>(() => ({
+        ...allStockRRGMap,
+        ...cachedRRGMap,
+    }));
 
     useEffect(() => {
-        if (!dynamicRRGMap[benchmarkId]) {
+        if (!dynamicRRGMap[benchmarkId] && !cachedRRGMap[benchmarkId]) {
             fetch(`/data/stock_rrg/${benchmarkId}.json`)
                 .then((res) => (res.ok ? res.json() : null))
                 .then((data: StockRRGPayload | null) => {
                     if (data) {
+                        cachedRRGMap[benchmarkId] = data;
                         setDynamicRRGMap((prev) => ({ ...prev, [benchmarkId]: data }));
                     }
                 })
                 .catch(() => {});
+        } else if (cachedRRGMap[benchmarkId] && !dynamicRRGMap[benchmarkId]) {
+            setDynamicRRGMap((prev) => ({ ...prev, [benchmarkId]: cachedRRGMap[benchmarkId] }));
         }
     }, [benchmarkId, dynamicRRGMap]);
+
+    // Dynamic client-side fetch cache for constituent performance metrics
+    const [constituentPerformanceMap, setConstituentPerformanceMap] = useState<ConstituentPerformanceMap | null>(cachedConstituents);
+    const [isLoadingConstituents, setIsLoadingConstituents] = useState<boolean>(!cachedConstituents);
+
+    useEffect(() => {
+        if (!cachedConstituents) {
+            setIsLoadingConstituents(true);
+            fetch("/data/constituent_performance/constituent_performance_latest.json")
+                .then((res) => (res.ok ? res.json() : null))
+                .then((data: ConstituentPerformanceMap | null) => {
+                    if (data) {
+                        cachedConstituents = data;
+                        setConstituentPerformanceMap(data);
+                    }
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch constituent performance:", err);
+                })
+                .finally(() => {
+                    setIsLoadingConstituents(false);
+                });
+        }
+    }, []);
+
+    // CAGR transformation helper: converts cumulative return into annualized CAGR
+    const calculateCAGR = (ret: number | null | undefined, years: number): number | null => {
+        if (typeof ret !== "number" || isNaN(ret)) return null;
+        const base = 1 + ret / 100;
+        if (base <= 0) return -100;
+        return (Math.pow(base, 1 / years) - 1) * 100;
+    };
+
+    // Transform constituent data with 3Y/5Y CAGR when toggle is active
+    const displayConstituents = useMemo<ConstituentRow[]>(() => {
+        if (!constituentPerformanceMap) return [];
+        return activeWatchlist.tickers.map((ticker) => {
+            const clean = cleanTicker(ticker).toUpperCase();
+            if (!clean) return { ticker };
+            const key = `${clean}.NS`;
+            const baseData =
+                constituentPerformanceMap[key] ||
+                constituentPerformanceMap[clean] ||
+                constituentPerformanceMap[ticker] ||
+                {};
+            const { ticker: _t, ...rest } = baseData as Record<string, any>;
+            const row: ConstituentRow = { ticker: key, ...rest };
+            if (showCagr) {
+                if (typeof row["3Y"] === "number" && row["3Y"] !== null) {
+                    row["3Y"] = calculateCAGR(row["3Y"] as number, 3);
+                }
+                if (typeof row["5Y"] === "number" && row["5Y"] !== null) {
+                    row["5Y"] = calculateCAGR(row["5Y"] as number, 5);
+                }
+            }
+            return row;
+        });
+    }, [activeWatchlist.tickers, constituentPerformanceMap, showCagr]);
 
     // Active stock RRG payload for the selected benchmark
     const activeBenchmarkPayload = useMemo(() => {
@@ -143,10 +248,14 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         return activeBenchmarkPayload[timeframe] || [];
     }, [activeBenchmarkPayload, timeframe]);
 
+    // Scope skippedStocks strictly to activeWatchlist.tickers (fixes the 55-stock alert leak)
     const skippedStocks: string[] = useMemo(() => {
         if (!activeBenchmarkPayload || !activeBenchmarkPayload.skipped) return [];
-        return activeBenchmarkPayload.skipped[timeframe] || [];
-    }, [activeBenchmarkPayload, timeframe]);
+        const rawSkipped = activeBenchmarkPayload.skipped[timeframe] || [];
+        if (rawSkipped.length === 0 || activeWatchlist.tickers.length === 0) return [];
+        const activeCleanSet = new Set(activeWatchlist.tickers.map((t) => cleanTicker(t).toUpperCase()));
+        return rawSkipped.filter((s) => activeCleanSet.has(cleanTicker(s).toUpperCase()));
+    }, [activeBenchmarkPayload, timeframe, activeWatchlist.tickers]);
 
     // Filter RRG points to include ONLY stocks present in the active watchlist
     const watchlistRawData = useMemo(() => {
@@ -193,6 +302,21 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         }
         return map;
     }, [watchlistRawData]);
+
+    // Stocks in active watchlist that have no RRG trajectory for the selected benchmark
+    const noTrajectoryStocks: string[] = useMemo(() => {
+        if (!activeBenchmarkPayload || activeWatchlist.tickers.length === 0) return [];
+        const activeTickersWithRRG = new Set(
+            Object.keys(latestPoints).map((t) => cleanTicker(t).toUpperCase())
+        );
+        const activeSkipped = new Set(
+            skippedStocks.map((t) => cleanTicker(t).toUpperCase())
+        );
+        return activeWatchlist.tickers.filter((ticker) => {
+            const clean = cleanTicker(ticker).toUpperCase();
+            return !activeTickersWithRRG.has(clean) && !activeSkipped.has(clean);
+        });
+    }, [activeBenchmarkPayload, activeWatchlist.tickers, latestPoints, skippedStocks]);
 
     // Ticker -> Quadrant mapping
     const tickerQuadrants = useMemo(() => {
@@ -648,6 +772,23 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                         setIsSearchOpen(true);
                                     }}
                                     onFocus={() => setIsSearchOpen(true)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            const trimmed = stockSearchQuery.trim();
+                                            if (!trimmed) return;
+                                            const { allParsed } = parseBulkTickers(trimmed);
+                                            if (allParsed.length === 1) {
+                                                addTicker(allParsed[0]);
+                                                setStockSearchQuery("");
+                                                setIsSearchOpen(false);
+                                            } else if (allParsed.length > 1) {
+                                                addMultipleTickers(allParsed);
+                                                setStockSearchQuery("");
+                                                setIsSearchOpen(false);
+                                            }
+                                        }
+                                    }}
                                     className="bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none w-full"
                                 />
                                 {stockSearchQuery && (
@@ -684,20 +825,32 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                             )}
                         </div>
 
-                        {activeWatchlist.tickers.length > 0 && (
+                        <div className="flex items-center gap-2">
                             <button
-                                onClick={clearActiveWatchlist}
-                                className="px-2.5 py-1 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-[11px] font-medium border border-slate-700/40 transition-colors"
+                                onClick={() => {
+                                    setPasteText("");
+                                    setIsPasteModalOpen(true);
+                                }}
+                                className="px-2.5 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm"
                             >
-                                Clear Tickers
+                                <Upload className="h-3.5 w-3.5" />
+                                <span>Paste Tickers</span>
                             </button>
-                        )}
+                            {activeWatchlist.tickers.length > 0 && (
+                                <button
+                                    onClick={clearActiveWatchlist}
+                                    className="px-2.5 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-xs font-medium border border-slate-700/40 transition-colors"
+                                >
+                                    Clear Tickers
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
                         {activeWatchlist.tickers.length === 0 ? (
                             <p className="text-xs text-slate-500 italic py-1">
-                                No stocks in this watchlist. Search and add stocks using the input above!
+                                No stocks in this watchlist. Search or paste stocks using the controls above!
                             </p>
                         ) : (
                             activeWatchlist.tickers.map((t) => (
@@ -720,8 +873,198 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 </div>
             </div>
 
-            {/* Controls Bar matching StockRRGClient */}
-            <div className="flex flex-col gap-6 bg-[#111118] border border-[#1e1e2e] p-4 rounded-lg">
+            {/* Bulk Paste Tickers Modal */}
+            {isPasteModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setIsPasteModalOpen(false);
+                            setPasteText("");
+                        }
+                    }}
+                >
+                    <div className="bg-[#14141f] border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <div>
+                                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                                    <Upload className="h-4 w-4 text-blue-400" />
+                                    <span>Paste / Import Tickers</span>
+                                </h3>
+                                <p className="text-xs text-slate-400 mt-0.5">
+                                    Paste symbols separated by commas, newlines, spaces, or tabs.
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setIsPasteModalOpen(false);
+                                    setPasteText("");
+                                }}
+                                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        {/* Textarea */}
+                        <div className="space-y-2">
+                            <textarea
+                                rows={5}
+                                value={pasteText}
+                                onChange={(e) => setPasteText(e.target.value)}
+                                placeholder={`e.g. TradingView watchlist:\nNSE:TCS, INFY, Jublfood.ns, ZOMATO\nRELIANCE\nDIXON`}
+                                className="w-full bg-[#0d0d14] border border-slate-700 rounded-xl p-3 text-xs text-white font-mono placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                                autoFocus
+                            />
+                        </div>
+
+                        {/* Live Count Badges */}
+                        <div className="flex items-center gap-2 flex-wrap text-xs font-semibold">
+                            <span className="px-2.5 py-1 bg-slate-800 text-slate-300 rounded-lg border border-slate-700">
+                                Total Valid: <span className="text-white font-mono">{parsedBulk.allParsed.length}</span>
+                            </span>
+                            <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-lg border border-emerald-500/30">
+                                New to Add: <span className="text-emerald-200 font-mono">{parsedBulk.newTickers.length}</span>
+                            </span>
+                            {parsedBulk.existingTickers.length > 0 && (
+                                <span
+                                    className="px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-lg border border-amber-500/30"
+                                    title={parsedBulk.existingTickers.map(cleanTicker).join(", ")}
+                                >
+                                    Already in List: <span className="text-amber-200 font-mono">{parsedBulk.existingTickers.length}</span>
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Preview Pills */}
+                        {parsedBulk.allParsed.length > 0 && (
+                            <div className="space-y-1.5">
+                                <p className="text-[11px] text-slate-400 font-medium">Preview symbols detected:</p>
+                                <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1">
+                                    {parsedBulk.allParsed.slice(0, 20).map((ticker) => {
+                                        const isNew = parsedBulk.newTickers.includes(ticker);
+                                        return (
+                                            <span
+                                                key={ticker}
+                                                className={`px-2 py-0.5 rounded text-[11px] font-mono font-medium border ${
+                                                    isNew
+                                                        ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/30"
+                                                        : "bg-slate-800/80 text-slate-400 border-slate-700"
+                                                }`}
+                                            >
+                                                {cleanTicker(ticker)}
+                                            </span>
+                                        );
+                                    })}
+                                    {parsedBulk.allParsed.length > 20 && (
+                                        <span className="px-2 py-0.5 rounded text-[11px] text-slate-500 bg-slate-800/40 border border-slate-800 font-mono">
+                                            +{parsedBulk.allParsed.length - 20} more
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Footer Buttons */}
+                        <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-800">
+                            <button
+                                onClick={() => {
+                                    setIsPasteModalOpen(false);
+                                    setPasteText("");
+                                }}
+                                className="px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    disabled={parsedBulk.allParsed.length === 0}
+                                    onClick={() => {
+                                        setTickers(parsedBulk.allParsed);
+                                        setIsPasteModalOpen(false);
+                                        setPasteText("");
+                                    }}
+                                    className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition-all"
+                                    title="Replaces all existing stocks in this watchlist with the pasted symbols"
+                                >
+                                    Replace List ({parsedBulk.allParsed.length})
+                                </button>
+                                <button
+                                    disabled={parsedBulk.newTickers.length === 0}
+                                    onClick={() => {
+                                        addMultipleTickers(parsedBulk.newTickers);
+                                        setIsPasteModalOpen(false);
+                                        setPasteText("");
+                                    }}
+                                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-xs font-semibold shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5"
+                                    title="Appends only the new symbols into the current watchlist"
+                                >
+                                    <Plus className="h-3.5 w-3.5" />
+                                    <span>Append ({parsedBulk.newTickers.length})</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* 3-Way View Switcher */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
+                <div className="flex items-center gap-1 bg-[#111118] p-1 rounded-xl border border-[#1e1e2e]">
+                    <button
+                        onClick={() => setViewMode("rrg")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "rrg"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>📊</span>
+                        <span>Sector Rotation (RRG)</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("table")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "table"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>📋</span>
+                        <span>Constituents Table</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("split")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "split"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔀</span>
+                        <span>Stacked View (Both)</span>
+                    </button>
+                </div>
+
+                {/* CAGR Toggle when Constituents Table is visible */}
+                {(viewMode === "table" || viewMode === "split") && (
+                    <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none bg-[#111118] px-3 py-1.5 rounded-lg border border-[#1e1e2e] hover:border-slate-700 transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={showCagr}
+                            onChange={(e) => setShowCagr(e.target.checked)}
+                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                        />
+                        <span>Annualize Returns (CAGR)</span>
+                    </label>
+                )}
+            </div>
+
+            {/* RRG Sector Rotation View Elements */}
+            {(viewMode === "rrg" || viewMode === "split") && (
+                <>
+                    {/* Controls Bar matching StockRRGClient */}
+                    <div className="flex flex-col gap-6 bg-[#111118] border border-[#1e1e2e] p-4 rounded-lg">
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Benchmark Selection (Grouped Optgroups) */}
                     <div className="flex-1">
@@ -1043,6 +1386,14 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                         <p className="text-sm font-medium text-slate-400">Watchlist is Empty</p>
                         <p className="text-xs text-slate-500 mt-1 max-w-sm">
                             Add stocks to &ldquo;{activeWatchlist.name}&rdquo; using the search box above to plot their Relative Rotation Graph trajectories.
+                        </p>
+                    </div>
+                ) : !activeBenchmarkPayload ? (
+                    <div className="h-96 flex flex-col items-center justify-center text-center p-6 border border-slate-800 rounded-xl bg-[#111118]">
+                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p className="text-sm font-medium text-slate-300">Loading Benchmark RRG Data...</p>
+                        <p className="text-xs text-slate-500 mt-1">
+                            Fetching rotation metrics for {activeBenchmarkTitle}
                         </p>
                     </div>
                 ) : (
@@ -1579,119 +1930,195 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 </div>
             )}
 
-            {/* Sortable Constituent Data Table */}
-            {tableRows.length > 0 && (
-                <div className="bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 shadow-xl space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
-                        <div>
+                    {/* Informative Notice: Stocks without RRG trajectory for the chosen benchmark */}
+                    {noTrajectoryStocks && noTrajectoryStocks.length > 0 && (
+                        <div className="bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg p-3.5 text-xs flex items-start gap-2.5">
+                            <span className="text-base leading-none">ℹ️</span>
+                            <div>
+                                <span className="font-semibold text-blue-200 block mb-0.5">
+                                    Benchmark Universe Notice:
+                                </span>
+                                <p className="text-blue-300/90 leading-relaxed">
+                                    The following stock(s) do not have a Relative Rotation (RRG) trajectory calculated against{" "}
+                                    <strong>{activeBenchmarkTitle}</strong>:{" "}
+                                    <span className="font-mono font-semibold text-blue-200">
+                                        {noTrajectoryStocks.map(cleanTicker).join(", ")}
+                                    </span>.
+                                    {viewMode === "rrg" ? (
+                                        <span> Switch to <strong>Constituents Table</strong> to view their full return metrics.</span>
+                                    ) : (
+                                        <span> Full return metrics for these stocks are displayed in the Constituents Table below.</span>
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Sortable Constituent Data Table (RRG view only) */}
+                    {viewMode === "rrg" && tableRows.length > 0 && (
+                        <div className="bg-[#111118] border border-[#1e1e2e] rounded-xl p-5 shadow-xl space-y-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
+                                <div>
+                                    <h3 className="text-sm font-bold text-white tracking-wide">
+                                        Watchlist Constituent Metrics (vs {activeBenchmarkTitle})
+                                    </h3>
+                                    <p className="text-xs text-slate-400">
+                                        Latest RS-Ratio, RS-Momentum, and distance from benchmark center (100, 100)
+                                    </p>
+                                </div>
+
+                                <div className="relative w-full sm:w-56">
+                                    <input
+                                        type="text"
+                                        placeholder="Filter table stocks..."
+                                        value={tableSearchQuery}
+                                        onChange={(e) => setTableSearchQuery(e.target.value)}
+                                        className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                                    />
+                                    <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                                </div>
+                            </div>
+
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left text-xs">
+                                    <thead>
+                                        <tr className="border-b border-[#1e1e2e] text-slate-400 font-semibold bg-[#161622]">
+                                            <th
+                                                className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => {
+                                                    if (tableSortField === "ticker") setTableSortAsc(!tableSortAsc);
+                                                    else { setTableSortField("ticker"); setTableSortAsc(true); }
+                                                }}
+                                            >
+                                                Stock Ticker {tableSortField === "ticker" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                            </th>
+                                            <th
+                                                className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => {
+                                                    if (tableSortField === "quadrant") setTableSortAsc(!tableSortAsc);
+                                                    else { setTableSortField("quadrant"); setTableSortAsc(true); }
+                                                }}
+                                            >
+                                                Quadrant {tableSortField === "quadrant" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                            </th>
+                                            <th
+                                                className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => {
+                                                    if (tableSortField === "ratio") setTableSortAsc(!tableSortAsc);
+                                                    else { setTableSortField("ratio"); setTableSortAsc(false); }
+                                                }}
+                                            >
+                                                RS-Ratio {tableSortField === "ratio" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                            </th>
+                                            <th
+                                                className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => {
+                                                    if (tableSortField === "momentum") setTableSortAsc(!tableSortAsc);
+                                                    else { setTableSortField("momentum"); setTableSortAsc(false); }
+                                                }}
+                                            >
+                                                RS-Momentum {tableSortField === "momentum" ? (tableSortAsc ? "▲" : "▼") : ""}
+                                            </th>
+                                            <th className="py-2.5 px-3 text-right">Dist. from Center</th>
+                                            <th className="py-2.5 px-3 text-center">Chart Link</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-[#1e1e2e]/60">
+                                        {tableRows.map((row) => {
+                                            const badgeStyles: Record<string, string> = {
+                                                Leading: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+                                                Weakening: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
+                                                Lagging: "bg-red-500/20 text-red-300 border-red-500/40",
+                                                Improving: "bg-blue-500/20 text-blue-300 border-blue-500/40",
+                                            };
+                                            const tvSym = toTVSymbol(row.ticker);
+
+                                            return (
+                                                <tr key={row.ticker} className="hover:bg-[#1a1a2e]/60 transition-colors">
+                                                    <td className="py-2 px-3 font-semibold text-white font-mono">{row.clean}</td>
+                                                    <td className="py-2 px-3">
+                                                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${badgeStyles[row.quadrant]}`}>
+                                                            {row.quadrant}
+                                                        </span>
+                                                    </td>
+                                                    <td className={`py-2 px-3 text-right font-mono font-semibold ${row.ratio >= 100 ? "text-emerald-400" : "text-red-400"}`}>
+                                                        {row.ratio.toFixed(2)}
+                                                    </td>
+                                                    <td className={`py-2 px-3 text-right font-mono font-semibold ${row.momentum >= 100 ? "text-emerald-400" : "text-red-400"}`}>
+                                                        {row.momentum.toFixed(2)}
+                                                    </td>
+                                                    <td className="py-2 px-3 text-right font-mono text-slate-400">
+                                                        {row.distance.toFixed(2)}
+                                                    </td>
+                                                    <td className="py-2 px-3 text-center">
+                                                        <a
+                                                            href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium"
+                                                        >
+                                                            <span>View</span>
+                                                            <ExternalLink className="h-3 w-3" />
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* In Table view: show No-Trajectory notice banner if active stocks lack RRG trajectory */}
+            {viewMode === "table" && noTrajectoryStocks.length > 0 && (
+                <div className="bg-blue-500/10 border border-blue-500/20 text-blue-300 rounded-lg p-3.5 text-xs flex items-start gap-2.5">
+                    <span className="text-base leading-none">ℹ️</span>
+                    <div>
+                        <span className="font-semibold text-blue-200 block mb-0.5">
+                            Benchmark Universe Notice:
+                        </span>
+                        <p className="text-blue-300/90 leading-relaxed">
+                            Full return metrics for your stocks are displayed below. Note that RRG rotation trajectories are not calculated for{" "}
+                            <span className="font-mono font-semibold text-blue-200">
+                                {noTrajectoryStocks.map(cleanTicker).join(", ")}
+                            </span> against <strong>{activeBenchmarkTitle}</strong>.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Constituents Table View (AG Grid) */}
+            {(viewMode === "table" || viewMode === "split") && (
+                <div className="space-y-4">
+                    {viewMode === "split" && (
+                        <div className="border-t border-[#1e1e2e] pt-4">
                             <h3 className="text-sm font-bold text-white tracking-wide">
-                                Watchlist Constituent Metrics (vs {activeBenchmarkTitle})
+                                Watchlist Constituents Performance Table
                             </h3>
                             <p className="text-xs text-slate-400">
-                                Latest RS-Ratio, RS-Momentum, and distance from benchmark center (100, 100)
+                                1D–5Y returns, IBD RS Rating, 52-week RS Lead Breakouts, and TradingView links
                             </p>
                         </div>
-
-                        <div className="relative w-full sm:w-56">
-                            <input
-                                type="text"
-                                placeholder="Filter table stocks..."
-                                value={tableSearchQuery}
-                                onChange={(e) => setTableSearchQuery(e.target.value)}
-                                className="w-full bg-[#1a1a2e] border border-slate-700/60 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                            />
-                            <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                    )}
+                    {isLoadingConstituents && !constituentPerformanceMap ? (
+                        <div className="p-8 text-center bg-[#111118] border border-[#1e1e2e] rounded-xl text-slate-400 text-xs">
+                            <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                            Loading constituent performance metrics...
                         </div>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs">
-                            <thead>
-                                <tr className="border-b border-[#1e1e2e] text-slate-400 font-semibold bg-[#161622]">
-                                    <th
-                                        className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
-                                        onClick={() => {
-                                            if (tableSortField === "ticker") setTableSortAsc(!tableSortAsc);
-                                            else { setTableSortField("ticker"); setTableSortAsc(true); }
-                                        }}
-                                    >
-                                        Stock Ticker {tableSortField === "ticker" ? (tableSortAsc ? "▲" : "▼") : ""}
-                                    </th>
-                                    <th
-                                        className="py-2.5 px-3 cursor-pointer hover:text-white transition-colors"
-                                        onClick={() => {
-                                            if (tableSortField === "quadrant") setTableSortAsc(!tableSortAsc);
-                                            else { setTableSortField("quadrant"); setTableSortAsc(true); }
-                                        }}
-                                    >
-                                        Quadrant {tableSortField === "quadrant" ? (tableSortAsc ? "▲" : "▼") : ""}
-                                    </th>
-                                    <th
-                                        className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
-                                        onClick={() => {
-                                            if (tableSortField === "ratio") setTableSortAsc(!tableSortAsc);
-                                            else { setTableSortField("ratio"); setTableSortAsc(false); }
-                                        }}
-                                    >
-                                        RS-Ratio {tableSortField === "ratio" ? (tableSortAsc ? "▲" : "▼") : ""}
-                                    </th>
-                                    <th
-                                        className="py-2.5 px-3 text-right cursor-pointer hover:text-white transition-colors"
-                                        onClick={() => {
-                                            if (tableSortField === "momentum") setTableSortAsc(!tableSortAsc);
-                                            else { setTableSortField("momentum"); setTableSortAsc(false); }
-                                        }}
-                                    >
-                                        RS-Momentum {tableSortField === "momentum" ? (tableSortAsc ? "▲" : "▼") : ""}
-                                    </th>
-                                    <th className="py-2.5 px-3 text-right">Dist. from Center</th>
-                                    <th className="py-2.5 px-3 text-center">Chart Link</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-[#1e1e2e]/60">
-                                {tableRows.map((row) => {
-                                    const badgeStyles: Record<string, string> = {
-                                        Leading: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
-                                        Weakening: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40",
-                                        Lagging: "bg-red-500/20 text-red-300 border-red-500/40",
-                                        Improving: "bg-blue-500/20 text-blue-300 border-blue-500/40",
-                                    };
-                                    const tvSym = toTVSymbol(row.ticker);
-
-                                    return (
-                                        <tr key={row.ticker} className="hover:bg-[#1a1a2e]/60 transition-colors">
-                                            <td className="py-2 px-3 font-semibold text-white font-mono">{row.clean}</td>
-                                            <td className="py-2 px-3">
-                                                <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${badgeStyles[row.quadrant]}`}>
-                                                    {row.quadrant}
-                                                </span>
-                                            </td>
-                                            <td className={`py-2 px-3 text-right font-mono font-semibold ${row.ratio >= 100 ? "text-emerald-400" : "text-red-400"}`}>
-                                                {row.ratio.toFixed(2)}
-                                            </td>
-                                            <td className={`py-2 px-3 text-right font-mono font-semibold ${row.momentum >= 100 ? "text-emerald-400" : "text-red-400"}`}>
-                                                {row.momentum.toFixed(2)}
-                                            </td>
-                                            <td className="py-2 px-3 text-right font-mono text-slate-400">
-                                                {row.distance.toFixed(2)}
-                                            </td>
-                                            <td className="py-2 px-3 text-center">
-                                                <a
-                                                    href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium"
-                                                >
-                                                    <span>View</span>
-                                                    <ExternalLink className="h-3 w-3" />
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                    ) : activeWatchlist.tickers.length === 0 ? (
+                        <div className="h-48 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-800 rounded-xl bg-[#111118]">
+                            <BookmarkCheck className="h-8 w-8 text-slate-600 mb-2" />
+                            <p className="text-sm font-medium text-slate-400">Watchlist is Empty</p>
+                            <p className="text-xs text-slate-500 mt-1 max-w-sm">
+                                Add stocks using the search or &ldquo;Paste Tickers&rdquo; button above to view performance metrics.
+                            </p>
+                        </div>
+                    ) : (
+                        <ConstituentTable data={displayConstituents} showCagr={showCagr} />
+                    )}
                 </div>
             )}
         </div>

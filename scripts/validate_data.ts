@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { ALL_CONFIGS } from "../lib/config";
+import { ALL_CONFIGS, BROAD_MARKET, SECTORS } from "../lib/config";
 import { REQUIRED_CONSTITUENT_METRICS } from "../lib/metrics";
-import { resolveDataKey } from "../lib/utils";
+import { resolveDataKey, parseBulkTickers, toCAGR } from "../lib/utils";
 import type { MarketStatus, ConstituentPerformanceMap, PerformanceRow } from "../types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -253,6 +253,124 @@ validate("RRG Trajectory Files (data/rrg/*.json)", (errors, warnings) => {
         }
     });
     console.log(`  ✓ RRG datasets validated for Daily, Weekly, and Monthly timeframes.`);
+});
+
+// 6. Validate Benchmark Stock RRG & Constituent Performance Public Symlinks
+validate("Benchmark Public Assets (public/data/stock_rrg & constituent_performance)", (errors, warnings) => {
+    const publicDataDir = path.join(process.cwd(), "public", "data");
+    const stockRrgDir = path.join(publicDataDir, "stock_rrg");
+    const constPerfDir = path.join(publicDataDir, "constituent_performance");
+
+    // Self-healing symlink creation if missing
+    if (!fs.existsSync(stockRrgDir) && fs.existsSync(path.join(DATA_DIR, "stock_rrg"))) {
+        try {
+            fs.symlinkSync("../../data/stock_rrg", stockRrgDir);
+        } catch {}
+    }
+    if (!fs.existsSync(constPerfDir) && fs.existsSync(path.join(DATA_DIR, "constituent_performance"))) {
+        try {
+            fs.symlinkSync("../../data/constituent_performance", constPerfDir);
+        } catch {}
+    }
+
+    if (!fs.existsSync(stockRrgDir)) {
+        errors.push("Missing public stock_rrg directory: public/data/stock_rrg");
+        return;
+    }
+
+    const benchmarks = [...BROAD_MARKET, ...SECTORS];
+    let missingCount = 0;
+
+    benchmarks.forEach((cfg) => {
+        const filePath = path.join(stockRrgDir, `${cfg.dataFile}.json`);
+        if (!fs.existsSync(filePath)) {
+            missingCount++;
+            errors.push(`Missing benchmark stock RRG file for ${cfg.title}: public/data/stock_rrg/${cfg.dataFile}.json`);
+        } else {
+            try {
+                const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+                if (!Array.isArray(data.D) || !Array.isArray(data.W) || !Array.isArray(data.M)) {
+                    errors.push(`Stock RRG file for ${cfg.title} (${cfg.dataFile}.json) missing required D, W, or M series!`);
+                } else if (data.D.length === 0 || data.W.length === 0 || data.M.length === 0) {
+                    warnings.push(`Stock RRG file for ${cfg.title} (${cfg.dataFile}.json) has empty series for one or more timeframes.`);
+                }
+            } catch (e) {
+                errors.push(`Corrupted JSON in public/data/stock_rrg/${cfg.dataFile}.json`);
+            }
+        }
+    });
+
+    // Validate constituent_performance public delivery
+    const pubConstPerf = path.join(constPerfDir, "constituent_performance_latest.json");
+    if (!fs.existsSync(pubConstPerf)) {
+        errors.push("Missing constituent performance file in public/data/constituent_performance/constituent_performance_latest.json");
+    } else {
+        try {
+            const cpData = JSON.parse(fs.readFileSync(pubConstPerf, "utf-8"));
+            if (Object.keys(cpData).length === 0) {
+                errors.push("public constituent_performance_latest.json is empty!");
+            }
+        } catch (e) {
+            errors.push("Corrupted JSON in public/data/constituent_performance/constituent_performance_latest.json");
+        }
+    }
+
+    if (missingCount === 0 && errors.length === 0) {
+        console.log(`  ✓ All ${benchmarks.length} benchmark stock RRG files and constituent performance asset exist and are valid.`);
+    }
+});
+
+// 7. Validate Custom Watchlist Parser & Algorithms
+validate("Custom Watchlist Parser & Algorithms", (errors) => {
+    const res1 = parseBulkTickers("NSE:TCS, INFY, Jublfood.ns, ZOMATO", ["JUBLFOOD.NS"]);
+    if (res1.allParsed.length !== 4 || res1.newTickers.length !== 3 || res1.existingTickers.length !== 1) {
+        errors.push(`parseBulkTickers failed on TradingView input: got ${JSON.stringify(res1)}`);
+    }
+    const res2 = parseBulkTickers("\"NSE:RELIANCE\"\n'BSE:SBIN';\t[TATAMOTORS]\n(HDFCBANK.BO)\n", []);
+    if (res2.allParsed.length !== 4 || res2.allParsed[0] !== "RELIANCE.NS" || res2.allParsed[1] !== "SBIN.NS" || res2.allParsed[2] !== "TATAMOTORS.NS" || res2.allParsed[3] !== "HDFCBANK.NS") {
+        errors.push(`parseBulkTickers failed on complex delimiters: got ${JSON.stringify(res2)}`);
+    }
+    const res3 = parseBulkTickers("tcs, TCS, NSE:tcs, TCS.NS, tcs.ns", []);
+    if (res3.allParsed.length !== 1 || res3.allParsed[0] !== "TCS.NS") {
+        errors.push(`parseBulkTickers failed on dedup: got ${JSON.stringify(res3)}`);
+    }
+    const res4 = parseBulkTickers("   \n\t  ", ["TCS.NS"]);
+    if (res4.allParsed.length !== 0 || res4.newTickers.length !== 0) {
+        errors.push(`parseBulkTickers failed on empty input: got ${JSON.stringify(res4)}`);
+    }
+    // Test .NSE and .BSE suffixes
+    const res5 = parseBulkTickers("TCS.NSE, SBIN.BSE", []);
+    if (res5.allParsed.length !== 2 || res5.allParsed[0] !== "TCS.NS" || res5.allParsed[1] !== "SBIN.NS") {
+        errors.push(`parseBulkTickers failed on .NSE/.BSE suffixes: got ${JSON.stringify(res5)}`);
+    }
+    // Test case-insensitive existing tickers matching
+    const res6 = parseBulkTickers("infy.ns, reliance", ["INFY.NS", "RELIANCE.NS"]);
+    if (res6.existingTickers.length !== 2 || res6.newTickers.length !== 0) {
+        errors.push(`parseBulkTickers failed on case-insensitive existing tickers check: got ${JSON.stringify(res6)}`);
+    }
+
+    // CAGR formula tests
+    const cagr1 = toCAGR(100, 3);
+    if (!cagr1 || Math.abs(cagr1 - 25.992) > 0.01) {
+        errors.push(`CAGR calculation failed for 100% 3Y: got ${cagr1}`);
+    }
+    const cagr0 = toCAGR(0, 5);
+    if (cagr0 !== 0) {
+        errors.push(`CAGR calculation failed for 0% 5Y: got ${cagr0}`);
+    }
+    const cagrLoss = toCAGR(-50, 3);
+    if (!cagrLoss || Math.abs(cagrLoss - (-20.63)) > 0.05) {
+        errors.push(`CAGR calculation failed for -50% 3Y: got ${cagrLoss}`);
+    }
+    const cagrTotalLoss = toCAGR(-100, 5);
+    if (cagrTotalLoss !== -100) {
+        errors.push(`CAGR calculation failed for -100% 5Y: got ${cagrTotalLoss}`);
+    }
+    if (toCAGR(null, 3) !== null || toCAGR(undefined, 3) !== null) {
+        errors.push(`CAGR calculation failed on null/undefined input`);
+    }
+
+    console.log("  ✓ Custom Watchlist bulk ticker parser and CAGR logic validated.");
 });
 
 // Print Summary

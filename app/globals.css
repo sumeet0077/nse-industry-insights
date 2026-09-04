@@ -65,3 +65,51 @@ body {
   --ag-font-family: "Inter", system-ui, sans-serif;
   --ag-font-size: 13px;
 }
+
+/* AG Grid Header Layout & Alignment Uniformity */
+.ag-header-cell-comp-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.ag-header-cell-label {
+  display: flex !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.ag-header-cell-text {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Push sort indicator to the far right, adjacent to the filter button with consistent gap */
+.ag-sort-indicator-container {
+  margin-left: auto !important;
+  padding-left: 6px !important;
+  padding-right: 2px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.ag-header-cell-filter-button {
+  margin-left: 4px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ag-header-cell-filter-button:hover {
+  opacity: 1 !important;
+  color: #60a5fa !important;
+}
+
+.ag-header-cell-filter-button.ag-filter-active {
+  color: #3b82f6 !important;
+}
+

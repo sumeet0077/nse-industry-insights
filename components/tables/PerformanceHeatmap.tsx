@@ -9,8 +9,9 @@ import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
 import { formatMetricReturn } from "@/lib/metrics";
 import { makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -72,8 +73,6 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     const [selectedThemesArr, setSelectedThemesArr] = useLocalStorage<string[]>("ph_selectedThemes", []);
     const selectedThemes = useMemo(() => new Set(selectedThemesArr), [selectedThemesArr]);
     
-    const [isCopied, setIsCopied] = useState(false);
-
     // Category filters
     const [showBroadMarket, setShowBroadMarket] = useLocalStorage("ph_showBroadMarket", true);
     const [showSectors, setShowSectors] = useLocalStorage("ph_showSectors", true);
@@ -106,23 +105,14 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         setSelectedThemesArr(selectedIds);
     }, [setSelectedThemesArr]);
 
-    const handleCopyWatchlist = useCallback(() => {
-        if (!marketStatus) return;
-
-        // Use selected themes if any, otherwise use all in displayData
-        const themesToProcess = selectedThemes.size > 0 
-            ? Array.from(selectedThemes) 
-            : data.map(r => r["Theme/Index"]);
-
-        if (themesToProcess.length === 0) return;
-
+    const getThemeTickers = useCallback((themes: string[]): string[] => {
+        if (!marketStatus) return [];
         const allTickers = new Set<string>();
 
-        themesToProcess.forEach(title => {
+        themes.forEach(title => {
             let statusKey = "";
             const resolvedTitle = resolveDataKey(title);
 
-            // Direct match or insensitive
             for (const key of Object.keys(marketStatus)) {
                 if (key.toLowerCase() === resolvedTitle) {
                     statusKey = key;
@@ -130,7 +120,6 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                 }
             }
 
-            // Fallback: NIFTY/Uppercase
             if (!statusKey) {
                 const upperKey = title.toUpperCase();
                 if (marketStatus[upperKey]) statusKey = upperKey;
@@ -146,54 +135,29 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
             }
         });
 
-        if (allTickers.size === 0) return;
+        return Array.from(allTickers);
+    }, [marketStatus]);
 
-        const formatted = Array.from(allTickers).map(t => makeTradingViewSymbol(t)).join(", ");
+    const getActiveTickers = useCallback((): string[] => {
+        if (selectedThemes.size > 0) {
+            return getThemeTickers(Array.from(selectedThemes));
+        }
 
-        navigator.clipboard.writeText(formatted).then(() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
-        });
-    }, [selectedThemes, data, marketStatus]);
+        const api = gridRef.current?.api;
+        const visibleThemes: string[] = [];
+        if (api) {
+            api.forEachNodeAfterFilterAndSort((node) => {
+                if (node.data?.["Theme/Index"]) {
+                    visibleThemes.push(node.data["Theme/Index"]);
+                }
+            });
+        }
+        const themes = visibleThemes.length > 0 ? visibleThemes : data.map(r => r["Theme/Index"]);
+        return getThemeTickers(themes);
+    }, [selectedThemes, getThemeTickers, data]);
 
     const handleOpenTabs = useCallback(() => {
-        if (!marketStatus) return;
-
-        const themesToProcess = selectedThemes.size > 0 
-            ? Array.from(selectedThemes) 
-            : data.map(r => r["Theme/Index"]);
-
-        if (themesToProcess.length === 0) return;
-
-        const allTickers = new Set<string>();
-
-        themesToProcess.forEach(title => {
-            let statusKey = "";
-            const resolvedTitle = resolveDataKey(title);
-
-            for (const key of Object.keys(marketStatus)) {
-                if (key.toLowerCase() === resolvedTitle) {
-                    statusKey = key;
-                    break;
-                }
-            }
-
-            if (!statusKey) {
-                const upperKey = title.toUpperCase();
-                if (marketStatus[upperKey]) statusKey = upperKey;
-                else if (title.startsWith("Nifty ")) {
-                    const niftyUpper = "NIFTY " + title.slice(6).toUpperCase();
-                    if (marketStatus[niftyUpper]) statusKey = niftyUpper;
-                }
-            }
-
-            if (statusKey && marketStatus[statusKey]) {
-                const s = marketStatus[statusKey];
-                [...(s.above || []), ...(s.below || []), ...(s.new_stock || [])].forEach(t => allTickers.add(t));
-            }
-        });
-
-        const tickersToOpen = Array.from(allTickers);
+        const tickersToOpen = getActiveTickers();
         if (tickersToOpen.length === 0) return;
 
         // Limit opening tabs to 25 to prevent browser hanging
@@ -208,7 +172,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                 window.open(url, "_blank");
             }, index * 150);
         });
-    }, [selectedThemes, data, marketStatus]);
+    }, [getActiveTickers]);
 
     const displayData = useMemo(() => {
         if (!showCagr) return data;
@@ -296,7 +260,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     field: "RS Rating",
                     valueGetter: (params) => params.data?.["RS Rating"] ?? params.data?.["IBD RS Rating"] ?? null,
                     hide: !visibleColumns[col],
-                    width: 130,
+                    width: 145,
+                    minWidth: 135,
                     cellRenderer: (params: { value: number | null }) => {
                         if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
                         const rating = Number(params.value);
@@ -320,7 +285,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     headerName: col,
                     field: col,
                     hide: !visibleColumns[col],
-                    width: (col.startsWith("RS")) ? 130 : 110,
+                    width: col.startsWith("RS") ? 125 : 112,
+                    minWidth: col.startsWith("RS") ? 115 : 100,
                     valueFormatter: returnFormatter,
                     cellStyle: getHeatmapStyle,
                     sortable: true,
@@ -527,18 +493,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                             Open in TradingView
                         </button>
 
-                        <button
-                            onClick={handleCopyWatchlist}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
-                                isCopied 
-                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
-                                : "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50"
-                            }`}
-                            title={selectedThemes.size > 0 ? `Copy ${selectedThemes.size} themes to Watchlist` : "Copy all visible to Watchlist"}
-                        >
-                            {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                            {isCopied ? "Watchlist Copied!" : "Copy Watchlist"}
-                        </button>
+                        {/* Watchlist Copy Button with Presets & Batches */}
+                        <CopyWatchlistButton
+                            getTickers={getActiveTickers}
+                        />
 
                         <CaptureScreenshot 
                             targetRef={tableRef}

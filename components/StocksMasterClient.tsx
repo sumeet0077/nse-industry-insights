@@ -7,6 +7,7 @@ import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
 import { getMetricValue, formatMetricReturn, getMetricColor } from "@/lib/metrics";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface StocksMasterClientProps {
@@ -74,7 +75,6 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
     const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols", ["1D", "1W", "RS (20D)", "RS (50D)", "ibd_rs_rating"]);
     const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
-    const [isCopied, setIsCopied] = useState(false);
 
     // Stock Selection per sector
     const [selectedStocksBySector, setSelectedStocksBySector] = useLocalStorage<Record<string, string[]>>("sm_stocksBySector", {});
@@ -389,17 +389,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         }
     };
 
-    const handleCopyWatchlist = useCallback(() => {
-        const listToCopy = viewMode === "unified"
-            ? unifiedStocks.map(s => makeTradingViewSymbol(s.ticker))
-            : sectorData.flatMap(g => g.stocks.map(s => makeTradingViewSymbol(s.ticker)));
-        
-        if (listToCopy.length === 0) return;
-        const unique = Array.from(new Set(listToCopy));
-        navigator.clipboard.writeText(unique.join(", ")).then(() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
-        });
+    const getStocksMasterTickers = useCallback((): string[] => {
+        const list = viewMode === "unified"
+            ? unifiedStocks.map(s => s.ticker)
+            : sectorData.flatMap(g => g.stocks.map(s => s.ticker));
+        return list;
     }, [viewMode, unifiedStocks, sectorData]);
 
     return (
@@ -574,14 +568,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
                 {/* Actions & 3-Way Mode Switcher */}
                 <div className="flex items-center gap-3 pb-1 ml-auto flex-wrap">
-                    <button
-                        onClick={handleCopyWatchlist}
-                        className="text-xs font-semibold text-slate-300 hover:text-white transition-colors bg-[#1a1a2e] border border-slate-700/60 rounded-md px-3 py-2 flex items-center gap-1.5 h-[38px]"
-                        title="Copy all symbols for TradingView"
-                    >
-                        {isCopied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} className="text-blue-400" />}
-                        <span>{isCopied ? "Copied Watchlist!" : "Copy Tickers (TV)"}</span>
-                    </button>
+                    <CopyWatchlistButton
+                        getTickers={getStocksMasterTickers}
+                        label="Copy Tickers (TV)"
+                        className="h-[38px]"
+                    />
 
                     <button
                         onClick={resetDefaults}

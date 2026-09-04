@@ -4,8 +4,9 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol } from "@/lib/utils";
 import { getMetricValue, formatMetricReturn, getMetricColor, METRIC_DEFINITIONS } from "@/lib/metrics";
-import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink, Zap } from "lucide-react";
+import { Columns, ChevronDown, Search, X, CheckSquare, ExternalLink, Zap } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
+import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -61,8 +62,6 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     const [selectedTickersArr, setSelectedTickersArr] = useLocalStorage<string[]>("ct_selectedTickers", []);
     const selectedTickers = useMemo(() => new Set(selectedTickersArr), [selectedTickersArr]);
     
-    const [isCopied, setIsCopied] = useState(false);
-    
     const dropdownRef = useRef<HTMLDivElement>(null);
     const gridRef = useRef<AgGridReact>(null);
     const tableRef = useRef<HTMLDivElement>(null);
@@ -89,26 +88,24 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         setSelectedTickersArr(selectedIds);
     }, [setSelectedTickersArr]);
 
-    const handleCopyWatchlist = useCallback(() => {
-        // Use selected tickers if any, otherwise use all data tickers
-        const tickersToCopy = selectedTickers.size > 0 
-            ? Array.from(selectedTickers) 
-            : data.map(r => r.ticker);
+    const getGridTickers = useCallback((): string[] => {
+        const api = gridRef.current?.api;
+        if (!api) return data.map(r => r.ticker);
 
-        if (tickersToCopy.length === 0) return;
-
-        const formatted = tickersToCopy.map(t => makeTradingViewSymbol(t)).join(", ");
-
-        navigator.clipboard.writeText(formatted).then(() => {
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000);
+        const tickers: string[] = [];
+        api.forEachNodeAfterFilterAndSort((node) => {
+            if (node.data?.ticker) {
+                tickers.push(node.data.ticker);
+            }
         });
-    }, [selectedTickers, data]);
+        return tickers.length > 0 ? tickers : data.map(r => r.ticker);
+    }, [data]);
 
     const handleOpenTabs = useCallback(() => {
+        const activeTickers = getGridTickers();
         const tickersToOpen = selectedTickers.size > 0 
             ? Array.from(selectedTickers) 
-            : data.map(r => r.ticker);
+            : activeTickers;
 
         if (tickersToOpen.length === 0) return;
 
@@ -208,7 +205,8 @@ const numberFilterParams = {
                     field: "ibd_rs_rating",
                     valueGetter: (params) => params.data?.ibd_rs_rating ?? null,
                     hide: !visibleColumns[col],
-                    width: 130,
+                    width: 145,
+                    minWidth: 135,
                     cellRenderer: (params: { value: number | null }) => {
                         if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
                         const rating = Number(params.value);
@@ -233,7 +231,8 @@ const numberFilterParams = {
                     field: mappedField,
                     valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
                     hide: !visibleColumns[col],
-                    width: col.startsWith("RS") ? 120 : 110,
+                    width: col.startsWith("RS") ? 125 : 112,
+                    minWidth: col.startsWith("RS") ? 115 : 100,
                     valueFormatter: returnFormatter,
                     cellClass: returnCellClass,
                     sortable: true,
@@ -392,19 +391,11 @@ const numberFilterParams = {
                             Open in TradingView
                         </button>
 
-                        {/* Watchlist Copy Button */}
-                        <button
-                            onClick={handleCopyWatchlist}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200 border ${
-                                isCopied 
-                                ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-400" 
-                                : "bg-blue-500/10 border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50"
-                            }`}
-                            title={selectedTickers.size > 0 ? `Copy ${selectedTickers.size} selected to Watchlist` : "Copy all in view to Watchlist"}
-                        >
-                            {isCopied ? <Check size={14} /> : <Copy size={14} />}
-                            {isCopied ? "Watchlist Copied!" : "Copy Watchlist"}
-                        </button>
+                        {/* Watchlist Copy Button with Presets & Batches */}
+                        <CopyWatchlistButton
+                            getTickers={getGridTickers}
+                            selectedTickers={selectedTickers}
+                        />
 
                         <CaptureScreenshot 
                             targetRef={tableRef}

@@ -451,12 +451,16 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         # same (symbol, date).  Block-deal (BL) and auction (P1) close prices differ
         # from the regular EQ close — using them silently corrupts 1D/1W returns.
         if has_series:
-            _series_priority = {"EQ": 0, "BE": 1}  # EQ first, BE second, everything else last
+            # Strictly filter to equity series (EQ, BE, BZ for Mainboard, SM, ST, SZ for SME) to purge debt/bond
+            # instruments (N1-N9, NC, Y*, Z*, etc.) which trade at debt face values (₹1,000+) and corrupt equity price histories (e.g. TATACAP).
+            equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ"]
+            df_master = df_master[df_master["series"].isin(equity_series)]
+            _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5}
             df_master["_sprio"] = df_master["series"].map(lambda s: _series_priority.get(s, 99) if isinstance(s, str) else 99)
             df_master = df_master.sort_values(["symbol_ns", "trade_date", "_sprio"])
             df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"], keep="first")
             df_master = df_master.drop(columns=["_sprio", "series"])
-            print(f"    (Series-aware dedup applied — EQ preferred over BL/P1/T0)")
+            print(f"    (Series-aware dedup applied — strictly equity series {equity_series} retained)")
         else:
             df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"])
         df_pivot = df_master.pivot(index="trade_date", columns="symbol_ns", values="close").sort_index()

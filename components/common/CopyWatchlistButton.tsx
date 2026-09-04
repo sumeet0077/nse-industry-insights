@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Copy, Check, ChevronDown, Zap, Star, Layers, ListFilter } from "lucide-react";
+import { Copy, Check, ChevronDown, Star, Layers, ListFilter } from "lucide-react";
 import { makeTradingViewSymbol } from "@/lib/utils";
 
 export interface CopyWatchlistButtonProps {
@@ -123,8 +123,8 @@ export function CopyWatchlistButton({
     const totalCount = allTickers.length;
     const selectedCount = selectedList.length;
 
-    // Calculate Batches of 30
-    const batchSize = 30;
+    // Calculate Batches of 15
+    const batchSize = 15;
     const batches: { label: string; range: string; list: string[]; id: string }[] = [];
     if (totalCount > batchSize) {
         for (let i = 0; i < totalCount; i += batchSize) {
@@ -232,31 +232,7 @@ export function CopyWatchlistButton({
 
                     {/* Quick Presets */}
                     <div className="space-y-0.5">
-                        {/* Top 15 */}
-                        <button
-                            type="button"
-                            onClick={() => copyList(allTickers.slice(0, 15), "top15")}
-                            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md hover:bg-blue-500/15 hover:text-white text-left transition-colors group"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Zap size={13} className="text-amber-400 shrink-0" />
-                                <span className="font-medium text-slate-200 group-hover:text-white">Top 15 Tickers</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] font-mono text-slate-400 group-hover:text-slate-300">
-                                    1 – {Math.min(15, totalCount)}
-                                </span>
-                                {copiedKey === "top15" ? (
-                                    <span className="text-emerald-400 font-medium flex items-center gap-0.5 text-[11px]">
-                                        <Check size={12} /> Copied!
-                                    </span>
-                                ) : (
-                                    <span className="text-[10px] text-slate-500 group-hover:text-blue-300 font-mono">Copy</span>
-                                )}
-                            </div>
-                        </button>
-
-                        {/* Top 30 (TradingView Free Limit) */}
+                        {/* Top 30 */}
                         <button
                             type="button"
                             onClick={() => copyList(allTickers.slice(0, 30), "top30")}
@@ -265,7 +241,7 @@ export function CopyWatchlistButton({
                             <div className="flex items-center gap-2">
                                 <Star size={13} className="text-yellow-400 fill-yellow-400/20 shrink-0" />
                                 <span className="font-medium text-slate-200 group-hover:text-white">
-                                    Top 30 <span className="text-[10px] text-amber-400 font-normal">(TV Free Limit)</span>
+                                    Top 30 Tickers
                                 </span>
                             </div>
                             <div className="flex items-center gap-1.5">
@@ -307,12 +283,12 @@ export function CopyWatchlistButton({
                         </button>
                     </div>
 
-                    {/* Batches for TV Free Section (Sets of 30) */}
+                    {/* Batches Section (Sets of 15) */}
                     {batches.length > 0 && (
                         <div className="mt-2 pt-2 border-t border-[#1e1e2e]/80">
                             <div className="flex items-center gap-1.5 px-1 mb-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase font-sans">
                                 <Layers size={11} className="text-blue-400 shrink-0" />
-                                <span>Batches for TV Free (Sets of 30)</span>
+                                <span>Batches (Sets of 15)</span>
                             </div>
                             <div className="space-y-0.5">
                                 {batches.map((batch) => {

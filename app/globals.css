@@ -81,27 +81,38 @@ body {
 }
 
 .ag-header-cell-text {
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
   white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
 }
 
-/* Push sort indicator to the far right, adjacent to the filter button with consistent gap */
+/* Hide sort indicator completely when no child icon is active */
 .ag-sort-indicator-container {
+  display: none !important;
+}
+
+/* Only display and take space when a sort icon is actually active */
+.ag-sort-indicator-container:has(.ag-sort-indicator-icon:not(.ag-hidden)) {
+  display: flex !important;
+  align-items: center !important;
   margin-left: auto !important;
   padding-left: 6px !important;
   padding-right: 2px !important;
   flex-shrink: 0 !important;
-  display: flex !important;
-  align-items: center !important;
 }
 
+/* Filter button right-aligned when unsorted, or adjacent with 4px gap when sorted */
 .ag-header-cell-filter-button {
-  margin-left: 4px !important;
+  margin-left: auto !important;
   flex-shrink: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+.ag-header-cell-label:has(.ag-sort-indicator-icon:not(.ag-hidden)) + .ag-header-cell-filter-button {
+  margin-left: 4px !important;
 }
 
 .ag-header-cell-filter-button:hover {
@@ -112,4 +123,5 @@ body {
 .ag-header-cell-filter-button.ag-filter-active {
   color: #3b82f6 !important;
 }
+
 

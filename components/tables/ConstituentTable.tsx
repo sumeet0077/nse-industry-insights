@@ -57,6 +57,11 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showSelectedOnly, setShowSelectedOnly] = useLocalStorage("ct_showSelectedOnly", false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [displayedCount, setDisplayedCount] = useState<number>(data.length);
+
+    useEffect(() => {
+        setDisplayedCount(data.length);
+    }, [data.length]);
     
     // Store as array since Set isn't easily serializable to JSON for localStorage
     const [selectedTickersArr, setSelectedTickersArr] = useLocalStorage<string[]>("ct_selectedTickers", []);
@@ -163,6 +168,7 @@ const numberFilterParams = {
                 field: "ticker",
                 pinned: "left",
                 width: 180,
+                minWidth: 160,
                 filter: "agTextColumnFilter",
                 filterParams: {
                     filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
@@ -231,8 +237,8 @@ const numberFilterParams = {
                     field: mappedField,
                     valueGetter: (params) => getMetricValue(params.data as Record<string, unknown>, mappedField),
                     hide: !visibleColumns[col],
-                    width: col.startsWith("RS") ? 125 : 112,
-                    minWidth: col.startsWith("RS") ? 115 : 100,
+                    width: col.startsWith("RS") ? 125 : 115,
+                    minWidth: col.startsWith("RS") ? 115 : 105,
                     valueFormatter: returnFormatter,
                     cellClass: returnCellClass,
                     sortable: true,
@@ -250,7 +256,7 @@ const numberFilterParams = {
             suppressMovable: true,
             filter: "agNumberColumnFilter",
             filterParams: numberFilterParams,
-            minWidth: 80,
+            minWidth: 90,
         }),
         []
     );
@@ -258,17 +264,6 @@ const numberFilterParams = {
     const toggleColumn = (col: string) => {
         setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
     };
-
-    // Auto-fit columns whenever visible columns change
-    useEffect(() => {
-        const api = gridRef.current?.api;
-        if (api) {
-            // Use a small timeout to ensure AG Grid has processed the column visibility change
-            setTimeout(() => {
-                api.autoSizeAllColumns(false);
-            }, 50);
-        }
-    }, [visibleColumns]);
 
     const isExternalFilterPresent = useCallback(() => {
         return searchQuery !== "" || showSelectedOnly;
@@ -314,14 +309,14 @@ const numberFilterParams = {
         }
     };
 
-    const isFiltered = searchQuery !== "" || showSelectedOnly;
+    const isFiltered = searchQuery !== "" || showSelectedOnly || displayedCount < data.length;
     const selectionCount = selectedTickers.size;
 
     return (
         <div className="flex flex-col gap-3">
             <div className="flex flex-wrap justify-between pr-2 gap-y-3 gap-x-6 items-center">
-                <div className="flex items-center gap-3 flex-1 min-w-[240px] max-w-sm">
-                    <div className="relative flex-1">
+                <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+                    <div className="relative flex-1 max-w-xs">
                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
                         <input
                             type="text"
@@ -337,6 +332,19 @@ const numberFilterParams = {
                             >
                                 <X size={12} />
                             </button>
+                        )}
+                    </div>
+
+                    {/* Live Stock Count Badge */}
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900/80 border border-slate-800 text-xs text-slate-400 whitespace-nowrap shadow-sm">
+                        {displayedCount < data.length ? (
+                            <span>
+                                Showing <strong className="font-mono font-semibold text-blue-400">{displayedCount}</strong> of <span className="font-mono text-slate-300">{data.length}</span> stocks
+                            </span>
+                        ) : (
+                            <span>
+                                <strong className="font-mono font-semibold text-slate-200">{data.length}</strong> stocks
+                            </span>
                         )}
                     </div>
                 </div>
@@ -471,7 +479,14 @@ const numberFilterParams = {
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
                     onSelectionChanged={onSelectionChanged}
+                    onModelUpdated={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
+                    }}
+                    onFilterChanged={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
+                    }}
                     onGridReady={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
                         const storedState = window.localStorage.getItem("agGridState_constituent");
                         if (storedState) {
                             try {

@@ -66,6 +66,12 @@ const returnColumns = METRIC_CONFIG.map(m => m.label);
 export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: PerformanceHeatmapProps) {
     const [showCagr, setShowCagr] = useLocalStorage("ph_showCagr", false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [displayedCount, setDisplayedCount] = useState<number>(data.length);
+
+    useEffect(() => {
+        setDisplayedCount(data.length);
+    }, [data.length]);
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showSelectedOnly, setShowSelectedOnly] = useLocalStorage("ph_showSelectedOnly", false);
     
@@ -227,6 +233,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                 field: "Theme/Index",
                 pinned: "left",
                 width: 200,
+                minWidth: 160,
                 filter: "agTextColumnFilter",
                 filterParams: {
                     filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
@@ -285,8 +292,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     headerName: col,
                     field: col,
                     hide: !visibleColumns[col],
-                    width: col.startsWith("RS") ? 125 : 112,
-                    minWidth: col.startsWith("RS") ? 115 : 100,
+                    width: col.startsWith("RS") ? 125 : 115,
+                    minWidth: col.startsWith("RS") ? 115 : 105,
                     valueFormatter: returnFormatter,
                     cellStyle: getHeatmapStyle,
                     sortable: true,
@@ -305,7 +312,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
             suppressMovable: true,
             filter: "agNumberColumnFilter",
             filterParams: numberFilterParams,
-            minWidth: 80,
+            minWidth: 90,
         }),
         []
     );
@@ -313,17 +320,6 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
     const toggleColumn = (col: string) => {
         setVisibleColumns(prev => ({ ...prev, [col]: !prev[col] }));
     };
-
-    // Auto-fit columns whenever visible columns change
-    useEffect(() => {
-        const api = gridRef.current?.api;
-        if (api) {
-            // Use a small timeout to ensure AG Grid has processed the column visibility change
-            setTimeout(() => {
-                api.autoSizeAllColumns(false);
-            }, 50);
-        }
-    }, [visibleColumns]);
 
     const isExternalFilterPresent = useCallback(() => {
         return searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries;
@@ -376,7 +372,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         }
     };
 
-    const isFiltered = searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries;
+    const isFiltered = searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries || displayedCount < data.length;
     const selectionCount = selectedThemes.size;
 
     // Data validation check
@@ -405,8 +401,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
             </div>
 
             <div className="flex flex-wrap justify-between pr-2 gap-y-3 gap-x-6 items-center">
-                <div className="flex items-center gap-3 flex-1 min-w-[240px] max-w-sm">
-                    <div className="relative flex-1">
+                <div className="flex items-center gap-3 flex-1 min-w-[280px]">
+                    <div className="relative flex-1 max-w-xs">
                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
                         <input
                             type="text"
@@ -422,6 +418,19 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                             >
                                 <X size={12} />
                             </button>
+                        )}
+                    </div>
+
+                    {/* Live Theme Count Badge */}
+                    <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900/80 border border-slate-800 text-xs text-slate-400 whitespace-nowrap shadow-sm">
+                        {displayedCount < data.length ? (
+                            <span>
+                                Showing <strong className="font-mono font-semibold text-blue-400">{displayedCount}</strong> of <span className="font-mono text-slate-300">{data.length}</span> themes
+                            </span>
+                        ) : (
+                            <span>
+                                <strong className="font-mono font-semibold text-slate-200">{data.length}</strong> themes
+                            </span>
                         )}
                     </div>
                 </div>
@@ -573,7 +582,14 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     isExternalFilterPresent={isExternalFilterPresent}
                     doesExternalFilterPass={doesExternalFilterPass}
                     onSelectionChanged={onSelectionChanged}
+                    onModelUpdated={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
+                    }}
+                    onFilterChanged={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
+                    }}
                     onGridReady={(params: any) => {
+                        setDisplayedCount(params.api.getDisplayedRowCount());
                         const storedState = window.localStorage.getItem("agGridState_heatmap");
                         if (storedState) {
                             try {

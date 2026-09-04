@@ -65,14 +65,8 @@ function expandAgGrid(element: HTMLElement): () => void {
     gridWrapper.style.maxHeight = 'none';
     gridWrapper.style.overflow = 'visible';
 
-    // If columns do not fill the container width, shrink the container to fit columns
-    if (totalColsWidth > 0 && totalColsWidth < element.offsetWidth - 20) {
-        const fitWidth = totalColsWidth + 4;
-        element.style.width = `${fitWidth}px`;
-        element.style.maxWidth = `${fitWidth}px`;
-        gridWrapper.style.width = `${fitWidth}px`;
-        gridWrapper.style.maxWidth = `${fitWidth}px`;
-    }
+    // Note: Trailing horizontal blank space is cropped cleanly at the canvas pixel level by trimCanvasBlankSpace,
+    // avoiding artificial DOM width clamping that could cause AG Grid to compress header columns.
 
     gridBody.style.height = `${virtualTotalHeight}px`;
     gridBody.style.maxHeight = 'none';

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { Camera, Loader2 } from 'lucide-react';
-import { toPng } from 'html-to-image';
+import { toCanvas } from 'html-to-image';
 
 interface CaptureScreenshotProps {
     targetId?: string;
@@ -17,7 +17,8 @@ interface CaptureScreenshotProps {
 
 /**
  * Automatically expands AG Grid containers within the target element
- * so that ALL rows render (not just the virtualized visible ones).
+ * so that ALL rows render (not just the virtualized visible ones) and
+ * collapses unused horizontal blank space when columns do not fill the width.
  * Returns a cleanup function that restores the original state.
  */
 function expandAgGrid(element: HTMLElement): () => void {
@@ -39,18 +40,20 @@ function expandAgGrid(element: HTMLElement): () => void {
 
     // Calculate the full content height: header + all rows
     const headerHeight = element.querySelector('.ag-header')?.getBoundingClientRect().height || 48;
-    const rowCount = element.querySelectorAll('.ag-row').length;
     
-    // AG Grid virtualizes rows — we need to force ALL rows visible.
-    // The best approach is to remove the fixed height constraint and let the grid expand.
-    // First, get the actual row height from an existing row.
-    const sampleRow = element.querySelector('.ag-row') as HTMLElement | null;
-    const rowHeight = sampleRow?.getBoundingClientRect().height || 35;
-    
-    // We need to estimate the total number of rows from the grid's internal data.
-    // The scrollHeight of the container gives us the virtual total height.
+    // Virtual scrollHeight gives us the virtual total height
     const virtualTotalHeight = gridBody.scrollHeight;
     const fullHeight = Math.max(virtualTotalHeight + headerHeight + 20, 400);
+
+    // Measure actual rendered column widths in AG Grid to collapse blank space
+    const headerContainer = element.querySelector('.ag-header-container') as HTMLElement | null;
+    const pinnedLeftHeader = element.querySelector('.ag-pinned-left-header') as HTMLElement | null;
+    const pinnedRightHeader = element.querySelector('.ag-pinned-right-header') as HTMLElement | null;
+
+    const leftW = pinnedLeftHeader?.offsetWidth || 0;
+    const centerW = headerContainer?.offsetWidth || 0;
+    const rightW = pinnedRightHeader?.offsetWidth || 0;
+    const totalColsWidth = leftW + centerW + rightW;
 
     // Expand the container to full height
     element.style.height = `${fullHeight}px`;
@@ -61,6 +64,15 @@ function expandAgGrid(element: HTMLElement): () => void {
     gridWrapper.style.height = `${fullHeight}px`;
     gridWrapper.style.maxHeight = 'none';
     gridWrapper.style.overflow = 'visible';
+
+    // If columns do not fill the container width, shrink the container to fit columns
+    if (totalColsWidth > 0 && totalColsWidth < element.offsetWidth - 20) {
+        const fitWidth = totalColsWidth + 4;
+        element.style.width = `${fitWidth}px`;
+        element.style.maxWidth = `${fitWidth}px`;
+        gridWrapper.style.width = `${fitWidth}px`;
+        gridWrapper.style.maxWidth = `${fitWidth}px`;
+    }
 
     gridBody.style.height = `${virtualTotalHeight}px`;
     gridBody.style.maxHeight = 'none';
@@ -86,6 +98,98 @@ function expandAgGrid(element: HTMLElement): () => void {
         if (gridContainer) gridContainer.style.cssText = origContainerStyle;
         window.dispatchEvent(new Event('resize'));
     };
+}
+
+/**
+ * Intelligently inspects rendered canvas pixels from the right and bottom edges.
+ * If trailing blank space (uniform empty background) is detected, crops it out cleanly.
+ */
+function trimCanvasBlankSpace(canvas: HTMLCanvasElement): HTMLCanvasElement {
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return canvas;
+
+    const width = canvas.width;
+    const height = canvas.height;
+    if (width <= 100 || height <= 100) return canvas;
+
+    const imgData = ctx.getImageData(0, 0, width, height);
+    const data = imgData.data;
+
+    const getPixel = (x: number, y: number) => {
+        const idx = (y * width + x) * 4;
+        return {
+            r: data[idx],
+            g: data[idx + 1],
+            b: data[idx + 2],
+            a: data[idx + 3]
+        };
+    };
+
+    const colorDiff = (
+        p1: { r: number; g: number; b: number; a: number },
+        p2: { r: number; g: number; b: number; a: number }
+    ) => {
+        return Math.abs(p1.r - p2.r) + Math.abs(p1.g - p2.g) + Math.abs(p1.b - p2.b) + Math.abs(p1.a - p2.a);
+    };
+
+    // 1. Detect right content boundary by comparing column x to the rightmost reference column
+    let rightContentX = width - 1;
+    let foundRight = false;
+    for (let x = width - 2; x >= 0; x--) {
+        let diffCount = 0;
+        for (let y = 0; y < height; y += 2) {
+            const curr = getPixel(x, y);
+            const ref = getPixel(width - 1, y);
+            if (colorDiff(curr, ref) > 15) {
+                diffCount++;
+            }
+        }
+        if (diffCount > 3) {
+            rightContentX = x;
+            foundRight = true;
+            break;
+        }
+    }
+
+    // 2. Detect bottom content boundary
+    let bottomContentY = height - 1;
+    let foundBottom = false;
+    const maxX = foundRight ? Math.min(rightContentX + 16, width) : width;
+    for (let y = height - 2; y >= 0; y--) {
+        let diffCount = 0;
+        for (let x = 0; x < maxX; x += 2) {
+            const curr = getPixel(x, y);
+            const ref = getPixel(x, height - 1);
+            if (colorDiff(curr, ref) > 15) {
+                diffCount++;
+            }
+        }
+        if (diffCount > 3) {
+            bottomContentY = y;
+            foundBottom = true;
+            break;
+        }
+    }
+
+    // Add breathing room for border/shadows
+    const targetWidth = foundRight ? Math.min(rightContentX + 16, width) : width;
+    const targetHeight = foundBottom ? Math.min(bottomContentY + 16, height) : height;
+
+    const trimmedWidth = (width - targetWidth >= 30) ? targetWidth : width;
+    const trimmedHeight = (height - targetHeight >= 30) ? targetHeight : height;
+
+    if (trimmedWidth === width && trimmedHeight === height) {
+        return canvas;
+    }
+
+    const croppedCanvas = document.createElement('canvas');
+    croppedCanvas.width = trimmedWidth;
+    croppedCanvas.height = trimmedHeight;
+    const croppedCtx = croppedCanvas.getContext('2d');
+    if (!croppedCtx) return canvas;
+
+    croppedCtx.drawImage(canvas, 0, 0, trimmedWidth, trimmedHeight, 0, 0, trimmedWidth, trimmedHeight);
+    return croppedCanvas;
 }
 
 export function CaptureScreenshot({ 
@@ -130,7 +234,7 @@ export function CaptureScreenshot({
                 return !exclusionClasses.some(cls => node.classList?.contains(cls));
             };
 
-            const dataUrl = await toPng(element, {
+            const canvas = await toCanvas(element, {
                 cacheBust: true,
                 backgroundColor: '#0a0a0f',
                 style: {
@@ -138,6 +242,10 @@ export function CaptureScreenshot({
                 },
                 filter: filter as any
             });
+
+            // Automatically detect and crop out any trailing blank space
+            const trimmedCanvas = trimCanvasBlankSpace(canvas);
+            const dataUrl = trimmedCanvas.toDataURL('image/png');
 
             const link = document.createElement('a');
             link.download = `${filename}_${new Date().toISOString().split('T')[0]}.png`;

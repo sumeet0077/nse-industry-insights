@@ -127,6 +127,24 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         });
     }, [selectedTickers, data]);
 
+const numberFilterParams = {
+    filterOptions: [
+        "greaterThan",
+        "greaterThanOrEqual",
+        "lessThan",
+        "lessThanOrEqual",
+        "inRange",
+        "equals",
+        "notEqual",
+        "blank",
+        "notBlank",
+    ],
+    defaultOption: "greaterThan",
+    maxNumConditions: 2,
+    buttons: ["apply", "reset"],
+    closeOnApply: true,
+};
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
             {
@@ -148,6 +166,13 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                 field: "ticker",
                 pinned: "left",
                 width: 180,
+                filter: "agTextColumnFilter",
+                filterParams: {
+                    filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
+                    defaultOption: "contains",
+                    buttons: ["apply", "reset"],
+                    closeOnApply: true,
+                },
                 cellRenderer: (params: { value: string; data: Record<string, unknown> }) => {
                     if (!params.value) return null;
                     const url = makeTradingViewUrl(params.value);
@@ -198,6 +223,8 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                         );
                     },
                     sortable: true,
+                    filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
                 });
             } else {
                 const isCagrCol = mappedField === "3Y" || mappedField === "5Y" || col === "3 Years" || col === "5 Years";
@@ -210,6 +237,8 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                     valueFormatter: returnFormatter,
                     cellClass: returnCellClass,
                     sortable: true,
+                    filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
                 });
             }
         }
@@ -220,7 +249,8 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
         () => ({
             resizable: true,
             suppressMovable: true,
-            filter: true,
+            filter: "agNumberColumnFilter",
+            filterParams: numberFilterParams,
             minWidth: 80,
         }),
         []

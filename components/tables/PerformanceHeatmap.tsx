@@ -224,6 +224,24 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         });
     }, [data, showCagr]);
 
+    const numberFilterParams = {
+        filterOptions: [
+            "greaterThan",
+            "greaterThanOrEqual",
+            "lessThan",
+            "lessThanOrEqual",
+            "inRange",
+            "equals",
+            "notEqual",
+            "blank",
+            "notBlank",
+        ],
+        defaultOption: "greaterThan",
+        maxNumConditions: 2,
+        buttons: ["apply", "reset"],
+        closeOnApply: true,
+    };
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
             {
@@ -245,7 +263,13 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                 field: "Theme/Index",
                 pinned: "left",
                 width: 200,
-                filter: true,
+                filter: "agTextColumnFilter",
+                filterParams: {
+                    filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
+                    defaultOption: "contains",
+                    buttons: ["apply", "reset"],
+                    closeOnApply: true,
+                },
                 cellRenderer: (params: { value: string }) => {
                     if (!params.value) return null;
                     const config = ALL_CONFIGS.find((c) => c.title === params.value);
@@ -288,6 +312,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     },
                     sortable: true,
                     filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
                     headerTooltip: "Relative Strength Rating (1-99) weighted across 4 quarters (40% Q1, 20% Q2, 20% Q3, 20% Q4) vs all sectors & themes"
                 });
             } else {
@@ -299,7 +324,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
                     valueFormatter: returnFormatter,
                     cellStyle: getHeatmapStyle,
                     sortable: true,
-                    filter: true,
+                    filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
                     headerTooltip: col === "RS (5D)" ? "Relative Strength against Nifty 50 over 5 Trading Days" : col === "RS (10D)" ? "Relative Strength against Nifty 50 over 10 Trading Days" : col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined
                 });
             }
@@ -311,6 +337,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus }: Per
         () => ({
             resizable: true,
             suppressMovable: true,
+            filter: "agNumberColumnFilter",
+            filterParams: numberFilterParams,
             minWidth: 80,
         }),
         []

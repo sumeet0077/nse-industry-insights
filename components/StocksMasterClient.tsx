@@ -151,25 +151,37 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         );
     };
 
-    const toggleStockForSector = (sectorId: string, ticker: string) => {
+    const toggleStockForSector = (sectorId: string, ticker: string, allTickers: string[]) => {
         setSelectedStocksBySector(prev => {
-            const currentSelected = prev[sectorId] || [];
-            let newSelected;
+            const currentSelected = (sectorId in prev) ? prev[sectorId] : allTickers;
+            let newSelected: string[];
             if (currentSelected.includes(ticker)) {
                 newSelected = currentSelected.filter(t => t !== ticker);
             } else {
                 newSelected = [...currentSelected, ticker];
             }
+            if (newSelected.length === allTickers.length) {
+                const copy = { ...prev };
+                delete copy[sectorId];
+                return copy;
+            }
             return { ...prev, [sectorId]: newSelected };
         });
     };
 
-    const clearStocksForSector = (sectorId: string) => {
+    const selectAllStocksForSector = (sectorId: string) => {
         setSelectedStocksBySector(prev => {
             const copy = { ...prev };
             delete copy[sectorId];
             return copy;
         });
+    };
+
+    const deselectAllStocksForSector = (sectorId: string) => {
+        setSelectedStocksBySector(prev => ({
+            ...prev,
+            [sectorId]: []
+        }));
     };
 
     const resetDefaults = () => {
@@ -238,8 +250,11 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 return stockSortDesc ? valB - valA : valA - valB;
             });
 
-            const selectedForThisSector = selectedStocksBySector[config.id] || [];
-            const filteredStocks = selectedForThisSector.length > 0 
+            // If sector has custom selection in state, respect it (including empty array [] for Clear).
+            // Default state (sector not in selectedStocksBySector) means ALL stocks are selected.
+            const hasCustomSelection = config.id in selectedStocksBySector;
+            const selectedForThisSector = hasCustomSelection ? selectedStocksBySector[config.id] : null;
+            const filteredStocks = selectedForThisSector !== null 
                 ? stocks.filter(s => selectedForThisSector.includes(s.ticker))
                 : stocks;
 
@@ -927,8 +942,16 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     >
                         {sectorData.map(group => {
                             const secVal = group.perf ? group.perf[sectorSortCol as keyof PerformanceRow] : null;
+                            const isFiltered = (group.config.id in selectedStocksBySector) && 
+                                               (selectedStocksBySector[group.config.id].length < group.allStocks.length);
+
                             return (
-                                <div key={group.config.id} className="bg-[#111118] border border-[#1e1e2e] rounded-xl flex flex-col shadow-lg overflow-hidden">
+                                <div 
+                                    key={group.config.id} 
+                                    className={`bg-[#111118] border border-[#1e1e2e] rounded-xl flex flex-col shadow-lg transition-all ${
+                                        activeSectorDropdown === group.config.id ? "z-40 relative overflow-visible" : "relative"
+                                    }`}
+                                >
                                     {/* Sector Header */}
                                     <div className="bg-gradient-to-r from-slate-900 to-[#111118] p-4 border-b border-slate-800 rounded-t-xl">
                                         <div className="flex justify-between items-start mb-2">
@@ -941,41 +964,72 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 }`}>
                                                     {formatMetricReturn(secVal as number)}
                                                 </div>
-                                                <div className="relative">
+                                                <div className="relative" ref={activeSectorDropdown === group.config.id ? sectorStockDropdownRef : null}>
                                                     <button 
                                                         onClick={() => setActiveSectorDropdown(activeSectorDropdown === group.config.id ? null : group.config.id)}
                                                         className={`p-1.5 rounded transition-colors ${
-                                                            (selectedStocksBySector[group.config.id]?.length || 0) > 0 
-                                                            ? "bg-blue-500/20 text-blue-400" 
+                                                            isFiltered 
+                                                            ? "bg-blue-500/20 text-blue-400 border border-blue-500/40 ring-1 ring-blue-500/20" 
                                                             : "bg-slate-800/50 text-slate-400 hover:text-slate-300"
                                                         }`}
-                                                        title="Filter specific stocks"
+                                                        title={isFiltered ? `Filtered (${group.stocks.length}/${group.allStocks.length} stocks)` : "Filter specific stocks"}
                                                     >
                                                         <Filter size={14} />
                                                     </button>
                                                     {activeSectorDropdown === group.config.id && (
-                                                        <div ref={sectorStockDropdownRef} className="absolute z-50 top-full right-0 mt-1 w-64 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl flex flex-col max-h-[300px]">
-                                                            <div className="p-2 border-b border-slate-700/50 flex justify-between items-center">
-                                                                <span className="text-xs font-semibold text-slate-400">Select Stocks</span>
-                                                                <button 
-                                                                    onClick={() => clearStocksForSector(group.config.id)}
-                                                                    className="text-[10px] text-blue-400 hover:text-blue-300"
-                                                                >
-                                                                    Show All
-                                                                </button>
+                                                        <div className="absolute z-50 top-full right-0 mt-1.5 w-64 bg-[#16162a] border border-slate-700 rounded-xl shadow-2xl flex flex-col max-h-[320px] overflow-hidden">
+                                                            {/* Dropdown Header */}
+                                                            <div className="p-2.5 border-b border-slate-700/60 flex justify-between items-center bg-[#111122] shrink-0">
+                                                                <div className="flex items-center gap-1.5">
+                                                                    <span className="text-xs font-semibold text-slate-200">Select Stocks</span>
+                                                                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/50">
+                                                                        {group.stocks.length}/{group.allStocks.length}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={() => selectAllStocksForSector(group.config.id)}
+                                                                        className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                                                                    >
+                                                                        Select All
+                                                                    </button>
+                                                                    <span className="text-slate-600 text-xs">|</span>
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={() => deselectAllStocksForSector(group.config.id)}
+                                                                        className="text-[11px] font-semibold text-slate-400 hover:text-red-400 transition-colors"
+                                                                    >
+                                                                        Clear
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                            <div className="overflow-y-auto p-1 flex-1">
+                                                            {/* Scrollable Stock List */}
+                                                            <div className="overflow-y-auto p-1.5 flex-1 overscroll-contain max-h-[260px] divide-y divide-slate-800/30">
                                                                 {group.allStocks.map(s => {
-                                                                    const isSelected = (selectedStocksBySector[group.config.id] || []).includes(s.ticker);
+                                                                    const isSelected = group.stocks.some(x => x.ticker === s.ticker);
+                                                                    const ibdRating = s.perf?.ibd_rs_rating;
                                                                     return (
-                                                                        <label key={s.ticker} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer group">
-                                                                            <input 
-                                                                                type="checkbox" 
-                                                                                checked={isSelected}
-                                                                                onChange={() => toggleStockForSector(group.config.id, s.ticker)}
-                                                                                className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
-                                                                            />
-                                                                            <span className="text-xs text-slate-300 font-mono group-hover:text-white truncate">{s.label}</span>
+                                                                        <label 
+                                                                            key={s.ticker} 
+                                                                            className="flex items-center justify-between gap-2 px-2 py-1.5 hover:bg-white/5 rounded-lg cursor-pointer group transition-colors select-none"
+                                                                        >
+                                                                            <div className="flex items-center gap-2 min-w-0">
+                                                                                <input 
+                                                                                    type="checkbox" 
+                                                                                    checked={isSelected}
+                                                                                    onChange={() => toggleStockForSector(group.config.id, s.ticker, group.allStocks.map(x => x.ticker))}
+                                                                                    className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30 w-3.5 h-3.5 cursor-pointer"
+                                                                                />
+                                                                                <span className="text-xs text-slate-300 font-mono group-hover:text-white truncate">
+                                                                                    {s.label}
+                                                                                </span>
+                                                                            </div>
+                                                                            {ibdRating !== undefined && ibdRating !== null && (
+                                                                                <span className="text-[10px] font-mono text-slate-400 font-medium shrink-0">
+                                                                                    RS {ibdRating}
+                                                                                </span>
+                                                                            )}
                                                                         </label>
                                                                     );
                                                                 })}
@@ -987,12 +1041,16 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                         </div>
                                         <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                                             <span>Sorted by {sectorSortCol}</span>
-                                            <span>{group.stocks.length} Stocks</span>
+                                            <span>
+                                                {group.stocks.length === group.allStocks.length 
+                                                    ? `${group.stocks.length} Stocks` 
+                                                    : `${group.stocks.length} of ${group.allStocks.length} Stocks`}
+                                            </span>
                                         </div>
                                     </div>
 
                                     {/* Stocks Table */}
-                                    <div className="flex-1 overflow-x-auto">
+                                    <div className="flex-1 overflow-x-auto rounded-b-xl">
                                         <table className="w-full text-xs text-left whitespace-nowrap">
                                             <thead className="text-slate-500 bg-slate-900/50 font-semibold border-b border-slate-800">
                                                 <tr>
@@ -1048,8 +1106,21 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 })}
                                                 {group.stocks.length === 0 && (
                                                     <tr>
-                                                        <td colSpan={visibleColumns.length + 2} className="px-4 py-6 text-center text-slate-600 font-sans italic">
-                                                            No constituent data available
+                                                        <td colSpan={visibleColumns.length + 2} className="px-4 py-8 text-center text-slate-500 font-sans text-xs">
+                                                            {group.allStocks.length > 0 ? (
+                                                                <div className="flex flex-col items-center gap-1.5">
+                                                                    <span>No stocks selected for this theme.</span>
+                                                                    <button 
+                                                                        type="button"
+                                                                        onClick={() => selectAllStocksForSector(group.config.id)}
+                                                                        className="text-blue-400 hover:text-blue-300 underline font-medium"
+                                                                    >
+                                                                        Show all {group.allStocks.length} stocks
+                                                                    </button>
+                                                                </div>
+                                                            ) : (
+                                                                <span className="italic text-slate-600">No constituent data available</span>
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 )}

@@ -4,7 +4,7 @@ import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, Selection
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
 import { makeTradingViewUrl, getTickerLabel, makeTradingViewSymbol } from "@/lib/utils";
 import { getMetricValue, formatMetricReturn, getMetricColor, METRIC_DEFINITIONS } from "@/lib/metrics";
-import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink } from "lucide-react";
+import { Columns, ChevronDown, Search, X, CheckSquare, Copy, Check, ExternalLink, Zap } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
@@ -160,13 +160,14 @@ export function ConstituentTable({ data, showCagr = false }: ConstituentTablePro
                                 {label}
                             </a>
                             {isIpo && (
-                                <span className="px-1 py-0.2 bg-amber-950/80 text-amber-300 border border-amber-800/60 rounded text-[9px] font-mono" title="Recent IPO (< 1 Year)">
+                                <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded text-[9px] font-mono font-semibold" title="Recent IPO (< 1 Year)">
                                     IPO
                                 </span>
                             )}
                             {isLead && (
-                                <span className="px-1.5 py-0.2 bg-blue-950/90 text-blue-300 border border-blue-700/80 rounded text-[9px] font-semibold" title="Absolute RS Line at 52-week High ahead of price">
-                                    RS Lead
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[10px] font-bold tracking-wide shadow-sm" title="RS Lead Breakout: Absolute RS Line at 52-week High ahead of price">
+                                    <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400 shrink-0" />
+                                    <span>RS Lead</span>
                                 </span>
                             )}
                         </div>

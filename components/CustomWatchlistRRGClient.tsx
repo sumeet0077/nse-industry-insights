@@ -37,6 +37,7 @@ import {
     Filter,
     Sparkles,
     Copy,
+    Zap,
 } from "lucide-react";
 
 interface CustomWatchlistRRGClientProps {
@@ -146,16 +147,6 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     const [tableSortAsc, setTableSortAsc] = useState(false);
 
     const contentRef = useRef<HTMLDivElement>(null);
-
-    // Get stock universe tickers list from search index
-    const allUniverseTickers = useMemo(() => {
-        const set = new Set<string>();
-        for (const [sym] of Object.entries(stockSearchIndex)) {
-            const formatted = sym.endsWith(".NS") ? sym : `${sym}.NS`;
-            set.add(formatted);
-        }
-        return Array.from(set).sort();
-    }, [stockSearchIndex]);
 
     // Dynamic client-side fetch cache for benchmark stock RRG JSON payloads
     const [dynamicRRGMap, setDynamicRRGMap] = useState<Record<string, StockRRGPayload | null>>(() => ({
@@ -279,17 +270,49 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         }
     }, [activeWatchlist.tickers]);
 
-    // Filter stock search results for autocomplete
+    // Get complete universe tickers list from search index + full 6,213 Bhavcopy universe
+    const allUniverseTickers = useMemo(() => {
+        const set = new Set<string>();
+        // Add all curated theme/sector tickers
+        for (const [sym] of Object.entries(stockSearchIndex)) {
+            const formatted = sym.endsWith(".NS") ? sym : `${sym}.NS`;
+            set.add(formatted);
+        }
+        // Add all listed NSE equities from full Bhavcopy
+        if (constituentPerformanceMap) {
+            for (const sym of Object.keys(constituentPerformanceMap)) {
+                const formatted = sym.endsWith(".NS") ? sym : `${sym}.NS`;
+                set.add(formatted);
+            }
+        }
+        return Array.from(set).sort();
+    }, [stockSearchIndex, constituentPerformanceMap]);
+
+    // Filter stock search results for autocomplete with smart ranking (exact -> prefix -> contains)
     const searchResults = useMemo(() => {
         const q = stockSearchQuery.trim().toUpperCase();
         if (!q) return [];
-        const cleanQ = q.replace(/\.NS$/, "");
-        return allUniverseTickers
-            .filter((t) => {
-                const clean = cleanTicker(t);
-                return clean.includes(cleanQ) && !activeWatchlist.tickers.includes(t);
-            })
-            .slice(0, 8);
+        const cleanQ = q.replace(/\.NS$/, "").replace(/^(NSE|BSE):/i, "");
+        if (!cleanQ) return [];
+
+        const exact: string[] = [];
+        const prefix: string[] = [];
+        const contains: string[] = [];
+
+        for (const t of allUniverseTickers) {
+            if (activeWatchlist.tickers.includes(t)) continue;
+            const clean = cleanTicker(t).toUpperCase();
+            if (clean === cleanQ) {
+                exact.push(t);
+            } else if (clean.startsWith(cleanQ)) {
+                prefix.push(t);
+            } else if (clean.includes(cleanQ)) {
+                contains.push(t);
+            }
+            if (exact.length + prefix.length + contains.length >= 40) break;
+        }
+
+        return [...exact, ...prefix, ...contains].slice(0, 12);
     }, [stockSearchQuery, allUniverseTickers, activeWatchlist.tickers]);
 
     // Latest point per ticker for quadrant calculation
@@ -806,21 +829,48 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
                             {/* Autocomplete Dropdown */}
                             {isSearchOpen && searchResults.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-[#181824] border border-slate-700 rounded-lg shadow-xl z-50 overflow-hidden max-h-56 overflow-y-auto">
-                                    {searchResults.map((t) => (
-                                        <button
-                                            key={t}
-                                            onClick={() => {
-                                                addTicker(t);
-                                                setStockSearchQuery("");
-                                                setIsSearchOpen(false);
-                                            }}
-                                            className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-blue-600/20 hover:text-blue-300 flex items-center justify-between transition-colors"
-                                        >
-                                            <span className="font-semibold">{cleanTicker(t)}</span>
-                                            <span className="text-[10px] text-slate-500">{t}</span>
-                                        </button>
-                                    ))}
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-[#181824] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto divide-y divide-slate-800/60">
+                                    {searchResults.map((t) => {
+                                        const clean = cleanTicker(t);
+                                        const themeEntries = stockSearchIndex[t] || stockSearchIndex[clean];
+                                        const themeTitle = themeEntries && themeEntries.length > 0 ? themeEntries[0].title : null;
+                                        const perf = constituentPerformanceMap?.[t] || constituentPerformanceMap?.[`${clean}.NS`];
+                                        const rsRating = perf?.ibd_rs_rating;
+                                        const isLead = Boolean(perf?.rs_lead_breakout);
+                                        return (
+                                            <button
+                                                key={t}
+                                                type="button"
+                                                onClick={() => {
+                                                    addTicker(t);
+                                                    setStockSearchQuery("");
+                                                    setIsSearchOpen(false);
+                                                }}
+                                                className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-blue-600/20 hover:text-blue-300 flex items-center justify-between transition-colors group"
+                                            >
+                                                <div className="flex items-center gap-1.5 truncate mr-2">
+                                                    <span className="font-bold text-white text-xs group-hover:text-blue-300">{clean}</span>
+                                                    {themeTitle ? (
+                                                        <span className="text-[10px] text-blue-400/90 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 font-medium truncate max-w-[130px]">{themeTitle}</span>
+                                                    ) : (
+                                                        <span className="text-[10px] text-slate-400 bg-slate-800/70 px-1.5 py-0.5 rounded border border-slate-700/50">NSE Equity</span>
+                                                    )}
+                                                    {isLead && (
+                                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[9px] font-bold shrink-0">
+                                                            <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
+                                                            <span>RS Lead</span>
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                    {rsRating != null && (
+                                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">RS {rsRating}</span>
+                                                    )}
+                                                    <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">{t}</span>
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>

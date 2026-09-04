@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Table2, Settings2, Filter, Copy, ExternalLink, ArrowUpDown, Sparkles } from "lucide-react";
+import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Table2, Settings2, Filter, Copy, ExternalLink, ArrowUpDown, Sparkles, Zap } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
@@ -876,9 +876,9 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 </td>
                                                 <td className="px-4 py-2.5 text-center">
                                                     {isLead ? (
-                                                        <span className="px-2 py-0.5 bg-blue-950/90 text-blue-300 border border-blue-700/80 rounded text-[10px] font-bold font-sans inline-flex items-center gap-1 shadow-sm shadow-blue-950" title="Absolute RS Line has made a 52-week High ahead of price breakout">
-                                                            <Sparkles size={10} className="text-blue-400" />
-                                                            <span>RS Leading</span>
+                                                        <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[10px] font-bold font-sans inline-flex items-center gap-1 shadow-sm" title="RS Lead Breakout: Absolute RS Line at 52-week High ahead of price">
+                                                            <Zap size={10} className="text-amber-400 fill-amber-400" />
+                                                            <span>RS Lead</span>
                                                         </span>
                                                     ) : (
                                                         <span className="text-slate-600 text-xs">—</span>

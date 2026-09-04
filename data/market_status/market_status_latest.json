@@ -7,6 +7,7 @@
             "BAJAJ-AUTO.NS",
             "BAJAJFINSV.NS",
             "BAJFINANCE.NS",
+            "CIPLA.NS",
             "EICHERMOT.NS",
             "ETERNAL.NS",
             "GRASIM.NS",
@@ -28,7 +29,6 @@
             "AXISBANK.NS",
             "BEL.NS",
             "BHARTIARTL.NS",
-            "CIPLA.NS",
             "COALINDIA.NS",
             "DRREDDY.NS",
             "HCLTECH.NS",
@@ -138,16 +138,13 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
             "APOLLOHOSP.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
-            "ASHOKLEY.NS",
             "ASTERDM.NS",
-            "ATGL.NS",
             "ATHERENERG.NS",
             "ATUL.NS",
             "AUBANK.NS",
@@ -182,6 +179,7 @@
             "CHENNPETRO.NS",
             "CHOICEIN.NS",
             "CHOLAFIN.NS",
+            "CIPLA.NS",
             "CLEAN.NS",
             "COFORGE.NS",
             "COHANCE.NS",
@@ -202,7 +200,6 @@
             "DIVISLAB.NS",
             "DIXON.NS",
             "DLF.NS",
-            "ECLERX.NS",
             "EICHERMOT.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
@@ -415,11 +412,14 @@
             "AFCONS.NS",
             "ALKEM.NS",
             "AMBUJACEM.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
+            "ASHOKLEY.NS",
             "ASIANPAINT.NS",
             "ASTRAL.NS",
+            "ATGL.NS",
             "AWL.NS",
             "AXISBANK.NS",
             "BAJAJHFL.NS",
@@ -449,7 +449,6 @@
             "CHAMBLFERT.NS",
             "CHOLAHLDNG.NS",
             "CIEINDIA.NS",
-            "CIPLA.NS",
             "COALINDIA.NS",
             "COCHINSHIP.NS",
             "COLPAL.NS",
@@ -461,6 +460,7 @@
             "DMART.NS",
             "DOMS.NS",
             "DRREDDY.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -630,8 +630,6 @@
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
-            "ASHOKLEY.NS",
-            "ATGL.NS",
             "AUBANK.NS",
             "AUROPHARMA.NS",
             "BANKINDIA.NS",
@@ -710,7 +708,9 @@
             "ACC.NS",
             "ALKEM.NS",
             "APOLLOTYRE.NS",
+            "ASHOKLEY.NS",
             "ASTRAL.NS",
+            "ATGL.NS",
             "AWL.NS",
             "BAJAJHFL.NS",
             "BALKRISIND.NS",
@@ -796,15 +796,12 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ANTHEM.NS",
             "APARINDS.NS",
             "APLAPOLLO.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
-            "ASHOKLEY.NS",
             "ASTERDM.NS",
-            "ATGL.NS",
             "ATHERENERG.NS",
             "ATUL.NS",
             "AUBANK.NS",
@@ -849,7 +846,6 @@
             "DELHIVERY.NS",
             "DEVYANI.NS",
             "DIXON.NS",
-            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -1024,10 +1020,13 @@
             "ACC.NS",
             "AFCONS.NS",
             "ALKEM.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APOLLOTYRE.NS",
             "APTUS.NS",
+            "ASHOKLEY.NS",
             "ASTRAL.NS",
+            "ATGL.NS",
             "AWL.NS",
             "BAJAJHFL.NS",
             "BALKRISIND.NS",
@@ -1058,6 +1057,7 @@
             "DALBHARAT.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1198,7 +1198,6 @@
             "AMBER.NS",
             "ANANDRATHI.NS",
             "ANANTRAJ.NS",
-            "ANGELONE.NS",
             "ARE&M.NS",
             "ASAHIINDIA.NS",
             "ASTERDM.NS",
@@ -1235,7 +1234,6 @@
             "DEEPAKNTR.NS",
             "DELHIVERY.NS",
             "DEVYANI.NS",
-            "ECLERX.NS",
             "ELGIEQUIP.NS",
             "EMCURE.NS",
             "EMMVEE.NS",
@@ -1346,6 +1344,7 @@
             "ABLBL.NS",
             "ABREL.NS",
             "AFCONS.NS",
+            "ANGELONE.NS",
             "ANURAS.NS",
             "APTUS.NS",
             "BANDHANBNK.NS",
@@ -1366,6 +1365,7 @@
             "CROMPTON.NS",
             "DCMSHRIRAM.NS",
             "DOMS.NS",
+            "ECLERX.NS",
             "EIDPARRY.NS",
             "EIHOTEL.NS",
             "ELECON.NS",
@@ -1443,7 +1443,6 @@
     },
     "NIFTY AUTO": {
         "above": [
-            "ASHOKLEY.NS",
             "BAJAJ-AUTO.NS",
             "BHARATFORG.NS",
             "BOSCHLTD.NS",
@@ -1455,6 +1454,7 @@
             "UNOMINDA.NS"
         ],
         "below": [
+            "ASHOKLEY.NS",
             "HEROMOTOCO.NS",
             "M&M.NS",
             "MARUTI.NS",
@@ -1538,6 +1538,7 @@
             "APOLLOHOSP.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
+            "CIPLA.NS",
             "DIVISLAB.NS",
             "GLENMARK.NS",
             "IPCALAB.NS",
@@ -1551,7 +1552,6 @@
         "below": [
             "ABBOTINDIA.NS",
             "ALKEM.NS",
-            "CIPLA.NS",
             "DRREDDY.NS",
             "FORTIS.NS",
             "LUPIN.NS",
@@ -1621,6 +1621,7 @@
             "AJANTPHARM.NS",
             "AUROPHARMA.NS",
             "BIOCON.NS",
+            "CIPLA.NS",
             "DIVISLAB.NS",
             "GLAND.NS",
             "GLENMARK.NS",
@@ -1637,7 +1638,6 @@
         "below": [
             "ABBOTINDIA.NS",
             "ALKEM.NS",
-            "CIPLA.NS",
             "DRREDDY.NS",
             "LUPIN.NS"
         ],
@@ -1720,7 +1720,6 @@
         "above": [
             "AEGISLOG.NS",
             "AEGISVOPAK.NS",
-            "ATGL.NS",
             "CASTROLIND.NS",
             "CHENNPETRO.NS",
             "GAIL.NS",
@@ -1729,6 +1728,7 @@
             "PETRONET.NS"
         ],
         "below": [
+            "ATGL.NS",
             "BPCL.NS",
             "HINDPETRO.NS",
             "IGL.NS",
@@ -1745,7 +1745,6 @@
             "ADANIGREEN.NS",
             "ADANIPOWER.NS",
             "AEGISLOG.NS",
-            "ATGL.NS",
             "BHEL.NS",
             "CASTROLIND.NS",
             "CGPOWER.NS",
@@ -1760,6 +1759,7 @@
             "SIEMENS.NS"
         ],
         "below": [
+            "ATGL.NS",
             "BPCL.NS",
             "CESC.NS",
             "COALINDIA.NS",
@@ -1790,7 +1790,6 @@
             "ADANIGREEN.NS",
             "ADANIPORTS.NS",
             "APOLLOHOSP.NS",
-            "ASHOKLEY.NS",
             "BHARATFORG.NS",
             "CGPOWER.NS",
             "CUMMINSIND.NS",
@@ -1804,6 +1803,7 @@
         ],
         "below": [
             "AMBUJACEM.NS",
+            "ASHOKLEY.NS",
             "BHARTIARTL.NS",
             "BPCL.NS",
             "FORTIS.NS",
@@ -1895,13 +1895,13 @@
     "Auto Passenger & CV": {
         "above": [
             "EICHERMOT.NS",
-            "ASHOKLEY.NS",
             "TMCV.NS",
             "HYUNDAI.NS"
         ],
         "below": [
             "MARUTI.NS",
             "M&M.NS",
+            "ASHOKLEY.NS",
             "TMPV.NS"
         ],
         "new_stock": []
@@ -1981,7 +1981,6 @@
             "MCX.NS",
             "CDSL.NS",
             "CAMS.NS",
-            "ANGELONE.NS",
             "MOTILALOFS.NS",
             "IIFLCAPS.NS",
             "GEOJITFSL.NS",
@@ -1989,7 +1988,8 @@
         ],
         "below": [
             "IEX.NS",
-            "KFINTECH.NS"
+            "KFINTECH.NS",
+            "ANGELONE.NS"
         ],
         "new_stock": []
     },
@@ -2083,10 +2083,10 @@
         "above": [
             "LALPATHLAB.NS",
             "THYROCARE.NS",
-            "VIJAYA.NS",
-            "METROPOLIS.NS"
+            "VIJAYA.NS"
         ],
         "below": [
+            "METROPOLIS.NS",
             "KRSNAA.NS"
         ],
         "new_stock": []
@@ -2323,6 +2323,7 @@
             "ALLCARGO.NS",
             "MAHLOG.NS",
             "JSWINFRA.NS",
+            "SHADOWFAX.NS",
             "DELHIVERY.NS",
             "TCIEXP.NS",
             "VRLLOG.NS",
@@ -2335,9 +2336,7 @@
             "TCI.NS",
             "SNOWMAN.NS"
         ],
-        "new_stock": [
-            "SHADOWFAX.NS"
-        ]
+        "new_stock": []
     },
     "Luxury": {
         "above": [
@@ -2452,11 +2451,11 @@
             "GAIL.NS",
             "PETRONET.NS",
             "MGL.NS",
-            "ATGL.NS",
             "DEEPINDS.NS"
         ],
         "below": [
-            "IGL.NS"
+            "IGL.NS",
+            "ATGL.NS"
         ],
         "new_stock": []
     },
@@ -2587,6 +2586,7 @@
     "Pharma Formulations": {
         "above": [
             "SUNPHARMA.NS",
+            "CIPLA.NS",
             "TORNTPHARM.NS",
             "MANKIND.NS",
             "AUROPHARMA.NS",
@@ -2600,7 +2600,6 @@
             "WOCKPHARMA.NS"
         ],
         "below": [
-            "CIPLA.NS",
             "DRREDDY.NS",
             "LUPIN.NS",
             "ALKEM.NS",

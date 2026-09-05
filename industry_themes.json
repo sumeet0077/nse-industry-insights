@@ -1268,8 +1268,9 @@
     "title": "Telecom Infra",
     "description": "Telecom Infrastructure",
     "dataFile": "breadth_theme_telecom_infra",
-    "stock_count": 7,
+    "stock_count": 8,
     "constituents": [
+      "EXICOM.NS",
       "HFCL.NS",
       "INDUSTOWER.NS",
       "ITI.NS",
@@ -1279,6 +1280,7 @@
       "VINDHYATEL.NS"
     ],
     "clean_symbols": [
+      "EXICOM",
       "HFCL",
       "INDUSTOWER",
       "ITI",

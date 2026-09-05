@@ -128,10 +128,10 @@ INDUSTRY_THEMES = {
         "COALINDIA.NS", "HINDALCO.NS", "JINDALSTEL.NS", "JSL.NS", "JSWSTEEL.NS", "LLOYDSME.NS", "NMDC.NS", "SAIL.NS", "TATASTEEL.NS", "VAML.NS", "VEDL.NS", "VISL.NS"
     ],
     "Telecom Services": [
-        "BHARTIARTL.NS", "IDEA.NS", "TATACOMM.NS"
+        "BHARTIARTL.NS", "IDEA.NS", "NELCO.NS", "TATACOMM.NS", "TTML.NS"
     ],
     "Telecom Infra": [
-        "HFCL.NS", "INDUSTOWER.NS", "TEJASNET.NS"
+        "HFCL.NS", "INDUSTOWER.NS", "ITI.NS", "RAILTEL.NS", "STLTECH.NS", "TEJASNET.NS", "VINDHYATEL.NS"
     ],
     "Media & Broadcasting": [
         "DBCORP.NS", "DEN.NS", "DISHTV.NS", "HATHWAY.NS", "NDTV.NS", "NETWORK18.NS", "PFOCUS.NS", "PVRINOX.NS", "SUNTV.NS", "ZEEL.NS"
@@ -479,13 +479,13 @@ THEME_METADATA = {
         "id": "breadth_theme_telecom_services",
         "description": "Telecom Service Providers",
         "dataFile": "breadth_theme_telecom_services",
-        "stock_count": 3,
+        "stock_count": 5,
     },
     "Telecom Infra": {
         "id": "breadth_theme_telecom_infra",
         "description": "Telecom Infrastructure",
         "dataFile": "breadth_theme_telecom_infra",
-        "stock_count": 3,
+        "stock_count": 7,
     },
     "Media & Broadcasting": {
         "id": "breadth_theme_media_and_broadcasting",

@@ -2863,21 +2863,27 @@
     },
     "Telecom Infra": {
         "above": [
+            "HFCL.NS",
+            "STLTECH.NS",
             "TEJASNET.NS",
-            "HFCL.NS"
+            "VINDHYATEL.NS"
         ],
         "below": [
-            "INDUSTOWER.NS"
+            "INDUSTOWER.NS",
+            "ITI.NS",
+            "RAILTEL.NS"
         ],
         "new_stock": []
     },
     "Telecom Services": {
         "above": [
             "IDEA.NS",
+            "NELCO.NS",
             "TATACOMM.NS"
         ],
         "below": [
-            "BHARTIARTL.NS"
+            "BHARTIARTL.NS",
+            "TTML.NS"
         ],
         "new_stock": []
     },

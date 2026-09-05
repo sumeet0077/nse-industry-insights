@@ -15,8 +15,8 @@
     "RS (20D)":-2.47,
     "RS (50D)":4.95,
     "rs_raw_score":6.47,
-    "RS Rating":72,
-    "IBD RS Rating":72
+    "RS Rating":73,
+    "IBD RS Rating":73
   },
   {
     "Theme\/Index":"Nifty Bank",
@@ -34,8 +34,8 @@
     "RS (20D)":2.71,
     "RS (50D)":0.01,
     "rs_raw_score":6.54,
-    "RS Rating":73,
-    "IBD RS Rating":73
+    "RS Rating":75,
+    "IBD RS Rating":75
   },
   {
     "Theme\/Index":"Nifty Consumer Durables",
@@ -224,8 +224,8 @@
     "RS (20D)":3.7,
     "RS (50D)":3.82,
     "rs_raw_score":5.52,
-    "RS Rating":63,
-    "IBD RS Rating":63
+    "RS Rating":64,
+    "IBD RS Rating":64
   },
   {
     "Theme\/Index":"Nifty Pharma",
@@ -243,8 +243,8 @@
     "RS (20D)":4.08,
     "RS (50D)":8.06,
     "rs_raw_score":7.81,
-    "RS Rating":77,
-    "IBD RS Rating":77
+    "RS Rating":78,
+    "IBD RS Rating":78
   },
   {
     "Theme\/Index":"Nifty PSU Bank",
@@ -281,8 +281,8 @@
     "RS (20D)":3.98,
     "RS (50D)":-0.55,
     "rs_raw_score":5.79,
-    "RS Rating":66,
-    "IBD RS Rating":66
+    "RS Rating":67,
+    "IBD RS Rating":67
   },
   {
     "Theme\/Index":"Nifty Realty",
@@ -300,8 +300,8 @@
     "RS (20D)":5.85,
     "RS (50D)":9.74,
     "rs_raw_score":5.82,
-    "RS Rating":67,
-    "IBD RS Rating":67
+    "RS Rating":68,
+    "IBD RS Rating":68
   },
   {
     "Theme\/Index":"Agrochemicals & Fertilisers",
@@ -471,8 +471,8 @@
     "RS (20D)":4.98,
     "RS (50D)":-1.1,
     "rs_raw_score":7.95,
-    "RS Rating":78,
-    "IBD RS Rating":78
+    "RS Rating":79,
+    "IBD RS Rating":79
   },
   {
     "Theme\/Index":"Capital Market",
@@ -509,8 +509,8 @@
     "RS (20D)":2.78,
     "RS (50D)":10.9,
     "rs_raw_score":7.48,
-    "RS Rating":76,
-    "IBD RS Rating":76
+    "RS Rating":77,
+    "IBD RS Rating":77
   },
   {
     "Theme\/Index":"Cement",
@@ -566,8 +566,8 @@
     "RS (20D)":-0.2,
     "RS (50D)":3.36,
     "rs_raw_score":5.67,
-    "RS Rating":64,
-    "IBD RS Rating":64
+    "RS Rating":65,
+    "IBD RS Rating":65
   },
   {
     "Theme\/Index":"Data Centre and AI",
@@ -585,8 +585,8 @@
     "RS (20D)":1.99,
     "RS (50D)":1.47,
     "rs_raw_score":8.07,
-    "RS Rating":79,
-    "IBD RS Rating":79
+    "RS Rating":80,
+    "IBD RS Rating":80
   },
   {
     "Theme\/Index":"Defence & Aerospace",
@@ -642,8 +642,8 @@
     "RS (20D)":-0.58,
     "RS (50D)":7.76,
     "rs_raw_score":8.15,
-    "RS Rating":81,
-    "IBD RS Rating":81
+    "RS Rating":82,
+    "IBD RS Rating":82
   },
   {
     "Theme\/Index":"Fintech",
@@ -908,8 +908,8 @@
     "RS (20D)":4.79,
     "RS (50D)":7.09,
     "rs_raw_score":6.28,
-    "RS Rating":71,
-    "IBD RS Rating":71
+    "RS Rating":72,
+    "IBD RS Rating":72
   },
   {
     "Theme\/Index":"Luxury",
@@ -946,8 +946,8 @@
     "RS (20D)":7.97,
     "RS (50D)":10.12,
     "rs_raw_score":14.82,
-    "RS Rating":97,
-    "IBD RS Rating":97
+    "RS Rating":96,
+    "IBD RS Rating":96
   },
   {
     "Theme\/Index":"Media & Broadcasting",
@@ -984,8 +984,8 @@
     "RS (20D)":2.84,
     "RS (50D)":5.36,
     "rs_raw_score":8.07,
-    "RS Rating":79,
-    "IBD RS Rating":79
+    "RS Rating":80,
+    "IBD RS Rating":80
   },
   {
     "Theme\/Index":"Music & Content",
@@ -1003,8 +1003,8 @@
     "RS (20D)":5.43,
     "RS (50D)":5.17,
     "rs_raw_score":5.84,
-    "RS Rating":68,
-    "IBD RS Rating":68
+    "RS Rating":69,
+    "IBD RS Rating":69
   },
   {
     "Theme\/Index":"NBFC",
@@ -1041,8 +1041,8 @@
     "RS (20D)":3.32,
     "RS (50D)":3.91,
     "rs_raw_score":6.23,
-    "RS Rating":70,
-    "IBD RS Rating":70
+    "RS Rating":71,
+    "IBD RS Rating":71
   },
   {
     "Theme\/Index":"Oil & Gas Midstream",
@@ -1231,8 +1231,8 @@
     "RS (20D)":4.19,
     "RS (50D)":-2.12,
     "rs_raw_score":5.78,
-    "RS Rating":65,
-    "IBD RS Rating":65
+    "RS Rating":66,
+    "IBD RS Rating":66
   },
   {
     "Theme\/Index":"Private Banking",
@@ -1250,8 +1250,8 @@
     "RS (20D)":3.66,
     "RS (50D)":1.04,
     "rs_raw_score":7.4,
-    "RS Rating":75,
-    "IBD RS Rating":75
+    "RS Rating":76,
+    "IBD RS Rating":76
   },
   {
     "Theme\/Index":"PSU Banking",
@@ -1402,8 +1402,8 @@
     "RS (20D)":6.5,
     "RS (50D)":9.78,
     "rs_raw_score":6.16,
-    "RS Rating":69,
-    "IBD RS Rating":69
+    "RS Rating":70,
+    "IBD RS Rating":70
   },
   {
     "Theme\/Index":"Shipbuilding",
@@ -1516,46 +1516,46 @@
     "RS (20D)":3.45,
     "RS (50D)":9.54,
     "rs_raw_score":14.45,
-    "RS Rating":96,
-    "IBD RS Rating":96
-  },
-  {
-    "Theme\/Index":"Telecom Infra",
-    "1 Day":4.57,
-    "1 Week":0.75,
-    "1 Month":9.15,
-    "3 Months":7.52,
-    "6 Months":60.72,
-    "YTD":70.89,
-    "1 Year":69.04,
-    "3 Years":89.31,
-    "5 Years":174.0,
-    "RS (5D)":2.24,
-    "RS (10D)":8.85,
-    "RS (20D)":14.41,
-    "RS (50D)":2.11,
-    "rs_raw_score":14.36,
     "RS Rating":95,
     "IBD RS Rating":95
   },
   {
+    "Theme\/Index":"Telecom Infra",
+    "1 Day":2.88,
+    "1 Week":1.14,
+    "1 Month":7.47,
+    "3 Months":8.3,
+    "6 Months":77.71,
+    "YTD":79.19,
+    "1 Year":79.17,
+    "3 Years":131.98,
+    "5 Years":238.2,
+    "RS (5D)":2.63,
+    "RS (10D)":7.84,
+    "RS (20D)":12.35,
+    "RS (50D)":4.37,
+    "rs_raw_score":17.04,
+    "RS Rating":97,
+    "IBD RS Rating":97
+  },
+  {
     "Theme\/Index":"Telecom Services",
-    "1 Day":1.9,
-    "1 Week":1.3,
-    "1 Month":3.43,
-    "3 Months":-1.62,
-    "6 Months":23.56,
-    "YTD":8.38,
-    "1 Year":41.81,
-    "3 Years":65.26,
-    "5 Years":146.57,
-    "RS (5D)":2.8,
-    "RS (10D)":4.36,
-    "RS (20D)":7.13,
-    "RS (50D)":-1.85,
-    "rs_raw_score":8.24,
-    "RS Rating":82,
-    "IBD RS Rating":82
+    "1 Day":0.52,
+    "1 Week":-0.83,
+    "1 Month":-0.45,
+    "3 Months":1.28,
+    "6 Months":24.01,
+    "YTD":5.75,
+    "1 Year":19.12,
+    "3 Years":26.26,
+    "5 Years":125.76,
+    "RS (5D)":0.64,
+    "RS (10D)":3.39,
+    "RS (20D)":3.98,
+    "RS (50D)":-2.18,
+    "rs_raw_score":5.27,
+    "RS Rating":62,
+    "IBD RS Rating":62
   },
   {
     "Theme\/Index":"Textiles",
@@ -1573,8 +1573,8 @@
     "RS (20D)":1.62,
     "RS (50D)":-0.68,
     "rs_raw_score":5.46,
-    "RS Rating":62,
-    "IBD RS Rating":62
+    "RS Rating":63,
+    "IBD RS Rating":63
   },
   {
     "Theme\/Index":"Travel & Tourism",

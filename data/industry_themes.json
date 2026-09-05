@@ -1247,16 +1247,20 @@
     "title": "Telecom Services",
     "description": "Telecom Service Providers",
     "dataFile": "breadth_theme_telecom_services",
-    "stock_count": 3,
+    "stock_count": 5,
     "constituents": [
       "BHARTIARTL.NS",
       "IDEA.NS",
-      "TATACOMM.NS"
+      "NELCO.NS",
+      "TATACOMM.NS",
+      "TTML.NS"
     ],
     "clean_symbols": [
       "BHARTIARTL",
       "IDEA",
-      "TATACOMM"
+      "NELCO",
+      "TATACOMM",
+      "TTML"
     ]
   },
   "Telecom Infra": {
@@ -1264,16 +1268,24 @@
     "title": "Telecom Infra",
     "description": "Telecom Infrastructure",
     "dataFile": "breadth_theme_telecom_infra",
-    "stock_count": 3,
+    "stock_count": 7,
     "constituents": [
       "HFCL.NS",
       "INDUSTOWER.NS",
-      "TEJASNET.NS"
+      "ITI.NS",
+      "RAILTEL.NS",
+      "STLTECH.NS",
+      "TEJASNET.NS",
+      "VINDHYATEL.NS"
     ],
     "clean_symbols": [
       "HFCL",
       "INDUSTOWER",
-      "TEJASNET"
+      "ITI",
+      "RAILTEL",
+      "STLTECH",
+      "TEJASNET",
+      "VINDHYATEL"
     ]
   },
   "Media & Broadcasting": {

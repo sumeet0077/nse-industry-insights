@@ -6287,6 +6287,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
     }
   ],
   "IXIGO": [
@@ -8444,6 +8449,13 @@
       "category": "industries"
     }
   ],
+  "NELCO": [
+    {
+      "id": "breadth_theme_telecom_services",
+      "title": "Telecom Services",
+      "category": "industries"
+    }
+  ],
   "NESTLEIND": [
     {
       "id": "market_breadth_nifty50",
@@ -9914,6 +9926,11 @@
       "id": "breadth_theme_railways_and_infrastructure",
       "title": "Railways & Infrastructure",
       "category": "industries"
+    },
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
     }
   ],
   "RAINBOW": [
@@ -11029,6 +11046,13 @@
       "category": "industries"
     }
   ],
+  "STLTECH": [
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
+      "category": "industries"
+    }
+  ],
   "STOVEKRAFT": [
     {
       "id": "breadth_theme_white_goods_and_durables",
@@ -12137,6 +12161,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_theme_telecom_services",
+      "title": "Telecom Services",
+      "category": "industries"
     }
   ],
   "TVSELECT": [
@@ -12572,6 +12601,13 @@
     {
       "id": "breadth_theme_fmcg_staples",
       "title": "FMCG Staples",
+      "category": "industries"
+    }
+  ],
+  "VINDHYATEL": [
+    {
+      "id": "breadth_theme_telecom_infra",
+      "title": "Telecom Infra",
       "category": "industries"
     }
   ],

@@ -96,6 +96,7 @@ def main():
         source_dir / "nse_master_adjusted_2014_onwards.parquet",
         Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
         Path("/opt/nse-data/nse_master_bhav_with_delivery_2014_onwards.parquet"),
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
         Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_bhav_with_delivery_2014_onwards.parquet"),
     ]
     parquet_file = next((p for p in parquet_paths if p.exists()), None)
@@ -105,15 +106,49 @@ def main():
         return
 
     print(f"Loading stock master price history from {parquet_file.name}...", flush=True)
+    import pyarrow.dataset as ds
     try:
-        df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"], filters=[("year", ">=", 2024)])
+        _ds = ds.dataset(str(parquet_file), format="parquet", partitioning="hive" if parquet_file.is_dir() else None)
+        _schema_cols = set(_ds.schema.names)
     except Exception:
-        df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "adj_close"])
-        df_master = df_master.rename(columns={"adj_close": "close"})
+        _schema_cols = set()
+
+    has_series = "series" in _schema_cols
+    has_adj = "adj_close" in _schema_cols
+    has_year = "year" in _schema_cols
+
+    close_col = "adj_close" if has_adj else "close"
+    read_cols = ["symbol", "trade_date", close_col]
+    if has_series:
+        read_cols.append("series")
+
+    filters = [("year", ">=", 2024)] if has_year else None
+
+    try:
+        df_master = pd.read_parquet(parquet_file, columns=read_cols, filters=filters)
+    except Exception:
+        try:
+            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", close_col])
+        except Exception:
+            df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "close"])
+
+    if close_col != "close" and close_col in df_master.columns:
+        df_master = df_master.rename(columns={close_col: "close"})
 
     df_master["symbol_ns"] = df_master["symbol"].astype(str).apply(lambda s: s if s.endswith(".NS") else f"{s}.NS")
     clean_universe_set = set(all_universe_tickers_list)
-    df_eq = df_master[df_master["symbol_ns"].isin(clean_universe_set)].drop_duplicates(subset=["symbol_ns", "trade_date"])
+    df_eq = df_master[df_master["symbol_ns"].isin(clean_universe_set)]
+
+    if "series" in df_eq.columns:
+        equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ"]
+        df_eq = df_eq[df_eq["series"].isin(equity_series)]
+        _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5}
+        df_eq["_sprio"] = df_eq["series"].map(lambda s: _series_priority.get(s, 99) if isinstance(s, str) else 99)
+        df_eq = df_eq.sort_values(["symbol_ns", "trade_date", "_sprio"])
+        df_eq = df_eq.drop_duplicates(subset=["symbol_ns", "trade_date"], keep="first")
+        df_eq = df_eq.drop(columns=["_sprio", "series"])
+    else:
+        df_eq = df_eq.drop_duplicates(subset=["symbol_ns", "trade_date"])
 
     # Pivot into single wide DataFrame: Date x Ticker
     df_pivot_daily = df_eq.pivot(index="trade_date", columns="symbol_ns", values="close").sort_index()

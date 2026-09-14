@@ -8,6 +8,7 @@ import { Columns, ChevronDown, Search, X, CheckSquare, ExternalLink, Zap } from 
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { getIpoBadgeStyle } from "@/lib/ipoTiers";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -181,15 +182,20 @@ const numberFilterParams = {
                     const url = makeTradingViewUrl(params.value);
                     const label = getTickerLabel(params.value);
                     const isIpo = Boolean(params.data?.is_ipo);
+                    const listingDays = typeof params.data?.listing_days === "number" ? params.data.listing_days : null;
+                    const ipoBadge = getIpoBadgeStyle(listingDays, isIpo);
                     const isLead = Boolean(params.data?.rs_lead_breakout);
                     return (
                         <div className="flex items-center gap-1.5 font-sans">
                             <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline font-medium">
                                 {label}
                             </a>
-                            {isIpo && (
-                                <span className="inline-flex items-center px-1.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/30 rounded text-[9px] font-mono font-semibold" title="Recent IPO (< 1 Year)">
-                                    IPO
+                            {ipoBadge && (
+                                <span 
+                                    className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold border ${ipoBadge.badgeBg} ${ipoBadge.badgeText} ${ipoBadge.badgeBorder}`} 
+                                    title={ipoBadge.tooltip}
+                                >
+                                    {ipoBadge.label}
                                 </span>
                             )}
                             {isLead && (

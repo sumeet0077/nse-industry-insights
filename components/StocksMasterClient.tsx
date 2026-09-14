@@ -9,6 +9,14 @@ import { getMetricValue, formatMetricReturn, getMetricColor } from "@/lib/metric
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { IpoTierId, DEFAULT_IPO_TIERS, matchesIpoTiers, getIpoBadgeStyle } from "@/lib/ipoTiers";
+import { IpoListingTiersPopover } from "@/components/common/IpoListingTiersPopover";
+
+const CORE_INDICATOR_COLUMNS = [
+    { label: "RS Rating", value: "ibd_rs_rating", description: "1-99 Relative Strength Percentile" },
+    { label: "RS Lead", value: "rs_lead_breakout", description: "52W High RS Line ahead of price" },
+    { label: "Listing Age", value: "listing_days", description: "Trading days / IPO maturity stage" },
+];
 
 interface StocksMasterClientProps {
     allConfigs: IndexConfig[];
@@ -60,8 +68,40 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     // 3-Way View Mode: Grid (Cards Grid), Stack (Grouped Sectors Stack), Unified (Unified All-Stocks Flat Table)
     const [viewMode, setViewMode] = useLocalStorage<"grid" | "stack" | "unified">("sm_view", "grid");
 
-    // IPO Filter Controller: All / Exclude IPOs / Only Recent IPOs
-    const [ipoFilter, setIpoFilter] = useLocalStorage<"all" | "exclude_ipos" | "only_ipos">("sm_ipoFilter", "all");
+    // Granular IPO Listing Tiers Multi-Select (with backward-compatibility migration)
+    const [ipoTiers, setIpoTiers] = useLocalStorage<Record<IpoTierId, boolean>>("sm_ipoTiers", () => {
+        if (typeof window !== "undefined") {
+            const legacy = localStorage.getItem("sm_ipoFilter");
+            if (legacy) {
+                try {
+                    const parsed = JSON.parse(legacy);
+                    if (parsed === "exclude_ipos") {
+                        return {
+                            day1: false,
+                            fresh: false,
+                            recent: false,
+                            m1_3: false,
+                            m3_6: false,
+                            m6_12: false,
+                            seasoned: true,
+                        };
+                    }
+                    if (parsed === "only_ipos") {
+                        return {
+                            day1: true,
+                            fresh: true,
+                            recent: true,
+                            m1_3: true,
+                            m3_6: true,
+                            m6_12: true,
+                            seasoned: false,
+                        };
+                    }
+                } catch (_) {}
+            }
+        }
+        return DEFAULT_IPO_TIERS;
+    });
 
     // Funnel Presets: All / RS >= 80 (Top 20%) / RS Lead Breakout / Elite 90+ RS
     const [funnelFilter, setFunnelFilter] = useLocalStorage<"all" | "rs80" | "rs_lead" | "rs90">("sm_funnelFilter", "all");
@@ -73,7 +113,24 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
     const [unifiedSortCol, setUnifiedSortCol] = useLocalStorage<string>("sm_unifiedSortCol", "ibd_rs_rating");
     const [unifiedSortDesc, setUnifiedSortDesc] = useLocalStorage<boolean>("sm_unifiedSortDesc", true);
 
-    const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols", ["1D", "1W", "RS (20D)", "RS (50D)", "ibd_rs_rating"]);
+    // Visible columns with automatic migration to ensure rs_lead_breakout is included for returning users
+    const [visibleColumns, setVisibleColumns] = useLocalStorage<string[]>("sm_cols_v2", () => {
+        if (typeof window !== "undefined") {
+            const legacy = localStorage.getItem("sm_cols");
+            if (legacy) {
+                try {
+                    const parsed = JSON.parse(legacy);
+                    if (Array.isArray(parsed)) {
+                        if (!parsed.includes("rs_lead_breakout")) {
+                            return [...parsed, "rs_lead_breakout"];
+                        }
+                        return parsed;
+                    }
+                } catch (_) {}
+            }
+        }
+        return ["1D", "1W", "RS (20D)", "RS (50D)", "ibd_rs_rating", "rs_lead_breakout"];
+    });
     const [isColumnsDropdownOpen, setIsColumnsDropdownOpen] = useState(false);
 
     // Stock Selection per sector
@@ -191,9 +248,9 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         setSectorSortDesc(true);
         setStockSortCol("1D");
         setStockSortDesc(true);
-        setVisibleColumns(["1D", "1W", "RS (20D)", "RS (50D)", "ibd_rs_rating"]);
+        setVisibleColumns(["1D", "1W", "RS (20D)", "RS (50D)", "ibd_rs_rating", "rs_lead_breakout"]);
         setViewMode("grid");
-        setIpoFilter("all");
+        setIpoTiers({ ...DEFAULT_IPO_TIERS });
         setFunnelFilter("all");
         setPageSize(100);
         setUnifiedSortCol("ibd_rs_rating");
@@ -220,12 +277,8 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 perf: constituentPerformance[ticker] || null
             }));
 
-            // Apply IPO Filter in Sector Cards
-            if (ipoFilter === "exclude_ipos") {
-                stocks = stocks.filter(s => !s.perf?.is_ipo);
-            } else if (ipoFilter === "only_ipos") {
-                stocks = stocks.filter(s => s.perf?.is_ipo === true);
-            }
+            // Apply IPO Listing Tiers Filter in Sector Cards
+            stocks = stocks.filter(s => matchesIpoTiers(s.perf, ipoTiers));
 
             // Apply Funnel Filter in Sector Cards
             if (funnelFilter === "rs80") {
@@ -273,10 +326,10 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         });
 
         return data;
-    }, [allConfigs, selectedThemeIds, performanceData, marketStatus, constituentPerformance, statusKeys, sectorSortCol, sectorSortDesc, stockSortCol, stockSortDesc, selectedStocksBySector, ipoFilter, funnelFilter]);
+    }, [allConfigs, selectedThemeIds, performanceData, marketStatus, constituentPerformance, statusKeys, sectorSortCol, sectorSortDesc, stockSortCol, stockSortDesc, selectedStocksBySector, ipoTiers, funnelFilter]);
 
-    // Flat Unified Stocks List across all selected themes (or all themes if none explicitly selected)
-    const unifiedStocks = useMemo(() => {
+    // Candidate stocks across selected themes and active search query (before IPO and Funnel filtering)
+    const candidateStocks = useMemo(() => {
         const targetConfigs = selectedThemeIds.length > 0
             ? allConfigs.filter(c => selectedThemeIds.includes(c.id))
             : allConfigs;
@@ -314,7 +367,6 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
 
         let list = Array.from(seenTickers.values());
 
-        // 1. Search Query Filter
         if (searchQuery.trim()) {
             const q = searchQuery.trim().toLowerCase();
             list = list.filter(item =>
@@ -324,14 +376,47 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
             );
         }
 
-        // 2. IPO 3-State Filter
-        if (ipoFilter === "exclude_ipos") {
-            list = list.filter(item => !item.perf?.is_ipo);
-        } else if (ipoFilter === "only_ipos") {
-            list = list.filter(item => item.perf?.is_ipo === true);
-        }
+        return list;
+    }, [allConfigs, selectedThemeIds, activeCategory, marketStatus, constituentPerformance, statusKeys, searchQuery]);
 
-        // 3. Quick Funnel Filter
+    // Dynamic Pre-Filter IPO Tier Counts calculated from candidate stocks
+    const ipoTierCounts = useMemo(() => {
+        const counts: Record<IpoTierId, number> = {
+            day1: 0,
+            fresh: 0,
+            recent: 0,
+            m1_3: 0,
+            m3_6: 0,
+            m6_12: 0,
+            seasoned: 0,
+        };
+        for (const item of candidateStocks) {
+            const days = item.perf?.listing_days;
+            const isIpo = item.perf?.is_ipo;
+            if (days === undefined || days === null || isIpo === false || days >= 253) {
+                counts.seasoned++;
+            } else if (days <= 1) {
+                counts.day1++;
+            } else if (days <= 15) {
+                counts.fresh++;
+            } else if (days <= 30) {
+                counts.recent++;
+            } else if (days <= 90) {
+                counts.m1_3++;
+            } else if (days <= 180) {
+                counts.m3_6++;
+            } else {
+                counts.m6_12++;
+            }
+        }
+        return counts;
+    }, [candidateStocks]);
+
+    // Flat Unified Stocks List across candidate stocks, filtered by active IPO Tiers & Funnel
+    const unifiedStocks = useMemo(() => {
+        let list = candidateStocks.filter(item => matchesIpoTiers(item.perf, ipoTiers));
+
+        // Quick Funnel Filter
         if (funnelFilter === "rs80") {
             list = list.filter(item => (item.perf?.ibd_rs_rating ?? 0) >= 80);
         } else if (funnelFilter === "rs90") {
@@ -340,7 +425,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
             list = list.filter(item => item.perf?.rs_lead_breakout === true);
         }
 
-        // 4. Universal Column Sorting
+        // Universal Column Sorting
         list.sort((a, b) => {
             let valA: any = 0;
             let valB: any = 0;
@@ -359,8 +444,10 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                 valA = a.perf?.ibd_rs_rating ?? -999;
                 valB = b.perf?.ibd_rs_rating ?? -999;
             } else if (unifiedSortCol === "listing_days") {
-                valA = a.perf?.listing_days ?? -999;
-                valB = b.perf?.listing_days ?? -999;
+                // Direction-aware fallback so Day 1 IPOs rise to top when ascending
+                const fallback = unifiedSortDesc ? -1 : 999999;
+                valA = a.perf?.listing_days ?? fallback;
+                valB = b.perf?.listing_days ?? fallback;
             } else if (unifiedSortCol === "rs_lead_breakout") {
                 valA = a.perf?.rs_lead_breakout ? 1 : 0;
                 valB = b.perf?.rs_lead_breakout ? 1 : 0;
@@ -373,7 +460,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
         });
 
         return list;
-    }, [allConfigs, selectedThemeIds, activeCategory, marketStatus, constituentPerformance, statusKeys, searchQuery, ipoFilter, funnelFilter, unifiedSortCol, unifiedSortDesc]);
+    }, [candidateStocks, ipoTiers, funnelFilter, unifiedSortCol, unifiedSortDesc]);
 
     const displayedUnifiedStocks = useMemo(() => {
         if (pageSize === 0) return unifiedStocks;
@@ -549,19 +636,53 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                         </button>
                     </div>
                     {isColumnsDropdownOpen && (
-                        <div className="absolute z-50 top-full right-0 mt-2 w-52 bg-[#1a1a2e] border border-slate-700 rounded-lg shadow-2xl p-2 flex flex-col gap-1">
-                            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1 mb-1 border-b border-slate-700/50">Visible Metrics</div>
-                            {METRIC_CONFIG.map(opt => (
-                                <label key={opt.stockValue} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded cursor-pointer group">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={visibleColumns.includes(opt.stockValue)}
-                                        onChange={() => toggleColumn(opt.stockValue)}
-                                        className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
-                                    />
-                                    <span className="text-sm text-slate-300 group-hover:text-white transition-colors">{opt.label}</span>
-                                </label>
-                            ))}
+                        <div className="absolute z-50 top-full right-0 mt-2 w-64 bg-[#16162a] border border-slate-700 rounded-xl shadow-2xl p-2.5 flex flex-col gap-2 max-h-[460px] overflow-y-auto">
+                            {/* Section 1: Core Signals & Indicators */}
+                            <div>
+                                <div className="text-[11px] font-bold text-cyan-400 uppercase tracking-wider px-2 py-1 mb-1 border-b border-slate-800/80">
+                                    Core Signals & Indicators
+                                </div>
+                                <div className="flex flex-col gap-0.5">
+                                    {CORE_INDICATOR_COLUMNS.map(col => (
+                                        <label key={col.value} className="flex items-center justify-between gap-2 px-2 py-1.5 hover:bg-white/5 rounded-lg cursor-pointer group select-none">
+                                            <div className="flex items-center gap-2">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={visibleColumns.includes(col.value)}
+                                                    onChange={() => toggleColumn(col.value)}
+                                                    className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
+                                                />
+                                                <span className="text-xs font-semibold text-slate-200 group-hover:text-white transition-colors">
+                                                    {col.label}
+                                                </span>
+                                            </div>
+                                            <span className="text-[10px] text-slate-500 truncate max-w-[90px]" title={col.description}>
+                                                {col.value === "ibd_rs_rating" ? "Rating" : col.value === "rs_lead_breakout" ? "Lead" : "Age"}
+                                            </span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Section 2: Returns & Relative Strength */}
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1 mb-1 border-b border-slate-800/80">
+                                    Returns & Relative Strength
+                                </div>
+                                <div className="flex flex-col gap-0.5">
+                                    {METRIC_CONFIG.filter(opt => opt.stockValue !== "ibd_rs_rating").map(opt => (
+                                        <label key={opt.stockValue} className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 rounded-lg cursor-pointer group select-none">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={visibleColumns.includes(opt.stockValue)}
+                                                onChange={() => toggleColumn(opt.stockValue)}
+                                                className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500/30"
+                                            />
+                                            <span className="text-xs text-slate-300 group-hover:text-white transition-colors">{opt.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -677,38 +798,14 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     </button>
                 </div>
 
-                {/* 3-State IPO Controller & Page Size Selector */}
+                {/* IPO Listing Tiers Popover & Page Size Selector */}
                 <div className="flex items-center gap-4 flex-wrap">
-                    {/* IPO Filter */}
-                    <div className="flex items-center gap-1.5 bg-[#1a1a2e] p-1 rounded-lg border border-slate-700/60">
-                        <span className="text-[10px] font-semibold uppercase text-slate-500 px-1.5">IPO Filter:</span>
-                        <button
-                            onClick={() => setIpoFilter("all")}
-                            className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                                ipoFilter === "all" ? "bg-blue-500/20 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            All
-                        </button>
-                        <button
-                            onClick={() => setIpoFilter("exclude_ipos")}
-                            className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                                ipoFilter === "exclude_ipos" ? "bg-blue-500/20 text-blue-400 font-semibold" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                            title="Exclude stocks with under 252 trading days (< 1 year)"
-                        >
-                            Seasoned Only (Exclude IPOs)
-                        </button>
-                        <button
-                            onClick={() => setIpoFilter("only_ipos")}
-                            className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                                ipoFilter === "only_ipos" ? "bg-amber-500/20 text-amber-300 font-semibold" : "text-slate-400 hover:text-slate-200"
-                            }`}
-                            title="Show only recent IPOs (< 1 year history)"
-                        >
-                            Only Recent IPOs
-                        </button>
-                    </div>
+                    {/* Granular IPO Listing Tiers Multi-Select Popover */}
+                    <IpoListingTiersPopover
+                        activeTiers={ipoTiers}
+                        onChange={setIpoTiers}
+                        tierCounts={ipoTierCounts}
+                    />
 
                     {/* Page Size in Unified View */}
                     {viewMode === "unified" && (
@@ -729,6 +826,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                     )}
                 </div>
             </div>
+
 
             {/* Display Area: Mode 1 (Sector Grid), Mode 2 (Grouped Stack), or Mode 3 (Unified All-Stocks Table) */}
             {viewMode === "unified" ? (
@@ -791,34 +889,54 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                 )}
                                             </div>
                                         </th>
-                                        <th 
-                                            className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
-                                            onClick={() => handleUnifiedSort("ibd_rs_rating")}
-                                            title="Click to sort by 1-99 Relative Strength Percentile Rating"
-                                        >
-                                            <div className="flex items-center justify-center gap-1">
-                                                <span>RS Rating</span>
-                                                {unifiedSortCol === "ibd_rs_rating" ? (
-                                                    <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
-                                                ) : (
-                                                    <ArrowUpDown size={12} className="text-slate-600" />
-                                                )}
-                                            </div>
-                                        </th>
-                                        <th 
-                                            className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
-                                            onClick={() => handleUnifiedSort("rs_lead_breakout")}
-                                            title="Click to sort by RS Line 52-Week Lead Breakout Status"
-                                        >
-                                            <div className="flex items-center justify-center gap-1">
-                                                <span>RS Lead</span>
-                                                {unifiedSortCol === "rs_lead_breakout" ? (
-                                                    <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
-                                                ) : (
-                                                    <ArrowUpDown size={12} className="text-slate-600" />
-                                                )}
-                                            </div>
-                                        </th>
+                                        {visibleColumns.includes("ibd_rs_rating") && (
+                                            <th 
+                                                className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => handleUnifiedSort("ibd_rs_rating")}
+                                                title="Click to sort by 1-99 Relative Strength Percentile Rating"
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <span>RS Rating</span>
+                                                    {unifiedSortCol === "ibd_rs_rating" ? (
+                                                        <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
+                                                    ) : (
+                                                        <ArrowUpDown size={12} className="text-slate-600" />
+                                                    )}
+                                                </div>
+                                            </th>
+                                        )}
+                                        {visibleColumns.includes("rs_lead_breakout") && (
+                                            <th 
+                                                className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => handleUnifiedSort("rs_lead_breakout")}
+                                                title="Click to sort by RS Line 52-Week Lead Breakout Status"
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <span>RS Lead</span>
+                                                    {unifiedSortCol === "rs_lead_breakout" ? (
+                                                        <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
+                                                    ) : (
+                                                        <ArrowUpDown size={12} className="text-slate-600" />
+                                                    )}
+                                                </div>
+                                            </th>
+                                        )}
+                                        {visibleColumns.includes("listing_days") && (
+                                            <th 
+                                                className="px-4 py-3 text-center cursor-pointer hover:text-white transition-colors"
+                                                onClick={() => handleUnifiedSort("listing_days")}
+                                                title="Click to sort by Listing Age (Trading Days)"
+                                            >
+                                                <div className="flex items-center justify-center gap-1">
+                                                    <span>Listing Age</span>
+                                                    {unifiedSortCol === "listing_days" ? (
+                                                        <span className="text-cyan-400 font-bold">{unifiedSortDesc ? "▼" : "▲"}</span>
+                                                    ) : (
+                                                        <ArrowUpDown size={12} className="text-slate-600" />
+                                                    )}
+                                                </div>
+                                            </th>
+                                        )}
 
                                         {/* Dynamic Metric Columns */}
                                         {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue) && opt.stockValue !== "ibd_rs_rating").map(opt => (
@@ -845,6 +963,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                         const isLead = stock.perf?.rs_lead_breakout;
                                         const isIpo = stock.perf?.is_ipo;
                                         const days = stock.perf?.listing_days;
+                                        const ipoBadge = getIpoBadgeStyle(days, isIpo);
 
                                         return (
                                             <tr key={`${stock.ticker}-${idx}`} className="hover:bg-slate-800/40 transition-colors">
@@ -863,9 +982,12 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                             <span>{stock.label}</span>
                                                             <ExternalLink size={12} className="opacity-60" />
                                                         </a>
-                                                        {isIpo && (
-                                                            <span className="px-1.5 py-0.2 bg-amber-950/80 text-amber-300 border border-amber-800/60 rounded text-[10px] font-mono font-bold" title={`Listed ${days || '< 252'} trading days ago`}>
-                                                                IPO {days ? `${days}D` : ''}
+                                                        {ipoBadge && (
+                                                            <span 
+                                                                className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-bold border ${ipoBadge.badgeBg} ${ipoBadge.badgeText} ${ipoBadge.badgeBorder}`} 
+                                                                title={ipoBadge.tooltip}
+                                                            >
+                                                                {ipoBadge.label}
                                                             </span>
                                                         )}
                                                     </div>
@@ -875,21 +997,36 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         {stock.themeTitle}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 py-2.5 text-center">
-                                                    <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono inline-block border ${ibdBadge.bg} ${ibdBadge.text} ${ibdBadge.border}`}>
-                                                        {ibdBadge.label}
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-2.5 text-center">
-                                                    {isLead ? (
-                                                        <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[10px] font-bold font-sans inline-flex items-center gap-1 shadow-sm" title="RS Lead Breakout: Absolute RS Line at 52-week High ahead of price">
-                                                            <Zap size={10} className="text-amber-400 fill-amber-400" />
-                                                            <span>RS Lead</span>
+                                                {visibleColumns.includes("ibd_rs_rating") && (
+                                                    <td className="px-4 py-2.5 text-center">
+                                                        <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono inline-block border ${ibdBadge.bg} ${ibdBadge.text} ${ibdBadge.border}`}>
+                                                            {ibdBadge.label}
                                                         </span>
-                                                    ) : (
-                                                        <span className="text-slate-600 text-xs">—</span>
-                                                    )}
-                                                </td>
+                                                    </td>
+                                                )}
+                                                {visibleColumns.includes("rs_lead_breakout") && (
+                                                    <td className="px-4 py-2.5 text-center">
+                                                        {isLead ? (
+                                                            <span className="px-2 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[10px] font-bold font-sans inline-flex items-center gap-1 shadow-sm" title="RS Lead Breakout: Absolute RS Line at 52-week High ahead of price">
+                                                                <Zap size={10} className="text-amber-400 fill-amber-400" />
+                                                                <span>RS Lead</span>
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-slate-600 text-xs">—</span>
+                                                        )}
+                                                    </td>
+                                                )}
+                                                {visibleColumns.includes("listing_days") && (
+                                                    <td className="px-4 py-2.5 text-center">
+                                                        {days !== undefined && days !== null ? (
+                                                            <span className="text-xs font-mono text-slate-300">
+                                                                {days}d
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-slate-600 text-xs">—</span>
+                                                        )}
+                                                    </td>
+                                                )}
 
                                                 {/* Dynamic Metric Values */}
                                                 {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue) && opt.stockValue !== "ibd_rs_rating").map(opt => {
@@ -1046,7 +1183,15 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                             <thead className="text-slate-500 bg-slate-900/50 font-semibold border-b border-slate-800">
                                                 <tr>
                                                     <th className="px-4 py-2">Stock</th>
-                                                    <th className="px-3 py-2 text-center">RS Rating</th>
+                                                    {visibleColumns.includes("ibd_rs_rating") && (
+                                                        <th className="px-3 py-2 text-center">RS Rating</th>
+                                                    )}
+                                                    {visibleColumns.includes("rs_lead_breakout") && (
+                                                        <th className="px-3 py-2 text-center">RS Lead</th>
+                                                    )}
+                                                    {visibleColumns.includes("listing_days") && (
+                                                        <th className="px-3 py-2 text-center">Listing Age</th>
+                                                    )}
                                                     {/* Dynamic Headers */}
                                                     {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue) && opt.stockValue !== "ibd_rs_rating").map(opt => (
                                                         <th key={opt.stockValue} className="px-3 py-2 text-right">{opt.label}</th>
@@ -1058,6 +1203,8 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                     const ibdBadge = getIbdBadgeStyle(stock.perf?.ibd_rs_rating);
                                                     const isLead = stock.perf?.rs_lead_breakout;
                                                     const isIpo = stock.perf?.is_ipo;
+                                                    const days = stock.perf?.listing_days;
+                                                    const ipoBadge = getIpoBadgeStyle(days, isIpo);
 
                                                     return (
                                                         <tr key={stock.ticker} className="hover:bg-white/[0.02] transition-colors">
@@ -1066,9 +1213,12 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                                     <a href={makeTradingViewUrl(stock.ticker)} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-medium">
                                                                         {stock.label}
                                                                     </a>
-                                                                    {isIpo && (
-                                                                        <span className="px-1 py-0.2 bg-amber-950/80 text-amber-300 border border-amber-800/60 rounded text-[9px] font-mono">
-                                                                            IPO
+                                                                    {ipoBadge && (
+                                                                        <span 
+                                                                            className={`px-1 py-0.2 rounded text-[9px] font-mono border ${ipoBadge.badgeBg} ${ipoBadge.badgeText} ${ipoBadge.badgeBorder}`}
+                                                                            title={ipoBadge.tooltip}
+                                                                        >
+                                                                            {ipoBadge.label}
                                                                         </span>
                                                                     )}
                                                                     {isLead && (
@@ -1078,11 +1228,30 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                                     )}
                                                                 </div>
                                                             </td>
-                                                            <td className="px-3 py-2 text-center">
-                                                                <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${ibdBadge.bg} ${ibdBadge.text} ${ibdBadge.border}`}>
-                                                                    {ibdBadge.label}
-                                                                </span>
-                                                            </td>
+                                                            {visibleColumns.includes("ibd_rs_rating") && (
+                                                                <td className="px-3 py-2 text-center">
+                                                                    <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold border ${ibdBadge.bg} ${ibdBadge.text} ${ibdBadge.border}`}>
+                                                                        {ibdBadge.label}
+                                                                    </span>
+                                                                </td>
+                                                            )}
+                                                            {visibleColumns.includes("rs_lead_breakout") && (
+                                                                <td className="px-3 py-2 text-center">
+                                                                    {isLead ? (
+                                                                        <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[9px] font-bold font-sans inline-flex items-center gap-0.5 shadow-sm" title="RS Lead Breakout: Absolute RS Line at 52-week High ahead of price">
+                                                                            <Zap size={9} className="text-amber-400 fill-amber-400" />
+                                                                            <span>Lead</span>
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="text-slate-600 text-xs">—</span>
+                                                                    )}
+                                                                </td>
+                                                            )}
+                                                            {visibleColumns.includes("listing_days") && (
+                                                                <td className="px-3 py-2 text-center text-xs font-mono text-slate-300">
+                                                                    {days !== undefined && days !== null ? `${days}d` : "—"}
+                                                                </td>
+                                                            )}
                                                             {/* Dynamic Cells */}
                                                             {METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue) && opt.stockValue !== "ibd_rs_rating").map(opt => {
                                                                 const val = stock.perf ? getMetricValue(stock.perf as any, opt.stockValue) : null;
@@ -1095,26 +1264,34 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         </tr>
                                                     );
                                                 })}
-                                                {group.stocks.length === 0 && (
-                                                    <tr>
-                                                        <td colSpan={visibleColumns.length + 2} className="px-4 py-8 text-center text-slate-500 font-sans text-xs">
-                                                            {group.allStocks.length > 0 ? (
-                                                                <div className="flex flex-col items-center gap-1.5">
-                                                                    <span>No stocks selected for this theme.</span>
-                                                                    <button 
-                                                                        type="button"
-                                                                        onClick={() => selectAllStocksForSector(group.config.id)}
-                                                                        className="text-blue-400 hover:text-blue-300 underline font-medium"
-                                                                    >
-                                                                        Show all {group.allStocks.length} stocks
-                                                                    </button>
-                                                                </div>
-                                                            ) : (
-                                                                <span className="italic text-slate-600">No constituent data available</span>
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                )}
+                                                {group.stocks.length === 0 && (() => {
+                                                    const renderedColCount = 1 
+                                                        + (visibleColumns.includes("ibd_rs_rating") ? 1 : 0)
+                                                        + (visibleColumns.includes("rs_lead_breakout") ? 1 : 0)
+                                                        + (visibleColumns.includes("listing_days") ? 1 : 0)
+                                                        + METRIC_CONFIG.filter(opt => visibleColumns.includes(opt.stockValue) && opt.stockValue !== "ibd_rs_rating").length;
+
+                                                    return (
+                                                        <tr>
+                                                            <td colSpan={renderedColCount} className="px-4 py-8 text-center text-slate-500 font-sans text-xs">
+                                                                {group.allStocks.length > 0 ? (
+                                                                    <div className="flex flex-col items-center gap-1.5">
+                                                                        <span>No stocks selected for this theme.</span>
+                                                                        <button 
+                                                                            type="button"
+                                                                            onClick={() => selectAllStocksForSector(group.config.id)}
+                                                                            className="text-blue-400 hover:text-blue-300 underline font-medium"
+                                                                        >
+                                                                            Show all {group.allStocks.length} stocks
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <span className="italic text-slate-600">No constituent data available</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })()}
                                             </tbody>
                                         </table>
                                     </div>

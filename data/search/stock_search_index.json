@@ -5060,7 +5060,7 @@
       "category": "industries"
     }
   ],
-  "HEG": [
+  "HEGAM": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -5075,11 +5075,6 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
-    },
-    {
-      "id": "breadth_theme_carbon_and_graphite",
-      "title": "Carbon and Graphite",
-      "category": "industries"
     }
   ],
   "HEROMOTOCO": [

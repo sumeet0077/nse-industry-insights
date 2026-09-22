@@ -1487,33 +1487,6 @@
         ],
         "new_stock": []
     },
-    "NIFTY FINANCIAL SERVICES": {
-        "above": [
-            "BAJFINANCE.NS",
-            "CHOLAFIN.NS",
-            "KOTAKBANK.NS",
-            "LICHSGFIN.NS",
-            "SHRIRAMFIN.NS"
-        ],
-        "below": [
-            "AXISBANK.NS",
-            "BAJAJFINSV.NS",
-            "BSE.NS",
-            "HDFCBANK.NS",
-            "HDFCLIFE.NS",
-            "ICICIBANK.NS",
-            "ICICIGI.NS",
-            "JIOFIN.NS",
-            "MFSL.NS",
-            "MUTHOOTFIN.NS",
-            "PFC.NS",
-            "RECLTD.NS",
-            "SBICARD.NS",
-            "SBILIFE.NS",
-            "SBIN.NS"
-        ],
-        "new_stock": []
-    },
     "NIFTY FMCG": {
         "above": [
             "MARICO.NS",

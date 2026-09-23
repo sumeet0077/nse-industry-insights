@@ -1343,6 +1343,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_pvtbank",
       "title": "Nifty Private Bank",
       "category": "sectors"
@@ -1406,6 +1411,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_nbfc",
       "title": "NBFC",
       "category": "industries"
@@ -1462,6 +1472,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_nbfc",
@@ -2155,6 +2170,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_capital_market",
       "title": "Capital Market",
       "category": "industries"
@@ -2686,6 +2706,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_nbfc",
@@ -4998,6 +5023,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_pvtbank",
       "title": "Nifty Private Bank",
       "category": "sectors"
@@ -5018,6 +5048,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_life_insurance",
@@ -5435,6 +5470,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_pvtbank",
       "title": "Nifty Private Bank",
       "category": "sectors"
@@ -5460,6 +5500,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_general_insurance",
@@ -6387,6 +6432,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_fintech",
       "title": "Fintech",
       "category": "industries"
@@ -7011,6 +7061,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_pvtbank",
       "title": "Nifty Private Bank",
       "category": "sectors"
@@ -7281,6 +7336,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_housing_finance",
@@ -7900,6 +7960,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_life_insurance",
       "title": "Life Insurance",
       "category": "industries"
@@ -8177,6 +8242,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_nbfc",
@@ -9182,6 +9252,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_nbfc",
       "title": "NBFC",
       "category": "industries"
@@ -9955,6 +10030,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_nbfc",
       "title": "NBFC",
       "category": "industries"
@@ -10397,6 +10477,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_fintech",
       "title": "Fintech",
       "category": "industries"
@@ -10412,6 +10497,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_life_insurance",
@@ -10433,6 +10523,11 @@
     {
       "id": "breadth_bank",
       "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
       "category": "sectors"
     },
     {
@@ -10624,6 +10719,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_finance",
+      "title": "Nifty Financial Services",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_nbfc",

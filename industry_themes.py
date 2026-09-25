@@ -110,7 +110,7 @@ INDUSTRY_THEMES = {
         "BAYERCROP.NS", "COROMANDEL.NS", "DEEPAKFERT.NS", "DHANUKA.NS", "GSFC.NS", "RALLIS.NS", "UPL.NS"
     ],
     "Textiles": [
-        "ABFRL.NS", "KPRMILL.NS", "LUXIND.NS", "PAGEIND.NS", "PGIL.NS", "TRIDENT.NS", "WELSPUNLIV.NS"
+        "ABFRL.NS", "GOKEX.NS", "KPRMILL.NS", "LUXIND.NS", "PAGEIND.NS", "PGIL.NS", "TRIDENT.NS", "WELSPUNLIV.NS"
     ],
     "Paints": [
         "ASIANPAINT.NS", "BERGEPAINT.NS", "INDIGOPNTS.NS", "KAMOPAINTS.NS", "KANSAINER.NS", "SHALPAINTS.NS", "SIRCA.NS"
@@ -443,7 +443,7 @@ THEME_METADATA = {
         "id": "breadth_theme_textiles",
         "description": "Textile Companies",
         "dataFile": "breadth_theme_textiles",
-        "stock_count": 7,
+        "stock_count": 8,
     },
     "Paints": {
         "id": "breadth_theme_paints",

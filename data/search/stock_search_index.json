@@ -4664,6 +4664,13 @@
       "category": "industries"
     }
   ],
+  "GOKEX": [
+    {
+      "id": "breadth_theme_textiles",
+      "title": "Textiles",
+      "category": "industries"
+    }
+  ],
   "GOLDIAM": [
     {
       "id": "breadth_theme_jewellery_and_gold",

@@ -322,20 +322,8 @@ export function Recurrence52WScanner({
     // Source pool according to direction
     const rawItems = direction === "high" ? historyData.highs : historyData.lows;
 
-    // Available themes computed from current rawItems with stock counts
-    const availableThemes = useMemo(() => {
-        const counts: Record<string, number> = {};
-        rawItems.forEach((item) => {
-            const t = getStockTheme(item.clean_symbol);
-            counts[t] = (counts[t] || 0) + 1;
-        });
-        return Object.entries(counts)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-    }, [rawItems, getStockTheme]);
-
-    // Filter items
-    const filteredItems = useMemo(() => {
+    // Items matching all global, window, and column filters EXCEPT the Theme column filter
+    const themeBaseItems = useMemo(() => {
         return rawItems.filter((item) => {
             // 0. Tradability & Circuit Filters
             if (excludeCircuitLocked && item.is_circuit_locked) return false;
@@ -390,7 +378,7 @@ export function Recurrence52WScanner({
                 if (!matchSym && !matchTheme) return false;
             }
 
-            // 4. Column Header Filters
+            // 4. Column Header Filters (excluding Theme)
             // Symbol filter
             if (columnFilters.symbol.trim()) {
                 const sq = columnFilters.symbol.trim().toLowerCase();
@@ -409,12 +397,6 @@ export function Recurrence52WScanner({
                 if (!item.is_circuit_locked) return false;
             } else if (columnFilters.circuitLocked === "unlocked") {
                 if (item.is_circuit_locked) return false;
-            }
-
-            // Theme filter
-            if (columnFilters.themes.length > 0) {
-                const itemTheme = getStockTheme(item.clean_symbol);
-                if (!columnFilters.themes.includes(itemTheme)) return false;
             }
 
             // Streak filter
@@ -465,10 +447,51 @@ export function Recurrence52WScanner({
         lookback,
         presetFilter,
         searchQuery,
-        columnFilters,
+        columnFilters.symbol,
+        columnFilters.bands,
+        columnFilters.circuitLocked,
+        columnFilters.minStreak,
+        columnFilters.minFrequency,
+        columnFilters.minRS,
+        columnFilters.rsLeadOnly,
+        columnFilters.minClose,
+        columnFilters.maxClose,
+        columnFilters.pct1dDirection,
+        columnFilters.minPct1d,
+        columnFilters.maxPct1d,
+        columnFilters.pct5dDirection,
+        columnFilters.minPct5d,
+        columnFilters.maxPct5d,
+        columnFilters.minTurnover,
         getRSMetrics,
         getStockTheme,
     ]);
+
+    // Available themes computed dynamically from candidate universe with real counts
+    const availableThemes = useMemo(() => {
+        const counts: Record<string, number> = {};
+        themeBaseItems.forEach((item) => {
+            const t = getStockTheme(item.clean_symbol);
+            counts[t] = (counts[t] || 0) + 1;
+        });
+        // Also ensure any currently selected theme is present so user can uncheck it
+        columnFilters.themes.forEach((t) => {
+            if (!(t in counts)) counts[t] = 0;
+        });
+
+        return Object.entries(counts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    }, [themeBaseItems, columnFilters.themes, getStockTheme]);
+
+    // Final filtered items applying Theme selection on top of themeBaseItems
+    const filteredItems = useMemo(() => {
+        if (columnFilters.themes.length === 0) return themeBaseItems;
+        return themeBaseItems.filter((item) => {
+            const itemTheme = getStockTheme(item.clean_symbol);
+            return columnFilters.themes.includes(itemTheme);
+        });
+    }, [themeBaseItems, columnFilters.themes, getStockTheme]);
 
     // Sort items
     const sortedItems = useMemo(() => {

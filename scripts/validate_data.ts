@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { ALL_CONFIGS, BROAD_MARKET, SECTORS } from "../lib/config";
 import { REQUIRED_CONSTITUENT_METRICS } from "../lib/metrics";
-import { resolveDataKey, parseBulkTickers, toCAGR } from "../lib/utils";
+import { resolveDataKey, parseBulkTickers, toCAGR, cleanTicker } from "../lib/utils";
 import type { MarketStatus, ConstituentPerformanceMap, PerformanceRow } from "../types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -371,6 +371,126 @@ validate("Custom Watchlist Parser & Algorithms", (errors) => {
     }
 
     console.log("  ✓ Custom Watchlist bulk ticker parser and CAGR logic validated.");
+});
+
+// 8. Validate 52-Week High/Low Recurrence History & Section 8 Invariants
+validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warnings) => {
+    const historyPath = path.join(DATA_DIR, "market_status", "market_52w_history.json");
+    const publicHistoryPath = path.join(process.cwd(), "public", "data", "market_status", "market_52w_history.json");
+
+    if (!fs.existsSync(historyPath)) {
+        errors.push("Missing file: data/market_status/market_52w_history.json");
+        return;
+    }
+
+    if (!fs.existsSync(publicHistoryPath)) {
+        errors.push("Missing symlinked file: public/data/market_status/market_52w_history.json (run ensure_public_symlinks)");
+    }
+
+    const raw = fs.readFileSync(historyPath, "utf-8");
+    const data = JSON.parse(raw);
+
+    if (!data.metadata || !Array.isArray(data.dates) || !Array.isArray(data.highs) || !Array.isArray(data.lows) || !data.daily_lists) {
+        errors.push("Invalid schema: market_52w_history.json missing required top-level fields");
+        return;
+    }
+
+    console.log(`  ✓ 52W History loaded: ${data.metadata.window_sessions} sessions (${data.metadata.start_date} to ${data.metadata.end_date}), ${data.highs.length} highs, ${data.lows.length} lows.`);
+
+    // Load canonical ETF registry
+    const etfFilePath = path.join(DATA_DIR, "etf_symbols.json");
+    let etfSymbols = new Set<string>();
+    if (fs.existsSync(etfFilePath)) {
+        const etfRaw = JSON.parse(fs.readFileSync(etfFilePath, "utf-8"));
+        const list = Array.isArray(etfRaw) ? etfRaw : (etfRaw.symbols || Object.keys(etfRaw));
+        etfSymbols = new Set(list.map((s: string) => s.trim().toUpperCase()));
+    } else {
+        warnings.push("data/etf_symbols.json not found for ETF leakage audit.");
+    }
+
+    const PROTECTED_EQUITIES = new Set([
+        "SKYGOLD", "GOLDIAM", "SILVERTUC", "EUROBOND", "CHEMBOND", "PNBGILTS",
+        "BHARATFORG", "BHARATGEAR", "BHARATRAS", "BHARATWIRE", "BHARTIARTL",
+        "GOLDENTOBC", "GOLDKENTO", "GOLDTECH", "SILVEROAK", "BOMDYEING",
+        "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
+        "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
+        "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
+    ]);
+
+    // Invariant 1: Mutual Exclusion
+    for (const dt of data.dates) {
+        const session = data.daily_lists[dt];
+        if (!session) {
+            errors.push(`Missing daily_lists entry for session date ${dt}`);
+            continue;
+        }
+        const highSet = new Set(session.highs.map((s: string) => cleanTicker(s).toUpperCase()));
+        const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
+        const overlap = Array.from(highSet).filter((s) => lowSet.has(s));
+        if (overlap.length > 0) {
+            errors.push(`Invariant 1 Failure: ${overlap.length} stocks in BOTH highs and lows on ${dt}: ${overlap.join(", ")}`);
+        }
+    }
+
+    // Invariant 2: Zero ETF & Rights Entitlement (-RE) Leakage
+    const allSymbolsChecked = new Set<string>();
+    for (const item of [...data.highs, ...data.lows]) {
+        const clean = cleanTicker(item.symbol).toUpperCase();
+        allSymbolsChecked.add(clean);
+        if (clean.endsWith("-RE")) {
+            errors.push(`Invariant 2 Failure: Rights Entitlement '${clean}' found in 52W history`);
+        }
+        if (etfSymbols.has(clean) && !PROTECTED_EQUITIES.has(clean)) {
+            errors.push(`Invariant 2 Failure: ETF '${clean}' leaked into 52W history`);
+        }
+    }
+
+    // Invariant 3: Corporate Action Split Integrity (POCL, ANGELONE)
+    for (const dt of data.dates) {
+        const session = data.daily_lists[dt];
+        if (!session) continue;
+        const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
+        if (dt >= "2026-07-21" && lowSet.has("POCL")) {
+            errors.push(`Invariant 3 Failure: POCL erroneously in low52w post-split on ${dt}`);
+        }
+        if (dt >= "2026-02-26" && lowSet.has("ANGELONE")) {
+            errors.push(`Invariant 3 Failure: ANGELONE erroneously in low52w post-split on ${dt}`);
+        }
+    }
+
+    // Invariant 4: POLICYBZR Crash Trap on 2026-09-24
+    if (data.daily_lists["2026-09-24"]) {
+        const high24 = new Set(data.daily_lists["2026-09-24"].highs.map((s: string) => cleanTicker(s).toUpperCase()));
+        const low24 = new Set(data.daily_lists["2026-09-24"].lows.map((s: string) => cleanTicker(s).toUpperCase()));
+        if (high24.has("POLICYBZR")) {
+            errors.push("Invariant 4 Failure: POLICYBZR erroneously appeared in highs on crash date 2026-09-24");
+        }
+        if (!low24.has("POLICYBZR")) {
+            errors.push("Invariant 4 Failure: POLICYBZR missing from lows on crash date 2026-09-24");
+        }
+    }
+
+    // Invariant 5: Seasoning (< 252 Sessions; LUMINO, SKYWAYS)
+    for (const unseasoned of ["LUMINO", "SKYWAYS"]) {
+        if (allSymbolsChecked.has(unseasoned)) {
+            errors.push(`Invariant 5 Failure: Unseasoned stock '${unseasoned}' appeared in 52W history`);
+        }
+    }
+
+    // Invariant 6: Frequency Monotonicity & Streak Bounds
+    for (const item of [...data.highs, ...data.lows]) {
+        if (!(item.count_5d <= item.count_10d && item.count_10d <= item.count_20d && item.count_20d <= item.count_60d)) {
+            errors.push(`Invariant 6 Failure: Non-monotonic frequency counts for ${item.symbol}: [${item.count_5d}, ${item.count_10d}, ${item.count_20d}, ${item.count_60d}]`);
+        }
+        if (item.streak < 0 || item.streak > 60) {
+            errors.push(`Invariant 6 Failure: Streak out of bounds (${item.streak}) for ${item.symbol}`);
+        }
+        if (!Array.isArray(item.history_20d) || item.history_20d.length !== 20) {
+            errors.push(`Invariant 6 Failure: Invalid history_20d length (${item.history_20d?.length}) for ${item.symbol}`);
+        }
+    }
+
+    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, and frequency monotonicity.");
 });
 
 // Print Summary

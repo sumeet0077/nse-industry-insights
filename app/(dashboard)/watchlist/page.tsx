@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getStockSearchIndex } from "@/lib/data";
+import { getStockSearchIndex, getMarket52WHistory, getConstituentPerformance } from "@/lib/data";
 import { CustomWatchlistRRGClient } from "@/components/CustomWatchlistRRGClient";
 
 export const metadata: Metadata = {
@@ -9,10 +9,14 @@ export const metadata: Metadata = {
 
 export default function CustomWatchlistPage() {
     const stockSearchIndex = getStockSearchIndex();
+    const market52WHistory = getMarket52WHistory();
+    const constituentPerformance = getConstituentPerformance();
 
     return (
         <CustomWatchlistRRGClient
             stockSearchIndex={stockSearchIndex}
+            initial52WHistory={market52WHistory}
+            initialConstituentPerformance={constituentPerformance}
         />
     );
 }

@@ -1,0 +1,436 @@
+[
+  {
+    "symbol": "POCL",
+    "ex_date": "2024-10-16",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "MCX",
+    "ex_date": "2026-01-02",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "SKMEGGPROD",
+    "ex_date": "2026-01-12",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "AIIL",
+    "ex_date": "2026-01-13",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "AJMERA",
+    "ex_date": "2026-01-14",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "KOTAKBANK",
+    "ex_date": "2026-01-14",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 5 to 1)"
+  },
+  {
+    "symbol": "BESTAGRO",
+    "ex_date": "2026-01-16",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "DELPHIFX",
+    "ex_date": "2026-02-13",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "SADHNANIQ",
+    "ex_date": "2026-02-18",
+    "action": "SPLIT",
+    "ratio": 3.0,
+    "description": "3:1 Stock Split"
+  },
+  {
+    "symbol": "ANGELONE",
+    "ex_date": "2026-02-26",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "INFOBEAN",
+    "ex_date": "2026-02-27",
+    "action": "BONUS",
+    "ratio": 4.0,
+    "description": "3:1 Bonus Issue"
+  },
+  {
+    "symbol": "VGL",
+    "ex_date": "2026-03-02",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 2 to 1)"
+  },
+  {
+    "symbol": "AQYLON",
+    "ex_date": "2026-03-05",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "KAPSTON",
+    "ex_date": "2026-03-06",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "SILVERTUC",
+    "ex_date": "2026-03-06",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "CUPID",
+    "ex_date": "2026-03-09",
+    "action": "BONUS",
+    "ratio": 5.0,
+    "description": "4:1 Bonus Issue"
+  },
+  {
+    "symbol": "ECLERX",
+    "ex_date": "2026-03-13",
+    "action": "BONUS",
+    "ratio": 2.0,
+    "description": "1:1 Bonus Issue"
+  },
+  {
+    "symbol": "MAHAPEXLTD",
+    "ex_date": "2026-03-20",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "METROPOLIS",
+    "ex_date": "2026-03-20",
+    "action": "BONUS",
+    "ratio": 4.0,
+    "description": "3:1 Bonus Issue"
+  },
+  {
+    "symbol": "KILITCH",
+    "ex_date": "2026-03-24",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "V2RETAIL",
+    "ex_date": "2026-03-25",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "HIRECT",
+    "ex_date": "2026-03-27",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 2 to 1)"
+  },
+  {
+    "symbol": "IRB",
+    "ex_date": "2026-03-30",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split"
+  },
+  {
+    "symbol": "RNBDENIMS",
+    "ex_date": "2026-04-02",
+    "action": "SPLIT",
+    "ratio": 3.0,
+    "description": "3:1 Stock Split"
+  },
+  {
+    "symbol": "RMDRIP",
+    "ex_date": "2026-04-10",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "PASHUPATI",
+    "ex_date": "2026-04-17",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "GOODYEAR",
+    "ex_date": "2026-04-20",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "GRAUWEIL",
+    "ex_date": "2026-04-20",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "AHCL",
+    "ex_date": "2026-04-24",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "1:5 Stock Split & 1:1 Bonus Issue"
+  },
+  {
+    "symbol": "VEDL",
+    "ex_date": "2026-04-30",
+    "action": "SPLIT",
+    "ratio": 2.5,
+    "description": "Demerger / Reorganization"
+  },
+  {
+    "symbol": "AVROIND",
+    "ex_date": "2026-05-05",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "LEMERITE",
+    "ex_date": "2026-05-29",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "LICI",
+    "ex_date": "2026-05-29",
+    "action": "BONUS",
+    "ratio": 2.0,
+    "description": "1:1 Bonus Issue"
+  },
+  {
+    "symbol": "SETCO",
+    "ex_date": "2026-06-02",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split"
+  },
+  {
+    "symbol": "ANANDRATHI",
+    "ex_date": "2026-06-03",
+    "action": "BONUS",
+    "ratio": 2.0,
+    "description": "1:1 Bonus Issue"
+  },
+  {
+    "symbol": "TRENT",
+    "ex_date": "2026-06-04",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "E2E",
+    "ex_date": "2026-06-05",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "DBEIL",
+    "ex_date": "2026-06-19",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "KOTYARK",
+    "ex_date": "2026-06-24",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "ZFCVINDIA",
+    "ex_date": "2026-06-24",
+    "action": "SPLIT",
+    "ratio": 6.0,
+    "description": "6:1 Demerger / Split"
+  },
+  {
+    "symbol": "KRISHANA",
+    "ex_date": "2026-07-03",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "MBAPL",
+    "ex_date": "2026-07-03",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split / Bonus"
+  },
+  {
+    "symbol": "MWL",
+    "ex_date": "2026-07-10",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "POCL",
+    "ex_date": "2026-07-21",
+    "action": "SPLIT",
+    "ratio": 2.5,
+    "description": "5:2 Stock Split (FV 5 to 2)"
+  },
+  {
+    "symbol": "TRIVENI",
+    "ex_date": "2026-07-22",
+    "action": "SPLIT",
+    "ratio": 1.6667,
+    "description": "Demerger / Reorganization"
+  },
+  {
+    "symbol": "JLHL",
+    "ex_date": "2026-07-24",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "NARMADA",
+    "ex_date": "2026-07-31",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split"
+  },
+  {
+    "symbol": "DSKULKARNI",
+    "ex_date": "2026-08-03",
+    "action": "SPLIT",
+    "ratio": 1.5006,
+    "description": "Capital Reduction / NCLT Resolution Plan Re-listing"
+  },
+  {
+    "symbol": "TEMBO",
+    "ex_date": "2026-08-05",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "GENESYS",
+    "ex_date": "2026-08-06",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "KSE",
+    "ex_date": "2026-08-17",
+    "action": "SPLIT",
+    "ratio": 3.0,
+    "description": "3:1 Demerger / Split"
+  },
+  {
+    "symbol": "LANCER",
+    "ex_date": "2026-08-17",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "WATERBASE",
+    "ex_date": "2026-08-17",
+    "action": "BONUS",
+    "ratio": 1.5,
+    "description": "1:2 Bonus Issue"
+  },
+  {
+    "symbol": "KIRLPNU",
+    "ex_date": "2026-08-18",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "GOODLUCK",
+    "ex_date": "2026-08-21",
+    "action": "BONUS",
+    "ratio": 3.0,
+    "description": "2:1 Bonus Issue"
+  },
+  {
+    "symbol": "TDPOWERSYS",
+    "ex_date": "2026-08-24",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 2 to 1)"
+  },
+  {
+    "symbol": "CORDELIA",
+    "ex_date": "2026-08-25",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "INDIAGLYCO",
+    "ex_date": "2026-09-02",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "TCC",
+    "ex_date": "2026-09-04",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (auto-detected)"
+  },
+  {
+    "symbol": "HEG",
+    "ex_date": "2026-09-07",
+    "action": "SPLIT",
+    "ratio": 2.5,
+    "description": "5:2 Stock Split (auto-detected)"
+  },
+  {
+    "symbol": "PGIL",
+    "ex_date": "2026-09-11",
+    "action": "BONUS",
+    "ratio": 2.0,
+    "description": "1:1 Bonus Issue"
+  },
+  {
+    "symbol": "TAALTECH",
+    "ex_date": "2026-09-22",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (auto-detected)"
+  }
+]

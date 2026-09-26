@@ -17,9 +17,11 @@ import type {
 import { BROAD_MARKET, SECTORS, QUADRANTS, QUADRANT_COLORS, TIMEFRAMES, ORIGIN_RADIUS_MAP } from "@/lib/config";
 import { calculateOriginDistance, calculateSuperTrendScore } from "@/lib/rrg";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
-import { useWatchlists } from "@/hooks/useWatchlists";
+import { useWatchlists, type Watchlist } from "@/hooks/useWatchlists";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import type { StockRRGPayload, StockSearchIndex } from "@/lib/data";
+import type { StockRRGPayload, StockSearchIndex, Market52WHistory } from "@/lib/data";
+import { Recurrence52WScanner } from "@/components/watchlist/Recurrence52WScanner";
+import { WatchlistOverlapMatrix } from "@/components/watchlist/WatchlistOverlapMatrix";
 import {
     BookmarkCheck,
     Plus,
@@ -38,11 +40,17 @@ import {
     Sparkles,
     Copy,
     Zap,
+    Folder,
+    FolderOpen,
+    GitMerge,
+    Flame,
 } from "lucide-react";
 
 interface CustomWatchlistRRGClientProps {
     stockSearchIndex?: StockSearchIndex;
     allStockRRGMap?: Record<string, StockRRGPayload | null>;
+    initial52WHistory?: Market52WHistory | null;
+    initialConstituentPerformance?: ConstituentPerformanceMap | null;
 }
 
 import { cleanTicker, normalizeTickerSymbol, parseBulkTickers } from "@/lib/utils";
@@ -57,7 +65,60 @@ function toTVSymbol(ticker: string): string {
     return `NSE:${clean.replace(/[&\-\s]/g, "_")}`;
 }
 
-export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap = {} }: CustomWatchlistRRGClientProps) {
+export type ViewMode = "rrg" | "table" | "split" | "recurrence" | "overlap";
+
+export function CustomWatchlistRRGClient({
+    stockSearchIndex = {},
+    allStockRRGMap = {},
+    initial52WHistory = null,
+    initialConstituentPerformance = null,
+}: CustomWatchlistRRGClientProps) {
+    // Generate dynamic auto-updating system watchlists from 52W history
+    const systemWatchlists = useMemo<Watchlist[]>(() => {
+        if (!initial52WHistory) return [];
+        const latest = initial52WHistory.metadata.latest_session;
+        const daily = initial52WHistory.daily_lists[latest] || { highs: [], lows: [] };
+
+        const topRepeaters = initial52WHistory.highs
+            .filter((h) => h.count_10d >= 3)
+            .map((h) => h.symbol);
+
+        const freshBreakouts = initial52WHistory.highs
+            .filter((h) => h.is_fresh_20d)
+            .map((h) => h.symbol);
+
+        return [
+            {
+                id: "sys_52w_high_today",
+                name: `🔥 52W High: Today (${latest})`,
+                tickers: daily.highs,
+                folder: "System Scans",
+                isSystem: true,
+            },
+            {
+                id: "sys_52w_high_repeaters",
+                name: "⭐ 52W High: Top Repeaters (≥3 in 10d)",
+                tickers: topRepeaters,
+                folder: "System Scans",
+                isSystem: true,
+            },
+            {
+                id: "sys_52w_high_fresh",
+                name: "🚀 52W High: Fresh Breakouts",
+                tickers: freshBreakouts,
+                folder: "System Scans",
+                isSystem: true,
+            },
+            {
+                id: "sys_52w_low_today",
+                name: `🧊 52W Low: Today (${latest})`,
+                tickers: daily.lows,
+                folder: "System Scans",
+                isSystem: true,
+            },
+        ];
+    }, [initial52WHistory]);
+
     const {
         watchlists,
         activeWatchlist,
@@ -65,8 +126,12 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         isLoaded,
         setActiveId,
         createWatchlist,
+        cloneWatchlist,
         renameWatchlist,
         deleteWatchlist,
+        renameFolder,
+        dissolveFolder,
+        deleteFolderAndWatchlists,
         addTicker,
         addMultipleTickers,
         setTickers,
@@ -75,12 +140,54 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         resetToDefaults,
         exportWatchlistsJson,
         importWatchlistsJson,
-    } = useWatchlists();
+    } = useWatchlists(systemWatchlists);
 
-    // 3-way view switcher state: "rrg" | "table" | "split" (persisted in localStorage)
-    type ViewMode = "rrg" | "table" | "split";
+    // 5-way view switcher state: "rrg" | "table" | "split" | "recurrence" | "overlap"
     const [viewMode, setViewMode] = useLocalStorage<ViewMode>("cw_viewMode", "rrg");
     const [showCagr, setShowCagr] = useLocalStorage<boolean>("cw_showCagr", false);
+
+    // Available folders derivation
+    const allFolders = useMemo(() => {
+        const canonical = ["Core Themes", "52W Scans", "Custom", "System Scans"];
+        const found = new Set<string>();
+        for (const w of watchlists) {
+            if (w.folder) found.add(w.folder);
+        }
+        const list: string[] = [];
+        for (const c of canonical) {
+            if (found.has(c) || c === "Core Themes" || c === "Custom" || (c === "52W Scans" && initial52WHistory)) {
+                list.push(c);
+                found.delete(c);
+            }
+        }
+        for (const other of Array.from(found).sort()) {
+            list.push(other);
+        }
+        return list;
+    }, [watchlists, initial52WHistory]);
+
+    // Active folder state: default to activeWatchlist folder or "Core Themes"
+    const [selectedFolder, setSelectedFolder] = useState<string>(activeWatchlist.folder || "Core Themes");
+
+    // Keep selectedFolder in sync if activeWatchlist moves to another folder
+    useEffect(() => {
+        if (activeWatchlist.folder && activeWatchlist.folder !== selectedFolder) {
+            setSelectedFolder(activeWatchlist.folder);
+        }
+    }, [activeWatchlist.id, activeWatchlist.folder]);
+
+    // Watchlists in current folder
+    const folderWatchlists = useMemo(() => {
+        return watchlists.filter((w) => (w.folder || "Custom") === selectedFolder);
+    }, [watchlists, selectedFolder]);
+
+    // Searchable dropdown state for All Watchlists
+    const [isAllWlDropdownOpen, setIsAllWlDropdownOpen] = useState<boolean>(false);
+    const [allWlSearch, setAllWlSearch] = useState<string>("");
+
+    // Folder management states
+    const [editingFolderModal, setEditingFolderModal] = useState<string | null>(null);
+    const [folderRenameText, setFolderRenameText] = useState<string>("");
 
     // Bulk Ticker Paste Modal states
     const [isPasteModalOpen, setIsPasteModalOpen] = useState(false);
@@ -170,12 +277,16 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
         }
     }, [benchmarkId, dynamicRRGMap]);
 
-    // Dynamic client-side fetch cache for constituent performance metrics
-    const [constituentPerformanceMap, setConstituentPerformanceMap] = useState<ConstituentPerformanceMap | null>(cachedConstituents);
-    const [isLoadingConstituents, setIsLoadingConstituents] = useState<boolean>(!cachedConstituents);
+    // Dynamic client-side fetch cache for constituent performance metrics (hydrated at build-time)
+    const [constituentPerformanceMap, setConstituentPerformanceMap] = useState<ConstituentPerformanceMap | null>(
+        initialConstituentPerformance || cachedConstituents
+    );
+    const [isLoadingConstituents, setIsLoadingConstituents] = useState<boolean>(
+        !initialConstituentPerformance && !cachedConstituents
+    );
 
     useEffect(() => {
-        if (!cachedConstituents) {
+        if (!initialConstituentPerformance && !cachedConstituents) {
             setIsLoadingConstituents(true);
             fetch("/data/constituent_performance/constituent_performance_latest.json")
                 .then((res) => (res.ok ? res.json() : null))
@@ -192,7 +303,7 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                     setIsLoadingConstituents(false);
                 });
         }
-    }, []);
+    }, [initialConstituentPerformance]);
 
     // CAGR transformation helper: converts cumulative return into annualized CAGR
     const calculateCAGR = (ret: number | null | undefined, years: number): number | null => {
@@ -547,7 +658,8 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
     // Watchlist management handlers
     const handleCreateWatchlist = () => {
         if (!newWatchlistName.trim()) return;
-        createWatchlist(newWatchlistName.trim());
+        const targetFolder = selectedFolder === "System Scans" ? "52W Scans" : selectedFolder;
+        createWatchlist(newWatchlistName.trim(), [], targetFolder);
         setNewWatchlistName("");
         setIsCreating(false);
     };
@@ -665,237 +777,431 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
 
             {/* Watchlist Bar & Stock Picker */}
             <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    {/* Watchlist Tabs */}
-                    <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
-                        <span className="text-xs font-semibold text-slate-400 flex items-center gap-1 shrink-0">
-                            <Layers className="h-3.5 w-3.5 text-blue-400" />
-                            Watchlist:
-                        </span>
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                    {/* 2-Tier Navigation */}
+                    <div className="flex-1 space-y-2.5 min-w-0">
+                        {/* Tier 1: Folder Tabs & Searchable Dropdown */}
+                        <div className="flex items-center justify-between gap-2 border-b border-slate-800 pb-2 flex-wrap">
+                            <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-0.5">
+                                <span className="text-xs font-semibold text-slate-400 flex items-center gap-1 mr-1 shrink-0">
+                                    <Layers className="h-3.5 w-3.5 text-blue-400" />
+                                    Folders:
+                                </span>
+                                {allFolders.map((fName) => {
+                                    const isFActive = fName === selectedFolder;
+                                    const count = watchlists.filter((w) => (w.folder || "Custom") === fName).length;
+                                    const isSystemFolder = fName === "System Scans";
+                                    return (
+                                        <button
+                                            key={fName}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedFolder(fName);
+                                                const listsInFolder = watchlists.filter((w) => (w.folder || "Custom") === fName);
+                                                if (listsInFolder.length > 0 && (activeWatchlist.folder || "Custom") !== fName) {
+                                                    setActiveId(listsInFolder[0].id);
+                                                }
+                                            }}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 border ${
+                                                isFActive
+                                                    ? "bg-blue-600/20 text-blue-300 border-blue-500/50 shadow-sm"
+                                                    : "bg-[#1a1a2e] text-slate-400 border-slate-800 hover:bg-[#252542] hover:text-slate-200"
+                                            }`}
+                                        >
+                                            <span>{isSystemFolder ? "⭐" : "📁"} {fName}</span>
+                                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/40 text-slate-400 font-mono">
+                                                {count}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
 
-                        {watchlists.map((w) => {
-                            const isActive = w.id === activeId;
-                            return (
-                                <button
-                                    key={w.id}
-                                    onClick={() => setActiveId(w.id)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1.5 border ${
-                                        isActive
-                                            ? "bg-blue-600/20 text-blue-300 border-blue-500/50 shadow-sm"
-                                            : "bg-[#1a1a2e] text-slate-400 border-slate-800 hover:bg-[#252542] hover:text-slate-200"
-                                    }`}
-                                >
-                                    <span>{w.name}</span>
-                                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/40 text-slate-400">
-                                        {w.tickers.length}
-                                    </span>
-                                </button>
-                            );
-                        })}
-
-                        {/* Create Watchlist Button */}
-                        {!isCreating ? (
-                            <button
-                                onClick={() => {
-                                    setIsCreating(true);
-                                    setNewWatchlistName("");
-                                }}
-                                className="px-2.5 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
-                            >
-                                <Plus className="h-3.5 w-3.5" />
-                                <span>New List</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center gap-1.5 bg-[#1a1a2e] border border-blue-500/50 rounded-lg p-1">
-                                <input
-                                    type="text"
-                                    placeholder="Watchlist Name..."
-                                    value={newWatchlistName}
-                                    onChange={(e) => setNewWatchlistName(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleCreateWatchlist()}
-                                    className="bg-transparent border-none text-xs text-white px-2 py-0.5 focus:outline-none w-36"
-                                    autoFocus
-                                />
-                                <button
-                                    onClick={handleCreateWatchlist}
-                                    className="p-1 bg-blue-600 text-white rounded hover:bg-blue-500"
-                                >
-                                    <Check className="h-3 w-3" />
-                                </button>
-                                <button
-                                    onClick={() => setIsCreating(false)}
-                                    className="p-1 text-slate-400 hover:text-white"
-                                >
-                                    <X className="h-3 w-3" />
-                                </button>
+                                {selectedFolder !== "Core Themes" && selectedFolder !== "System Scans" && (
+                                    <div className="flex items-center gap-1 shrink-0 ml-1">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setFolderRenameText(selectedFolder);
+                                                setEditingFolderModal(selectedFolder);
+                                            }}
+                                            className="px-2 py-1 text-slate-400 hover:text-white rounded bg-slate-800/80 hover:bg-slate-700 text-[11px] flex items-center gap-1 border border-slate-700"
+                                            title={`Rename folder "${selectedFolder}"`}
+                                        >
+                                            <Edit3 className="w-3 h-3 text-blue-400" />
+                                            <span>Rename</span>
+                                        </button>
+                                        {selectedFolder !== "Custom" && selectedFolder !== "52W Scans" && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (confirm(`Dissolve folder "${selectedFolder}"? All watchlists in it will be moved to "Custom".`)) {
+                                                        dissolveFolder(selectedFolder);
+                                                        setSelectedFolder("Custom");
+                                                    }
+                                                }}
+                                                className="px-2 py-1 text-slate-400 hover:text-amber-300 rounded bg-slate-800/80 hover:bg-slate-700 text-[11px] flex items-center gap-1 border border-slate-700"
+                                                title={`Dissolve folder "${selectedFolder}" into Custom`}
+                                            >
+                                                <GitMerge className="w-3 h-3 text-amber-400" />
+                                                <span>Dissolve</span>
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
                             </div>
-                        )}
+
+                            {/* Dropdown Fallback: [ 📂 All Watchlists ] */}
+                            <div className="relative shrink-0">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAllWlDropdownOpen((prev) => !prev)}
+                                    className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-medium border border-slate-700 transition-colors"
+                                >
+                                    <Folder className="h-3.5 w-3.5 text-blue-400" />
+                                    <span>All Watchlists ({watchlists.length})</span>
+                                    <ChevronDown className="h-3 w-3 text-slate-400" />
+                                </button>
+
+                                {isAllWlDropdownOpen && (
+                                    <div className="absolute right-0 top-full mt-1.5 w-72 bg-[#14141f] border border-slate-700 rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                                        <div className="relative mb-2">
+                                            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input
+                                                type="text"
+                                                placeholder="Search all watchlists..."
+                                                value={allWlSearch}
+                                                onChange={(e) => setAllWlSearch(e.target.value)}
+                                                className="w-full bg-[#0d0d14] border border-slate-700 rounded-lg pl-8 pr-2 py-1 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+                                                autoFocus
+                                            />
+                                        </div>
+                                        <div className="max-h-56 overflow-y-auto space-y-2">
+                                            {allFolders.map((fName) => {
+                                                const lists = watchlists.filter((w) => {
+                                                    const matchFolder = (w.folder || "Custom") === fName;
+                                                    if (!matchFolder) return false;
+                                                    if (!allWlSearch.trim()) return true;
+                                                    return w.name.toLowerCase().includes(allWlSearch.trim().toLowerCase());
+                                                });
+                                                if (lists.length === 0) return null;
+                                                return (
+                                                    <div key={fName} className="space-y-0.5">
+                                                        <div className="text-[10px] uppercase font-bold text-slate-500 px-2 py-0.5 tracking-wider">
+                                                            {fName}
+                                                        </div>
+                                                        {lists.map((w) => {
+                                                            const isWActive = w.id === activeId;
+                                                            return (
+                                                                <button
+                                                                    key={w.id}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        setActiveId(w.id);
+                                                                        setSelectedFolder(w.folder || "Custom");
+                                                                        setIsAllWlDropdownOpen(false);
+                                                                        setAllWlSearch("");
+                                                                    }}
+                                                                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors ${
+                                                                        isWActive
+                                                                            ? "bg-blue-600 text-white font-semibold"
+                                                                            : "text-slate-300 hover:bg-slate-800"
+                                                                    }`}
+                                                                >
+                                                                    <span className="truncate pr-2">{w.name}</span>
+                                                                    <span className="text-[10px] font-mono text-slate-400">
+                                                                        {w.tickers.length} stocks
+                                                                    </span>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Tier 2: Watchlist Chips for Active Folder */}
+                        <div className="flex items-center gap-2 overflow-x-auto py-1">
+                            {folderWatchlists.length === 0 ? (
+                                <span className="text-xs text-slate-500 italic py-1">
+                                    No watchlists in {selectedFolder}. Click &ldquo;New List&rdquo; to create one!
+                                </span>
+                            ) : (
+                                folderWatchlists.map((w) => {
+                                    const isActive = w.id === activeId;
+                                    return (
+                                        <button
+                                            key={w.id}
+                                            onClick={() => setActiveId(w.id)}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1.5 border shrink-0 ${
+                                                isActive
+                                                    ? "bg-blue-600/20 text-blue-300 border-blue-500/50 shadow-sm font-semibold"
+                                                    : "bg-[#1a1a2e] text-slate-400 border-slate-800 hover:bg-[#252542] hover:text-slate-200"
+                                            }`}
+                                        >
+                                            <span>{w.name}</span>
+                                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/40 text-slate-400 font-mono">
+                                                {w.tickers.length}
+                                            </span>
+                                        </button>
+                                    );
+                                })
+                            )}
+
+                            {/* Create Watchlist Button */}
+                            {!isCreating ? (
+                                <button
+                                    onClick={() => {
+                                        setIsCreating(true);
+                                        setNewWatchlistName("");
+                                    }}
+                                    className="px-2.5 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
+                                    title={`Create new watchlist in ${selectedFolder === "System Scans" ? "52W Scans" : selectedFolder}`}
+                                >
+                                    <Plus className="h-3.5 w-3.5" />
+                                    <span>New List</span>
+                                </button>
+                            ) : (
+                                <div className="flex items-center gap-1.5 bg-[#1a1a2e] border border-blue-500/50 rounded-lg p-1 shrink-0">
+                                    <input
+                                        type="text"
+                                        placeholder={`List Name in ${selectedFolder === "System Scans" ? "52W Scans" : selectedFolder}...`}
+                                        value={newWatchlistName}
+                                        onChange={(e) => setNewWatchlistName(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && handleCreateWatchlist()}
+                                        className="bg-transparent border-none text-xs text-white px-2 py-0.5 focus:outline-none w-44"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={handleCreateWatchlist}
+                                        className="p-1 bg-blue-600 text-white rounded hover:bg-blue-500"
+                                    >
+                                        <Check className="h-3 w-3" />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsCreating(false)}
+                                        className="p-1 text-slate-400 hover:text-white"
+                                    >
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Clone as Custom for System Watchlists */}
+                            {activeWatchlist.isSystem && (
+                                <button
+                                    onClick={() => {
+                                        const newId = cloneWatchlist(activeWatchlist.id, "52W Scans");
+                                        if (newId) {
+                                            setActiveId(newId);
+                                            setSelectedFolder("52W Scans");
+                                        }
+                                    }}
+                                    className="px-2.5 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 shrink-0 ml-1"
+                                    title="Clone dynamic system list into editable 52W Scans folder"
+                                >
+                                    <Copy className="h-3.5 w-3.5" />
+                                    <span>Clone as Custom</span>
+                                </button>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Rename / Delete Active Watchlist */}
-                    <div className="flex items-center gap-2 self-end lg:self-center shrink-0">
-                        {isRenaming ? (
-                            <div className="flex items-center gap-1 bg-[#1a1a2e] border border-slate-700 rounded-lg p-1">
-                                <input
-                                    type="text"
-                                    value={editName}
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleRenameWatchlist()}
-                                    className="bg-transparent text-xs text-white px-2 py-0.5 focus:outline-none w-32"
-                                    autoFocus
-                                />
-                                <button onClick={handleRenameWatchlist} className="p-1 bg-blue-600 text-white rounded">
-                                    <Check className="h-3 w-3" />
+                    {/* Rename / Delete Active Watchlist (User lists only) */}
+                    {!activeWatchlist.isSystem && (
+                        <div className="flex items-center gap-2 self-end lg:self-start shrink-0 pt-1">
+                            {isRenaming ? (
+                                <div className="flex items-center gap-1 bg-[#1a1a2e] border border-slate-700 rounded-lg p-1">
+                                    <input
+                                        type="text"
+                                        value={editName}
+                                        onChange={(e) => setEditName(e.target.value)}
+                                        onKeyDown={(e) => e.key === "Enter" && handleRenameWatchlist()}
+                                        className="bg-transparent text-xs text-white px-2 py-0.5 focus:outline-none w-32"
+                                        autoFocus
+                                    />
+                                    <button onClick={handleRenameWatchlist} className="p-1 bg-blue-600 text-white rounded">
+                                        <Check className="h-3 w-3" />
+                                    </button>
+                                    <button onClick={() => setIsRenaming(false)} className="p-1 text-slate-400">
+                                        <X className="h-3 w-3" />
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setEditName(activeWatchlist.name);
+                                        setIsRenaming(true);
+                                    }}
+                                    className="p-1.5 bg-[#1a1a2e] hover:bg-[#252542] text-slate-400 hover:text-white border border-slate-800 rounded-lg text-xs transition-colors"
+                                    title="Rename current watchlist"
+                                >
+                                    <Edit3 className="h-3.5 w-3.5" />
                                 </button>
-                                <button onClick={() => setIsRenaming(false)} className="p-1 text-slate-400">
-                                    <X className="h-3 w-3" />
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    setEditName(activeWatchlist.name);
-                                    setIsRenaming(true);
-                                }}
-                                className="p-1.5 bg-[#1a1a2e] hover:bg-[#252542] text-slate-400 hover:text-white border border-slate-800 rounded-lg text-xs transition-colors"
-                                title="Rename current watchlist"
-                            >
-                                <Edit3 className="h-3.5 w-3.5" />
-                            </button>
-                        )}
+                            )}
 
-                        {watchlists.length > 1 && (
-                            <button
-                                onClick={() => {
-                                    if (confirm(`Delete watchlist "${activeWatchlist.name}"?`)) {
-                                        deleteWatchlist(activeWatchlist.id);
-                                    }
-                                }}
-                                className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs transition-colors"
-                                title="Delete current watchlist"
-                            >
-                                <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                        )}
-                    </div>
+                            {watchlists.filter((w) => !w.isSystem).length > 1 && (
+                                <button
+                                    onClick={() => {
+                                        if (confirm(`Delete watchlist "${activeWatchlist.name}"?`)) {
+                                            deleteWatchlist(activeWatchlist.id);
+                                        }
+                                    }}
+                                    className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs transition-colors"
+                                    title="Delete current watchlist"
+                                >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Stock Picker Input & Stock Pills */}
                 <div className="pt-2 border-t border-[#1e1e2e] space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="relative flex-1 max-w-md">
-                            <div className="flex items-center bg-[#1a1a2e] border border-slate-700/60 rounded-lg px-3 py-1.5 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/30 transition-colors">
-                                <Search className="h-3.5 w-3.5 text-slate-400 mr-2 shrink-0" />
-                                <input
-                                    type="text"
-                                    placeholder="Add stock to watchlist (e.g. INFY, PSPPROJECT, OFSS, RELIANCE)..."
-                                    value={stockSearchQuery}
-                                    onChange={(e) => {
-                                        setStockSearchQuery(e.target.value);
-                                        setIsSearchOpen(true);
-                                    }}
-                                    onFocus={() => setIsSearchOpen(true)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            e.preventDefault();
-                                            const trimmed = stockSearchQuery.trim();
-                                            if (!trimmed) return;
-                                            const { allParsed } = parseBulkTickers(trimmed);
-                                            if (allParsed.length === 1) {
-                                                addTicker(allParsed[0]);
-                                                setStockSearchQuery("");
-                                                setIsSearchOpen(false);
-                                            } else if (allParsed.length > 1) {
-                                                addMultipleTickers(allParsed);
-                                                setStockSearchQuery("");
-                                                setIsSearchOpen(false);
-                                            }
-                                        }
-                                    }}
-                                    className="bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none w-full"
-                                />
-                                {stockSearchQuery && (
-                                    <button
-                                        onClick={() => {
-                                            setStockSearchQuery("");
-                                            setIsSearchOpen(false);
+                    {activeWatchlist.isSystem ? (
+                        <div className="flex flex-wrap items-center justify-between gap-3 bg-amber-500/10 border border-amber-500/20 px-3.5 py-2 rounded-lg text-xs text-amber-200">
+                            <div className="flex items-center gap-2">
+                                <span className="font-semibold flex items-center gap-1.5">
+                                    <span>🔒</span> System Scan (Read-Only)
+                                </span>
+                                <span className="text-amber-300/80 text-[11px] hidden sm:inline">
+                                    — Auto-generated daily from 52W scan pipeline. Clone to create an editable custom list.
+                                </span>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    const newId = cloneWatchlist(activeWatchlist.id, "52W Scans");
+                                    if (newId) {
+                                        setActiveId(newId);
+                                        setSelectedFolder("52W Scans");
+                                    }
+                                }}
+                                className="px-2.5 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/40 rounded-md text-xs font-semibold transition-colors flex items-center gap-1.5 shrink-0"
+                            >
+                                <Copy className="h-3 w-3" />
+                                <span>Clone as Custom</span>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="relative flex-1 max-w-md">
+                                <div className="flex items-center bg-[#1a1a2e] border border-slate-700/60 rounded-lg px-3 py-1.5 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/30 transition-colors">
+                                    <Search className="h-3.5 w-3.5 text-slate-400 mr-2 shrink-0" />
+                                    <input
+                                        type="text"
+                                        placeholder="Add stock to watchlist (e.g. INFY, PSPPROJECT, OFSS, RELIANCE)..."
+                                        value={stockSearchQuery}
+                                        onChange={(e) => {
+                                            setStockSearchQuery(e.target.value);
+                                            setIsSearchOpen(true);
                                         }}
-                                        className="text-slate-500 hover:text-slate-300"
-                                    >
-                                        <X className="h-3.5 w-3.5" />
-                                    </button>
+                                        onFocus={() => setIsSearchOpen(true)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                const trimmed = stockSearchQuery.trim();
+                                                if (!trimmed) return;
+                                                const { allParsed } = parseBulkTickers(trimmed);
+                                                if (allParsed.length === 1) {
+                                                    addTicker(allParsed[0]);
+                                                    setStockSearchQuery("");
+                                                    setIsSearchOpen(false);
+                                                } else if (allParsed.length > 1) {
+                                                    addMultipleTickers(allParsed);
+                                                    setStockSearchQuery("");
+                                                    setIsSearchOpen(false);
+                                                }
+                                            }
+                                        }}
+                                        className="bg-transparent text-xs text-white placeholder-slate-500 focus:outline-none w-full"
+                                    />
+                                    {stockSearchQuery && (
+                                        <button
+                                            onClick={() => {
+                                                setStockSearchQuery("");
+                                                setIsSearchOpen(false);
+                                            }}
+                                            className="text-slate-500 hover:text-slate-300"
+                                        >
+                                            <X className="h-3.5 w-3.5" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Autocomplete Dropdown */}
+                                {isSearchOpen && searchResults.length > 0 && (
+                                    <div className="absolute top-full left-0 right-0 mt-1 bg-[#181824] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto divide-y divide-slate-800/60">
+                                        {searchResults.map((t) => {
+                                            const clean = cleanTicker(t);
+                                            const themeEntries = stockSearchIndex[t] || stockSearchIndex[clean];
+                                            const themeTitle = themeEntries && themeEntries.length > 0 ? themeEntries[0].title : null;
+                                            const perf = constituentPerformanceMap?.[t] || constituentPerformanceMap?.[`${clean}.NS`];
+                                            const rsRating = perf?.ibd_rs_rating;
+                                            const isLead = Boolean(perf?.rs_lead_breakout);
+                                            return (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        addTicker(t);
+                                                        setStockSearchQuery("");
+                                                        setIsSearchOpen(false);
+                                                    }}
+                                                    className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-blue-600/20 hover:text-blue-300 flex items-center justify-between transition-colors group"
+                                                >
+                                                    <div className="flex items-center gap-1.5 truncate mr-2">
+                                                        <span className="font-bold text-white text-xs group-hover:text-blue-300">{clean}</span>
+                                                        {themeTitle ? (
+                                                            <span className="text-[10px] text-blue-400/90 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 font-medium truncate max-w-[130px]">{themeTitle}</span>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400 bg-slate-800/70 px-1.5 py-0.5 rounded border border-slate-700/50">NSE Equity</span>
+                                                        )}
+                                                        {isLead && (
+                                                            <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[9px] font-bold shrink-0">
+                                                                <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
+                                                                <span>RS Lead</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 shrink-0">
+                                                        {rsRating != null && (
+                                                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">RS {rsRating}</span>
+                                                        )}
+                                                        <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">{t}</span>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 )}
                             </div>
 
-                            {/* Autocomplete Dropdown */}
-                            {isSearchOpen && searchResults.length > 0 && (
-                                <div className="absolute top-full left-0 right-0 mt-1 bg-[#181824] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto divide-y divide-slate-800/60">
-                                    {searchResults.map((t) => {
-                                        const clean = cleanTicker(t);
-                                        const themeEntries = stockSearchIndex[t] || stockSearchIndex[clean];
-                                        const themeTitle = themeEntries && themeEntries.length > 0 ? themeEntries[0].title : null;
-                                        const perf = constituentPerformanceMap?.[t] || constituentPerformanceMap?.[`${clean}.NS`];
-                                        const rsRating = perf?.ibd_rs_rating;
-                                        const isLead = Boolean(perf?.rs_lead_breakout);
-                                        return (
-                                            <button
-                                                key={t}
-                                                type="button"
-                                                onClick={() => {
-                                                    addTicker(t);
-                                                    setStockSearchQuery("");
-                                                    setIsSearchOpen(false);
-                                                }}
-                                                className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-blue-600/20 hover:text-blue-300 flex items-center justify-between transition-colors group"
-                                            >
-                                                <div className="flex items-center gap-1.5 truncate mr-2">
-                                                    <span className="font-bold text-white text-xs group-hover:text-blue-300">{clean}</span>
-                                                    {themeTitle ? (
-                                                        <span className="text-[10px] text-blue-400/90 bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20 font-medium truncate max-w-[130px]">{themeTitle}</span>
-                                                    ) : (
-                                                        <span className="text-[10px] text-slate-400 bg-slate-800/70 px-1.5 py-0.5 rounded border border-slate-700/50">NSE Equity</span>
-                                                    )}
-                                                    {isLead && (
-                                                        <span className="inline-flex items-center gap-0.5 px-1 py-0.5 bg-gradient-to-r from-amber-500/15 to-orange-500/15 text-amber-300 border border-amber-500/40 rounded text-[9px] font-bold shrink-0">
-                                                            <Zap className="w-2.5 h-2.5 text-amber-400 fill-amber-400" />
-                                                            <span>RS Lead</span>
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    {rsRating != null && (
-                                                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">RS {rsRating}</span>
-                                                    )}
-                                                    <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">{t}</span>
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => {
-                                    setPasteText("");
-                                    setIsPasteModalOpen(true);
-                                }}
-                                className="px-2.5 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm"
-                            >
-                                <Upload className="h-3.5 w-3.5" />
-                                <span>Paste Tickers</span>
-                            </button>
-                            {activeWatchlist.tickers.length > 0 && (
+                            <div className="flex items-center gap-2">
                                 <button
-                                    onClick={clearActiveWatchlist}
-                                    className="px-2.5 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-xs font-medium border border-slate-700/40 transition-colors"
+                                    onClick={() => {
+                                        setPasteText("");
+                                        setIsPasteModalOpen(true);
+                                    }}
+                                    className="px-2.5 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 rounded text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm"
                                 >
-                                    Clear Tickers
+                                    <Upload className="h-3.5 w-3.5" />
+                                    <span>Paste Tickers</span>
                                 </button>
-                            )}
+                                {activeWatchlist.tickers.length > 0 && (
+                                    <button
+                                        onClick={clearActiveWatchlist}
+                                        className="px-2.5 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded text-xs font-medium border border-slate-700/40 transition-colors"
+                                    >
+                                        Clear Tickers
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <div className="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
                         {activeWatchlist.tickers.length === 0 ? (
@@ -909,13 +1215,15 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 group hover:border-blue-500/40 transition-colors"
                                 >
                                     <span>{cleanTicker(t)}</span>
-                                    <button
-                                        onClick={() => removeTicker(t)}
-                                        className="text-slate-400 group-hover:text-red-400 p-0.5 rounded transition-colors"
-                                        title={`Remove ${t}`}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </button>
+                                    {!activeWatchlist.isSystem && (
+                                        <button
+                                            onClick={() => removeTicker(t)}
+                                            className="text-slate-400 group-hover:text-red-400 p-0.5 rounded transition-colors"
+                                            title={`Remove ${t}`}
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    )}
                                 </span>
                             ))
                         )}
@@ -1058,9 +1366,67 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                 </div>
             )}
 
-            {/* 3-Way View Switcher */}
+            {/* Rename Folder Modal */}
+            {editingFolderModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) {
+                            setEditingFolderModal(null);
+                        }
+                    }}
+                >
+                    <div className="bg-[#14141f] border border-slate-700 rounded-2xl w-full max-w-sm shadow-2xl p-6 space-y-4">
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <Edit3 className="h-4 w-4 text-blue-400" />
+                            <span>Rename Folder</span>
+                        </h3>
+                        <div>
+                            <label className="text-xs text-slate-400 block mb-1">New Folder Name</label>
+                            <input
+                                type="text"
+                                value={folderRenameText}
+                                onChange={(e) => setFolderRenameText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter" && folderRenameText.trim()) {
+                                        renameFolder(editingFolderModal, folderRenameText.trim());
+                                        setSelectedFolder(folderRenameText.trim());
+                                        setEditingFolderModal(null);
+                                    }
+                                }}
+                                className="w-full bg-[#0d0d14] border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                                autoFocus
+                            />
+                        </div>
+                        <div className="flex justify-end gap-2 pt-1">
+                            <button
+                                type="button"
+                                onClick={() => setEditingFolderModal(null)}
+                                className="px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (folderRenameText.trim()) {
+                                        renameFolder(editingFolderModal, folderRenameText.trim());
+                                        setSelectedFolder(folderRenameText.trim());
+                                        setEditingFolderModal(null);
+                                    }
+                                }}
+                                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* 5-Way View Switcher */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
-                <div className="flex items-center gap-1 bg-[#111118] p-1 rounded-xl border border-[#1e1e2e]">
+                <div className="flex items-center gap-1 bg-[#111118] p-1 rounded-xl border border-[#1e1e2e] flex-wrap">
                     <button
                         onClick={() => setViewMode("rrg")}
                         className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
@@ -1093,6 +1459,28 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                     >
                         <span>🔀</span>
                         <span>Stacked View (Both)</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("recurrence")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "recurrence"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔁</span>
+                        <span>52W Recurrence Scanner</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("overlap")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "overlap"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔀</span>
+                        <span>Overlap Matrix</span>
                     </button>
                 </div>
 
@@ -2170,6 +2558,76 @@ export function CustomWatchlistRRGClient({ stockSearchIndex = {}, allStockRRGMap
                         <ConstituentTable data={displayConstituents} showCagr={showCagr} />
                     )}
                 </div>
+            )}
+
+            {/* 52W Recurrence Scanner View */}
+            {viewMode === "recurrence" && (
+                initial52WHistory ? (
+                    <Recurrence52WScanner
+                        historyData={initial52WHistory}
+                        stockSearchIndex={stockSearchIndex}
+                        constituentPerformanceMap={constituentPerformanceMap}
+                        onOpenInRRG={(tickers, suggestedName) => {
+                            if (!tickers || tickers.length === 0) return;
+                            const id = createWatchlist(suggestedName || "52W Scan", tickers, "52W Scans");
+                            setActiveId(id);
+                            setSelectedFolder("52W Scans");
+                            setViewMode("rrg");
+                        }}
+                        onOpenInTable={(tickers, suggestedName) => {
+                            if (!tickers || tickers.length === 0) return;
+                            const id = createWatchlist(suggestedName || "52W Scan", tickers, "52W Scans");
+                            setActiveId(id);
+                            setSelectedFolder("52W Scans");
+                            setViewMode("table");
+                        }}
+                        onSaveAsWatchlist={(name, tickers, folder) => {
+                            if (!tickers || tickers.length === 0) return;
+                            const id = createWatchlist(name, tickers, folder || "52W Scans");
+                            setSelectedFolder(folder || "52W Scans");
+                            setActiveId(id);
+                        }}
+                        onAddTickerToActiveWatchlist={(ticker) => {
+                            addTicker(ticker);
+                        }}
+                        activeWatchlistTickers={activeWatchlist.tickers}
+                        activeWatchlistName={activeWatchlist.name}
+                    />
+                ) : (
+                    <div className="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center text-gray-400">
+                        <p className="font-semibold text-gray-200">52-Week Recurrence History Data Unavailable</p>
+                        <p className="text-xs text-gray-500 mt-1">Please ensure market_52w_history.json has been exported.</p>
+                    </div>
+                )
+            )}
+
+            {/* Multi-Watchlist Overlap Matrix View */}
+            {viewMode === "overlap" && (
+                <WatchlistOverlapMatrix
+                    watchlists={watchlists}
+                    stockSearchIndex={stockSearchIndex}
+                    constituentPerformanceMap={constituentPerformanceMap}
+                    onOpenInRRG={(tickers, suggestedName) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(suggestedName || "Overlap Repeaters", tickers, "52W Scans");
+                        setActiveId(id);
+                        setSelectedFolder("52W Scans");
+                        setViewMode("rrg");
+                    }}
+                    onOpenInTable={(tickers, suggestedName) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(suggestedName || "Overlap Repeaters", tickers, "52W Scans");
+                        setActiveId(id);
+                        setSelectedFolder("52W Scans");
+                        setViewMode("table");
+                    }}
+                    onSaveAsWatchlist={(name, tickers, folder) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(name, tickers, folder || "52W Scans");
+                        setSelectedFolder(folder || "52W Scans");
+                        setActiveId(id);
+                    }}
+                />
             )}
         </div>
     );

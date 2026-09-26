@@ -78,6 +78,41 @@ export function getMarketStatus(): MarketStatus {
     return readJson<MarketStatus>("market_status/market_status_latest.json") ?? {};
 }
 
+export interface Stock52WItem {
+    symbol: string;         // e.g. "WELCORP.NS"
+    clean_symbol: string;   // e.g. "WELCORP"
+    close: number;
+    pct_1d: number;
+    pct_5d: number;
+    volume: number;
+    turnover_cr: number;
+    count_5d: number;
+    count_10d: number;
+    count_20d: number;
+    count_60d: number;
+    streak: number;
+    is_fresh_20d: boolean;
+    last_hit_date: string;
+    history_20d: number[];  // 1 = hit, 0 = no hit across last 20 sessions
+}
+
+export interface Market52WHistory {
+    metadata: {
+        latest_session: string;
+        window_sessions: number;
+        start_date: string;
+        end_date: string;
+    };
+    dates: string[];
+    highs: Stock52WItem[];
+    lows: Stock52WItem[];
+    daily_lists: Record<string, { highs: string[]; lows: string[] }>;
+}
+
+export function getMarket52WHistory(): Market52WHistory | null {
+    return readJson<Market52WHistory>("market_status/market_52w_history.json");
+}
+
 export function getConstituentPerformance(): ConstituentPerformanceMap {
     return (
         readJson<ConstituentPerformanceMap>(

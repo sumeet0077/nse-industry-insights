@@ -438,10 +438,10 @@ export function WatchlistOverlapMatrix({
             </div>
 
             {/* Matrix Table */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs text-gray-300">
-                        <thead className="bg-gray-950/80 text-gray-400 font-semibold border-b border-gray-800 uppercase text-[10px] tracking-wider">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-xl flex flex-col">
+                <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[480px] rounded-xl overscroll-auto transition-all">
+                    <table className="w-full text-left text-xs text-gray-300 border-collapse">
+                        <thead className="sticky top-0 z-20 bg-[#0d0d14] text-gray-400 font-semibold border-b border-gray-800 uppercase text-[10px] tracking-wider shadow-sm select-none">
                             <tr>
                                 <th
                                     className="p-3 cursor-pointer hover:text-white transition-colors"

@@ -97,6 +97,7 @@ export interface Stock52WItem {
     is_fresh_20d: boolean;
     last_hit_date: string;
     history_20d: number[];  // 1 = hit, 0 = no hit across last 20 sessions
+    history_60d?: number[]; // 1 = hit, 0 = no hit across up to 60 sessions
 }
 
 export interface Market52WHistory {

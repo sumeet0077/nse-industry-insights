@@ -1,7 +1,7 @@
 // components/watchlist/Recurrence52WScanner.tsx
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import type { Stock52WItem, Market52WHistory, StockSearchIndex } from "@/lib/data";
 import type { ConstituentPerformanceMap } from "@/types";
 import { cleanTicker, normalizeTickerSymbol, makeTradingViewUrl, formatReturn, getReturnColor } from "@/lib/utils";
@@ -27,6 +27,7 @@ import {
     Info,
     ShieldCheck,
     SlidersHorizontal,
+    X,
 } from "lucide-react";
 
 interface Recurrence52WScannerProps {
@@ -48,6 +49,46 @@ export type TradabilityPreset = "tradeable" | "fno_liquid" | "all" | "custom";
 export type CircuitFilterOption = "exclude_low" | "ge_10" | "fno_20" | "fno" | "all";
 export type SortField = "frequency" | "streak" | "rs_rating" | "pct_1d" | "pct_5d" | "turnover" | "close" | "symbol" | "theme" | "band";
 export type SortOrder = "asc" | "desc";
+
+export interface ColumnFilters {
+    symbol: string;
+    bands: string[];
+    circuitLocked: "all" | "unlocked" | "locked";
+    themes: string[];
+    minStreak: number;
+    minFrequency: number;
+    minRS: number;
+    rsLeadOnly: boolean;
+    minClose: number;
+    maxClose: number;
+    minPct1d: number;
+    maxPct1d: number;
+    pct1dDirection: "all" | "positive" | "negative";
+    minPct5d: number;
+    maxPct5d: number;
+    pct5dDirection: "all" | "positive" | "negative";
+    minTurnover: number;
+}
+
+export const defaultColumnFilters: ColumnFilters = {
+    symbol: "",
+    bands: [],
+    circuitLocked: "all",
+    themes: [],
+    minStreak: 0,
+    minFrequency: 0,
+    minRS: 0,
+    rsLeadOnly: false,
+    minClose: 0,
+    maxClose: 0,
+    minPct1d: 0,
+    maxPct1d: 0,
+    pct1dDirection: "all",
+    minPct5d: 0,
+    maxPct5d: 0,
+    pct5dDirection: "all",
+    minTurnover: 0,
+};
 
 function getBandBadgeStyle(band?: string): string {
     const b = (band || "20").trim();
@@ -122,6 +163,96 @@ export function Recurrence52WScanner({
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [saveListName, setSaveListName] = useState<string>("");
+    const [columnFilters, setColumnFilters] = useState<ColumnFilters>(defaultColumnFilters);
+    const [activeFilterPopover, setActiveFilterPopover] = useState<string | null>(null);
+    const [themeFilterSearch, setThemeFilterSearch] = useState<string>("");
+    const filterPopoverRef = useRef<HTMLDivElement>(null);
+
+    // Close column filter popover on click outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (filterPopoverRef.current && !filterPopoverRef.current.contains(event.target as Node)) {
+                setActiveFilterPopover(null);
+            }
+        }
+        if (activeFilterPopover) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [activeFilterPopover]);
+
+    const hasColumnFilter = useCallback((col: string): boolean => {
+        if (col === "symbol") return Boolean(columnFilters.symbol.trim());
+        if (col === "band") return columnFilters.bands.length > 0 || columnFilters.circuitLocked !== "all";
+        if (col === "theme") return columnFilters.themes.length > 0;
+        if (col === "streak") return columnFilters.minStreak > 0;
+        if (col === "frequency") return columnFilters.minFrequency > 0;
+        if (col === "rs_rating") return columnFilters.minRS > 0 || columnFilters.rsLeadOnly;
+        if (col === "close") return columnFilters.minClose > 0 || columnFilters.maxClose > 0;
+        if (col === "pct_1d") return columnFilters.minPct1d !== 0 || columnFilters.maxPct1d !== 0 || columnFilters.pct1dDirection !== "all";
+        if (col === "pct_5d") return columnFilters.minPct5d !== 0 || columnFilters.maxPct5d !== 0 || columnFilters.pct5dDirection !== "all";
+        if (col === "turnover") return columnFilters.minTurnover > 0;
+        return false;
+    }, [columnFilters]);
+
+    const activeColumnFilterCount = useMemo(() => {
+        let count = 0;
+        if (columnFilters.symbol.trim()) count++;
+        if (columnFilters.bands.length > 0 || columnFilters.circuitLocked !== "all") count++;
+        if (columnFilters.themes.length > 0) count++;
+        if (columnFilters.minStreak > 0) count++;
+        if (columnFilters.minFrequency > 0) count++;
+        if (columnFilters.minRS > 0 || columnFilters.rsLeadOnly) count++;
+        if (columnFilters.minClose > 0 || columnFilters.maxClose > 0) count++;
+        if (columnFilters.minPct1d !== 0 || columnFilters.maxPct1d !== 0 || columnFilters.pct1dDirection !== "all") count++;
+        if (columnFilters.minPct5d !== 0 || columnFilters.maxPct5d !== 0 || columnFilters.pct5dDirection !== "all") count++;
+        if (columnFilters.minTurnover > 0) count++;
+        return count;
+    }, [columnFilters]);
+
+    const clearSingleColumnFilter = useCallback((col: string) => {
+        setColumnFilters((prev) => {
+            const next = { ...prev };
+            if (col === "symbol") next.symbol = "";
+            else if (col === "band") {
+                next.bands = [];
+                next.circuitLocked = "all";
+            } else if (col === "theme") next.themes = [];
+            else if (col === "streak") next.minStreak = 0;
+            else if (col === "frequency") next.minFrequency = 0;
+            else if (col === "rs_rating") {
+                next.minRS = 0;
+                next.rsLeadOnly = false;
+            } else if (col === "close") {
+                next.minClose = 0;
+                next.maxClose = 0;
+            } else if (col === "pct_1d") {
+                next.minPct1d = 0;
+                next.maxPct1d = 0;
+                next.pct1dDirection = "all";
+            } else if (col === "pct_5d") {
+                next.minPct5d = 0;
+                next.maxPct5d = 0;
+                next.pct5dDirection = "all";
+            } else if (col === "turnover") next.minTurnover = 0;
+            return next;
+        });
+    }, []);
+
+    const clearAllColumnFilters = useCallback(() => {
+        setColumnFilters(defaultColumnFilters);
+    }, []);
+
+    const getSortIcon = (field: SortField) => {
+        if (sortField !== field) {
+            return <ArrowUpDown className="w-3 h-3 text-gray-500 opacity-60 group-hover:opacity-100 transition-opacity" />;
+        }
+        return sortOrder === "desc" ? (
+            <span className="text-cyan-400 font-bold text-xs">▼</span>
+        ) : (
+            <span className="text-cyan-400 font-bold text-xs">▲</span>
+        );
+    };
 
     const applyTradabilityPreset = useCallback((preset: "tradeable" | "fno_liquid" | "all") => {
         setTradabilityPreset(preset);
@@ -191,6 +322,18 @@ export function Recurrence52WScanner({
     // Source pool according to direction
     const rawItems = direction === "high" ? historyData.highs : historyData.lows;
 
+    // Available themes computed from current rawItems with stock counts
+    const availableThemes = useMemo(() => {
+        const counts: Record<string, number> = {};
+        rawItems.forEach((item) => {
+            const t = getStockTheme(item.clean_symbol);
+            counts[t] = (counts[t] || 0) + 1;
+        });
+        return Object.entries(counts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    }, [rawItems, getStockTheme]);
+
     // Filter items
     const filteredItems = useMemo(() => {
         return rawItems.filter((item) => {
@@ -247,9 +390,85 @@ export function Recurrence52WScanner({
                 if (!matchSym && !matchTheme) return false;
             }
 
+            // 4. Column Header Filters
+            // Symbol filter
+            if (columnFilters.symbol.trim()) {
+                const sq = columnFilters.symbol.trim().toLowerCase();
+                const mSym = item.clean_symbol.toLowerCase().includes(sq) || item.symbol.toLowerCase().includes(sq);
+                if (!mSym) return false;
+            }
+
+            // Band filter
+            if (columnFilters.bands.length > 0) {
+                const b = (item.circuit_band || "20").trim();
+                if (!columnFilters.bands.includes(b)) return false;
+            }
+
+            // Circuit Lock filter
+            if (columnFilters.circuitLocked === "locked") {
+                if (!item.is_circuit_locked) return false;
+            } else if (columnFilters.circuitLocked === "unlocked") {
+                if (item.is_circuit_locked) return false;
+            }
+
+            // Theme filter
+            if (columnFilters.themes.length > 0) {
+                const itemTheme = getStockTheme(item.clean_symbol);
+                if (!columnFilters.themes.includes(itemTheme)) return false;
+            }
+
+            // Streak filter
+            if (columnFilters.minStreak > 0) {
+                if (item.streak < columnFilters.minStreak) return false;
+            }
+
+            // Frequency filter
+            if (columnFilters.minFrequency > 0) {
+                if (countInWindow < columnFilters.minFrequency) return false;
+            }
+
+            // IBD RS filter
+            if (columnFilters.minRS > 0 || columnFilters.rsLeadOnly) {
+                const { rs, lead } = getRSMetrics(item.symbol, item.clean_symbol);
+                if (columnFilters.minRS > 0 && (rs === null || rs < columnFilters.minRS)) return false;
+                if (columnFilters.rsLeadOnly && !lead) return false;
+            }
+
+            // Close price filter
+            if (columnFilters.minClose > 0 && item.close < columnFilters.minClose) return false;
+            if (columnFilters.maxClose > 0 && item.close > columnFilters.maxClose) return false;
+
+            // 1D % filter
+            if (columnFilters.pct1dDirection === "positive" && item.pct_1d <= 0) return false;
+            if (columnFilters.pct1dDirection === "negative" && item.pct_1d >= 0) return false;
+            if (columnFilters.minPct1d !== 0 && item.pct_1d < columnFilters.minPct1d) return false;
+            if (columnFilters.maxPct1d !== 0 && item.pct_1d > columnFilters.maxPct1d) return false;
+
+            // 5D % filter
+            if (columnFilters.pct5dDirection === "positive" && item.pct_5d <= 0) return false;
+            if (columnFilters.pct5dDirection === "negative" && item.pct_5d >= 0) return false;
+            if (columnFilters.minPct5d !== 0 && item.pct_5d < columnFilters.minPct5d) return false;
+            if (columnFilters.maxPct5d !== 0 && item.pct_5d > columnFilters.maxPct5d) return false;
+
+            // Turnover filter
+            if (columnFilters.minTurnover > 0 && item.turnover_cr < columnFilters.minTurnover) return false;
+
             return true;
         });
-    }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter, lookback, presetFilter, searchQuery, getRSMetrics, getStockTheme]);
+    }, [
+        rawItems,
+        excludeCircuitLocked,
+        minTurnover,
+        minPrice,
+        seriesFilter,
+        circuitFilter,
+        lookback,
+        presetFilter,
+        searchQuery,
+        columnFilters,
+        getRSMetrics,
+        getStockTheme,
+    ]);
 
     // Sort items
     const sortedItems = useMemo(() => {
@@ -464,9 +683,15 @@ export function Recurrence52WScanner({
         }).length;
     }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
 
-    const dates20 = useMemo(() => {
-        return historyData.dates ? historyData.dates.slice(-20) : [];
-    }, [historyData.dates]);
+    const windowDates = useMemo(() => {
+        return historyData.dates ? historyData.dates.slice(-lookback) : [];
+    }, [historyData.dates, lookback]);
+
+    const filteredAvailableThemes = useMemo(() => {
+        if (!themeFilterSearch.trim()) return availableThemes;
+        const q = themeFilterSearch.trim().toLowerCase();
+        return availableThemes.filter((t) => t.name.toLowerCase().includes(q));
+    }, [availableThemes, themeFilterSearch]);
 
     return (
         <div className="space-y-4">
@@ -860,6 +1085,18 @@ export function Recurrence52WScanner({
                             Clear
                         </button>
                     )}
+
+                    {activeColumnFilterCount > 0 && (
+                        <button
+                            type="button"
+                            onClick={clearAllColumnFilters}
+                            className="flex items-center gap-1.5 px-2.5 py-1 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-lg text-xs font-medium transition-colors"
+                            title="Reset all column filters"
+                        >
+                            <X className="w-3.5 h-3.5" />
+                            <span>Clear Column Filters ({activeColumnFilterCount})</span>
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -1003,109 +1240,976 @@ export function Recurrence52WScanner({
             </div>
 
             {/* Recurrence Table */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs text-gray-300">
-                        <thead className="bg-gray-950/80 text-gray-400 font-semibold border-b border-gray-800 uppercase text-[10px] tracking-wider">
+            <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-xl flex flex-col">
+                <div className="overflow-x-auto overflow-y-auto max-h-[calc(100vh-270px)] min-h-[480px] rounded-xl overscroll-auto transition-all">
+                    <table className="w-full text-left text-xs text-gray-300 border-collapse">
+                        <thead className="sticky top-0 z-20 bg-[#0d0d14] text-gray-400 font-semibold border-b border-gray-800 uppercase text-[10px] tracking-wider shadow-sm select-none">
                             <tr>
                                 <th className="p-3 w-10 text-center">
                                     <span className="sr-only">Select</span>
                                 </th>
-                                <th
-                                    className="p-3 cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("symbol")}
-                                >
+                                <th className="p-2.5 relative">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("symbol")}
+                                        >
+                                            <span>Symbol</span>
+                                            {getSortIcon("symbol")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "symbol" ? null : "symbol");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("symbol")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Symbol"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("symbol") ? "fill-blue-400" : ""}`} />
+                                        </button>
+                                    </div>
+                                    {activeFilterPopover === "symbol" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Symbol</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("symbol") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("symbol")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="relative">
+                                                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search symbol (e.g. TATA)..."
+                                                        value={columnFilters.symbol}
+                                                        onChange={(e) => setColumnFilters((prev) => ({ ...prev, symbol: e.target.value }))}
+                                                        className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-gray-100 placeholder:text-gray-500 focus:outline-none focus:border-blue-500 font-mono"
+                                                        autoFocus
+                                                    />
+                                                </div>
+                                                <p className="text-[10px] text-gray-500">Filter by symbol name or clean ticker.</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </th>
+                                <th className="p-2.5 relative text-center">
+                                    <div className="flex items-center justify-center gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("band")}
+                                        >
+                                            <span>Band</span>
+                                            {getSortIcon("band")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "band" ? null : "band");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("band")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Price Band"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("band") ? "fill-blue-400" : ""}`} />
+                                        </button>
+                                    </div>
+                                    {activeFilterPopover === "band" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Circuit Band</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("band") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("band")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <div className="text-[10px] uppercase font-semibold text-gray-500 tracking-wider">Circuit Bands</div>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {[
+                                                        { id: "No Band", label: "F&O / No Band" },
+                                                        { id: "20", label: "20%" },
+                                                        { id: "10", label: "10%" },
+                                                        { id: "5", label: "5%" },
+                                                        { id: "2", label: "2%" },
+                                                    ].map((b) => {
+                                                        const active = columnFilters.bands.includes(b.id);
+                                                        return (
+                                                            <button
+                                                                key={b.id}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setColumnFilters((prev) => ({
+                                                                        ...prev,
+                                                                        bands: active
+                                                                            ? prev.bands.filter((x) => x !== b.id)
+                                                                            : [...prev.bands, b.id],
+                                                                    }));
+                                                                }}
+                                                                className={`px-2 py-1 rounded text-[11px] font-semibold border transition-all ${
+                                                                    active
+                                                                        ? "bg-blue-600 text-white border-blue-500 shadow-sm"
+                                                                        : "bg-gray-800/80 text-gray-300 border-gray-700 hover:bg-gray-700"
+                                                                }`}
+                                                            >
+                                                                {b.label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                                <div className="border-t border-gray-800 pt-2 space-y-1">
+                                                    <div className="text-[10px] uppercase font-semibold text-gray-500 tracking-wider">Circuit Lock State</div>
+                                                    <div className="flex gap-1.5">
+                                                        {(["all", "unlocked", "locked"] as const).map((m) => (
+                                                            <button
+                                                                key={m}
+                                                                type="button"
+                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, circuitLocked: m }))}
+                                                                className={`flex-1 py-1 text-[11px] font-medium rounded border transition-colors ${
+                                                                    columnFilters.circuitLocked === m
+                                                                        ? "bg-blue-600 text-white border-blue-500"
+                                                                        : "bg-gray-800/60 text-gray-300 border-gray-700 hover:bg-gray-700"
+                                                                }`}
+                                                            >
+                                                                {m === "all" ? "All" : m === "unlocked" ? "Unlocked" : "🔒 Locked"}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </th>
+                                <th className="p-2.5 relative">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("theme")}
+                                        >
+                                            <span>Theme</span>
+                                            {getSortIcon("theme")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "theme" ? null : "theme");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("theme")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Theme"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("theme") ? "fill-blue-400" : ""}`} />
+                                        </button>
+                                    </div>
+                                    {activeFilterPopover === "theme" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-72 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="font-semibold text-xs text-gray-200">Filter Theme</span>
+                                                    {columnFilters.themes.length > 0 && (
+                                                        <span className="text-[10px] text-blue-400 font-mono">({columnFilters.themes.length})</span>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("theme") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("theme")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search themes..."
+                                                    value={themeFilterSearch}
+                                                    onChange={(e) => setThemeFilterSearch(e.target.value)}
+                                                    className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2.5 py-1 text-xs text-gray-100 placeholder:text-gray-500 focus:outline-none focus:border-blue-500"
+                                                    autoFocus
+                                                />
+                                                <div className="max-h-52 overflow-y-auto space-y-0.5 pr-1">
+                                                    {filteredAvailableThemes.map(({ name, count }) => {
+                                                        const active = columnFilters.themes.includes(name);
+                                                        return (
+                                                            <button
+                                                                key={name}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setColumnFilters((prev) => ({
+                                                                        ...prev,
+                                                                        themes: active
+                                                                            ? prev.themes.filter((x) => x !== name)
+                                                                            : [...prev.themes, name],
+                                                                    }));
+                                                                }}
+                                                                className={`w-full text-left px-2 py-1 rounded text-xs flex items-center justify-between transition-colors ${
+                                                                    active
+                                                                        ? "bg-blue-600/25 text-blue-200 font-semibold"
+                                                                        : "text-gray-300 hover:bg-gray-800/60"
+                                                                }`}
+                                                            >
+                                                                <span className="truncate pr-2">{name}</span>
+                                                                <span className="text-[10px] font-mono text-gray-500 shrink-0">({count})</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </th>
+                                <th className="p-2.5 relative">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("streak")}
+                                        >
+                                            <span>Active Streak</span>
+                                            {getSortIcon("streak")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "streak" ? null : "streak");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("streak")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Active Streak"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("streak") ? "fill-blue-400" : ""}`} />
+                                        </button>
+                                    </div>
+                                    {activeFilterPopover === "streak" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Active Streak</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("streak") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("streak")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <label className="text-[11px] text-gray-400 block">Min Consecutive Days</label>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    max={60}
+                                                    value={columnFilters.minStreak || ""}
+                                                    onChange={(e) => setColumnFilters((prev) => ({ ...prev, minStreak: Math.max(0, parseInt(e.target.value) || 0) }))}
+                                                    placeholder="e.g. 2"
+                                                    className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2.5 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                    autoFocus
+                                                />
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[0, 1, 2, 3, 5, 10].map((d) => (
+                                                        <button
+                                                            key={d}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minStreak: d }))}
+                                                            className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                                                                columnFilters.minStreak === d
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-bold"
+                                                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {d === 0 ? "All" : `≥${d}d`}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </th>
+                                <th className="p-2.5 relative">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("frequency")}
+                                        >
+                                            <span>Frequency ({lookback}D)</span>
+                                            {getSortIcon("frequency")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "frequency" ? null : "frequency");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("frequency")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Frequency"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("frequency") ? "fill-blue-400" : ""}`} />
+                                        </button>
+                                    </div>
+                                    {activeFilterPopover === "frequency" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Frequency</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("frequency") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("frequency")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <label className="text-[11px] text-gray-400 block">Min Hits in {lookback}D Window</label>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    max={lookback}
+                                                    value={columnFilters.minFrequency || ""}
+                                                    onChange={(e) => setColumnFilters((prev) => ({ ...prev, minFrequency: Math.max(0, parseInt(e.target.value) || 0) }))}
+                                                    placeholder="e.g. 3"
+                                                    className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2.5 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                    autoFocus
+                                                />
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[0, 2, 3, 5, 10, 15].filter((f) => f <= lookback).map((f) => (
+                                                        <button
+                                                            key={f}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minFrequency: f }))}
+                                                            className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                                                                columnFilters.minFrequency === f
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-bold"
+                                                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {f === 0 ? "All" : `≥${f}`}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </th>
+                                <th className="p-2.5">
                                     <div className="flex items-center gap-1">
-                                        Symbol
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                        <span>{lookback}-Day Timeline</span>
+                                        <span className="text-[9px] text-gray-500 normal-case font-normal">(Oldest → Newest)</span>
                                     </div>
                                 </th>
-                                <th
-                                    className="p-3 text-center cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("band")}
-                                >
-                                    <div className="flex items-center justify-center gap-1">
-                                        Band
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                <th className="p-2.5 relative">
+                                    <div className="flex items-center justify-between gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("rs_rating")}
+                                        >
+                                            <span>IBD RS</span>
+                                            {getSortIcon("rs_rating")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "rs_rating" ? null : "rs_rating");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("rs_rating")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter IBD RS"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("rs_rating") ? "fill-blue-400" : ""}`} />
+                                        </button>
                                     </div>
+                                    {activeFilterPopover === "rs_rating" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter IBD RS</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("rs_rating") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("rs_rating")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <label className="text-[11px] text-gray-400 block">Min RS Rating (1–99)</label>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    max={99}
+                                                    value={columnFilters.minRS || ""}
+                                                    onChange={(e) => setColumnFilters((prev) => ({ ...prev, minRS: Math.max(0, parseInt(e.target.value) || 0) }))}
+                                                    placeholder="e.g. 80"
+                                                    className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2.5 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                    autoFocus
+                                                />
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[0, 70, 80, 85, 90].map((r) => (
+                                                        <button
+                                                            key={r}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minRS: r }))}
+                                                            className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                                                                columnFilters.minRS === r
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-bold"
+                                                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {r === 0 ? "All" : `≥${r}`}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <label className="flex items-center gap-2 pt-1 border-t border-gray-800 cursor-pointer text-xs text-gray-300">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={columnFilters.rsLeadOnly}
+                                                        onChange={(e) => setColumnFilters((prev) => ({ ...prev, rsLeadOnly: e.target.checked }))}
+                                                        className="rounded bg-gray-800 border-gray-700 text-blue-600 focus:ring-0"
+                                                    />
+                                                    <span>RS Lead Breakout (*) Only</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    )}
                                 </th>
-                                <th
-                                    className="p-3 cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("theme")}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        Theme
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                <th className="p-2.5 relative text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("close")}
+                                        >
+                                            <span>Close (₹)</span>
+                                            {getSortIcon("close")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "close" ? null : "close");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("close")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Close Price"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("close") ? "fill-blue-400" : ""}`} />
+                                        </button>
                                     </div>
+                                    {activeFilterPopover === "close" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Close Price</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("close") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("close")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Min Price (₹)</label>
+                                                        <input
+                                                            type="number"
+                                                            min={0}
+                                                            value={columnFilters.minClose || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, minClose: Math.max(0, parseFloat(e.target.value) || 0) }))}
+                                                            placeholder="0"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Max Price (₹)</label>
+                                                        <input
+                                                            type="number"
+                                                            min={0}
+                                                            value={columnFilters.maxClose || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, maxClose: Math.max(0, parseFloat(e.target.value) || 0) }))}
+                                                            placeholder="Any"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[
+                                                        { label: "All", min: 0, max: 0 },
+                                                        { label: "< ₹50", min: 0, max: 50 },
+                                                        { label: "₹50–₹500", min: 50, max: 500 },
+                                                        { label: "> ₹500", min: 500, max: 0 },
+                                                        { label: "> ₹1,000", min: 1000, max: 0 },
+                                                    ].map((p, idx) => (
+                                                        <button
+                                                            key={idx}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minClose: p.min, maxClose: p.max }))}
+                                                            className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
+                                                                columnFilters.minClose === p.min && columnFilters.maxClose === p.max
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-semibold"
+                                                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {p.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </th>
-                                <th
-                                    className="p-3 cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("streak")}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        Active Streak
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                <th className="p-2.5 relative text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("pct_1d")}
+                                        >
+                                            <span>1D %</span>
+                                            {getSortIcon("pct_1d")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "pct_1d" ? null : "pct_1d");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("pct_1d")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter 1D Return"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("pct_1d") ? "fill-blue-400" : ""}`} />
+                                        </button>
                                     </div>
+                                    {activeFilterPopover === "pct_1d" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter 1D Return (%)</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("pct_1d") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("pct_1d")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <div className="flex gap-1.5">
+                                                    {[
+                                                        { id: "all", label: "All" },
+                                                        { id: "positive", label: "Gainers (>0%)" },
+                                                        { id: "negative", label: "Losers (<0%)" },
+                                                    ].map((d) => (
+                                                        <button
+                                                            key={d.id}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, pct1dDirection: d.id as any }))}
+                                                            className={`flex-1 py-1 text-[10px] font-semibold rounded border transition-colors ${
+                                                                columnFilters.pct1dDirection === d.id
+                                                                    ? "bg-blue-600 text-white border-blue-500"
+                                                                    : "bg-gray-800/60 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {d.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Min %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.5"
+                                                            value={columnFilters.minPct1d || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, minPct1d: parseFloat(e.target.value) || 0 }))}
+                                                            placeholder="-20"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Max %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.5"
+                                                            value={columnFilters.maxPct1d || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, maxPct1d: parseFloat(e.target.value) || 0 }))}
+                                                            placeholder="+20"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[
+                                                        { label: "≥ +2%", min: 2 },
+                                                        { label: "≥ +5%", min: 5 },
+                                                        { label: "≥ +10%", min: 10 },
+                                                    ].map((preset, idx) => (
+                                                        <button
+                                                            key={idx}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minPct1d: preset.min, pct1dDirection: "positive" }))}
+                                                            className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20"
+                                                        >
+                                                            {preset.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </th>
-                                <th
-                                    className="p-3 cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("frequency")}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        Frequency ({lookback}D)
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                <th className="p-2.5 relative text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("pct_5d")}
+                                        >
+                                            <span>5D %</span>
+                                            {getSortIcon("pct_5d")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "pct_5d" ? null : "pct_5d");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("pct_5d")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter 5D Return"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("pct_5d") ? "fill-blue-400" : ""}`} />
+                                        </button>
                                     </div>
+                                    {activeFilterPopover === "pct_5d" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter 5D Return (%)</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("pct_5d") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("pct_5d")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <div className="flex gap-1.5">
+                                                    {[
+                                                        { id: "all", label: "All" },
+                                                        { id: "positive", label: "Gainers (>0%)" },
+                                                        { id: "negative", label: "Losers (<0%)" },
+                                                    ].map((d) => (
+                                                        <button
+                                                            key={d.id}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, pct5dDirection: d.id as any }))}
+                                                            className={`flex-1 py-1 text-[10px] font-semibold rounded border transition-colors ${
+                                                                columnFilters.pct5dDirection === d.id
+                                                                    ? "bg-blue-600 text-white border-blue-500"
+                                                                    : "bg-gray-800/60 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {d.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Min %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.5"
+                                                            value={columnFilters.minPct5d || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, minPct5d: parseFloat(e.target.value) || 0 }))}
+                                                            placeholder="-30"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] text-gray-400 block mb-1">Max %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.5"
+                                                            value={columnFilters.maxPct5d || ""}
+                                                            onChange={(e) => setColumnFilters((prev) => ({ ...prev, maxPct5d: parseFloat(e.target.value) || 0 }))}
+                                                            placeholder="+50"
+                                                            className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[
+                                                        { label: "≥ +5%", min: 5 },
+                                                        { label: "≥ +10%", min: 10 },
+                                                        { label: "≥ +20%", min: 20 },
+                                                    ].map((preset, idx) => (
+                                                        <button
+                                                            key={idx}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minPct5d: preset.min, pct5dDirection: "positive" }))}
+                                                            className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20"
+                                                        >
+                                                            {preset.label}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </th>
-                                <th className="p-3">
-                                    <div className="flex items-center gap-1">
-                                        20-Day Timeline
-                                        <span className="text-[9px] text-gray-500 normal-case">(Oldest → Newest)</span>
+                                <th className="p-2.5 relative text-right">
+                                    <div className="flex items-center justify-end gap-1.5">
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("turnover")}
+                                        >
+                                            <span>Turnover (Cr)</span>
+                                            {getSortIcon("turnover")}
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveFilterPopover(activeFilterPopover === "turnover" ? null : "turnover");
+                                            }}
+                                            className={`p-1 rounded transition-colors ${
+                                                hasColumnFilter("turnover")
+                                                    ? "text-blue-400 bg-blue-500/20"
+                                                    : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
+                                            }`}
+                                            title="Filter Turnover"
+                                        >
+                                            <Filter className={`w-3 h-3 ${hasColumnFilter("turnover") ? "fill-blue-400" : ""}`} />
+                                        </button>
                                     </div>
-                                </th>
-                                <th
-                                    className="p-3 cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("rs_rating")}
-                                >
-                                    <div className="flex items-center gap-1">
-                                        IBD RS
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
-                                    </div>
-                                </th>
-                                <th
-                                    className="p-3 text-right cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("close")}
-                                >
-                                    <div className="flex items-center justify-end gap-1">
-                                        Close (₹)
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
-                                    </div>
-                                </th>
-                                <th
-                                    className="p-3 text-right cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("pct_1d")}
-                                >
-                                    <div className="flex items-center justify-end gap-1">
-                                        1D %
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
-                                    </div>
-                                </th>
-                                <th
-                                    className="p-3 text-right cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("pct_5d")}
-                                >
-                                    <div className="flex items-center justify-end gap-1">
-                                        5D %
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
-                                    </div>
-                                </th>
-                                <th
-                                    className="p-3 text-right cursor-pointer hover:text-white transition-colors"
-                                    onClick={() => handleSort("turnover")}
-                                >
-                                    <div className="flex items-center justify-end gap-1">
-                                        Turnover (Cr)
-                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
-                                    </div>
+                                    {activeFilterPopover === "turnover" && (
+                                        <div
+                                            ref={filterPopoverRef}
+                                            className="absolute right-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
+                                                <span className="font-semibold text-xs text-gray-200">Filter Turnover (Cr)</span>
+                                                <div className="flex items-center gap-2">
+                                                    {hasColumnFilter("turnover") && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => clearSingleColumnFilter("turnover")}
+                                                            className="text-[10px] text-red-400 hover:text-red-300"
+                                                        >
+                                                            Clear
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveFilterPopover(null)}
+                                                        className="text-gray-400 hover:text-gray-200"
+                                                    >
+                                                        <X className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2.5">
+                                                <label className="text-[11px] text-gray-400 block">Min Daily Turnover (₹ Crore)</label>
+                                                <input
+                                                    type="number"
+                                                    min={0}
+                                                    step="1"
+                                                    value={columnFilters.minTurnover || ""}
+                                                    onChange={(e) => setColumnFilters((prev) => ({ ...prev, minTurnover: Math.max(0, parseFloat(e.target.value) || 0) }))}
+                                                    placeholder="e.g. 5.0"
+                                                    className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-2.5 py-1 text-xs text-gray-100 font-mono focus:outline-none focus:border-blue-500"
+                                                    autoFocus
+                                                />
+                                                <div className="flex flex-wrap gap-1">
+                                                    {[0, 1, 5, 10, 25, 50].map((t) => (
+                                                        <button
+                                                            key={t}
+                                                            type="button"
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minTurnover: t }))}
+                                                            className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
+                                                                columnFilters.minTurnover === t
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-bold"
+                                                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                            }`}
+                                                        >
+                                                            {t === 0 ? "All" : `≥₹${t}Cr`}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </th>
                                 <th className="p-3 text-center w-16">Quick Add</th>
                             </tr>
@@ -1222,29 +2326,50 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </td>
 
-                                            {/* 20-Day Hit Timeline (Micro-dots) */}
+                                            {/* Dynamic Hit Timeline */}
                                             <td className="p-3 whitespace-nowrap">
-                                                <div
-                                                    className="flex items-center gap-1 py-1"
-                                                    title={`Hits across last 20 sessions: ${item.count_20d}/20`}
-                                                >
-                                                    {item.history_20d.map((hit, idx) => {
-                                                        const dateStr = dates20[idx] || `Session ${idx + 1}`;
-                                                        return (
-                                                            <span
-                                                                key={idx}
-                                                                className={`w-2 h-2 rounded-full transition-transform hover:scale-150 ${
-                                                                    hit === 1
-                                                                        ? direction === "high"
-                                                                            ? "bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]"
-                                                                            : "bg-rose-400 shadow-[0_0_4px_rgba(251,113,133,0.8)]"
-                                                                        : "bg-gray-800"
-                                                                }`}
-                                                                title={`${dateStr}: ${hit === 1 ? (direction === "high" ? "52W High" : "52W Low") : "No hit"}`}
-                                                            />
-                                                        );
-                                                    })}
-                                                </div>
+                                                {(() => {
+                                                    const fullHist = (item.history_60d && item.history_60d.length >= lookback)
+                                                        ? item.history_60d
+                                                        : item.history_20d;
+                                                    const dots = fullHist.slice(-lookback);
+
+                                                    return (
+                                                        <div
+                                                            className="flex items-center gap-1 py-1"
+                                                            title={`Hits across last ${lookback} sessions: ${countInWindow}/${lookback}`}
+                                                        >
+                                                            {dots.map((hit, idx) => {
+                                                                const dateStr = windowDates[idx] || `Session ${idx + 1}`;
+                                                                const is10Divider = lookback === 60 && idx > 0 && idx % 10 === 0;
+
+                                                                return (
+                                                                    <div key={idx} className="flex items-center">
+                                                                        {is10Divider && (
+                                                                            <span className="w-1.5" />
+                                                                        )}
+                                                                        <span
+                                                                            className={`transition-transform hover:scale-150 ${
+                                                                                lookback === 60
+                                                                                    ? "w-1 h-3 rounded-[1px]"
+                                                                                    : lookback === 20
+                                                                                    ? "w-2 h-2 rounded-full"
+                                                                                    : "w-2.5 h-2.5 rounded-full"
+                                                                            } ${
+                                                                                hit === 1
+                                                                                    ? direction === "high"
+                                                                                        ? "bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]"
+                                                                                        : "bg-rose-400 shadow-[0_0_4px_rgba(251,113,133,0.8)]"
+                                                                                    : "bg-gray-800"
+                                                                            }`}
+                                                                            title={`${dateStr}: ${hit === 1 ? (direction === "high" ? "52W High" : "52W Low") : "No hit"}`}
+                                                                        />
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    );
+                                                })()}
                                             </td>
 
                                             {/* IBD RS */}

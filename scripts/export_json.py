@@ -1145,6 +1145,11 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             # Ensure history_20d always has exactly 20 elements (padded with leading zeros if fewer than 20 sessions available)
             h20 = ([0] * max(0, 20 - len(raw_h20))) + raw_h20
 
+            raw_h60 = [1 if clean in sym_to_tuples[dt] else 0 for dt in selected_dates]
+            # Ensure history_60d has exactly len(selected_dates) elements (up to 60)
+            target_len = len(selected_dates)
+            h60 = ([0] * max(0, target_len - len(raw_h60))) + raw_h60
+
             band_info = get_security_info(clean, sec_bands)
             series = band_info.get("series", "EQ") or "EQ"
             circuit_band = band_info.get("band", "20") or "20"
@@ -1176,6 +1181,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 "is_fresh_20d": is_fresh,
                 "last_hit_date": last_hit,
                 "history_20d": h20,
+                "history_60d": h60,
             })
 
         if sort_desc:

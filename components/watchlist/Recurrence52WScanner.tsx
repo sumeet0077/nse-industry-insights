@@ -831,17 +831,17 @@ export function Recurrence52WScanner({
                                             </td>
 
                                             {/* Symbol */}
-                                            <td className="p-3 font-semibold text-gray-100 whitespace-nowrap">
+                                            <td className="p-3 font-semibold whitespace-nowrap">
                                                 <div className="flex items-center gap-1.5">
-                                                    <span>{item.clean_symbol}</span>
                                                     <a
                                                         href={makeTradingViewUrl(item.symbol)}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="text-gray-500 hover:text-blue-400 transition-colors"
-                                                        title="Open in TradingView"
+                                                        className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline font-medium transition-colors group"
+                                                        title={`Open ${item.clean_symbol} on TradingView`}
                                                     >
-                                                        <ExternalLink className="w-3 h-3" />
+                                                        <span>{item.clean_symbol}</span>
+                                                        <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
                                                     </a>
                                                     {item.is_fresh_20d && (
                                                         <span className="text-[9px] font-sans px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">

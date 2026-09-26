@@ -501,17 +501,17 @@ export function WatchlistOverlapMatrix({
                                 matrixData.map((row) => (
                                     <tr key={row.clean} className="hover:bg-gray-800/40 transition-colors">
                                         {/* Ticker */}
-                                        <td className="p-3 font-semibold text-gray-100 whitespace-nowrap">
+                                        <td className="p-3 font-semibold whitespace-nowrap">
                                             <div className="flex items-center gap-1.5">
-                                                <span>{row.clean}</span>
                                                 <a
                                                     href={makeTradingViewUrl(row.symbol)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="text-gray-500 hover:text-blue-400 transition-colors"
-                                                    title="Open in TradingView"
+                                                    className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline font-medium transition-colors group"
+                                                    title={`Open ${row.clean} on TradingView`}
                                                 >
-                                                    <ExternalLink className="w-3 h-3" />
+                                                    <span>{row.clean}</span>
+                                                    <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
                                                 </a>
                                             </div>
                                         </td>

@@ -15,7 +15,6 @@ import {
     Copy,
     Plus,
     Check,
-    ExternalLink,
     Search,
     Layers,
     Table as TableIcon,
@@ -26,6 +25,8 @@ import {
     ChevronDown,
     Activity,
     Info,
+    ShieldCheck,
+    SlidersHorizontal,
 } from "lucide-react";
 
 interface Recurrence52WScannerProps {
@@ -40,11 +41,30 @@ interface Recurrence52WScannerProps {
     activeWatchlistName?: string;
 }
 
-type Direction = "high" | "low";
-type Lookback = 5 | 10 | 20 | 60;
-type PresetFilter = "all" | "streak" | "persistent" | "fresh" | "high_rs" | "rs_lead";
-type SortField = "frequency" | "streak" | "rs_rating" | "pct_1d" | "pct_5d" | "turnover" | "close" | "symbol" | "theme";
-type SortOrder = "asc" | "desc";
+export type Direction = "high" | "low";
+export type Lookback = 5 | 10 | 20 | 60;
+export type PresetFilter = "all" | "streak" | "persistent" | "fresh" | "high_rs" | "rs_lead";
+export type TradabilityPreset = "tradeable" | "fno_liquid" | "all" | "custom";
+export type CircuitFilterOption = "exclude_low" | "ge_10" | "fno_20" | "fno" | "all";
+export type SortField = "frequency" | "streak" | "rs_rating" | "pct_1d" | "pct_5d" | "turnover" | "close" | "symbol" | "theme" | "band";
+export type SortOrder = "asc" | "desc";
+
+function getBandBadgeStyle(band?: string): string {
+    const b = (band || "20").trim();
+    if (b === "No Band") return "bg-purple-500/20 text-purple-300 border-purple-500/40";
+    if (b === "20") return "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
+    if (b === "10") return "bg-cyan-500/20 text-cyan-300 border-cyan-500/40";
+    if (b === "5") return "bg-amber-500/20 text-amber-300 border-amber-500/40";
+    if (b === "2") return "bg-rose-500/20 text-rose-300 border-rose-500/40";
+    return "bg-gray-800 text-gray-300 border-gray-700";
+}
+
+function getBandLabel(band?: string): string {
+    const b = (band || "20").trim();
+    if (b === "No Band") return "F&O";
+    if (b === "20" || b === "10" || b === "5" || b === "2") return `${b}%`;
+    return b ? `${b}%` : "20%";
+}
 
 function copyToClipboard(text: string): Promise<boolean> {
     if (typeof navigator !== "undefined" && navigator.clipboard && window.isSecureContext) {
@@ -88,6 +108,13 @@ export function Recurrence52WScanner({
     const [direction, setDirection] = useState<Direction>("high");
     const [lookback, setLookback] = useState<Lookback>(20);
     const [presetFilter, setPresetFilter] = useState<PresetFilter>("all");
+    const [tradabilityPreset, setTradabilityPreset] = useState<TradabilityPreset>("tradeable");
+    const [showGranularFilters, setShowGranularFilters] = useState<boolean>(false);
+    const [minTurnover, setMinTurnover] = useState<number>(1.0);
+    const [minPrice, setMinPrice] = useState<number>(20.0);
+    const [circuitFilter, setCircuitFilter] = useState<CircuitFilterOption>("exclude_low");
+    const [seriesFilter, setSeriesFilter] = useState<"EQ" | "all">("EQ");
+    const [excludeCircuitLocked, setExcludeCircuitLocked] = useState<boolean>(true);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [selectedTickers, setSelectedTickers] = useState<Set<string>>(new Set());
     const [sortField, setSortField] = useState<SortField>("frequency");
@@ -95,6 +122,39 @@ export function Recurrence52WScanner({
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [saveListName, setSaveListName] = useState<string>("");
+
+    const applyTradabilityPreset = useCallback((preset: "tradeable" | "fno_liquid" | "all") => {
+        setTradabilityPreset(preset);
+        if (preset === "tradeable") {
+            setMinTurnover(1.0);
+            setMinPrice(20.0);
+            setCircuitFilter("exclude_low");
+            setSeriesFilter("EQ");
+            setExcludeCircuitLocked(true);
+        } else if (preset === "fno_liquid") {
+            setMinTurnover(10.0);
+            setMinPrice(0);
+            setCircuitFilter("fno_20");
+            setSeriesFilter("EQ");
+            setExcludeCircuitLocked(true);
+        } else if (preset === "all") {
+            setMinTurnover(0);
+            setMinPrice(0);
+            setCircuitFilter("all");
+            setSeriesFilter("all");
+            setExcludeCircuitLocked(false);
+        }
+    }, []);
+
+    const activeCustomFilterCount = useMemo(() => {
+        let count = 0;
+        if (minTurnover > 0) count++;
+        if (minPrice > 0) count++;
+        if (circuitFilter !== "all") count++;
+        if (seriesFilter !== "all") count++;
+        if (excludeCircuitLocked) count++;
+        return count;
+    }, [minTurnover, minPrice, circuitFilter, seriesFilter, excludeCircuitLocked]);
 
     const activeCleanSet = useMemo(() => {
         return new Set(activeWatchlistTickers.map((t) => cleanTicker(t).toUpperCase()));
@@ -134,6 +194,23 @@ export function Recurrence52WScanner({
     // Filter items
     const filteredItems = useMemo(() => {
         return rawItems.filter((item) => {
+            // 0. Tradability & Circuit Filters
+            if (excludeCircuitLocked && item.is_circuit_locked) return false;
+            if ((item.turnover_cr ?? 0) < minTurnover) return false;
+            if ((item.close ?? 0) < minPrice) return false;
+            if (seriesFilter === "EQ" && item.series && item.series !== "EQ") return false;
+
+            const band = (item.circuit_band || "20").trim();
+            if (circuitFilter === "exclude_low") {
+                if (band === "2" || band === "5") return false;
+            } else if (circuitFilter === "ge_10") {
+                if (band === "2" || band === "5") return false;
+            } else if (circuitFilter === "fno_20") {
+                if (band !== "No Band" && band !== "20") return false;
+            } else if (circuitFilter === "fno") {
+                if (band !== "No Band") return false;
+            }
+
             // 1. Lookback window activity filter
             const countInWindow =
                 lookback === 5
@@ -172,7 +249,7 @@ export function Recurrence52WScanner({
 
             return true;
         });
-    }, [rawItems, lookback, presetFilter, searchQuery, getRSMetrics, getStockTheme]);
+    }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter, lookback, presetFilter, searchQuery, getRSMetrics, getStockTheme]);
 
     // Sort items
     const sortedItems = useMemo(() => {
@@ -216,6 +293,15 @@ export function Recurrence52WScanner({
             } else if (sortField === "close") {
                 valA = a.close;
                 valB = b.close;
+            } else if (sortField === "band") {
+                const getBandVal = (b?: string) => {
+                    const cleanB = (b || "20").trim();
+                    if (cleanB === "No Band") return 999;
+                    const parsed = parseFloat(cleanB);
+                    return isNaN(parsed) ? 20 : parsed;
+                };
+                valA = getBandVal(a.circuit_band);
+                valB = getBandVal(b.circuit_band);
             } else if (sortField === "symbol") {
                 const cmp = a.clean_symbol.localeCompare(b.clean_symbol);
                 return sortOrder === "desc" ? -cmp : cmp;
@@ -323,9 +409,19 @@ export function Recurrence52WScanner({
             : sortedItems.map((i) => i.symbol);
     }, [selectedTickers, sortedItems]);
 
-    // Active counts
+    // Active counts matching tradability filters
     const inWindowCount = useMemo(() => {
         return rawItems.filter((i) => {
+            if (excludeCircuitLocked && i.is_circuit_locked) return false;
+            if ((i.turnover_cr ?? 0) < minTurnover) return false;
+            if ((i.close ?? 0) < minPrice) return false;
+            if (seriesFilter === "EQ" && i.series && i.series !== "EQ") return false;
+            const band = (i.circuit_band || "20").trim();
+            if (circuitFilter === "exclude_low" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "ge_10" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "fno_20" && band !== "No Band" && band !== "20") return false;
+            if (circuitFilter === "fno" && band !== "No Band") return false;
+
             const count =
                 lookback === 5
                     ? i.count_5d
@@ -336,10 +432,37 @@ export function Recurrence52WScanner({
                     : i.count_60d;
             return count > 0;
         }).length;
-    }, [rawItems, lookback]);
+    }, [rawItems, lookback, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
 
-    const streakCount = useMemo(() => rawItems.filter((i) => i.streak >= 2).length, [rawItems]);
-    const freshCount = useMemo(() => rawItems.filter((i) => i.is_fresh_20d).length, [rawItems]);
+    const streakCount = useMemo(() => {
+        return rawItems.filter((i) => {
+            if (excludeCircuitLocked && i.is_circuit_locked) return false;
+            if ((i.turnover_cr ?? 0) < minTurnover) return false;
+            if ((i.close ?? 0) < minPrice) return false;
+            if (seriesFilter === "EQ" && i.series && i.series !== "EQ") return false;
+            const band = (i.circuit_band || "20").trim();
+            if (circuitFilter === "exclude_low" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "ge_10" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "fno_20" && band !== "No Band" && band !== "20") return false;
+            if (circuitFilter === "fno" && band !== "No Band") return false;
+            return i.streak >= 2;
+        }).length;
+    }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
+
+    const freshCount = useMemo(() => {
+        return rawItems.filter((i) => {
+            if (excludeCircuitLocked && i.is_circuit_locked) return false;
+            if ((i.turnover_cr ?? 0) < minTurnover) return false;
+            if ((i.close ?? 0) < minPrice) return false;
+            if (seriesFilter === "EQ" && i.series && i.series !== "EQ") return false;
+            const band = (i.circuit_band || "20").trim();
+            if (circuitFilter === "exclude_low" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "ge_10" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "fno_20" && band !== "No Band" && band !== "20") return false;
+            if (circuitFilter === "fno" && band !== "No Band") return false;
+            return i.is_fresh_20d;
+        }).length;
+    }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
 
     const dates20 = useMemo(() => {
         return historyData.dates ? historyData.dates.slice(-20) : [];
@@ -423,6 +546,199 @@ export function Recurrence52WScanner({
                         />
                     </div>
                 </div>
+
+                {/* 1-Click Primary Tradability Presets & Granular Drawer Toggle */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-gray-800/80">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="text-[11px] text-gray-500 font-medium flex items-center gap-1 mr-1">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                            Tradability:
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => applyTradabilityPreset("tradeable")}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                                tradabilityPreset === "tradeable"
+                                    ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-sm shadow-emerald-500/10"
+                                    : "text-gray-400 bg-gray-950 hover:bg-gray-800/60 border border-gray-800"
+                            }`}
+                            title="Active by default: Excludes 2% & 5% price bands, turnover < ₹1 Cr, price < ₹20, BE/BZ series, and circuit locked stocks"
+                        >
+                            <span>⚡ Tradeable Only</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => applyTradabilityPreset("fno_liquid")}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                                tradabilityPreset === "fno_liquid"
+                                    ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm shadow-purple-500/10"
+                                    : "text-gray-400 bg-gray-950 hover:bg-gray-800/60 border border-gray-800"
+                            }`}
+                            title="High conviction institutional: Turnover >= ₹10 Cr, F&O (No Band) or 20% Band"
+                        >
+                            <span>💎 F&O & Liquid</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => applyTradabilityPreset("all")}
+                            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                                tradabilityPreset === "all"
+                                    ? "bg-blue-500/25 text-blue-300 border border-blue-500/50 shadow-sm"
+                                    : "text-gray-400 bg-gray-950 hover:bg-gray-800/60 border border-gray-800"
+                            }`}
+                            title="Raw, unfiltered universe including all bands and micro-caps"
+                        >
+                            <span>🌐 All Stocks</span>
+                        </button>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => setShowGranularFilters((prev) => !prev)}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                            showGranularFilters || tradabilityPreset === "custom"
+                                ? "bg-slate-800 text-slate-200 border-slate-600"
+                                : "bg-gray-950/80 text-gray-400 border-gray-800 hover:text-gray-200 hover:bg-gray-800/50"
+                        }`}
+                        title="Open granular filters drawer"
+                    >
+                        <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Fine-Tune</span>
+                        {tradabilityPreset === "custom" && activeCustomFilterCount > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-300 font-mono">
+                                {activeCustomFilterCount}
+                            </span>
+                        )}
+                        <ChevronDown className={`w-3 h-3 transition-transform ${showGranularFilters ? "rotate-180" : ""}`} />
+                    </button>
+                </div>
+
+                {/* Collapsible Granular Controls Drawer */}
+                {showGranularFilters && (
+                    <div className="p-3 bg-gray-950/90 rounded-xl border border-gray-800/90 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 animate-in fade-in duration-100 text-xs">
+                        {/* Turnover Floor */}
+                        <div className="space-y-1">
+                            <label className="text-[11px] text-gray-400 font-medium block">Min Turnover</label>
+                            <div className="flex items-center gap-1 bg-gray-900 p-0.5 rounded-lg border border-gray-800">
+                                {[
+                                    { label: "None", val: 0 },
+                                    { label: "₹1 Cr", val: 1.0 },
+                                    { label: "₹5 Cr", val: 5.0 },
+                                    { label: "₹10 Cr", val: 10.0 },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.label}
+                                        type="button"
+                                        onClick={() => {
+                                            setMinTurnover(opt.val);
+                                            setTradabilityPreset("custom");
+                                        }}
+                                        className={`flex-1 py-1 rounded text-[11px] font-medium transition-all ${
+                                            minTurnover === opt.val
+                                                ? "bg-blue-600 text-white font-semibold"
+                                                : "text-gray-400 hover:text-white"
+                                        }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Price Floor */}
+                        <div className="space-y-1">
+                            <label className="text-[11px] text-gray-400 font-medium block">Min Price</label>
+                            <div className="flex items-center gap-1 bg-gray-900 p-0.5 rounded-lg border border-gray-800">
+                                {[
+                                    { label: "None", val: 0 },
+                                    { label: "₹20", val: 20 },
+                                    { label: "₹50", val: 50 },
+                                    { label: "₹100", val: 100 },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.label}
+                                        type="button"
+                                        onClick={() => {
+                                            setMinPrice(opt.val);
+                                            setTradabilityPreset("custom");
+                                        }}
+                                        className={`flex-1 py-1 rounded text-[11px] font-medium transition-all ${
+                                            minPrice === opt.val
+                                                ? "bg-blue-600 text-white font-semibold"
+                                                : "text-gray-400 hover:text-white"
+                                        }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Price Band Filter */}
+                        <div className="space-y-1">
+                            <label className="text-[11px] text-gray-400 font-medium block">Circuit Band</label>
+                            <select
+                                value={circuitFilter}
+                                onChange={(e) => {
+                                    setCircuitFilter(e.target.value as CircuitFilterOption);
+                                    setTradabilityPreset("custom");
+                                }}
+                                className="w-full bg-gray-900 border border-gray-800 text-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="exclude_low">Exclude 2% &amp; 5% Bands</option>
+                                <option value="fno_20">Tradeable (20% &amp; F&amp;O)</option>
+                                <option value="fno">F&amp;O Only (No Band)</option>
+                                <option value="all">All Bands (2%, 5%, 10%, 20%, F&amp;O)</option>
+                            </select>
+                        </div>
+
+                        {/* Series Filter */}
+                        <div className="space-y-1">
+                            <label className="text-[11px] text-gray-400 font-medium block">Security Series</label>
+                            <div className="flex items-center gap-1 bg-gray-900 p-0.5 rounded-lg border border-gray-800">
+                                {[
+                                    { label: "EQ Only", val: "EQ" as const },
+                                    { label: "All Series", val: "all" as const },
+                                ].map((opt) => (
+                                    <button
+                                        key={opt.label}
+                                        type="button"
+                                        onClick={() => {
+                                            setSeriesFilter(opt.val);
+                                            setTradabilityPreset("custom");
+                                        }}
+                                        className={`flex-1 py-1 rounded text-[11px] font-medium transition-all ${
+                                            seriesFilter === opt.val
+                                                ? "bg-blue-600 text-white font-semibold"
+                                                : "text-gray-400 hover:text-white"
+                                        }`}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Circuit Lock Status */}
+                        <div className="space-y-1">
+                            <label className="text-[11px] text-gray-400 font-medium block">Circuit Lock</label>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setExcludeCircuitLocked((prev) => !prev);
+                                    setTradabilityPreset("custom");
+                                }}
+                                className={`w-full py-1.5 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 border transition-all ${
+                                    excludeCircuitLocked
+                                        ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                                        : "bg-gray-900 text-gray-400 border-gray-800"
+                                }`}
+                            >
+                                <span>{excludeCircuitLocked ? "🔒 Exclude Locked" : "🔓 Allow Locked"}</span>
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Preset Filter Chips */}
                 <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-800/80">
@@ -705,6 +1021,15 @@ export function Recurrence52WScanner({
                                     </div>
                                 </th>
                                 <th
+                                    className="p-3 text-center cursor-pointer hover:text-white transition-colors"
+                                    onClick={() => handleSort("band")}
+                                >
+                                    <div className="flex items-center justify-center gap-1">
+                                        Band
+                                        <ArrowUpDown className="w-3 h-3 text-gray-500" />
+                                    </div>
+                                </th>
+                                <th
                                     className="p-3 cursor-pointer hover:text-white transition-colors"
                                     onClick={() => handleSort("theme")}
                                 >
@@ -788,7 +1113,7 @@ export function Recurrence52WScanner({
                         <tbody className="divide-y divide-gray-800/60 font-mono">
                             {sortedItems.length === 0 ? (
                                 <tr>
-                                    <td colSpan={12} className="p-8 text-center text-gray-500 font-sans">
+                                    <td colSpan={13} className="p-8 text-center text-gray-500 font-sans">
                                         No qualifying stocks found matching the active filters.
                                     </td>
                                 </tr>
@@ -832,20 +1157,33 @@ export function Recurrence52WScanner({
 
                                             {/* Symbol */}
                                             <td className="p-3 font-semibold whitespace-nowrap">
-                                                <div className="flex items-center gap-1.5">
+                                                <div className="flex items-center gap-1.5 font-sans">
                                                     <a
                                                         href={makeTradingViewUrl(item.symbol)}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline font-medium transition-colors group"
+                                                        className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
                                                         title={`Open ${item.clean_symbol} on TradingView`}
                                                     >
-                                                        <span>{item.clean_symbol}</span>
-                                                        <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                                                        {item.clean_symbol}
                                                     </a>
                                                     {item.is_fresh_20d && (
                                                         <span className="text-[9px] font-sans px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                                             Fresh
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </td>
+
+                                            {/* Band */}
+                                            <td className="p-3 text-center whitespace-nowrap">
+                                                <div className="flex items-center justify-center gap-1 font-sans">
+                                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${getBandBadgeStyle(item.circuit_band)}`}>
+                                                        {getBandLabel(item.circuit_band)}
+                                                    </span>
+                                                    {item.is_circuit_locked && (
+                                                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-500/25 text-rose-300 border border-rose-500/50" title="Locked at Price Band Circuit (High == Low)">
+                                                            🔒 Lock
                                                         </span>
                                                     )}
                                                 </div>

@@ -81,6 +81,9 @@ export function getMarketStatus(): MarketStatus {
 export interface Stock52WItem {
     symbol: string;         // e.g. "WELCORP.NS"
     clean_symbol: string;   // e.g. "WELCORP"
+    series?: string;        // e.g. "EQ", "BE", "BZ"
+    circuit_band?: string;  // e.g. "20", "10", "5", "2", "No Band"
+    is_circuit_locked?: boolean; // true if locked at upper/lower circuit limit
     close: number;
     pct_1d: number;
     pct_5d: number;

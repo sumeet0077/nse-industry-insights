@@ -490,7 +490,35 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, and frequency monotonicity.");
+    // Invariant 7: Price Band & Series Schema Integrity
+    const secBandsPath = path.join(DATA_DIR, "sec_bands.json");
+    if (!fs.existsSync(secBandsPath)) {
+        errors.push("Missing file: data/sec_bands.json");
+    } else {
+        try {
+            const rawBands = JSON.parse(fs.readFileSync(secBandsPath, "utf-8"));
+            if (Object.keys(rawBands).length < 3000) {
+                errors.push(`Invariant 7 Failure: sec_bands.json has suspiciously few entries (${Object.keys(rawBands).length} < 3000)`);
+            }
+        } catch (e) {
+            errors.push(`Invariant 7 Failure: Unparseable sec_bands.json: ${e}`);
+        }
+    }
+
+    const validBands = new Set(["No Band", "20", "10", "5", "2", "40"]);
+    for (const item of [...data.highs, ...data.lows]) {
+        if (!item.series || typeof item.series !== "string") {
+            errors.push(`Invariant 7 Failure: Missing or invalid 'series' on ${item.symbol}`);
+        }
+        if (!item.circuit_band || typeof item.circuit_band !== "string" || !validBands.has(item.circuit_band.trim())) {
+            errors.push(`Invariant 7 Failure: Missing or unrecognized 'circuit_band' (${item.circuit_band}) on ${item.symbol}`);
+        }
+        if (typeof item.is_circuit_locked !== "boolean") {
+            errors.push(`Invariant 7 Failure: Missing or invalid 'is_circuit_locked' boolean on ${item.symbol}`);
+        }
+    }
+
+    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, and price band enrichment.");
 });
 
 // Print Summary

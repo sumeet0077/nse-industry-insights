@@ -19,7 +19,7 @@ import { calculateOriginDistance, calculateSuperTrendScore } from "@/lib/rrg";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useWatchlists, type Watchlist } from "@/hooks/useWatchlists";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import type { StockRRGPayload, StockSearchIndex, Market52WHistory } from "@/lib/data";
+import type { StockRRGPayload, StockSearchIndex, Market52WHistory, Stock52WItem } from "@/lib/data";
 import { Recurrence52WScanner } from "@/components/watchlist/Recurrence52WScanner";
 import { WatchlistOverlapMatrix } from "@/components/watchlist/WatchlistOverlapMatrix";
 import {
@@ -35,7 +35,6 @@ import {
     RotateCcw,
     Layers,
     ChevronDown,
-    ExternalLink,
     Filter,
     Sparkles,
     Copy,
@@ -67,6 +66,16 @@ function toTVSymbol(ticker: string): string {
 
 export type ViewMode = "rrg" | "table" | "split" | "recurrence" | "overlap";
 
+function isTradeableStock(item: Stock52WItem): boolean {
+    if (item.is_circuit_locked) return false;
+    if ((item.turnover_cr ?? 0) < 1.0) return false;
+    if ((item.close ?? 0) < 20.0) return false;
+    if (item.series && item.series !== "EQ") return false;
+    const band = (item.circuit_band || "20").trim();
+    if (band === "2" || band === "5") return false;
+    return true;
+}
+
 export function CustomWatchlistRRGClient({
     stockSearchIndex = {},
     allStockRRGMap = {},
@@ -80,7 +89,7 @@ export function CustomWatchlistRRGClient({
         const daily = initial52WHistory.daily_lists[latest] || { highs: [], lows: [] };
 
         const topRepeaters = initial52WHistory.highs
-            .filter((h) => h.count_10d >= 3)
+            .filter((h) => h.count_10d >= 3 && isTradeableStock(h))
             .map((h) => h.symbol);
 
         const freshBreakouts = initial52WHistory.highs
@@ -775,8 +784,83 @@ export function CustomWatchlistRRGClient({
                 </div>
             </div>
 
+            {/* 5-Way View Switcher */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
+                <div className="flex items-center gap-1 bg-[#111118] p-1 rounded-xl border border-[#1e1e2e] flex-wrap">
+                    <button
+                        onClick={() => setViewMode("rrg")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "rrg"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>📊</span>
+                        <span>Sector Rotation (RRG)</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("table")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "table"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>📋</span>
+                        <span>Constituents Table</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("split")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "split"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔀</span>
+                        <span>Stacked View (Both)</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("recurrence")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "recurrence"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔁</span>
+                        <span>52W Recurrence Scanner</span>
+                    </button>
+                    <button
+                        onClick={() => setViewMode("overlap")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "overlap"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>🔀</span>
+                        <span>Overlap Matrix</span>
+                    </button>
+                </div>
+
+                {/* CAGR Toggle when Constituents Table is visible */}
+                {(viewMode === "table" || viewMode === "split") && (
+                    <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none bg-[#111118] px-3 py-1.5 rounded-lg border border-[#1e1e2e] hover:border-slate-700 transition-colors">
+                        <input
+                            type="checkbox"
+                            checked={showCagr}
+                            onChange={(e) => setShowCagr(e.target.checked)}
+                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
+                        />
+                        <span>Annualize Returns (CAGR)</span>
+                    </label>
+                )}
+            </div>
+
             {/* Watchlist Bar & Stock Picker */}
-            <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
+            {viewMode !== "recurrence" && viewMode !== "overlap" && (
+                <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                     {/* 2-Tier Navigation */}
                     <div className="flex-1 space-y-2.5 min-w-0">
@@ -1061,15 +1145,15 @@ export function CustomWatchlistRRGClient({
                 </div>
 
                 {/* Stock Picker Input & Stock Pills */}
-                <div className="pt-2 border-t border-[#1e1e2e] space-y-3">
-                    {activeWatchlist.isSystem ? (
+                {activeWatchlist.isSystem ? (
+                    <div className="pt-2 border-t border-[#1e1e2e]">
                         <div className="flex flex-wrap items-center justify-between gap-3 bg-amber-500/10 border border-amber-500/20 px-3.5 py-2 rounded-lg text-xs text-amber-200">
                             <div className="flex items-center gap-2">
                                 <span className="font-semibold flex items-center gap-1.5">
-                                    <span>🔒</span> System Scan (Read-Only)
+                                    <span>🔒</span> {activeWatchlist.tickers.length} stocks auto-tracked
                                 </span>
                                 <span className="text-amber-300/80 text-[11px] hidden sm:inline">
-                                    — Auto-generated daily from 52W scan pipeline. Clone to create an editable custom list.
+                                    • Read-Only System Scan • [Clone as Custom] to edit
                                 </span>
                             </div>
                             <button
@@ -1086,7 +1170,9 @@ export function CustomWatchlistRRGClient({
                                 <span>Clone as Custom</span>
                             </button>
                         </div>
-                    ) : (
+                    </div>
+                ) : (
+                    <div className="pt-2 border-t border-[#1e1e2e] space-y-3">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div className="relative flex-1 max-w-md">
                                 <div className="flex items-center bg-[#1a1a2e] border border-slate-700/60 rounded-lg px-3 py-1.5 focus-within:border-blue-500/50 focus-within:ring-1 focus-within:ring-blue-500/30 transition-colors">
@@ -1201,35 +1287,36 @@ export function CustomWatchlistRRGClient({
                                 )}
                             </div>
                         </div>
-                    )}
 
-                    <div className="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
-                        {activeWatchlist.tickers.length === 0 ? (
-                            <p className="text-xs text-slate-500 italic py-1">
-                                No stocks in this watchlist. Search or paste stocks using the controls above!
-                            </p>
-                        ) : (
-                            activeWatchlist.tickers.map((t) => (
-                                <span
-                                    key={t}
-                                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 group hover:border-blue-500/40 transition-colors"
-                                >
-                                    <span>{cleanTicker(t)}</span>
-                                    {!activeWatchlist.isSystem && (
-                                        <button
-                                            onClick={() => removeTicker(t)}
-                                            className="text-slate-400 group-hover:text-red-400 p-0.5 rounded transition-colors"
-                                            title={`Remove ${t}`}
-                                        >
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    )}
-                                </span>
-                            ))
-                        )}
+                        <div className="flex flex-wrap items-center gap-1.5 max-h-24 overflow-y-auto pr-1">
+                            {activeWatchlist.tickers.length === 0 ? (
+                                <p className="text-xs text-slate-500 italic py-1">
+                                    No stocks in this watchlist. Search or paste stocks using the controls above!
+                                </p>
+                            ) : (
+                                activeWatchlist.tickers.map((t) => (
+                                    <span
+                                        key={t}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20 group hover:border-blue-500/40 transition-colors"
+                                    >
+                                        <span>{cleanTicker(t)}</span>
+                                        {!activeWatchlist.isSystem && (
+                                            <button
+                                                onClick={() => removeTicker(t)}
+                                                className="text-slate-400 group-hover:text-red-400 p-0.5 rounded transition-colors"
+                                                title={`Remove ${t}`}
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        )}
+                                    </span>
+                                ))
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
+            )}
 
             {/* Bulk Paste Tickers Modal */}
             {isPasteModalOpen && (
@@ -1423,80 +1510,6 @@ export function CustomWatchlistRRGClient({
                     </div>
                 </div>
             )}
-
-            {/* 5-Way View Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#1e1e2e] pb-3">
-                <div className="flex items-center gap-1 bg-[#111118] p-1 rounded-xl border border-[#1e1e2e] flex-wrap">
-                    <button
-                        onClick={() => setViewMode("rrg")}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
-                            viewMode === "rrg"
-                                ? "bg-blue-600 text-white shadow-md"
-                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                        }`}
-                    >
-                        <span>📊</span>
-                        <span>Sector Rotation (RRG)</span>
-                    </button>
-                    <button
-                        onClick={() => setViewMode("table")}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
-                            viewMode === "table"
-                                ? "bg-blue-600 text-white shadow-md"
-                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                        }`}
-                    >
-                        <span>📋</span>
-                        <span>Constituents Table</span>
-                    </button>
-                    <button
-                        onClick={() => setViewMode("split")}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
-                            viewMode === "split"
-                                ? "bg-blue-600 text-white shadow-md"
-                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                        }`}
-                    >
-                        <span>🔀</span>
-                        <span>Stacked View (Both)</span>
-                    </button>
-                    <button
-                        onClick={() => setViewMode("recurrence")}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
-                            viewMode === "recurrence"
-                                ? "bg-blue-600 text-white shadow-md"
-                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                        }`}
-                    >
-                        <span>🔁</span>
-                        <span>52W Recurrence Scanner</span>
-                    </button>
-                    <button
-                        onClick={() => setViewMode("overlap")}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
-                            viewMode === "overlap"
-                                ? "bg-blue-600 text-white shadow-md"
-                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
-                        }`}
-                    >
-                        <span>🔀</span>
-                        <span>Overlap Matrix</span>
-                    </button>
-                </div>
-
-                {/* CAGR Toggle when Constituents Table is visible */}
-                {(viewMode === "table" || viewMode === "split") && (
-                    <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none bg-[#111118] px-3 py-1.5 rounded-lg border border-[#1e1e2e] hover:border-slate-700 transition-colors">
-                        <input
-                            type="checkbox"
-                            checked={showCagr}
-                            onChange={(e) => setShowCagr(e.target.checked)}
-                            className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500 h-3.5 w-3.5"
-                        />
-                        <span>Annualize Returns (CAGR)</span>
-                    </label>
-                )}
-            </div>
 
             {/* RRG Sector Rotation View Elements */}
             {(viewMode === "rrg" || viewMode === "split") && (
@@ -2043,11 +2056,10 @@ export function CustomWatchlistRRGClient({
                                                         href={tvUrl}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="text-blue-400 hover:text-blue-300 hover:underline transition-colors inline-flex items-center gap-1 group"
-                                                        title={`Open ${cleanName} chart on TradingView`}
+                                                        className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+                                                        title={`Open ${cleanName} on TradingView`}
                                                     >
-                                                        <span>{cleanName}</span>
-                                                        <span className="text-[10px] text-blue-500 group-hover:text-blue-300 transition-colors">↗</span>
+                                                        {cleanName}
                                                     </a>
                                                 </td>
                                                 <td className="py-2.5 px-3">
@@ -2458,7 +2470,6 @@ export function CustomWatchlistRRGClient({
                                                 RS-Momentum {tableSortField === "momentum" ? (tableSortAsc ? "▲" : "▼") : ""}
                                             </th>
                                             <th className="py-2.5 px-3 text-right">Dist. from Center</th>
-                                            <th className="py-2.5 px-3 text-center">Chart Link</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-[#1e1e2e]/60">
@@ -2473,7 +2484,17 @@ export function CustomWatchlistRRGClient({
 
                                             return (
                                                 <tr key={row.ticker} className="hover:bg-[#1a1a2e]/60 transition-colors">
-                                                    <td className="py-2 px-3 font-semibold text-white font-mono">{row.clean}</td>
+                                                    <td className="py-2 px-3 font-semibold font-mono">
+                                                        <a
+                                                            href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
+                                                            title={`Open ${row.clean} on TradingView`}
+                                                        >
+                                                            {row.clean}
+                                                        </a>
+                                                    </td>
                                                     <td className="py-2 px-3">
                                                         <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${badgeStyles[row.quadrant]}`}>
                                                             {row.quadrant}
@@ -2487,17 +2508,6 @@ export function CustomWatchlistRRGClient({
                                                     </td>
                                                     <td className="py-2 px-3 text-right font-mono text-slate-400">
                                                         {row.distance.toFixed(2)}
-                                                    </td>
-                                                    <td className="py-2 px-3 text-center">
-                                                        <a
-                                                            href={`https://in.tradingview.com/chart/?symbol=${encodeURIComponent(tvSym)}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="inline-flex items-center gap-1 text-[11px] text-blue-400 hover:text-blue-300 transition-colors font-medium"
-                                                        >
-                                                            <span>View</span>
-                                                            <ExternalLink className="h-3 w-3" />
-                                                        </a>
                                                     </td>
                                                 </tr>
                                             );

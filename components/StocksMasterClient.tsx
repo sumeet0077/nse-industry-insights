@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Table2, Settings2, Filter, Copy, ExternalLink, ArrowUpDown, Sparkles, Zap } from "lucide-react";
+import { Search, X, Check, ChevronDown, ChevronUp, CheckSquare, LayoutGrid, List, Table2, Settings2, Filter, Copy, ArrowUpDown, Sparkles, Zap } from "lucide-react";
 import { IndexConfig, PerformanceRow, MarketStatus, ConstituentPerformanceMap, ConstituentPerformance } from "@/types";
 import { METRIC_CONFIG, CATEGORIES } from "@/lib/config";
 import { getTickerLabel, makeTradingViewUrl, makeTradingViewSymbol, resolveDataKey } from "@/lib/utils";
@@ -976,11 +976,10 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                             href={makeTradingViewUrl(stock.ticker)} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer" 
-                                                            className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center gap-1 group-hover:underline"
+                                                            className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
                                                             title={`Open ${stock.label} on TradingView`}
                                                         >
-                                                            <span>{stock.label}</span>
-                                                            <ExternalLink size={12} className="opacity-60" />
+                                                            {stock.label}
                                                         </a>
                                                         {ipoBadge && (
                                                             <span 
@@ -1210,7 +1209,7 @@ export function StocksMasterClient({ allConfigs, performanceData, marketStatus, 
                                                         <tr key={stock.ticker} className="hover:bg-white/[0.02] transition-colors">
                                                             <td className="px-4 py-2 font-sans">
                                                                 <div className="flex items-center gap-1.5">
-                                                                    <a href={makeTradingViewUrl(stock.ticker)} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-medium">
+                                                                    <a href={makeTradingViewUrl(stock.ticker)} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors">
                                                                         {stock.label}
                                                                     </a>
                                                                     {ipoBadge && (

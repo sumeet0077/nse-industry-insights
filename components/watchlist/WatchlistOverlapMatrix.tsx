@@ -14,7 +14,6 @@ import {
     Layers,
     Table as TableIcon,
     Search,
-    ExternalLink,
     Filter,
     Sliders,
     Sparkles,
@@ -502,16 +501,15 @@ export function WatchlistOverlapMatrix({
                                     <tr key={row.clean} className="hover:bg-gray-800/40 transition-colors">
                                         {/* Ticker */}
                                         <td className="p-3 font-semibold whitespace-nowrap">
-                                            <div className="flex items-center gap-1.5">
+                                            <div className="flex items-center gap-1.5 font-sans">
                                                 <a
                                                     href={makeTradingViewUrl(row.symbol)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 underline font-medium transition-colors group"
+                                                    className="text-blue-400 hover:text-blue-300 underline font-medium transition-colors"
                                                     title={`Open ${row.clean} on TradingView`}
                                                 >
-                                                    <span>{row.clean}</span>
-                                                    <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 transition-opacity" />
+                                                    {row.clean}
                                                 </a>
                                             </div>
                                         </td>

@@ -832,6 +832,33 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         def is_etf_or_re(sym):
             return False
 
+    try:
+        from price_bands_util import load_sec_bands, get_security_info
+    except ImportError:
+        def load_sec_bands():
+            return {}
+        def get_security_info(sym, bands=None):
+            return {"series": "EQ", "band": "20", "remarks": "-"}
+
+    sec_bands = load_sec_bands()
+
+    parquet_paths = []
+    env_pq_path = os.environ.get("NSE_PARQUET_PATH", "").strip()
+    if env_pq_path:
+        parquet_paths.append(Path(env_pq_path))
+    env_pq_dir = os.environ.get("NSE_PARQUET_DIR", "").strip()
+    if env_pq_dir:
+        parquet_paths.append(Path(env_pq_dir))
+    parquet_paths.extend([
+        source_dir / "nse_master_adjusted_2014_onwards.parquet",
+        source_dir / "parquet",
+        source_dir.parent / "Stock_market/data/parquet/master_copy.parquet",
+        source_dir.parent / "Stock_market/NSE Master parquet/nse_master_adjusted_2014_onwards.parquet",
+        Path("data/parquet"),
+        Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
+    ])
+
     drilldown_data = {}
 
     # 1. Check candidate paths for Stock_market drilldowns
@@ -1050,6 +1077,32 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             "lows": session_lows
         }
 
+    # Load High/Low mapping from parquet if available for circuit lock detection
+    hl_lookup = {}
+    chosen_pq = None
+    for p in parquet_paths:
+        if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet")))):
+            chosen_pq = p
+            break
+
+    if chosen_pq and selected_dates:
+        try:
+            import duckdb
+            con = duckdb.connect()
+            pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
+            min_date = selected_dates[0]
+            q = f"""
+            SELECT TRIM(symbol), STRFTIME(CAST(trade_date AS DATE), '%Y-%m-%d'), high, low, series
+            FROM read_parquet('{pq_pattern}', union_by_name=true)
+            WHERE trade_date >= '{min_date}'
+            """
+            rows = con.execute(q).fetchall()
+            con.close()
+            for s, dt_str, h, l, ser in rows:
+                hl_lookup[(s, dt_str)] = (float(h) if h is not None else None, float(l) if l is not None else None, ser)
+        except Exception as e:
+            print(f"  Notice: High/Low parquet lookup: {e}")
+
     def process_side(list_key, sort_desc=True):
         sym_to_tuples = {}
         for dt in selected_dates:
@@ -1092,9 +1145,24 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             # Ensure history_20d always has exactly 20 elements (padded with leading zeros if fewer than 20 sessions available)
             h20 = ([0] * max(0, 20 - len(raw_h20))) + raw_h20
 
+            band_info = get_security_info(clean, sec_bands)
+            series = band_info.get("series", "EQ") or "EQ"
+            circuit_band = band_info.get("band", "20") or "20"
+
+            # Check circuit lock
+            hl_info = hl_lookup.get((clean, last_hit))
+            if hl_info and hl_info[0] is not None and hl_info[1] is not None:
+                raw_high, raw_low = hl_info[0], hl_info[1]
+                is_circuit_locked = bool(raw_high == raw_low and abs(pct_1d) >= 1.9)
+            else:
+                is_circuit_locked = bool(circuit_band in ("2", "5") and abs(pct_1d) >= (float(circuit_band) - 0.1))
+
             items.append({
                 "symbol": f"{clean}.NS",
                 "clean_symbol": clean,
+                "series": series,
+                "circuit_band": circuit_band,
+                "is_circuit_locked": is_circuit_locked,
                 "close": close,
                 "pct_1d": pct_1d,
                 "pct_5d": pct_5d,

@@ -167,7 +167,7 @@ export const SCANNER_COLUMNS: ScannerColumnConfig[] = [
     { key: "streak", label: "Active Streak" },
     { key: "frequency", label: "Frequency" },
     { key: "timeline", label: "20D / 60D Hits Timeline" },
-    { key: "rs", label: "IBD RS Rating" },
+    { key: "rs", label: "RS Rating" },
     { key: "close", label: "Close Price" },
     { key: "pct_1d", label: "1D %" },
     { key: "pct_5d", label: "5D %" },
@@ -211,6 +211,46 @@ export const CONFLUENCE_VISIBLE_COLUMNS: Record<string, boolean> = {
     pct_5d: false,
     turnover: false,
     quick_add: true,
+};
+
+export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
+    symbol: 144,
+    band: 90,
+    candle: 210,
+    ema_ext: 120,
+    cpr: 140,
+    vol_deliv: 150,
+    sector_wave: 160,
+    theme: 150,
+    streak: 110,
+    frequency: 110,
+    timeline: 170,
+    rs: 115,
+    close: 115,
+    pct_1d: 100,
+    pct_5d: 100,
+    turnover: 125,
+    quick_add: 85,
+};
+
+export const MIN_COLUMN_WIDTHS: Record<string, number> = {
+    symbol: 110,
+    band: 65,
+    candle: 130,
+    ema_ext: 80,
+    cpr: 90,
+    vol_deliv: 100,
+    sector_wave: 110,
+    theme: 100,
+    streak: 75,
+    frequency: 75,
+    timeline: 120,
+    rs: 75,
+    close: 80,
+    pct_1d: 70,
+    pct_5d: 70,
+    turnover: 85,
+    quick_add: 60,
 };
 
 function getBandBadgeStyle(band?: string): string {
@@ -299,6 +339,120 @@ export function Recurrence52WScanner({
     const [isColumnDropdownOpen, setIsColumnDropdownOpen] = useState(false);
     const columnDropdownRef = useRef<HTMLDivElement>(null);
     const tableContainerRef = useRef<HTMLDivElement>(null);
+
+    // Column Widths with Draggable Resizers
+    const [columnWidths, setColumnWidths] = useLocalStorage<Record<string, number>>(
+        "r52w_columnWidths",
+        DEFAULT_COLUMN_WIDTHS
+    );
+
+    const colWidths = useMemo(() => {
+        const merged = { ...DEFAULT_COLUMN_WIDTHS, ...columnWidths };
+        const sanitized: Record<string, number> = {};
+        for (const key of Object.keys(DEFAULT_COLUMN_WIDTHS)) {
+            const val = merged[key];
+            const min = MIN_COLUMN_WIDTHS[key] ?? 60;
+            if (typeof val === "number" && !isNaN(val) && val >= min) {
+                sanitized[key] = Math.round(val);
+            } else {
+                sanitized[key] = DEFAULT_COLUMN_WIDTHS[key];
+            }
+        }
+        return sanitized;
+    }, [columnWidths]);
+
+    const colWidthsRef = useRef(colWidths);
+    colWidthsRef.current = colWidths;
+
+    const totalTableWidth = useMemo(() => {
+        let width = 40 + colWidths.symbol;
+        for (const col of SCANNER_COLUMNS) {
+            if (visibleColumns[col.key] !== false) {
+                width += colWidths[col.key] ?? DEFAULT_COLUMN_WIDTHS[col.key] ?? 100;
+            }
+        }
+        return width;
+    }, [colWidths, visibleColumns]);
+
+    const resizeCleanupRef = useRef<(() => void) | null>(null);
+    useEffect(() => {
+        return () => {
+            if (resizeCleanupRef.current) {
+                resizeCleanupRef.current();
+            }
+        };
+    }, []);
+
+    const handleResizeMouseDown = useCallback((colKey: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        // Close any active filter popover to avoid jumpy layout during drag
+        setActiveFilterPopover(null);
+
+        // Cancel previous drag listener if one was somehow pending
+        if (resizeCleanupRef.current) {
+            resizeCleanupRef.current();
+        }
+
+        const startX = e.clientX;
+        const startWidth = colWidthsRef.current[colKey] ?? DEFAULT_COLUMN_WIDTHS[colKey] ?? 100;
+        const minWidth = MIN_COLUMN_WIDTHS[colKey] ?? 60;
+
+        const originalCursor = document.body.style.cursor;
+        const originalUserSelect = document.body.style.userSelect;
+
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+
+        let rafId: number | null = null;
+
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            const diff = moveEvent.clientX - startX;
+            const newWidth = Math.max(minWidth, Math.round(startWidth + diff));
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+            }
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                setColumnWidths((prev) => {
+                    if (prev[colKey] === newWidth) return prev;
+                    return {
+                        ...prev,
+                        [colKey]: newWidth,
+                    };
+                });
+            });
+        };
+
+        const handleMouseUp = () => {
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            document.body.style.cursor = originalCursor;
+            document.body.style.userSelect = originalUserSelect;
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+            resizeCleanupRef.current = null;
+        };
+
+        const cleanup = () => {
+            if (rafId !== null) {
+                cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            document.body.style.cursor = originalCursor;
+            document.body.style.userSelect = originalUserSelect;
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("mouseup", handleMouseUp);
+        };
+
+        resizeCleanupRef.current = cleanup;
+
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+    }, [setColumnWidths]);
 
     const toggleColumn = useCallback((colKey: string) => {
         setVisibleColumns((prev) => ({
@@ -536,7 +690,7 @@ export function Recurrence52WScanner({
         [stockSearchIndex]
     );
 
-    // Helper to get IBD RS metrics
+    // Helper to get RS metrics
     const getRSMetrics = useCallback(
         (sym: string, cleanSym: string) => {
             if (!constituentPerformanceMap) return { rs: null, lead: false };
@@ -671,7 +825,7 @@ export function Recurrence52WScanner({
                 if (countInWindow < columnFilters.minFrequency) return false;
             }
 
-            // IBD RS filter
+            // RS Rating filter
             if (columnFilters.minRS > 0 || columnFilters.rsLeadOnly) {
                 const { rs, lead } = getRSMetrics(item.symbol, item.clean_symbol);
                 if (columnFilters.minRS > 0 && (rs === null || rs < columnFilters.minRS)) return false;
@@ -1811,11 +1965,11 @@ export function Recurrence52WScanner({
                         </button>
 
                         {isColumnDropdownOpen && (
-                            <div className="absolute right-0 top-full mt-1.5 w-60 bg-[#111118] border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in">
+                            <div className="absolute right-0 top-full mt-1.5 w-72 bg-[#111118] border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in">
                                 <div className="p-2 flex flex-col gap-1 max-h-72 overflow-y-auto">
                                     <div className="flex justify-between items-center px-1 mb-1 pb-2 border-b border-gray-800">
                                         <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Columns</span>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1.5">
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -1846,6 +2000,15 @@ export function Recurrence52WScanner({
                                                 className="text-[10px] text-gray-400 hover:text-gray-300 font-medium"
                                             >
                                                 Reset
+                                            </button>
+                                            <span className="text-gray-600 text-[10px]">|</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => setColumnWidths(DEFAULT_COLUMN_WIDTHS)}
+                                                className="text-[10px] text-amber-400 hover:text-amber-300 font-medium whitespace-nowrap"
+                                                title="Reset column widths to defaults"
+                                            >
+                                                Reset Widths
                                             </button>
                                         </div>
                                     </div>
@@ -1882,13 +2045,33 @@ export function Recurrence52WScanner({
 
             {/* Recurrence Table */}
             <div ref={tableContainerRef} className="overflow-x-auto max-h-[70vh] border border-gray-800 rounded-xl relative bg-gray-900 shadow-xl">
-                <table className="w-full text-left text-xs text-gray-300 border-collapse">
+                <table style={{ width: `${totalTableWidth}px`, minWidth: `${totalTableWidth}px` }} className="text-left text-xs text-gray-300 border-collapse">
+                    <colgroup>
+                        <col style={{ width: "40px", minWidth: "40px" }} />
+                        <col style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px` }} />
+                        {visibleColumns.band !== false && <col style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} />}
+                        {visibleColumns.candle !== false && <col style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} />}
+                        {visibleColumns.ema_ext !== false && <col style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} />}
+                        {visibleColumns.cpr !== false && <col style={{ width: `${colWidths.cpr}px`, minWidth: `${colWidths.cpr}px` }} />}
+                        {visibleColumns.vol_deliv !== false && <col style={{ width: `${colWidths.vol_deliv}px`, minWidth: `${colWidths.vol_deliv}px` }} />}
+                        {visibleColumns.sector_wave !== false && <col style={{ width: `${colWidths.sector_wave}px`, minWidth: `${colWidths.sector_wave}px` }} />}
+                        {visibleColumns.theme !== false && <col style={{ width: `${colWidths.theme}px`, minWidth: `${colWidths.theme}px` }} />}
+                        {visibleColumns.streak !== false && <col style={{ width: `${colWidths.streak}px`, minWidth: `${colWidths.streak}px` }} />}
+                        {visibleColumns.frequency !== false && <col style={{ width: `${colWidths.frequency}px`, minWidth: `${colWidths.frequency}px` }} />}
+                        {visibleColumns.timeline !== false && <col style={{ width: `${colWidths.timeline}px`, minWidth: `${colWidths.timeline}px` }} />}
+                        {visibleColumns.rs !== false && <col style={{ width: `${colWidths.rs}px`, minWidth: `${colWidths.rs}px` }} />}
+                        {visibleColumns.close !== false && <col style={{ width: `${colWidths.close}px`, minWidth: `${colWidths.close}px` }} />}
+                        {visibleColumns.pct_1d !== false && <col style={{ width: `${colWidths.pct_1d}px`, minWidth: `${colWidths.pct_1d}px` }} />}
+                        {visibleColumns.pct_5d !== false && <col style={{ width: `${colWidths.pct_5d}px`, minWidth: `${colWidths.pct_5d}px` }} />}
+                        {visibleColumns.turnover !== false && <col style={{ width: `${colWidths.turnover}px`, minWidth: `${colWidths.turnover}px` }} />}
+                        {visibleColumns.quick_add !== false && <col style={{ width: `${colWidths.quick_add}px`, minWidth: `${colWidths.quick_add}px` }} />}
+                    </colgroup>
                         <thead className="sticky top-0 z-30 bg-[#0d0d14] text-gray-400 font-semibold border-b border-gray-800 uppercase text-[10px] tracking-wider shadow-sm select-none">
                             <tr className="bg-[#0d0d14]">
-                                <th className="p-3 w-10 min-w-10 max-w-10 text-center sticky left-0 z-40 bg-[#0d0d14]">
+                                <th style={{ width: "40px", minWidth: "40px", maxWidth: "40px" }} className="p-3 w-10 min-w-10 max-w-10 text-center sticky left-0 z-40 bg-[#0d0d14]">
                                     <span className="sr-only">Select</span>
                                 </th>
-                                <th className="p-2.5 relative sticky left-10 z-40 w-36 min-w-36 max-w-36 bg-[#0d0d14]">
+                                <th style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px`, maxWidth: `${colWidths.symbol}px` }} className="p-2.5 sticky left-10 z-40 bg-[#0d0d14]">
                                     <div className="flex items-center justify-between gap-1.5">
                                         <div
                                             className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -1956,10 +2139,16 @@ export function Recurrence52WScanner({
                                             </div>
                                         </div>
                                     )}
+                                    <div
+                                        onMouseDown={(e) => handleResizeMouseDown("symbol", e)}
+                                        onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                        className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                        title="Drag to resize column"
+                                    />
                                 </th>
                                 {/* Band */}
                                 {visibleColumns.band !== false && (
-                                    <th className="p-2.5 relative text-center bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} className="p-2.5 relative text-center bg-[#0d0d14]">
                                         <div className="flex items-center justify-center gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2067,12 +2256,18 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("band", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
 
                         {/* Candle & Signal */}
                         {visibleColumns.candle !== false && (
-                            <th className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2189,12 +2384,18 @@ export function Recurrence52WScanner({
                                         </div>
                                     </div>
                                 )}
+                                <div
+                                    onMouseDown={(e) => handleResizeMouseDown("candle", e)}
+                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                    title="Drag to resize column"
+                                />
                             </th>
                         )}
 
                         {/* 20 EMA Ext */}
                         {visibleColumns.ema_ext !== false && (
-                            <th className="p-2.5 relative text-right bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
                                 <div className="flex items-center justify-end gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2296,12 +2497,18 @@ export function Recurrence52WScanner({
                                         </div>
                                     </div>
                                 )}
+                                <div
+                                    onMouseDown={(e) => handleResizeMouseDown("ema_ext", e)}
+                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                    title="Drag to resize column"
+                                />
                             </th>
                         )}
 
                         {/* Monthly CPR */}
                         {visibleColumns.cpr !== false && (
-                            <th className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.cpr}px`, minWidth: `${colWidths.cpr}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2426,12 +2633,18 @@ export function Recurrence52WScanner({
                                         </div>
                                     </div>
                                 )}
+                                <div
+                                    onMouseDown={(e) => handleResizeMouseDown("cpr", e)}
+                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                    title="Drag to resize column"
+                                />
                             </th>
                         )}
 
                         {/* Vol & Deliv */}
                         {visibleColumns.vol_deliv !== false && (
-                            <th className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.vol_deliv}px`, minWidth: `${colWidths.vol_deliv}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2564,12 +2777,18 @@ export function Recurrence52WScanner({
                                         </div>
                                     </div>
                                 )}
+                                <div
+                                    onMouseDown={(e) => handleResizeMouseDown("vol_deliv", e)}
+                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                    title="Drag to resize column"
+                                />
                             </th>
                         )}
 
                         {/* Sector Wave (10D) */}
                         {visibleColumns.sector_wave !== false && (
-                            <th className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.sector_wave}px`, minWidth: `${colWidths.sector_wave}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2648,12 +2867,18 @@ export function Recurrence52WScanner({
                                         </div>
                                     </div>
                                 )}
+                                <div
+                                    onMouseDown={(e) => handleResizeMouseDown("sector_wave", e)}
+                                    onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                    className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                    title="Drag to resize column"
+                                />
                             </th>
                         )}
 
                                 {/* Theme */}
                                 {visibleColumns.theme !== false && (
-                                    <th className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.theme}px`, minWidth: `${colWidths.theme}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2749,12 +2974,18 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("theme", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
 
                                 {/* Active Streak */}
                                 {visibleColumns.streak !== false && (
-                                    <th className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.streak}px`, minWidth: `${colWidths.streak}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2837,12 +3068,18 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("streak", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
 
                                 {/* Frequency */}
                                 {visibleColumns.frequency !== false && (
-                                    <th className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.frequency}px`, minWidth: `${colWidths.frequency}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2925,28 +3162,40 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("frequency", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
 
                                 {/* Timeline */}
                                 {visibleColumns.timeline !== false && (
-                                    <th className="p-2.5 bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.timeline}px`, minWidth: `${colWidths.timeline}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                         <div className="flex items-center gap-1">
                                             <span>{lookback}-Day Timeline</span>
                                             <span className="text-[9px] text-gray-500 normal-case font-normal">(Oldest → Newest)</span>
                                         </div>
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("timeline", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
 
-                                {/* IBD RS */}
+                                {/* RS Rating */}
                                 {visibleColumns.rs !== false && (
-                                    <th className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.rs}px`, minWidth: `${colWidths.rs}px` }} className="p-2.5 relative bg-[#0d0d14]">
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
                                                 onClick={() => handleSort("rs_rating")}
                                             >
-                                                <span>IBD RS</span>
+                                                <span>RS Rating</span>
                                                 {getSortIcon("rs_rating")}
                                             </div>
                                             <button
@@ -2960,7 +3209,7 @@ export function Recurrence52WScanner({
                                                         ? "text-blue-400 bg-blue-500/20"
                                                         : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
                                                 }`}
-                                                title="Filter IBD RS"
+                                                title="Filter RS Rating"
                                             >
                                                 <Filter className={`w-3 h-3 ${hasColumnFilter("rs_rating") ? "fill-blue-400" : ""}`} />
                                             </button>
@@ -2972,7 +3221,7 @@ export function Recurrence52WScanner({
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
-                                                    <span className="font-semibold text-xs text-gray-200">Filter IBD RS</span>
+                                                    <span className="font-semibold text-xs text-gray-200">Filter RS Rating</span>
                                                     <div className="flex items-center gap-2">
                                                         {hasColumnFilter("rs_rating") && (
                                                             <button
@@ -3032,11 +3281,17 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("rs", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
                                 {/* Close Price */}
                                 {visibleColumns.close !== false && (
-                                    <th className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.close}px`, minWidth: `${colWidths.close}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
                                         <div className="flex items-center justify-end gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3138,10 +3393,16 @@ export function Recurrence52WScanner({
                                                 </div>
                                             </div>
                                         )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("close", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
                                 {visibleColumns.pct_1d !== false && (
-                                    <th className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.pct_1d}px`, minWidth: `${colWidths.pct_1d}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
                                         <div className="flex items-center justify-end gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3257,10 +3518,16 @@ export function Recurrence52WScanner({
                                             </div>
                                         </div>
                                     )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("pct_1d", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
                                 {visibleColumns.pct_5d !== false && (
-                                    <th className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.pct_5d}px`, minWidth: `${colWidths.pct_5d}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <div
                                                     className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3376,10 +3643,16 @@ export function Recurrence52WScanner({
                                                     </div>
                                                 </div>
                                             )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("pct_5d", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
                                 {visibleColumns.turnover !== false && (
-                                    <th className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.turnover}px`, minWidth: `${colWidths.turnover}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <div
                                                     className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3462,10 +3735,24 @@ export function Recurrence52WScanner({
                                                     </div>
                                                 </div>
                                             )}
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("turnover", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
                                     </th>
                                 )}
                                 {visibleColumns.quick_add !== false && (
-                                    <th className="p-3 text-center w-16 bg-[#0d0d14]">Quick Add</th>
+                                    <th style={{ width: `${colWidths.quick_add}px`, minWidth: `${colWidths.quick_add}px` }} className="p-3 relative text-center bg-[#0d0d14]">
+                                        Quick Add
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("quick_add", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
+                                    </th>
                                 )}
                             </tr>
                         </thead>
@@ -3501,7 +3788,7 @@ export function Recurrence52WScanner({
                                             }`}
                                         >
                                             {/* Checkbox */}
-                                            <td className={`p-3 text-center sticky left-0 z-20 w-10 min-w-10 max-w-10 transition-colors ${
+                                            <td style={{ width: "40px", minWidth: "40px", maxWidth: "40px" }} className={`p-3 text-center sticky left-0 z-20 w-10 min-w-10 max-w-10 transition-colors ${
                                                 isSelected ? "bg-[#0c1e3a]" : "bg-[#0d0d14] group-hover:bg-[#151522]"
                                             }`}>
                                                 <button
@@ -3518,7 +3805,7 @@ export function Recurrence52WScanner({
                                             </td>
 
                                             {/* Symbol */}
-                                            <td className={`p-3 font-semibold whitespace-nowrap sticky left-10 z-20 w-36 min-w-36 max-w-36 transition-colors ${
+                                            <td style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px`, maxWidth: `${colWidths.symbol}px` }} className={`p-3 font-semibold whitespace-nowrap sticky left-10 z-20 transition-colors ${
                                                 isSelected ? "bg-[#0c1e3a]" : "bg-[#0d0d14] group-hover:bg-[#151522]"
                                             }`}>
                                                 <div className="flex items-center gap-1.5 font-sans">
@@ -3541,7 +3828,7 @@ export function Recurrence52WScanner({
 
                                             {/* Band */}
                                             {visibleColumns.band !== false && (
-                                                <td className="p-3 text-center whitespace-nowrap">
+                                                <td style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} className="p-3 text-center whitespace-nowrap">
                                                     <div className="flex items-center justify-center gap-1 font-sans">
                                                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${getBandBadgeStyle(item.circuit_band)}`}>
                                                             {getBandLabel(item.circuit_band)}
@@ -3558,7 +3845,7 @@ export function Recurrence52WScanner({
                                             {/* Microstructure & Confluence Columns */}
                                             {/* 1. Candle & Signal */}
                                             {visibleColumns.candle !== false && (
-                                                <td className="p-3 whitespace-nowrap">
+                                                <td style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} className="p-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-1.5 group/candle relative">
                                                     {item.setup_label ? (
                                                         <span
@@ -3683,7 +3970,7 @@ export function Recurrence52WScanner({
 
                                         {/* 2. 20 EMA Ext */}
                                         {visibleColumns.ema_ext !== false && (
-                                            <td className="p-3 text-right whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} className="p-3 text-right whitespace-nowrap">
                                                 {item.ema_20_ext != null ? (
                                                     <div className="inline-flex items-center gap-1 group/ema relative">
                                                         <span
@@ -3738,7 +4025,7 @@ export function Recurrence52WScanner({
 
                                         {/* 3. Monthly CPR */}
                                         {visibleColumns.cpr !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.cpr}px`, minWidth: `${colWidths.cpr}px` }} className="p-3 whitespace-nowrap">
                                                 {item.cpr_width_pct != null ? (
                                                     <div className="flex items-center gap-1.5 group/cpr relative">
                                                         <span
@@ -3803,7 +4090,7 @@ export function Recurrence52WScanner({
 
                                         {/* 4. Vol & Deliv */}
                                         {visibleColumns.vol_deliv !== false && (
-                                            <td className="p-3 whitespace-nowrap font-mono text-xs">
+                                            <td style={{ width: `${colWidths.vol_deliv}px`, minWidth: `${colWidths.vol_deliv}px` }} className="p-3 whitespace-nowrap font-mono text-xs">
                                                 <div className="flex items-center gap-1.5 group/voldeliv relative">
                                                     <span className={`font-semibold ${item.vol_surge && item.vol_surge >= 1.5 ? "text-emerald-400" : "text-gray-300"}`}>
                                                         {item.vol_surge != null ? `${item.vol_surge.toFixed(1)}×` : "—"}
@@ -3852,7 +4139,7 @@ export function Recurrence52WScanner({
 
                                         {/* 5. Sector Wave (10D) */}
                                         {visibleColumns.sector_wave !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.sector_wave}px`, minWidth: `${colWidths.sector_wave}px` }} className="p-3 whitespace-nowrap">
                                                 {item.sector_wave_count && item.sector_wave_count >= 2 ? (
                                                     <div className="inline-flex items-center gap-1 group/wave relative">
                                                         <span
@@ -3912,7 +4199,7 @@ export function Recurrence52WScanner({
 
                                         {/* Theme */}
                                         {visibleColumns.theme !== false && (
-                                            <td className="p-3 font-sans text-gray-400 whitespace-nowrap text-[11px]">
+                                            <td style={{ width: `${colWidths.theme}px`, minWidth: `${colWidths.theme}px` }} className="p-3 font-sans text-gray-400 whitespace-nowrap text-[11px]">
                                                 <span className="px-2 py-0.5 rounded bg-gray-800/70 border border-gray-700/60 text-gray-300">
                                                     {theme}
                                                 </span>
@@ -3921,7 +4208,7 @@ export function Recurrence52WScanner({
 
                                         {/* Active Streak */}
                                         {visibleColumns.streak !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.streak}px`, minWidth: `${colWidths.streak}px` }} className="p-3 whitespace-nowrap">
                                                 {item.streak >= 2 ? (
                                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30">
                                                         <Flame className="w-3 h-3 text-amber-400 fill-amber-400 animate-pulse" />
@@ -3937,7 +4224,7 @@ export function Recurrence52WScanner({
 
                                         {/* Frequency */}
                                         {visibleColumns.frequency !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.frequency}px`, minWidth: `${colWidths.frequency}px` }} className="p-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
                                                     <span className="font-semibold text-gray-100">
                                                         {countInWindow}/{lookback}d
@@ -3951,7 +4238,7 @@ export function Recurrence52WScanner({
 
                                         {/* Dynamic Hit Timeline */}
                                         {visibleColumns.timeline !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.timeline}px`, minWidth: `${colWidths.timeline}px` }} className="p-3 whitespace-nowrap">
                                                 {(() => {
                                                     const fullHist = (item.history_60d && item.history_60d.length >= lookback)
                                                         ? item.history_60d
@@ -3997,9 +4284,9 @@ export function Recurrence52WScanner({
                                             </td>
                                         )}
 
-                                        {/* IBD RS */}
+                                        {/* RS Rating */}
                                         {visibleColumns.rs !== false && (
-                                            <td className="p-3 whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.rs}px`, minWidth: `${colWidths.rs}px` }} className="p-3 whitespace-nowrap">
                                                 {rs !== null ? (
                                                     <div className="flex items-center gap-1">
                                                         <span
@@ -4030,35 +4317,35 @@ export function Recurrence52WScanner({
 
                                         {/* Close Price */}
                                         {visibleColumns.close !== false && (
-                                            <td className="p-3 text-right whitespace-nowrap font-medium text-gray-200">
+                                            <td style={{ width: `${colWidths.close}px`, minWidth: `${colWidths.close}px` }} className="p-3 text-right whitespace-nowrap font-medium text-gray-200">
                                                 ₹{item.close.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                             </td>
                                         )}
 
                                         {/* 1D % */}
                                         {visibleColumns.pct_1d !== false && (
-                                            <td className={`p-3 text-right whitespace-nowrap font-semibold ${getReturnColor(item.pct_1d)}`}>
+                                            <td style={{ width: `${colWidths.pct_1d}px`, minWidth: `${colWidths.pct_1d}px` }} className={`p-3 text-right whitespace-nowrap font-semibold ${getReturnColor(item.pct_1d)}`}>
                                                 {formatReturn(item.pct_1d)}
                                             </td>
                                         )}
 
                                         {/* 5D % */}
                                         {visibleColumns.pct_5d !== false && (
-                                            <td className={`p-3 text-right whitespace-nowrap font-semibold ${getReturnColor(item.pct_5d)}`}>
+                                            <td style={{ width: `${colWidths.pct_5d}px`, minWidth: `${colWidths.pct_5d}px` }} className={`p-3 text-right whitespace-nowrap font-semibold ${getReturnColor(item.pct_5d)}`}>
                                                 {formatReturn(item.pct_5d)}
                                             </td>
                                         )}
 
                                         {/* Turnover (Cr) */}
                                         {visibleColumns.turnover !== false && (
-                                            <td className="p-3 text-right whitespace-nowrap text-gray-400">
+                                            <td style={{ width: `${colWidths.turnover}px`, minWidth: `${colWidths.turnover}px` }} className="p-3 text-right whitespace-nowrap text-gray-400">
                                                 {item.turnover_cr.toFixed(2)}
                                             </td>
                                         )}
 
                                         {/* Quick Add Button */}
                                         {visibleColumns.quick_add !== false && (
-                                            <td className="p-3 text-center whitespace-nowrap">
+                                            <td style={{ width: `${colWidths.quick_add}px`, minWidth: `${colWidths.quick_add}px` }} className="p-3 text-center whitespace-nowrap">
                                                 {onAddTickerToActiveWatchlist && (
                                                     <button
                                                         type="button"

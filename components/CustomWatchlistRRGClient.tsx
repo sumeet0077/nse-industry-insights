@@ -2547,7 +2547,7 @@ export function CustomWatchlistRRGClient({
                                 Watchlist Constituents Performance Table
                             </h3>
                             <p className="text-xs text-slate-400">
-                                1D–5Y returns, IBD RS Rating, 52-week RS Lead Breakouts, and TradingView links
+                                1D–5Y returns, RS Rating, 52-week RS Lead Breakouts, and TradingView links
                             </p>
                         </div>
                     )}

@@ -271,3 +271,43 @@ Conditioning 52W breakouts by Market Breadth (% of stocks above 50-day EMA):
 | **Bearish Breadth ($< 50\%$ stocks $>$ EMA50)** | **Sector Wave ($\ge 3$ stocks)** | 5,004 | 53.2% | +1.56% | +0.58% | Sector rotation in defensive pockets |
 | **Bearish Breadth ($< 50\%$ stocks $>$ EMA50)** | Isolated / Duo (1–2 stocks) | 6,409 | **50.1%** | +0.70% | **+0.01%** | **Pure Noise / Zero Edge** |
 
+---
+
+## 12. Prior Day Candle Anatomy & Recency Gap Optimization (Tradeable Only)
+
+Analysis of 80,317 strictly tradeable 52W breakouts (2021–2026), isolating candle psychology and session gaps between 52W High prints:
+
+### 1. Previous Day Candle Color (Red vs Green)
+Does a breakout have higher follow-through if the previous day was a Green expansion bar or a Red pullback/shakeout bar?
+
+| Prior Day Candle Color | Sample Count | 20D Win Rate | Median 20D Return | Mean 20D Return | Profit Factor | Avg Drawdown (MAE) | Avg Peak Run (MFE) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Red (Pullback / Rest Bar)** | 21,819 | **54.5%** | **+1.01%** | **+2.72%** | **1.76** | **-8.36%** | +12.91% |
+| **Green (Continuation Bar)** | 57,396 | 52.8% | +0.74% | +2.42% | 1.59 | -9.09% | +13.33% |
+| **Doji / Flat (Indecision)** | 1,102 | 48.7% | -0.29% | +4.67% | 1.67 | -12.95% | +22.41% |
+
+> **The Red Candle Shakeout Edge**: A **Red prior day** outperforms a Green prior day across win rate (+1.7%), median return (+36% higher: +1.01% vs +0.74%), and drawdown (-8.36% vs -9.09%). A red day shakes out retail weak hands and cools off the 20 EMA extension; when the stock breaks out to 52W High the next day anyway, it confirms strong institutional absorption.
+
+### 2. Recency Gap of Previous 52W High (How Many Days Back?)
+When a 52W High is printed today, how many sessions ago was the *prior* 52W High?
+
+| Prior Hit Recency Gap | Sample Count | 5D Win% | 20D Win% | Median 20D% | Mean 20D% | Avg Drawdown | Profit Factor |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **1. Consecutive Hit (Yesterday / 1d ago)** | 39,898 | 48.3% | 53.2% | +0.81% | +2.42% | -9.32% | 1.57 |
+| **2. Quick Pause (2d ago - 1-day Rest Bar)** | 7,762 | **49.2%** | **53.7%** | **+0.98%** | +2.59% | **-8.47%** | **1.71** |
+| **3. Micro Flag (3 to 5d ago)** | 9,821 | 49.1% | 53.3% | +0.78% | +2.42% | -8.66% | 1.64 |
+| **4. Short Base (6 to 10d ago)** | 6,197 | 47.9% | 53.4% | +0.85% | +2.57% | -8.63% | 1.67 |
+| **5. Intermediate Base (11 to 20d ago)** | 5,113 | 48.3% | 53.4% | +0.82% | +2.76% | -8.52% | 1.73 |
+| **6. Multi-Month Base (21 to 60d ago)** | 5,244 | 49.9% | 52.5% | +0.69% | +2.72% | -8.43% | 1.71 |
+| **7. Virgin Inception (>60d ago)** | 6,282 | 50.9% | 53.1% | +0.78% | +2.93% | -8.64% | 1.74 |
+
+### 3. Interaction Grid: Prior Hit Gap × Prior Day Candle Color
+| Recency Gap Category | Prior Day RED (Win% / Med 20D / MAE) | Prior Day GREEN (Win% / Med 20D / MAE) | Edge Differential (Red vs Green) |
+| :--- | :--- | :--- | :--- |
+| **1d (Consecutive / Yesterday)** | **56.9% / +1.39% / -8.25%** | 52.6% / +0.69% / -9.40% | **Red delivers 2.0x higher median return & lower drawdown** |
+| **2d (1-Day Pause Bar)** | **54.0% / +1.05% / -8.45%** | 53.1% / +0.84% / -8.52% | **Red pause bar produces optimal tight flag setup** |
+| **3–5d (Micro Flag)** | **53.9% / +0.88% / -8.51%** | 53.1% / +0.75% / -8.74% | **Red pullback into 10/20 EMA yields higher alpha** |
+| **6–20d (Base Resumption)** | **53.8% / +0.87% / -8.38%** | 53.2% / +0.80% / -8.67% | **Consistent edge for red shakeout before breakout** |
+| **>60d (Virgin Inception)** | 52.2% / +0.55% / -8.37% | **53.6% / +0.92% / -8.74%** | **Inversion: Emerging from multi-month base favors green momentum thrust** |
+
+

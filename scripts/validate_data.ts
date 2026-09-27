@@ -518,7 +518,64 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, and price band enrichment.");
+    // Invariant 8: Microstructure & Confluence Indicators Null-Tolerant Validation
+    const validCprPos = new Set(["above", "inside", "below"]);
+    const validPatterns = new Set(["hammer", "thrust", "rejection", "normal"]);
+    for (const item of [...data.highs, ...data.lows]) {
+        if (item.cpr_width_pct !== undefined && item.cpr_width_pct !== null) {
+            if (typeof item.cpr_width_pct !== "number" || isNaN(item.cpr_width_pct) || item.cpr_width_pct < 0) {
+                errors.push(`Invariant 8 Failure: Invalid cpr_width_pct (${item.cpr_width_pct}) on ${item.symbol}`);
+            }
+        }
+        if (item.cpr_pos !== undefined && item.cpr_pos !== null) {
+            if (!validCprPos.has(item.cpr_pos)) {
+                errors.push(`Invariant 8 Failure: Invalid cpr_pos (${item.cpr_pos}) on ${item.symbol}`);
+            }
+        }
+        if (item.vol_surge !== undefined && item.vol_surge !== null) {
+            if (typeof item.vol_surge !== "number" || isNaN(item.vol_surge) || item.vol_surge < 0) {
+                errors.push(`Invariant 8 Failure: Invalid vol_surge (${item.vol_surge}) on ${item.symbol}`);
+            }
+        }
+        if (item.deliv_pct !== undefined && item.deliv_pct !== null) {
+            if (typeof item.deliv_pct !== "number" || isNaN(item.deliv_pct) || item.deliv_pct < 0 || item.deliv_pct > 100) {
+                errors.push(`Invariant 8 Failure: Invalid deliv_pct (${item.deliv_pct}) on ${item.symbol}`);
+            }
+        }
+        if (item.candle_pattern !== undefined && item.candle_pattern !== null) {
+            if (!validPatterns.has(item.candle_pattern)) {
+                errors.push(`Invariant 8 Failure: Invalid candle_pattern (${item.candle_pattern}) on ${item.symbol}`);
+            }
+        }
+        if (item.sector_wave_count !== undefined && item.sector_wave_count !== null) {
+            if (typeof item.sector_wave_count !== "number" || isNaN(item.sector_wave_count) || item.sector_wave_count < 0) {
+                errors.push(`Invariant 8 Failure: Invalid sector_wave_count (${item.sector_wave_count}) on ${item.symbol}`);
+            }
+        }
+        if (item.prev_color !== undefined && item.prev_color !== null) {
+            if (!["red", "green", "flat"].includes(item.prev_color)) {
+                errors.push(`Invariant 8 Failure: Invalid prev_color (${item.prev_color}) on ${item.symbol}`);
+            }
+        }
+        if (item.risk_pct !== undefined && item.risk_pct !== null) {
+            if (typeof item.risk_pct !== "number" || isNaN(item.risk_pct) || item.risk_pct < 0) {
+                errors.push(`Invariant 8 Failure: Invalid risk_pct (${item.risk_pct}) on ${item.symbol}`);
+            }
+        }
+        if (item.ema_20 !== undefined && item.ema_20 !== null) {
+            if (typeof item.ema_20 !== "number" || isNaN(item.ema_20) || item.ema_20 <= 0) {
+                errors.push(`Invariant 8 Failure: Invalid ema_20 (${item.ema_20}) on ${item.symbol}`);
+            }
+        }
+    }
+
+    if (data.metadata?.sector_waves) {
+        if (typeof data.metadata.sector_waves !== "object") {
+            errors.push("Invariant 8 Failure: metadata.sector_waves must be an object map");
+        }
+    }
+
+    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, price band enrichment, and microstructure confluence.");
 });
 
 // Print Summary

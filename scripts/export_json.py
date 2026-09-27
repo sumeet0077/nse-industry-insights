@@ -857,6 +857,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         Path("data/parquet"),
         Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
         Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
+        Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
     ])
 
     drilldown_data = {}
@@ -916,6 +917,9 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             source_dir.parent / "Stock_market/data/parquet/master_copy.parquet",
             source_dir.parent / "Stock_market/NSE Master parquet/nse_master_adjusted_2014_onwards.parquet",
             Path("data/parquet"),
+            Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
+            Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
+            Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
         ])
         chosen_parquet = None
         for p in parquet_paths:
@@ -1193,7 +1197,277 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
     high_items = process_side("high52w", sort_desc=True)
     low_items = process_side("low52w", sort_desc=False)
 
-    # 4. Section 8 Audit Harness Validation
+    # 4. Enrich high_items and low_items with microstructure & confluence indicators
+    print("  Enriching 52W recurrence items with market microstructure, Monthly CPR, 20 EMA & Sector Waves...")
+
+    # 4.1 10D Sector Wave calculation using industry_themes.py
+    root_dir = Path(__file__).resolve().parent.parent
+    if str(root_dir) not in sys.path:
+        sys.path.insert(0, str(root_dir))
+    try:
+        from industry_themes import INDUSTRY_THEMES
+    except ImportError:
+        INDUSTRY_THEMES = {}
+
+    active_high_10d = {item["clean_symbol"] for item in high_items if item.get("count_10d", 0) >= 1}
+    active_low_10d = {item["clean_symbol"] for item in low_items if item.get("count_10d", 0) >= 1}
+
+    theme_waves_high = {}
+    sector_waves_meta = {}
+    for theme_name, constituents in INDUSTRY_THEMES.items():
+        theme_clean_syms = [s.replace(".NS", "").strip().upper() for s in constituents]
+        active_in_theme = [s for s in theme_clean_syms if s in active_high_10d]
+        theme_waves_high[theme_name] = len(active_in_theme)
+        if active_in_theme:
+            sector_waves_meta[theme_name] = [f"{s}.NS" for s in sorted(active_in_theme)]
+
+    theme_waves_low = {}
+    sector_waves_low_meta = {}
+    for theme_name, constituents in INDUSTRY_THEMES.items():
+        theme_clean_syms = [s.replace(".NS", "").strip().upper() for s in constituents]
+        active_in_theme_low = [s for s in theme_clean_syms if s in active_low_10d]
+        theme_waves_low[theme_name] = len(active_in_theme_low)
+        if active_in_theme_low:
+            sector_waves_low_meta[theme_name] = [f"{s}.NS" for s in sorted(active_in_theme_low)]
+
+    sym_to_themes = {}
+    for theme_name, constituents in INDUSTRY_THEMES.items():
+        for s in constituents:
+            c = s.replace(".NS", "").strip().upper()
+            sym_to_themes.setdefault(c, []).append(theme_name)
+
+    # 4.2 Parquet microstructure calculation (Monthly CPR, 20 EMA, Volume & Delivery, Candle Anatomy)
+    if not chosen_pq:
+        for p in parquet_paths:
+            if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet")))):
+                chosen_pq = p
+                break
+
+    micro_lookup = {}
+    cpr_lookup = {}
+
+    if chosen_pq and selected_dates:
+        try:
+            import duckdb
+            import polars as pl
+
+            con = duckdb.connect()
+            pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
+            min_date = selected_dates[0]
+
+            # Monthly CPR query (anchored to prior calendar month)
+            q_cpr = f"""
+            SELECT 
+                TRIM(symbol) as symbol,
+                DATE_TRUNC('month', CAST(trade_date AS DATE)) as month_start,
+                MAX(high) as m_high,
+                MIN(low) as m_low,
+                ARG_MAX(close, CAST(trade_date AS DATE)) as m_close
+            FROM read_parquet('{pq_pattern}', union_by_name=true)
+            WHERE series IN ('EQ', 'BE', 'BZ')
+              AND trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 120 DAY)
+            GROUP BY TRIM(symbol), DATE_TRUNC('month', CAST(trade_date AS DATE))
+            """
+            cpr_rows = con.execute(q_cpr).fetchall()
+            for sym, m_start, mh, ml, mc in cpr_rows:
+                if m_start and mh is not None and ml is not None and mc is not None:
+                    cpr_lookup[(sym, m_start.year, m_start.month)] = (float(mh), float(ml), float(mc))
+
+            # Daily warmup query (90-day warmup before selected_dates[0])
+            q_daily = f"""
+            SELECT 
+                TRIM(symbol) as symbol,
+                STRFTIME(CAST(trade_date AS DATE), '%Y-%m-%d') as trade_date,
+                open,
+                high,
+                low,
+                close,
+                volume,
+                deliv_qty,
+                deliv_pct,
+                series
+            FROM read_parquet('{pq_pattern}', union_by_name=true)
+            WHERE series IN ('EQ', 'BE', 'BZ')
+              AND trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 90 DAY)
+            ORDER BY symbol, trade_date ASC
+            """
+            daily_df = con.execute(q_daily).pl()
+            con.close()
+
+            if len(daily_df) > 0:
+                daily_df = daily_df.unique(subset=["symbol", "trade_date"], keep="last")
+                daily_df = daily_df.sort(["symbol", "trade_date"])
+                daily_df = daily_df.with_columns(
+                    pl.col("close").ewm_mean(span=20, adjust=False).over("symbol").alias("ema_20"),
+                    pl.col("volume").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("vol_sma20"),
+                    pl.col("deliv_qty").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("deliv_qty_sma20"),
+                    pl.col("open").shift(1).over("symbol").alias("prev_open"),
+                    pl.col("close").shift(1).over("symbol").alias("prev_close"),
+                )
+
+                all_target_keys = pl.DataFrame({
+                    "symbol": [item["clean_symbol"] for item in high_items + low_items],
+                    "trade_date": [item["last_hit_date"] for item in high_items + low_items]
+                }).unique()
+
+                matched = daily_df.join(all_target_keys, on=["symbol", "trade_date"], how="inner")
+                micro_lookup = {(r["symbol"], r["trade_date"]): r for r in matched.to_dicts()}
+
+        except Exception as e:
+            print(f"  Notice: Microstructure parquet extraction failed: {e}")
+
+    def enrich_items(items, is_high=True):
+        theme_waves = theme_waves_high if is_high else theme_waves_low
+
+        for item in items:
+            clean = item["clean_symbol"]
+            last_hit = item["last_hit_date"]
+
+            # Dominant theme assignment (argmax_T W(T))
+            st_themes = sym_to_themes.get(clean, [])
+            if st_themes:
+                best_theme = max(st_themes, key=lambda t: (theme_waves.get(t, 0), t))
+                item["sector_wave_theme"] = best_theme
+                item["sector_wave_count"] = theme_waves.get(best_theme, 0)
+            else:
+                item["sector_wave_theme"] = None
+                item["sector_wave_count"] = None
+
+            # Monthly CPR anchored to last_hit_date's prior calendar month
+            try:
+                y, m, _ = map(int, last_hit.split("-"))
+                prev_y, prev_m = (y - 1, 12) if m == 1 else (y, m - 1)
+                cpr_tuple = cpr_lookup.get((clean, prev_y, prev_m))
+            except Exception:
+                cpr_tuple = None
+
+            item_close = item.get("close")
+
+            if cpr_tuple and cpr_tuple[0] is not None and cpr_tuple[1] is not None and cpr_tuple[2] is not None:
+                mh, ml, mc = cpr_tuple
+                pivot = (mh + ml + mc) / 3.0
+                bc = (mh + ml) / 2.0
+                tc = 2.0 * pivot - bc
+                cpr_top = max(tc, bc)
+                cpr_bot = min(tc, bc)
+                cpr_width = ((cpr_top - cpr_bot) / pivot) * 100.0 if pivot > 0 else 0.0
+
+                if item_close is not None:
+                    if item_close > cpr_top:
+                        cpr_pos = "above"
+                    elif item_close < cpr_bot:
+                        cpr_pos = "below"
+                    else:
+                        cpr_pos = "inside"
+                    cpr_dist_top = ((item_close - cpr_top) / cpr_top) * 100.0 if cpr_top > 0 else 0.0
+                else:
+                    cpr_pos = None
+                    cpr_dist_top = None
+
+                item["cpr_pivot"] = round(pivot, 2)
+                item["cpr_top"] = round(cpr_top, 2)
+                item["cpr_bot"] = round(cpr_bot, 2)
+                item["cpr_width_pct"] = round(cpr_width, 2)
+                item["cpr_pos"] = cpr_pos
+                item["cpr_dist_top"] = round(cpr_dist_top, 2) if cpr_dist_top is not None else None
+            else:
+                item["cpr_pivot"] = None
+                item["cpr_top"] = None
+                item["cpr_bot"] = None
+                item["cpr_width_pct"] = None
+                item["cpr_pos"] = None
+                item["cpr_dist_top"] = None
+
+            # Daily microstructure metrics
+            m_data = micro_lookup.get((clean, last_hit))
+            if m_data:
+                o = m_data.get("open")
+                h = m_data.get("high")
+                l = m_data.get("low")
+                c = m_data.get("close")
+                v = m_data.get("volume")
+                dq = m_data.get("deliv_qty")
+                dp = m_data.get("deliv_pct")
+                ema20 = m_data.get("ema_20")
+                v_sma20 = m_data.get("vol_sma20")
+                dq_sma20 = m_data.get("deliv_qty_sma20")
+                p_open = m_data.get("prev_open")
+                p_close = m_data.get("prev_close")
+
+                # EMA 20 & Extension
+                if ema20 is not None and ema20 > 0 and c is not None:
+                    item["ema_20"] = round(float(ema20), 2)
+                    item["ema_20_ext"] = round(((c - ema20) / ema20) * 100.0, 2)
+                else:
+                    item["ema_20"] = None
+                    item["ema_20_ext"] = None
+
+                # Volume Surge
+                if v is not None and v_sma20 is not None and v_sma20 > 0:
+                    item["vol_surge"] = round(float(v) / float(v_sma20), 2)
+                else:
+                    item["vol_surge"] = None
+
+                # Delivery % and Delivery Surge
+                item["deliv_pct"] = round(float(dp), 2) if dp is not None else None
+                if dq is not None and dq_sma20 is not None and dq_sma20 > 0:
+                    item["deliv_surge"] = round(float(dq) / float(dq_sma20), 2)
+                else:
+                    item["deliv_surge"] = None
+
+                # Candle Pattern
+                rng = (h - l) if (h is not None and l is not None) else 0.0
+                if rng > 0 and c is not None and c > 0 and (rng / c) >= 0.0075 and o is not None and h is not None and l is not None:
+                    cr = (c - l) / rng
+                    lw = (min(o, c) - l) / rng
+                    uw = (h - max(o, c)) / rng
+                    body = abs(c - o) / rng
+
+                    if cr >= 0.70 and lw >= 0.50 and uw <= 0.20:
+                        item["candle_pattern"] = "hammer"
+                    elif c > o and body >= 0.65 and cr >= 0.75:
+                        item["candle_pattern"] = "thrust"
+                    elif cr <= 0.30 and uw >= 0.50 and lw <= 0.20:
+                        item["candle_pattern"] = "rejection"
+                    else:
+                        item["candle_pattern"] = "normal"
+                else:
+                    item["candle_pattern"] = "normal"
+
+                # Prior Day Candle Color
+                if p_close is not None and p_open is not None:
+                    if p_close < p_open:
+                        item["prev_color"] = "red"
+                    elif p_close > p_open:
+                        item["prev_color"] = "green"
+                    else:
+                        item["prev_color"] = "flat"
+                else:
+                    item["prev_color"] = None
+
+                # Execution helper levels
+                item["today_high"] = round(float(h), 2) if h is not None else None
+                item["today_low"] = round(float(l), 2) if l is not None else None
+                if item["today_high"] is not None and item["today_low"] is not None and item["today_high"] > 0:
+                    item["risk_pct"] = round(((item["today_high"] - item["today_low"]) / item["today_high"]) * 100.0, 2)
+                else:
+                    item["risk_pct"] = None
+            else:
+                item["ema_20"] = None
+                item["ema_20_ext"] = None
+                item["vol_surge"] = None
+                item["deliv_pct"] = None
+                item["deliv_surge"] = None
+                item["candle_pattern"] = "normal"
+                item["prev_color"] = None
+                item["today_high"] = None
+                item["today_low"] = None
+                item["risk_pct"] = None
+
+    enrich_items(high_items, is_high=True)
+    enrich_items(low_items, is_high=False)
+
+    # 5. Section 8 Audit Harness Validation
     print("  Running Section 8 Audit Harness on 52W recurrence dataset...")
     # Invariant 1: Mutual exclusion
     for dt in selected_dates:
@@ -1243,6 +1517,28 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         if not (0 <= item["streak"] <= 60):
             raise ValueError(f"Section 8 Invariant 6 Violation: Streak out of bounds ({item['streak']}) for {item['symbol']}")
 
+    # Invariant 7: Microstructure & Confluence Indicators Null-Tolerant Validation
+    valid_cpr_pos = {"above", "inside", "below"}
+    valid_patterns = {"hammer", "thrust", "rejection", "normal"}
+    valid_prev_color = {"red", "green", "flat"}
+    for item in high_items + low_items:
+        if item.get("cpr_width_pct") is not None and (not isinstance(item["cpr_width_pct"], (int, float)) or item["cpr_width_pct"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid cpr_width_pct ({item.get('cpr_width_pct')}) on {item['symbol']}")
+        if item.get("cpr_pos") is not None and item["cpr_pos"] not in valid_cpr_pos:
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid cpr_pos ({item.get('cpr_pos')}) on {item['symbol']}")
+        if item.get("vol_surge") is not None and (not isinstance(item["vol_surge"], (int, float)) or item["vol_surge"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid vol_surge ({item.get('vol_surge')}) on {item['symbol']}")
+        if item.get("deliv_pct") is not None and (not isinstance(item["deliv_pct"], (int, float)) or item["deliv_pct"] < 0 or item["deliv_pct"] > 100):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid deliv_pct ({item.get('deliv_pct')}) on {item['symbol']}")
+        if item.get("candle_pattern") is not None and item["candle_pattern"] not in valid_patterns:
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid candle_pattern ({item.get('candle_pattern')}) on {item['symbol']}")
+        if item.get("prev_color") is not None and item["prev_color"] not in valid_prev_color:
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid prev_color ({item.get('prev_color')}) on {item['symbol']}")
+        if item.get("sector_wave_count") is not None and (not isinstance(item["sector_wave_count"], int) or item["sector_wave_count"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid sector_wave_count ({item.get('sector_wave_count')}) on {item['symbol']}")
+        if item.get("risk_pct") is not None and (not isinstance(item["risk_pct"], (int, float)) or item["risk_pct"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid risk_pct ({item.get('risk_pct')}) on {item['symbol']}")
+
     print("  ✅ Section 8 Audit Harness: 100% PASSED")
 
     final_payload = {
@@ -1251,6 +1547,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             "window_sessions": len(selected_dates),
             "start_date": selected_dates[0],
             "end_date": latest_date,
+            "sector_waves": sector_waves_meta,
+            "sector_waves_low": sector_waves_low_meta,
         },
         "dates": selected_dates,
         "highs": high_items,

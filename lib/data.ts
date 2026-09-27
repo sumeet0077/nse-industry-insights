@@ -98,6 +98,26 @@ export interface Stock52WItem {
     last_hit_date: string;
     history_20d: number[];  // 1 = hit, 0 = no hit across last 20 sessions
     history_60d?: number[]; // 1 = hit, 0 = no hit across up to 60 sessions
+
+    // Microstructure & Confluence Extensions
+    ema_20?: number | null;
+    ema_20_ext?: number | null;
+    cpr_pivot?: number | null;
+    cpr_top?: number | null;
+    cpr_bot?: number | null;
+    cpr_width_pct?: number | null;
+    cpr_pos?: 'above' | 'inside' | 'below' | null;
+    cpr_dist_top?: number | null;
+    vol_surge?: number | null;
+    deliv_pct?: number | null;
+    deliv_surge?: number | null;
+    prev_color?: 'red' | 'green' | 'flat' | null;
+    candle_pattern?: 'hammer' | 'thrust' | 'rejection' | 'normal' | null;
+    sector_wave_count?: number | null;
+    sector_wave_theme?: string | null;
+    today_high?: number | null;
+    today_low?: number | null;
+    risk_pct?: number | null;
 }
 
 export interface Market52WHistory {
@@ -106,6 +126,8 @@ export interface Market52WHistory {
         window_sessions: number;
         start_date: string;
         end_date: string;
+        sector_waves?: Record<string, string[]>;
+        sector_waves_low?: Record<string, string[]>;
     };
     dates: string[];
     highs: Stock52WItem[];

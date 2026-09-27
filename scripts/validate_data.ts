@@ -562,6 +562,32 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
                 errors.push(`Invariant 8 Failure: Invalid risk_pct (${item.risk_pct}) on ${item.symbol}`);
             }
         }
+        if (item.recency_days !== undefined && item.recency_days !== null) {
+            if (typeof item.recency_days !== "number" || isNaN(item.recency_days) || item.recency_days < 0 || !Number.isInteger(item.recency_days)) {
+                errors.push(`Invariant 8 Failure: Invalid recency_days (${item.recency_days}) on ${item.symbol}`);
+            }
+        }
+        const validSetupTypes = new Set(["shakeout_breakout", "one_day_pause", "hammer_bounce", "fresh_thrust", "consolidation_base", "normal"]);
+        if (item.setup_type !== undefined && item.setup_type !== null) {
+            if (!validSetupTypes.has(item.setup_type)) {
+                errors.push(`Invariant 8 Failure: Invalid setup_type (${item.setup_type}) on ${item.symbol}`);
+            }
+            if (item.setup_type !== "normal") {
+                if (!item.setup_label || typeof item.setup_label !== "string") {
+                    errors.push(`Invariant 8 Failure: Missing setup_label for setup ${item.setup_type} on ${item.symbol}`);
+                }
+                if (!item.setup_bar_desc || typeof item.setup_bar_desc !== "string") {
+                    errors.push(`Invariant 8 Failure: Missing setup_bar_desc for setup ${item.setup_type} on ${item.symbol}`);
+                }
+            } else {
+                if (item.setup_label !== undefined && item.setup_label !== null) {
+                    errors.push(`Invariant 8 Failure: Normal setup has unexpected setup_label on ${item.symbol}`);
+                }
+                if (item.setup_bar_desc !== undefined && item.setup_bar_desc !== null) {
+                    errors.push(`Invariant 8 Failure: Normal setup has unexpected setup_bar_desc on ${item.symbol}`);
+                }
+            }
+        }
         if (item.ema_20 !== undefined && item.ema_20 !== null) {
             if (typeof item.ema_20 !== "number" || isNaN(item.ema_20) || item.ema_20 <= 0) {
                 errors.push(`Invariant 8 Failure: Invalid ema_20 (${item.ema_20}) on ${item.symbol}`);

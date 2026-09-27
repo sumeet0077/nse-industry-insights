@@ -1166,6 +1166,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             else:
                 is_circuit_locked = bool(circuit_band in ("2", "5") and abs(pct_1d) >= (float(circuit_band) - 0.1))
 
+            recency_days = (len(selected_dates) - 1) - selected_dates.index(last_hit) if last_hit in selected_dates else 0
+
             items.append({
                 "symbol": f"{clean}.NS",
                 "clean_symbol": clean,
@@ -1184,6 +1186,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 "streak": streak,
                 "is_fresh_20d": is_fresh,
                 "last_hit_date": last_hit,
+                "recency_days": recency_days,
                 "history_20d": h20,
                 "history_60d": h60,
             })
@@ -1303,15 +1306,12 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     pl.col("deliv_qty").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("deliv_qty_sma20"),
                     pl.col("open").shift(1).over("symbol").alias("prev_open"),
                     pl.col("close").shift(1).over("symbol").alias("prev_close"),
+                    pl.col("close").shift(5).over("symbol").alias("prev_5d_close"),
                 )
 
-                all_target_keys = pl.DataFrame({
-                    "symbol": [item["clean_symbol"] for item in high_items + low_items],
-                    "trade_date": [item["last_hit_date"] for item in high_items + low_items]
-                }).unique()
-
-                matched = daily_df.join(all_target_keys, on=["symbol", "trade_date"], how="inner")
-                micro_lookup = {(r["symbol"], r["trade_date"]): r for r in matched.to_dicts()}
+                all_target_syms = set(item["clean_symbol"] for item in high_items + low_items)
+                filtered_df = daily_df.filter(pl.col("symbol").is_in(list(all_target_syms)))
+                micro_lookup = {(r["symbol"], r["trade_date"]): r for r in filtered_df.to_dicts()}
 
         except Exception as e:
             print(f"  Notice: Microstructure parquet extraction failed: {e}")
@@ -1322,6 +1322,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         for item in items:
             clean = item["clean_symbol"]
             last_hit = item["last_hit_date"]
+            r_days = item.get("recency_days", 0)
 
             # Dominant theme assignment (argmax_T W(T))
             st_themes = sym_to_themes.get(clean, [])
@@ -1333,9 +1334,31 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["sector_wave_theme"] = None
                 item["sector_wave_count"] = None
 
-            # Monthly CPR anchored to last_hit_date's prior calendar month
+            # Get latest market session data (T), falling back to last_hit_date only if delisted prior to latest_date
+            m_data = micro_lookup.get((clean, latest_date))
+            if not m_data:
+                m_data = micro_lookup.get((clean, last_hit))
+
+            if m_data:
+                c = float(m_data["close"]) if m_data.get("close") is not None else None
+                v = float(m_data["volume"]) if m_data.get("volume") is not None else None
+                p_close = float(m_data["prev_close"]) if m_data.get("prev_close") is not None else None
+                p5_close = float(m_data["prev_5d_close"]) if m_data.get("prev_5d_close") is not None else None
+
+                if c is not None:
+                    item["close"] = round(c, 2)
+                    if p_close is not None and p_close > 0:
+                        item["pct_1d"] = round(((c - p_close) / p_close) * 100.0, 2)
+                    if p5_close is not None and p5_close > 0:
+                        item["pct_5d"] = round(((c - p5_close) / p5_close) * 100.0, 2)
+                    if v is not None:
+                        item["volume"] = v
+                        item["turnover_cr"] = round(c * v / 10000000.0, 2)
+
+            # Monthly CPR anchored to latest session's (or last_hit's) prior calendar month
+            m_date = m_data.get("trade_date", latest_date) if m_data else latest_date
             try:
-                y, m, _ = map(int, last_hit.split("-"))
+                y, m, _ = map(int, m_date.split("-"))
                 prev_y, prev_m = (y - 1, 12) if m == 1 else (y, m - 1)
                 cpr_tuple = cpr_lookup.get((clean, prev_y, prev_m))
             except Exception:
@@ -1378,8 +1401,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["cpr_pos"] = None
                 item["cpr_dist_top"] = None
 
-            # Daily microstructure metrics
-            m_data = micro_lookup.get((clean, last_hit))
+            # Daily microstructure metrics evaluated on latest session (T)
             if m_data:
                 o = m_data.get("open")
                 h = m_data.get("high")
@@ -1452,6 +1474,12 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     item["risk_pct"] = round(((item["today_high"] - item["today_low"]) / item["today_high"]) * 100.0, 2)
                 else:
                     item["risk_pct"] = None
+
+                # Circuit lock update for session T
+                if h is not None and l is not None:
+                    item["is_circuit_locked"] = bool(h == l and abs(item["pct_1d"]) >= 1.9)
+                elif item.get("circuit_band") in ("2", "5"):
+                    item["is_circuit_locked"] = bool(abs(item["pct_1d"]) >= (float(item["circuit_band"]) - 0.1))
             else:
                 item["ema_20"] = None
                 item["ema_20_ext"] = None
@@ -1463,6 +1491,64 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["today_high"] = None
                 item["today_low"] = None
                 item["risk_pct"] = None
+
+            # Setup classification
+            if is_high:
+                c_pat = item.get("candle_pattern")
+                prev_c = item.get("prev_color")
+                p1d = item.get("pct_1d") or 0.0
+                ema_ext = item.get("ema_20_ext")
+                cpr_dist = item.get("cpr_dist_top")
+                cpr_pos = item.get("cpr_pos")
+
+                prev_color_desc = "🔴 Red" if prev_c == "red" else ("🟢 Green" if prev_c == "green" else ("⚪ Flat" if prev_c == "flat" else "—"))
+
+                # 1. hammer_bounce: Today is a Hammer bouncing near 20 EMA or CPR Top
+                near_ema_tight = ema_ext is not None and abs(ema_ext) <= 2.5
+                near_cpr_tight = cpr_dist is not None and abs(cpr_dist) <= 2.0
+                is_hammer = (c_pat == "hammer")
+
+                # 2. shakeout_breakout: Today is 52W High (or thrust >= 1.5%), Yesterday was Red
+                is_52w_today = (r_days == 0)
+                is_thrust = (c_pat == "thrust" and p1d >= 1.5)
+
+                # 3. one_day_pause: 52W High hit yesterday (recency_days == 1), Today is a rest/pullback bar near 20 EMA / CPR
+                near_ema_cpr = (ema_ext is not None and -2.0 <= ema_ext <= 8.0) or (cpr_dist is not None and -2.0 <= cpr_dist <= 6.0) or (cpr_pos in ("above", "inside"))
+                is_rest_bar = (c_pat in ("normal", "hammer") or p1d <= 2.5) and (c_pat != "rejection" or p1d >= -3.0)
+
+                if is_hammer and (near_ema_tight or near_cpr_tight):
+                    item["setup_type"] = "hammer_bounce"
+                    item["setup_label"] = "🔨 Hammer @ Support"
+                    item["setup_bar_desc"] = f"T: 🔨 Pin Bar | T-1: {prev_color_desc}"
+                elif prev_c == "red" and (is_52w_today or is_thrust):
+                    item["setup_type"] = "shakeout_breakout"
+                    item["setup_label"] = "⚡ Shakeout Breakout"
+                    item["setup_bar_desc"] = "T: 🚀 Thrust | T-1: 🔴 Red"
+                elif r_days == 1 and near_ema_cpr and is_rest_bar:
+                    item["setup_type"] = "one_day_pause"
+                    item["setup_label"] = "🎯 1D Pause / Retest"
+                    item["setup_bar_desc"] = "T: 🔴 Rest | T-1: ⭐ 52W"
+                elif r_days == 0 and c_pat == "thrust":
+                    item["setup_type"] = "fresh_thrust"
+                    item["setup_label"] = "🚀 Fresh Thrust"
+                    item["setup_bar_desc"] = "T: 🚀 Thrust | T-1: 🟢 Green"
+                elif 2 <= r_days <= 5 and ema_ext is not None and 0.0 <= ema_ext <= 6.0:
+                    item["setup_type"] = "consolidation_base"
+                    item["setup_label"] = f"⏳ {r_days}D Base @ 20EMA"
+                    item["setup_bar_desc"] = f"T: Rest | Peak: {r_days}d ago"
+                else:
+                    item["setup_type"] = "normal"
+                    item["setup_label"] = None
+                    item["setup_bar_desc"] = None
+            else:
+                item["setup_type"] = "normal"
+                item["setup_label"] = None
+                item["setup_bar_desc"] = None
+
+        if is_high:
+            items.sort(key=lambda x: (-x["count_20d"], -x["streak"], -x["count_60d"], -x["pct_1d"]))
+        else:
+            items.sort(key=lambda x: (-x["count_20d"], -x["streak"], -x["count_60d"], x["pct_1d"]))
 
     enrich_items(high_items, is_high=True)
     enrich_items(low_items, is_high=False)
@@ -1538,6 +1624,19 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid sector_wave_count ({item.get('sector_wave_count')}) on {item['symbol']}")
         if item.get("risk_pct") is not None and (not isinstance(item["risk_pct"], (int, float)) or item["risk_pct"] < 0):
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid risk_pct ({item.get('risk_pct')}) on {item['symbol']}")
+        if item.get("recency_days") is not None and (not isinstance(item["recency_days"], int) or item["recency_days"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid recency_days ({item.get('recency_days')}) on {item['symbol']}")
+        valid_setups = {"shakeout_breakout", "one_day_pause", "hammer_bounce", "fresh_thrust", "consolidation_base", "normal"}
+        if item.get("setup_type") is not None and item["setup_type"] not in valid_setups:
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid setup_type ({item.get('setup_type')}) on {item['symbol']}")
+        if item.get("setup_type") != "normal":
+            if not item.get("setup_label") or not isinstance(item.get("setup_label"), str):
+                raise ValueError(f"Section 8 Invariant 7 Violation: Missing setup_label for setup {item.get('setup_type')} on {item['symbol']}")
+            if not item.get("setup_bar_desc") or not isinstance(item.get("setup_bar_desc"), str):
+                raise ValueError(f"Section 8 Invariant 7 Violation: Missing setup_bar_desc for setup {item.get('setup_type')} on {item['symbol']}")
+        else:
+            if item.get("setup_label") is not None or item.get("setup_bar_desc") is not None:
+                raise ValueError(f"Section 8 Invariant 7 Violation: Normal setup should not have label/desc on {item['symbol']}")
 
     print("  ✅ Section 8 Audit Harness: 100% PASSED")
 

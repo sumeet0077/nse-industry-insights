@@ -52,8 +52,11 @@ export type Lookback = 5 | 10 | 20 | 60;
 export type PresetFilter = 
     | "all" 
     | "apex" 
-    | "hammer_bounce" 
+    | "apex_confluence"
+    | "one_day_pause"
     | "shakeout" 
+    | "shakeout_breakout"
+    | "hammer_bounce" 
     | "sector_wave" 
     | "dist_flush" 
     | "breakdown_wave" 
@@ -449,23 +452,25 @@ export function Recurrence52WScanner({
             } else if (presetFilter === "rs_lead") {
                 const { lead } = getRSMetrics(item.symbol, item.clean_symbol);
                 if (!lead) return false;
-            } else if (presetFilter === "apex") {
+            } else if (presetFilter === "apex" || presetFilter === "apex_confluence") {
                 const emaExtOk = item.ema_20_ext != null && item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0;
                 const cprOk = item.cpr_pos === "above" && item.cpr_width_pct != null && item.cpr_width_pct <= 2.0;
                 const volOk = item.vol_surge != null && item.vol_surge >= 1.5;
                 const waveOk = item.sector_wave_count != null && item.sector_wave_count >= 3;
                 const eqOk = item.series === "EQ" || !item.series;
                 if (!emaExtOk || !cprOk || !volOk || !waveOk || !eqOk) return false;
+            } else if (presetFilter === "one_day_pause") {
+                if (item.setup_type !== "one_day_pause") return false;
             } else if (presetFilter === "hammer_bounce") {
                 const isHammer = item.candle_pattern === "hammer";
                 const nearEma = item.ema_20_ext != null && Math.abs(item.ema_20_ext) <= 2.5;
                 const nearCpr = item.cpr_dist_top != null && Math.abs(item.cpr_dist_top) <= 2.0;
-                if (!isHammer || (!nearEma && !nearCpr)) return false;
-            } else if (presetFilter === "shakeout") {
+                if (item.setup_type !== "hammer_bounce" && (!isHammer || (!nearEma && !nearCpr))) return false;
+            } else if (presetFilter === "shakeout" || presetFilter === "shakeout_breakout") {
                 const isRed = item.prev_color === "red";
                 const volSurge = item.vol_surge != null && item.vol_surge >= 2.0;
                 const delivOk = (item.deliv_pct != null && item.deliv_pct >= 40.0) || item.series === "BE" || item.series === "BZ";
-                if (!isRed || !volSurge || !delivOk) return false;
+                if (item.setup_type !== "shakeout_breakout" && (!isRed || !volSurge || !delivOk)) return false;
             } else if (presetFilter === "sector_wave") {
                 if (item.sector_wave_count == null || item.sector_wave_count < 3) return false;
             } else if (presetFilter === "dist_flush") {
@@ -898,8 +903,13 @@ export function Recurrence52WScanner({
         }).length;
     }, [candidatePool]);
 
+    const oneDayPauseCount = useMemo(() => {
+        return candidatePool.filter((i) => i.setup_type === "one_day_pause").length;
+    }, [candidatePool]);
+
     const hammerCount = useMemo(() => {
         return candidatePool.filter((i) => {
+            if (i.setup_type === "hammer_bounce") return true;
             const isHammer = i.candle_pattern === "hammer";
             const nearEma = i.ema_20_ext != null && Math.abs(i.ema_20_ext) <= 2.5;
             const nearCpr = i.cpr_dist_top != null && Math.abs(i.cpr_dist_top) <= 2.0;
@@ -909,6 +919,7 @@ export function Recurrence52WScanner({
 
     const shakeoutCount = useMemo(() => {
         return candidatePool.filter((i) => {
+            if (i.setup_type === "shakeout_breakout") return true;
             const isRed = i.prev_color === "red";
             const volSurge = i.vol_surge != null && i.vol_surge >= 2.0;
             const delivOk = (i.deliv_pct != null && i.deliv_pct >= 40.0) || i.series === "BE" || i.series === "BZ";
@@ -972,7 +983,7 @@ export function Recurrence52WScanner({
                             onClick={() => {
                                 setDirection("low");
                                 setSelectedTickers(new Set());
-                                if (["apex", "hammer_bounce", "shakeout", "sector_wave"].includes(presetFilter)) {
+                                if (["apex", "apex_confluence", "one_day_pause", "shakeout", "shakeout_breakout", "hammer_bounce", "sector_wave"].includes(presetFilter)) {
                                     setPresetFilter("all");
                                 }
                             }}
@@ -1238,9 +1249,54 @@ export function Recurrence52WScanner({
                         <>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("apex")}
+                                onClick={() => setPresetFilter("one_day_pause")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "apex"
+                                    presetFilter === "one_day_pause"
+                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
+                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                }`}
+                                title="1D Pause / Retest: 52W High hit yesterday, resting / pulling back near 20 EMA or CPR"
+                            >
+                                <span>🎯 1D Pause / Retest</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                                    {oneDayPauseCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPresetFilter("shakeout_breakout")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    presetFilter === "shakeout_breakout" || presetFilter === "shakeout"
+                                        ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-sm"
+                                        : "text-amber-400/90 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-800/40"
+                                }`}
+                                title="Shakeout Breakout: Today is 52W High (or thrust >= 1.5%) after prior day Red bar"
+                            >
+                                <span>⚡ Shakeout Breakout</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
+                                    {shakeoutCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPresetFilter("hammer_bounce")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    presetFilter === "hammer_bounce"
+                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm"
+                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
+                                }`}
+                                title="Hammer / Bounce: Hammer pattern near 20 EMA (+/- 2.5%) or CPR Top (+/- 2.0%)"
+                            >
+                                <span>🔨 Hammer / Bounce</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
+                                    {hammerCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setPresetFilter("apex_confluence")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    presetFilter === "apex_confluence" || presetFilter === "apex"
                                         ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-sm shadow-emerald-500/20"
                                         : "text-emerald-400/90 bg-emerald-950/20 hover:bg-emerald-950/40 border border-emerald-800/40"
                                 }`}
@@ -1253,46 +1309,16 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("hammer_bounce")}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "hammer_bounce"
-                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm"
-                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
-                                }`}
-                                title="Hammer / Confluence Bounce: Hammer pattern near 20 EMA (+/- 2.5%) or CPR Top (+/- 2.0%)"
-                            >
-                                <span>🔨 Hammer / Bounce</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
-                                    {hammerCount}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setPresetFilter("shakeout")}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "shakeout"
-                                        ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-sm"
-                                        : "text-amber-400/90 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-800/40"
-                                }`}
-                                title="Shakeout Breakout: Prior day Red bar + Volume Surge >= 2.0x + Delivery >= 40%"
-                            >
-                                <span>⚡ Shakeout Breakout</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
-                                    {shakeoutCount}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
                                 onClick={() => setPresetFilter("sector_wave")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
                                     presetFilter === "sector_wave"
-                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm"
-                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                        ? "bg-blue-500/25 text-blue-300 border border-blue-500/50 shadow-sm"
+                                        : "text-blue-400/90 bg-blue-950/20 hover:bg-blue-950/40 border border-blue-800/40"
                                 }`}
                                 title="Sector Wave Leaders: Active cluster with >= 3 stocks breaking out in same industry theme"
                             >
                                 <span>🌊 Sector Wave</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono">
                                     {sectorWaveCount}
                                 </span>
                             </button>
@@ -3347,7 +3373,25 @@ export function Recurrence52WScanner({
                                             {/* 1. Candle & Signal */}
                                             <td className="p-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-1.5 group/candle relative">
-                                                    {item.candle_pattern === "hammer" ? (
+                                                    {item.setup_label ? (
+                                                        <span
+                                                            className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                                                item.setup_type === "shakeout_breakout"
+                                                                    ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                                                                    : item.setup_type === "one_day_pause"
+                                                                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
+                                                                    : item.setup_type === "hammer_bounce"
+                                                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                                                                    : item.setup_type === "fresh_thrust"
+                                                                    ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
+                                                                    : item.setup_type === "consolidation_base"
+                                                                    ? "bg-purple-500/20 text-purple-300 border-purple-500/40"
+                                                                    : "bg-gray-800/80 text-gray-300 border-gray-700/60"
+                                                            }`}
+                                                        >
+                                                            {item.setup_label}
+                                                        </span>
+                                                    ) : item.candle_pattern === "hammer" ? (
                                                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                                                             <Hammer className="w-3 h-3 text-emerald-400" />
                                                             Hammer
@@ -3368,53 +3412,82 @@ export function Recurrence52WScanner({
                                                         </span>
                                                     )}
 
-                                                    {item.prev_color === "red" ? (
-                                                        <span
-                                                            className="px-1 py-0.2 rounded text-[9px] font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30"
-                                                            title="Prior Day Red Candle (Shakeout Absorption)"
-                                                        >
-                                                            🔴 Red
+                                                    {item.setup_bar_desc ? (
+                                                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-gray-900/90 text-gray-300 border border-gray-700/60">
+                                                            {item.setup_bar_desc}
                                                         </span>
-                                                    ) : item.prev_color === "green" ? (
-                                                        <span
-                                                            className="px-1 py-0.2 rounded text-[9px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                                                            title="Prior Day Green Candle"
-                                                        >
-                                                            🟢 Grn
-                                                        </span>
-                                                    ) : null}
+                                                    ) : (
+                                                        <>
+                                                            {item.prev_color === "red" ? (
+                                                                <span
+                                                                    className="px-1 py-0.2 rounded text-[9px] font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30"
+                                                                    title="Prior Day Red Candle (Shakeout Absorption)"
+                                                                >
+                                                                    🔴 Red
+                                                                </span>
+                                                            ) : item.prev_color === "green" ? (
+                                                                <span
+                                                                    className="px-1 py-0.2 rounded text-[9px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                                                                    title="Prior Day Green Candle"
+                                                                >
+                                                                    🟢 Grn
+                                                                </span>
+                                                            ) : null}
 
-                                                    {item.candle_pattern === "hammer" && item.ema_20_ext != null && Math.abs(item.ema_20_ext) <= 2.5 && (
-                                                        <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30" title="Hammer bounce at 20 EMA">
-                                                            @20EMA
-                                                        </span>
+                                                            {item.candle_pattern === "hammer" && item.ema_20_ext != null && Math.abs(item.ema_20_ext) <= 2.5 && (
+                                                                <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30" title="Hammer bounce at 20 EMA">
+                                                                    @20EMA
+                                                                </span>
+                                                            )}
+                                                        </>
                                                     )}
 
-                                                    {/* Rich Execution Blueprint Hover Flyout */}
-                                                    <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/candle:block w-56 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
+                                                    {/* Tomorrow's Execution Plan Hover Flyout */}
+                                                    <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/candle:block w-64 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
                                                         <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
-                                                            <span>Execution Blueprint</span>
-                                                            <span className="text-[9px] font-mono text-cyan-400 uppercase">{item.candle_pattern || "Normal"}</span>
+                                                            <span>Tomorrow&apos;s Execution Plan</span>
+                                                            <span className="text-[9px] font-mono text-cyan-400 uppercase">
+                                                                {item.setup_type && item.setup_type !== "normal" ? item.setup_type.replace(/_/g, " ") : (item.candle_pattern || "Normal")}
+                                                            </span>
                                                         </div>
-                                                        <div className="space-y-1 font-mono text-[10px]">
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-400">Buy Trigger (High):</span>
+                                                        <div className="space-y-1.5 font-mono text-[10px]">
+                                                            <div className="flex justify-between items-center">
+                                                                <span className="text-gray-400">Buy Stop (High):</span>
                                                                 <span className="text-emerald-400 font-semibold">{item.today_high ? `₹${item.today_high.toLocaleString("en-IN")}` : "—"}</span>
                                                             </div>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-400">Stop Loss (Low):</span>
-                                                                <span className="text-rose-400 font-semibold">{item.today_low ? `₹${item.today_low.toLocaleString("en-IN")}` : "—"}</span>
+                                                            <div className="flex justify-between items-center">
+                                                                <span className="text-gray-400">Stop Loss (Low / 20 EMA):</span>
+                                                                <span className="text-rose-400 font-semibold">
+                                                                    {item.today_low ? `₹${item.today_low.toLocaleString("en-IN")}` : "—"}
+                                                                    {item.ema_20 ? ` / ₹${item.ema_20.toLocaleString("en-IN")}` : ""}
+                                                                </span>
                                                             </div>
-                                                            <div className="flex justify-between border-t border-gray-800/60 pt-1">
-                                                                <span className="text-gray-400">Risk Bar Size:</span>
+                                                            <div className="flex justify-between items-center border-t border-gray-800/60 pt-1">
+                                                                <span className="text-gray-400">Risk %:</span>
                                                                 <span className="text-amber-400 font-semibold">{item.risk_pct != null ? `${item.risk_pct.toFixed(2)}%` : "—"}</span>
                                                             </div>
-                                                            <div className="flex justify-between text-gray-400 text-[9px] font-sans">
-                                                                <span>Prior Day Bar:</span>
-                                                                <span className={item.prev_color === "red" ? "text-rose-300" : item.prev_color === "green" ? "text-emerald-300" : "text-gray-400"}>
+                                                            {item.setup_bar_desc && (
+                                                                <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans border-t border-gray-800/60 pt-1">
+                                                                    <span>Setup Bar:</span>
+                                                                    <span className="text-cyan-300 font-mono">{item.setup_bar_desc}</span>
+                                                                </div>
+                                                            )}
+                                                            <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans">
+                                                                <span>Prior Day Bar (T-1):</span>
+                                                                <span className={item.prev_color === "red" ? "text-rose-300 font-medium" : item.prev_color === "green" ? "text-emerald-300 font-medium" : "text-gray-400"}>
                                                                     {item.prev_color === "red" ? "Red (Shakeout)" : item.prev_color === "green" ? "Green (Follow-through)" : "Flat / Unknown"}
                                                                 </span>
                                                             </div>
+                                                            {item.recency_days != null && (
+                                                                <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans">
+                                                                    <span>{direction === "high" ? "52W Peak Recency:" : "52W Trough Recency:"}</span>
+                                                                    <span className="text-purple-300 font-mono">
+                                                                        {item.recency_days === 0
+                                                                            ? (direction === "high" ? "Hit 52W High Today (T)" : "Hit 52W Low Today (T)")
+                                                                            : `${item.recency_days} sessions ago (${item.last_hit_date})`}
+                                                                    </span>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>

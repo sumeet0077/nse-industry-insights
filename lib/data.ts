@@ -118,6 +118,10 @@ export interface Stock52WItem {
     today_high?: number | null;
     today_low?: number | null;
     risk_pct?: number | null;
+    recency_days?: number | null;
+    setup_type?: string | null;
+    setup_label?: string | null;
+    setup_bar_desc?: string | null;
 }
 
 export interface Market52WHistory {

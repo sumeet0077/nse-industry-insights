@@ -68,6 +68,16 @@ export type PresetFilter =
     | "fresh" 
     | "high_rs" 
     | "rs_lead";
+
+export const SETUP_PRESET_KEYS = new Set<string>([
+    "one_day_pause",
+    "shakeout_breakout",
+    "shakeout",
+    "hammer_bounce",
+    "dist_flush",
+    "breakdown_wave",
+]);
+
 export type TradabilityPreset = "tradeable" | "fno_liquid" | "all" | "custom";
 export type CircuitFilterOption = "exclude_low" | "ge_10" | "fno_20" | "fno" | "all";
 export type SortField = 
@@ -159,7 +169,7 @@ export interface ScannerColumnConfig {
 export const SCANNER_COLUMNS: ScannerColumnConfig[] = [
     { key: "band", label: "Price Band" },
     { key: "candle", label: "Candle & Signal" },
-    { key: "ema_ext", label: "20 EMA Ext" },
+    { key: "ema_ext", label: "20 EMA" },
     { key: "cpr", label: "Monthly CPR" },
     { key: "vol_deliv", label: "Vol & Deliv" },
     { key: "sector_wave", label: "Sector Wave (10D)" },
@@ -311,7 +321,29 @@ export function Recurrence52WScanner({
 }: Recurrence52WScannerProps) {
     const [direction, setDirection] = useState<Direction>("high");
     const [lookback, setLookback] = useState<Lookback>(20);
-    const [presetFilter, setPresetFilter] = useState<PresetFilter>("all");
+    const [selectedPresets, setSelectedPresets] = useState<Set<string>>(new Set());
+
+    // Reset presets when switching direction
+    useEffect(() => {
+        setSelectedPresets(new Set());
+    }, [direction]);
+
+    const togglePreset = useCallback((key: string) => {
+        setSelectedPresets((prev) => {
+            const next = new Set(prev);
+            if (next.has(key)) {
+                next.delete(key);
+            } else {
+                next.add(key);
+            }
+            return next;
+        });
+    }, []);
+
+    const clearAllPresets = useCallback(() => {
+        setSelectedPresets(new Set());
+    }, []);
+
     const [tradabilityPreset, setTradabilityPreset] = useState<TradabilityPreset>("tradeable");
     const [showGranularFilters, setShowGranularFilters] = useState<boolean>(false);
     const [minTurnover, setMinTurnover] = useState<number>(1.0);
@@ -707,6 +739,55 @@ export function Recurrence52WScanner({
         [constituentPerformanceMap]
     );
 
+    const matchesSinglePreset = useCallback(
+        (preset: string, item: Stock52WItem, countInWindow: number): boolean => {
+            if (preset === "one_day_pause") return item.setup_type === "one_day_pause";
+            if (preset === "shakeout_breakout" || preset === "shakeout") {
+                if (item.setup_type === "shakeout_breakout") return true;
+                const isRed = item.prev_color === "red";
+                const volSurge = item.vol_surge != null && item.vol_surge >= 2.0;
+                const delivOk = (item.deliv_pct != null && item.deliv_pct >= 40.0) || item.series === "BE" || item.series === "BZ";
+                return Boolean(isRed && volSurge && delivOk);
+            }
+            if (preset === "hammer_bounce") {
+                if (item.setup_type === "hammer_bounce") return true;
+                const isHammer = item.candle_pattern === "hammer";
+                const nearEma = item.ema_20_ext != null && Math.abs(item.ema_20_ext) <= 2.5;
+                const nearCpr = item.cpr_dist_top != null && Math.abs(item.cpr_dist_top) <= 2.0;
+                return Boolean(isHammer && (nearEma || nearCpr));
+            }
+            if (preset === "apex" || preset === "apex_confluence") {
+                const emaExtOk = item.ema_20_ext != null && item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0;
+                const cprOk = item.cpr_pos === "above" && item.cpr_width_pct != null && item.cpr_width_pct <= 2.0;
+                const volOk = item.vol_surge != null && item.vol_surge >= 1.5;
+                const waveOk = item.sector_wave_count != null && item.sector_wave_count >= 3;
+                const eqOk = item.series === "EQ" || !item.series;
+                return Boolean(emaExtOk && cprOk && volOk && waveOk && eqOk);
+            }
+            if (preset === "sector_wave") return Boolean(item.sector_wave_count != null && item.sector_wave_count >= 3);
+            if (preset === "dist_flush") {
+                const belowCpr = item.cpr_pos === "below";
+                const volSurge = item.vol_surge != null && item.vol_surge >= 2.0;
+                const negEma = item.ema_20_ext != null && item.ema_20_ext < -10.0;
+                return Boolean(belowCpr && volSurge && negEma);
+            }
+            if (preset === "breakdown_wave") return Boolean(item.sector_wave_count != null && item.sector_wave_count >= 3);
+            if (preset === "streak") return item.streak >= 2;
+            if (preset === "persistent") return countInWindow >= 3;
+            if (preset === "fresh") return Boolean(item.is_fresh_20d);
+            if (preset === "high_rs") {
+                const { rs } = getRSMetrics(item.symbol, item.clean_symbol);
+                return rs !== null && rs >= 80;
+            }
+            if (preset === "rs_lead") {
+                const { lead } = getRSMetrics(item.symbol, item.clean_symbol);
+                return Boolean(lead);
+            }
+            return true;
+        },
+        [getRSMetrics]
+    );
+
     // Source pool according to direction
     const rawItems = direction === "high" ? historyData.highs : historyData.lows;
 
@@ -742,47 +823,17 @@ export function Recurrence52WScanner({
 
             if (countInWindow <= 0) return false;
 
-            // 2. Preset Filter Chips
-            if (presetFilter === "streak") {
-                if (item.streak < 2) return false;
-            } else if (presetFilter === "persistent") {
-                if (countInWindow < 3) return false;
-            } else if (presetFilter === "fresh") {
-                if (!item.is_fresh_20d) return false;
-            } else if (presetFilter === "high_rs") {
-                const { rs } = getRSMetrics(item.symbol, item.clean_symbol);
-                if (rs === null || rs < 80) return false;
-            } else if (presetFilter === "rs_lead") {
-                const { lead } = getRSMetrics(item.symbol, item.clean_symbol);
-                if (!lead) return false;
-            } else if (presetFilter === "apex" || presetFilter === "apex_confluence") {
-                const emaExtOk = item.ema_20_ext != null && item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0;
-                const cprOk = item.cpr_pos === "above" && item.cpr_width_pct != null && item.cpr_width_pct <= 2.0;
-                const volOk = item.vol_surge != null && item.vol_surge >= 1.5;
-                const waveOk = item.sector_wave_count != null && item.sector_wave_count >= 3;
-                const eqOk = item.series === "EQ" || !item.series;
-                if (!emaExtOk || !cprOk || !volOk || !waveOk || !eqOk) return false;
-            } else if (presetFilter === "one_day_pause") {
-                if (item.setup_type !== "one_day_pause") return false;
-            } else if (presetFilter === "hammer_bounce") {
-                const isHammer = item.candle_pattern === "hammer";
-                const nearEma = item.ema_20_ext != null && Math.abs(item.ema_20_ext) <= 2.5;
-                const nearCpr = item.cpr_dist_top != null && Math.abs(item.cpr_dist_top) <= 2.0;
-                if (item.setup_type !== "hammer_bounce" && (!isHammer || (!nearEma && !nearCpr))) return false;
-            } else if (presetFilter === "shakeout" || presetFilter === "shakeout_breakout") {
-                const isRed = item.prev_color === "red";
-                const volSurge = item.vol_surge != null && item.vol_surge >= 2.0;
-                const delivOk = (item.deliv_pct != null && item.deliv_pct >= 40.0) || item.series === "BE" || item.series === "BZ";
-                if (item.setup_type !== "shakeout_breakout" && (!isRed || !volSurge || !delivOk)) return false;
-            } else if (presetFilter === "sector_wave") {
-                if (item.sector_wave_count == null || item.sector_wave_count < 3) return false;
-            } else if (presetFilter === "dist_flush") {
-                const belowCpr = item.cpr_pos === "below";
-                const volSurge = item.vol_surge != null && item.vol_surge >= 2.0;
-                const negEma = item.ema_20_ext != null && item.ema_20_ext < -10.0;
-                if (!belowCpr || !volSurge || !negEma) return false;
-            } else if (presetFilter === "breakdown_wave") {
-                if (item.sector_wave_count == null || item.sector_wave_count < 3) return false;
+            // 2. Preset Filter Chips (Multi-Select Support)
+            if (selectedPresets.size > 0) {
+                const activeSetups = Array.from(selectedPresets).filter((p) => SETUP_PRESET_KEYS.has(p));
+                const activeOverlays = Array.from(selectedPresets).filter((p) => !SETUP_PRESET_KEYS.has(p));
+
+                if (activeSetups.length > 0 && !activeSetups.some((p) => matchesSinglePreset(p, item, countInWindow))) {
+                    return false;
+                }
+                if (activeOverlays.length > 0 && !activeOverlays.every((p) => matchesSinglePreset(p, item, countInWindow))) {
+                    return false;
+                }
             }
 
             // 3. Search query
@@ -903,7 +954,8 @@ export function Recurrence52WScanner({
         seriesFilter,
         circuitFilter,
         lookback,
-        presetFilter,
+        selectedPresets,
+        matchesSinglePreset,
         searchQuery,
         columnFilters.symbol,
         columnFilters.bands,
@@ -1108,9 +1160,7 @@ export function Recurrence52WScanner({
 
     // Copy to TradingView formatting
     const copyTradingView = (batchSize?: number, batchIndex = 0) => {
-        const sourceList = selectedTickers.size > 0
-            ? Array.from(selectedTickers)
-            : sortedItems.map((i) => i.symbol);
+        const sourceList = targetTickersForActions;
 
         if (sourceList.length === 0) return;
 
@@ -1135,30 +1185,31 @@ export function Recurrence52WScanner({
         });
     };
 
+    const visibleSelectedTickers = useMemo(() => {
+        return sortedItems.filter((i) => selectedTickers.has(i.symbol)).map((i) => i.symbol);
+    }, [sortedItems, selectedTickers]);
+
+    const targetTickersForActions = useMemo(() => {
+        return visibleSelectedTickers.length > 0
+            ? visibleSelectedTickers
+            : sortedItems.map((i) => i.symbol);
+    }, [visibleSelectedTickers, sortedItems]);
+
     // Open Save Watchlist Modal
     const handleSaveWatchlistModal = () => {
-        const count = selectedTickers.size > 0 ? selectedTickers.size : sortedItems.length;
         const defaultName = `${direction === "high" ? "52W High" : "52W Low"} ${lookback}D Scan (${historyData.metadata.latest_session})`;
         setSaveListName(defaultName);
         setIsSaveModalOpen(true);
     };
 
     const confirmSaveWatchlist = () => {
-        const tickersToSave = selectedTickers.size > 0
-            ? Array.from(selectedTickers)
-            : sortedItems.map((i) => i.symbol);
+        const tickersToSave = targetTickersForActions;
 
         if (onSaveAsWatchlist && tickersToSave.length > 0) {
             onSaveAsWatchlist(saveListName || "52W Scan", tickersToSave, "52W Scans");
         }
         setIsSaveModalOpen(false);
     };
-
-    const targetTickersForActions = useMemo(() => {
-        return selectedTickers.size > 0
-            ? Array.from(selectedTickers)
-            : sortedItems.map((i) => i.symbol);
-    }, [selectedTickers, sortedItems]);
 
     // Active candidate pool matching tradability and lookback window
     const candidatePool = useMemo(() => {
@@ -1243,6 +1294,34 @@ export function Recurrence52WScanner({
         }).length;
     }, [candidatePool]);
 
+    const persistentCount = useMemo(() => {
+        return candidatePool.filter((i) => {
+            const count =
+                lookback === 5
+                    ? i.count_5d
+                    : lookback === 10
+                    ? i.count_10d
+                    : lookback === 20
+                    ? i.count_20d
+                    : i.count_60d;
+            return count >= 3;
+        }).length;
+    }, [candidatePool, lookback]);
+
+    const highRsCount = useMemo(() => {
+        return candidatePool.filter((i) => {
+            const { rs } = getRSMetrics(i.symbol, i.clean_symbol);
+            return rs !== null && rs >= 80;
+        }).length;
+    }, [candidatePool, getRSMetrics]);
+
+    const rsLeadCount = useMemo(() => {
+        return candidatePool.filter((i) => {
+            const { lead } = getRSMetrics(i.symbol, i.clean_symbol);
+            return Boolean(lead);
+        }).length;
+    }, [candidatePool, getRSMetrics]);
+
     const windowDates = useMemo(() => {
         return historyData.dates ? historyData.dates.slice(-lookback) : [];
     }, [historyData.dates, lookback]);
@@ -1265,9 +1344,7 @@ export function Recurrence52WScanner({
                             onClick={() => {
                                 setDirection("high");
                                 setSelectedTickers(new Set());
-                                if (["dist_flush", "breakdown_wave"].includes(presetFilter)) {
-                                    setPresetFilter("all");
-                                }
+                                setSelectedPresets(new Set());
                             }}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                                 direction === "high"
@@ -1286,9 +1363,7 @@ export function Recurrence52WScanner({
                             onClick={() => {
                                 setDirection("low");
                                 setSelectedTickers(new Set());
-                                if (["apex", "apex_confluence", "one_day_pause", "shakeout", "shakeout_breakout", "hammer_bounce", "sector_wave"].includes(presetFilter)) {
-                                    setPresetFilter("all");
-                                }
+                                setSelectedPresets(new Set());
                             }}
                             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                                 direction === "low"
@@ -1538,9 +1613,9 @@ export function Recurrence52WScanner({
                     </span>
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("all")}
+                        onClick={clearAllPresets}
                         className={`px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "all"
+                            selectedPresets.size === 0
                                 ? "bg-gray-800 text-white border border-gray-700 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
@@ -1552,9 +1627,9 @@ export function Recurrence52WScanner({
                         <>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("one_day_pause")}
+                                onClick={() => togglePreset("one_day_pause")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "one_day_pause"
+                                    selectedPresets.has("one_day_pause")
                                         ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
                                         : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
                                 }`}
@@ -1567,9 +1642,9 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("shakeout_breakout")}
+                                onClick={() => togglePreset("shakeout_breakout")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "shakeout_breakout" || presetFilter === "shakeout"
+                                    selectedPresets.has("shakeout_breakout") || selectedPresets.has("shakeout")
                                         ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-sm"
                                         : "text-amber-400/90 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-800/40"
                                 }`}
@@ -1582,9 +1657,9 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("hammer_bounce")}
+                                onClick={() => togglePreset("hammer_bounce")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "hammer_bounce"
+                                    selectedPresets.has("hammer_bounce")
                                         ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm"
                                         : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
                                 }`}
@@ -1597,9 +1672,9 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("apex_confluence")}
+                                onClick={() => togglePreset("apex_confluence")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "apex_confluence" || presetFilter === "apex"
+                                    selectedPresets.has("apex_confluence") || selectedPresets.has("apex")
                                         ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-sm shadow-emerald-500/20"
                                         : "text-emerald-400/90 bg-emerald-950/20 hover:bg-emerald-950/40 border border-emerald-800/40"
                                 }`}
@@ -1612,9 +1687,9 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("sector_wave")}
+                                onClick={() => togglePreset("sector_wave")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "sector_wave"
+                                    selectedPresets.has("sector_wave")
                                         ? "bg-blue-500/25 text-blue-300 border border-blue-500/50 shadow-sm"
                                         : "text-blue-400/90 bg-blue-950/20 hover:bg-blue-950/40 border border-blue-800/40"
                                 }`}
@@ -1630,9 +1705,9 @@ export function Recurrence52WScanner({
                         <>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("dist_flush")}
+                                onClick={() => togglePreset("dist_flush")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "dist_flush"
+                                    selectedPresets.has("dist_flush")
                                         ? "bg-rose-500/25 text-rose-300 border border-rose-500/50 shadow-sm"
                                         : "text-rose-400/90 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40"
                                 }`}
@@ -1645,9 +1720,9 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => setPresetFilter("breakdown_wave")}
+                                onClick={() => togglePreset("breakdown_wave")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    presetFilter === "breakdown_wave"
+                                    selectedPresets.has("breakdown_wave")
                                         ? "bg-red-500/25 text-red-300 border border-red-500/50 shadow-sm"
                                         : "text-red-400/90 bg-red-950/20 hover:bg-red-950/40 border border-red-800/40"
                                 }`}
@@ -1663,9 +1738,9 @@ export function Recurrence52WScanner({
 
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("streak")}
+                        onClick={() => togglePreset("streak")}
                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "streak"
+                            selectedPresets.has("streak")
                                 ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
@@ -1678,20 +1753,23 @@ export function Recurrence52WScanner({
                     </button>
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("persistent")}
+                        onClick={() => togglePreset("persistent")}
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "persistent"
+                            selectedPresets.has("persistent")
                                 ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
                     >
                         ⭐ Persistent (≥ 3 in {lookback}D)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                            {persistentCount}
+                        </span>
                     </button>
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("fresh")}
+                        onClick={() => togglePreset("fresh")}
                         className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "fresh"
+                            selectedPresets.has("fresh")
                                 ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
@@ -1703,26 +1781,32 @@ export function Recurrence52WScanner({
                     </button>
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("high_rs")}
+                        onClick={() => togglePreset("high_rs")}
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "high_rs"
+                            selectedPresets.has("high_rs")
                                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
                     >
                         💎 High RS (≥ 80)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">
+                            {highRsCount}
+                        </span>
                     </button>
                     <button
                         type="button"
-                        onClick={() => setPresetFilter("rs_lead")}
+                        onClick={() => togglePreset("rs_lead")}
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            presetFilter === "rs_lead"
+                            selectedPresets.has("rs_lead")
                                 ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
                     >
                         <Sparkles className="w-3 h-3 text-amber-400" />
                         RS Lead Breakout (*)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
+                            {rsLeadCount}
+                        </span>
                     </button>
                 </div>
             </div>
@@ -1733,7 +1817,7 @@ export function Recurrence52WScanner({
                     <button
                         type="button"
                         onClick={() => {
-                            if (selectedTickers.size === sortedItems.length && sortedItems.length > 0) {
+                            if (visibleSelectedTickers.length === sortedItems.length && sortedItems.length > 0) {
                                 clearSelection();
                             } else {
                                 selectAllVisible();
@@ -1741,9 +1825,9 @@ export function Recurrence52WScanner({
                         }}
                         className="flex items-center gap-1.5 text-xs text-gray-300 hover:text-white transition-colors"
                     >
-                        {selectedTickers.size > 0 && selectedTickers.size === sortedItems.length ? (
+                        {visibleSelectedTickers.length > 0 && visibleSelectedTickers.length === sortedItems.length ? (
                             <CheckSquare className="w-4 h-4 text-blue-400" />
-                        ) : selectedTickers.size > 0 ? (
+                        ) : visibleSelectedTickers.length > 0 ? (
                             <div className="w-4 h-4 rounded bg-blue-500/20 border border-blue-400 flex items-center justify-center text-[10px] text-blue-300 font-bold">
                                 -
                             </div>
@@ -1751,8 +1835,8 @@ export function Recurrence52WScanner({
                             <Square className="w-4 h-4 text-gray-500" />
                         )}
                         <span className="font-medium">
-                            {selectedTickers.size > 0
-                                ? `${selectedTickers.size} of ${sortedItems.length} selected`
+                            {visibleSelectedTickers.length > 0
+                                ? `${visibleSelectedTickers.length} of ${sortedItems.length} selected`
                                 : `Select All (${sortedItems.length})`}
                         </span>
                     </button>
@@ -2044,7 +2128,7 @@ export function Recurrence52WScanner({
             </div>
 
             {/* Recurrence Table */}
-            <div ref={tableContainerRef} className="overflow-x-auto max-h-[70vh] border border-gray-800 rounded-xl relative bg-gray-900 shadow-xl">
+            <div ref={tableContainerRef} className="overflow-x-auto min-h-[480px] max-h-[70vh] border border-gray-800 rounded-xl relative bg-gray-900 shadow-xl">
                 <table style={{ width: `${totalTableWidth}px`, minWidth: `${totalTableWidth}px` }} className="text-left text-xs text-gray-300 border-collapse">
                     <colgroup>
                         <col style={{ width: "40px", minWidth: "40px" }} />
@@ -2071,7 +2155,7 @@ export function Recurrence52WScanner({
                                 <th style={{ width: "40px", minWidth: "40px", maxWidth: "40px" }} className="p-3 w-10 min-w-10 max-w-10 text-center sticky left-0 z-40 bg-[#0d0d14]">
                                     <span className="sr-only">Select</span>
                                 </th>
-                                <th style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px`, maxWidth: `${colWidths.symbol}px` }} className="p-2.5 sticky left-10 z-40 bg-[#0d0d14]">
+                                <th style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px`, maxWidth: `${colWidths.symbol}px` }} className={`p-2.5 sticky left-10 ${activeFilterPopover === "symbol" ? "z-50" : "z-40"} bg-[#0d0d14]`}>
                                     <div className="flex items-center justify-between gap-1.5">
                                         <div
                                             className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2099,7 +2183,7 @@ export function Recurrence52WScanner({
                                     {activeFilterPopover === "symbol" && (
                                         <div
                                             ref={filterPopoverRef}
-                                            className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                            className="absolute left-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2148,7 +2232,7 @@ export function Recurrence52WScanner({
                                 </th>
                                 {/* Band */}
                                 {visibleColumns.band !== false && (
-                                    <th style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} className="p-2.5 relative text-center bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} className={`p-2.5 relative text-center bg-[#0d0d14] ${activeFilterPopover === "band" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-center gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2176,7 +2260,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "band" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                                className="absolute left-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2267,7 +2351,7 @@ export function Recurrence52WScanner({
 
                         {/* Candle & Signal */}
                         {visibleColumns.candle !== false && (
-                            <th style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "candle" ? "z-50" : ""}`}>
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2295,7 +2379,7 @@ export function Recurrence52WScanner({
                                 {activeFilterPopover === "candle" && (
                                     <div
                                         ref={filterPopoverRef}
-                                        className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                        className="absolute left-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2393,15 +2477,15 @@ export function Recurrence52WScanner({
                             </th>
                         )}
 
-                        {/* 20 EMA Ext */}
+                        {/* 20 EMA */}
                         {visibleColumns.ema_ext !== false && (
-                            <th style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} className={`p-2.5 relative text-right bg-[#0d0d14] ${activeFilterPopover === "ema_ext" ? "z-50" : ""}`}>
                                 <div className="flex items-center justify-end gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
                                         onClick={() => handleSort("ema_20_ext")}
                                     >
-                                        <span>20 EMA Ext</span>
+                                        <span>20 EMA</span>
                                         {getSortIcon("ema_20_ext")}
                                     </div>
                                     <button
@@ -2415,7 +2499,7 @@ export function Recurrence52WScanner({
                                                 ? "text-blue-400 bg-blue-500/20"
                                                 : "text-gray-500 hover:text-gray-300 hover:bg-gray-800/60"
                                         }`}
-                                        title="Filter 20 EMA Extension"
+                                        title="Filter 20 EMA"
                                     >
                                         <Filter className={`w-3 h-3 ${hasColumnFilter("ema_ext") ? "fill-blue-400" : ""}`} />
                                     </button>
@@ -2423,11 +2507,11 @@ export function Recurrence52WScanner({
                                 {activeFilterPopover === "ema_ext" && (
                                     <div
                                         ref={filterPopoverRef}
-                                        className="absolute left-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                        className="absolute left-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
-                                            <span className="font-semibold text-xs text-gray-200">Filter 20 EMA Ext</span>
+                                            <span className="font-semibold text-xs text-gray-200">Filter 20 EMA</span>
                                             <div className="flex items-center gap-2">
                                                 {hasColumnFilter("ema_ext") && (
                                                     <button
@@ -2508,7 +2592,7 @@ export function Recurrence52WScanner({
 
                         {/* Monthly CPR */}
                         {visibleColumns.cpr !== false && (
-                            <th style={{ width: `${colWidths.cpr}px`, minWidth: `${colWidths.cpr}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.cpr}px`, minWidth: `${colWidths.cpr}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "cpr" ? "z-50" : ""}`}>
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2536,7 +2620,7 @@ export function Recurrence52WScanner({
                                 {activeFilterPopover === "cpr" && (
                                     <div
                                         ref={filterPopoverRef}
-                                        className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                        className="absolute right-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2644,7 +2728,7 @@ export function Recurrence52WScanner({
 
                         {/* Vol & Deliv */}
                         {visibleColumns.vol_deliv !== false && (
-                            <th style={{ width: `${colWidths.vol_deliv}px`, minWidth: `${colWidths.vol_deliv}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.vol_deliv}px`, minWidth: `${colWidths.vol_deliv}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "vol_deliv" ? "z-50" : ""}`}>
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2672,7 +2756,7 @@ export function Recurrence52WScanner({
                                 {activeFilterPopover === "vol_deliv" && (
                                     <div
                                         ref={filterPopoverRef}
-                                        className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                        className="absolute right-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2788,7 +2872,7 @@ export function Recurrence52WScanner({
 
                         {/* Sector Wave (10D) */}
                         {visibleColumns.sector_wave !== false && (
-                            <th style={{ width: `${colWidths.sector_wave}px`, minWidth: `${colWidths.sector_wave}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                            <th style={{ width: `${colWidths.sector_wave}px`, minWidth: `${colWidths.sector_wave}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "wave" ? "z-50" : ""}`}>
                                 <div className="flex items-center justify-between gap-1.5">
                                     <div
                                         className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2816,7 +2900,7 @@ export function Recurrence52WScanner({
                                 {activeFilterPopover === "wave" && (
                                     <div
                                         ref={filterPopoverRef}
-                                        className="absolute right-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                        className="absolute right-0 top-full mt-1.5 w-60 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2878,7 +2962,7 @@ export function Recurrence52WScanner({
 
                                 {/* Theme */}
                                 {visibleColumns.theme !== false && (
-                                    <th style={{ width: `${colWidths.theme}px`, minWidth: `${colWidths.theme}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.theme}px`, minWidth: `${colWidths.theme}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "theme" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -2906,7 +2990,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "theme" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute left-0 top-full mt-1.5 w-72 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                                className="absolute left-0 top-full mt-1.5 w-72 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -2985,7 +3069,7 @@ export function Recurrence52WScanner({
 
                                 {/* Active Streak */}
                                 {visibleColumns.streak !== false && (
-                                    <th style={{ width: `${colWidths.streak}px`, minWidth: `${colWidths.streak}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.streak}px`, minWidth: `${colWidths.streak}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "streak" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3013,7 +3097,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "streak" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                                className="absolute left-0 top-full mt-1.5 w-60 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3079,7 +3163,7 @@ export function Recurrence52WScanner({
 
                                 {/* Frequency */}
                                 {visibleColumns.frequency !== false && (
-                                    <th style={{ width: `${colWidths.frequency}px`, minWidth: `${colWidths.frequency}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.frequency}px`, minWidth: `${colWidths.frequency}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "frequency" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3107,7 +3191,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "frequency" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                                className="absolute left-0 top-full mt-1.5 w-60 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3189,7 +3273,7 @@ export function Recurrence52WScanner({
 
                                 {/* RS Rating */}
                                 {visibleColumns.rs !== false && (
-                                    <th style={{ width: `${colWidths.rs}px`, minWidth: `${colWidths.rs}px` }} className="p-2.5 relative bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.rs}px`, minWidth: `${colWidths.rs}px` }} className={`p-2.5 relative bg-[#0d0d14] ${activeFilterPopover === "rs_rating" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-between gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3217,7 +3301,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "rs_rating" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute left-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
+                                                className="absolute right-0 top-full mt-1.5 w-60 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3291,7 +3375,7 @@ export function Recurrence52WScanner({
                                 )}
                                 {/* Close Price */}
                                 {visibleColumns.close !== false && (
-                                    <th style={{ width: `${colWidths.close}px`, minWidth: `${colWidths.close}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.close}px`, minWidth: `${colWidths.close}px` }} className={`p-2.5 relative text-right bg-[#0d0d14] ${activeFilterPopover === "close" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-end gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3319,7 +3403,7 @@ export function Recurrence52WScanner({
                                         {activeFilterPopover === "close" && (
                                             <div
                                                 ref={filterPopoverRef}
-                                                className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                                className="absolute right-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3402,7 +3486,7 @@ export function Recurrence52WScanner({
                                     </th>
                                 )}
                                 {visibleColumns.pct_1d !== false && (
-                                    <th style={{ width: `${colWidths.pct_1d}px`, minWidth: `${colWidths.pct_1d}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.pct_1d}px`, minWidth: `${colWidths.pct_1d}px` }} className={`p-2.5 relative text-right bg-[#0d0d14] ${activeFilterPopover === "pct_1d" ? "z-50" : ""}`}>
                                         <div className="flex items-center justify-end gap-1.5">
                                             <div
                                                 className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3430,7 +3514,7 @@ export function Recurrence52WScanner({
                                     {activeFilterPopover === "pct_1d" && (
                                         <div
                                             ref={filterPopoverRef}
-                                            className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                            className="absolute right-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3527,7 +3611,7 @@ export function Recurrence52WScanner({
                                     </th>
                                 )}
                                 {visibleColumns.pct_5d !== false && (
-                                    <th style={{ width: `${colWidths.pct_5d}px`, minWidth: `${colWidths.pct_5d}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.pct_5d}px`, minWidth: `${colWidths.pct_5d}px` }} className={`p-2.5 relative text-right bg-[#0d0d14] ${activeFilterPopover === "pct_5d" ? "z-50" : ""}`}>
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <div
                                                     className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3555,7 +3639,7 @@ export function Recurrence52WScanner({
                                             {activeFilterPopover === "pct_5d" && (
                                                 <div
                                                     ref={filterPopoverRef}
-                                                    className="absolute right-0 top-full mt-1.5 w-64 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                                    className="absolute right-0 top-full mt-1.5 w-64 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
                                                     <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
@@ -3652,7 +3736,7 @@ export function Recurrence52WScanner({
                                     </th>
                                 )}
                                 {visibleColumns.turnover !== false && (
-                                    <th style={{ width: `${colWidths.turnover}px`, minWidth: `${colWidths.turnover}px` }} className="p-2.5 relative text-right bg-[#0d0d14]">
+                                    <th style={{ width: `${colWidths.turnover}px`, minWidth: `${colWidths.turnover}px` }} className={`p-2.5 relative text-right bg-[#0d0d14] ${activeFilterPopover === "turnover" ? "z-50" : ""}`}>
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <div
                                                     className="flex items-center gap-1 cursor-pointer hover:text-white transition-colors"
@@ -3680,7 +3764,7 @@ export function Recurrence52WScanner({
                                             {activeFilterPopover === "turnover" && (
                                                 <div
                                                     ref={filterPopoverRef}
-                                                    className="absolute right-0 top-full mt-1.5 w-60 bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
+                                                    className="absolute right-0 top-full mt-1.5 w-60 max-h-[380px] overflow-y-auto bg-[#14141f] border border-gray-700/80 rounded-xl shadow-2xl p-3 z-50 normal-case font-normal text-xs text-gray-200 text-left"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
                                                     <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">

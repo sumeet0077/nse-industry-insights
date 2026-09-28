@@ -122,6 +122,8 @@ export interface Stock52WItem {
     setup_type?: string | null;
     setup_label?: string | null;
     setup_bar_desc?: string | null;
+    multi_year_level?: 'ATH' | '5Y' | '3Y' | '2Y' | null;
+    base_gap_days?: number | null;
 }
 
 export interface Market52WHistory {

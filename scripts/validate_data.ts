@@ -567,7 +567,17 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
                 errors.push(`Invariant 8 Failure: Invalid recency_days (${item.recency_days}) on ${item.symbol}`);
             }
         }
-        const validSetupTypes = new Set(["shakeout_breakout", "one_day_pause", "hammer_bounce", "fresh_thrust", "consolidation_base", "normal"]);
+        const validSetupTypes = new Set([
+            "shakeout_breakout",
+            "one_day_pause",
+            "hammer_bounce",
+            "fresh_thrust",
+            "consolidation_base",
+            "fresh_base",
+            "vcp_coiling",
+            "cpr_coiling",
+            "normal",
+        ]);
         if (item.setup_type !== undefined && item.setup_type !== null) {
             if (!validSetupTypes.has(item.setup_type)) {
                 errors.push(`Invariant 8 Failure: Invalid setup_type (${item.setup_type}) on ${item.symbol}`);
@@ -586,6 +596,16 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
                 if (item.setup_bar_desc !== undefined && item.setup_bar_desc !== null) {
                     errors.push(`Invariant 8 Failure: Normal setup has unexpected setup_bar_desc on ${item.symbol}`);
                 }
+            }
+        }
+        if (item.multi_year_level !== undefined && item.multi_year_level !== null) {
+            if (!["ATH", "5Y", "3Y", "2Y"].includes(item.multi_year_level)) {
+                errors.push(`Invariant 8 Failure: Invalid multi_year_level (${item.multi_year_level}) on ${item.symbol}`);
+            }
+        }
+        if (item.base_gap_days !== undefined && item.base_gap_days !== null) {
+            if (typeof item.base_gap_days !== "number" || isNaN(item.base_gap_days) || item.base_gap_days < 0 || !Number.isInteger(item.base_gap_days)) {
+                errors.push(`Invariant 8 Failure: Invalid base_gap_days (${item.base_gap_days}) on ${item.symbol}`);
             }
         }
         if (item.ema_20 !== undefined && item.ema_20 !== null) {

@@ -54,6 +54,10 @@ export type Direction = "high" | "low";
 export type Lookback = 5 | 10 | 20 | 60;
 export type PresetFilter = 
     | "all" 
+    | "fresh_base"
+    | "multi_year"
+    | "vcp_flag"
+    | "cpr_coiling"
     | "apex" 
     | "apex_confluence"
     | "one_day_pause"
@@ -70,10 +74,16 @@ export type PresetFilter =
     | "rs_lead";
 
 export const SETUP_PRESET_KEYS = new Set<string>([
+    "fresh_base",
+    "multi_year",
+    "vcp_flag",
+    "cpr_coiling",
     "one_day_pause",
     "shakeout_breakout",
     "shakeout",
     "hammer_bounce",
+    "apex_confluence",
+    "apex",
     "dist_flush",
     "breakdown_wave",
 ]);
@@ -325,26 +335,45 @@ export function Recurrence52WScanner({
     const [lookback, setLookback] = useState<Lookback>(20);
     const [selectedPresets, setSelectedPresets] = useState<Set<string>>(new Set());
 
-    // Reset presets when switching direction
+    // Reset presets when switching direction and restore lookback if coiling preset was active
     useEffect(() => {
+        if (selectedPresets.has("vcp_flag") || selectedPresets.has("cpr_coiling")) {
+            setLookback(prevLookbackRef.current || 20);
+        }
         setSelectedPresets(new Set());
     }, [direction]);
+
+    const prevLookbackRef = useRef<Lookback>(20);
 
     const togglePreset = useCallback((key: string) => {
         setSelectedPresets((prev) => {
             const next = new Set(prev);
             if (next.has(key)) {
                 next.delete(key);
+                if ((key === "vcp_flag" || key === "cpr_coiling") && !next.has("vcp_flag") && !next.has("cpr_coiling")) {
+                    setLookback(prevLookbackRef.current || 20);
+                }
             } else {
                 next.add(key);
+                if (key === "vcp_flag" || key === "cpr_coiling") {
+                    setLookback((cur) => {
+                        if (!prev.has("vcp_flag") && !prev.has("cpr_coiling")) {
+                            prevLookbackRef.current = cur;
+                        }
+                        return 60;
+                    });
+                }
             }
             return next;
         });
     }, []);
 
     const clearAllPresets = useCallback(() => {
+        if (selectedPresets.has("vcp_flag") || selectedPresets.has("cpr_coiling")) {
+            setLookback(prevLookbackRef.current || 20);
+        }
         setSelectedPresets(new Set());
-    }, []);
+    }, [selectedPresets]);
 
     const [tradabilityPreset, setTradabilityPreset] = useState<TradabilityPreset>("tradeable");
     const [showGranularFilters, setShowGranularFilters] = useState<boolean>(false);
@@ -744,6 +773,28 @@ export function Recurrence52WScanner({
 
     const matchesSinglePreset = useCallback(
         (preset: string, item: Stock52WItem, countInWindow: number): boolean => {
+            if (preset === "fresh_base") {
+                if (item.recency_days !== 0 || item.streak !== 1) return false;
+                const vsOk = item.vol_surge != null && item.vol_surge >= 1.5;
+                const gapOk = (item.base_gap_days != null && item.base_gap_days >= 20) || item.count_60d === 1;
+                return Boolean(vsOk && gapOk);
+            }
+            if (preset === "multi_year") {
+                return Boolean(item.multi_year_level);
+            }
+            if (preset === "vcp_flag") {
+                const rOk = item.recency_days != null && item.recency_days >= 4 && item.recency_days <= 45;
+                const emaOk = item.ema_20_ext != null && item.ema_20_ext >= -2.0 && item.ema_20_ext <= 4.0;
+                const vsOk = item.vol_surge != null && item.vol_surge < 0.85;
+                return Boolean(rOk && emaOk && vsOk);
+            }
+            if (preset === "cpr_coiling") {
+                const cwOk = item.cpr_width_pct != null && item.cpr_width_pct <= 2.5;
+                const posOk = item.cpr_pos === "inside" || item.cpr_pos === "above";
+                const vsOk = item.vol_surge != null && item.vol_surge < 1.0;
+                const distOk = item.cpr_pos === "inside" || item.cpr_dist_top == null || item.cpr_dist_top <= 3.0;
+                return Boolean(cwOk && posOk && vsOk && distOk);
+            }
             if (preset === "one_day_pause") return item.setup_type === "one_day_pause";
             if (preset === "shakeout_breakout" || preset === "shakeout") {
                 if (item.setup_type === "shakeout_breakout") return true;
@@ -1266,6 +1317,54 @@ export function Recurrence52WScanner({
 
     const inWindowCount = candidatePool.length;
 
+    // 60D candidate pool for coiling setups and lookback-adaptive presets
+    const candidatePool60 = useMemo(() => {
+        return rawItems.filter((i) => {
+            if (excludeCircuitLocked && i.is_circuit_locked) return false;
+            if ((i.turnover_cr ?? 0) < minTurnover) return false;
+            if ((i.close ?? 0) < minPrice) return false;
+            if (seriesFilter === "EQ" && i.series && i.series !== "EQ") return false;
+            const band = (i.circuit_band || "20").trim();
+            if (circuitFilter === "exclude_low" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "ge_10" && (band === "2" || band === "5")) return false;
+            if (circuitFilter === "fno_20" && band !== "No Band" && band !== "20") return false;
+            if (circuitFilter === "fno" && band !== "No Band") return false;
+            return (i.count_60d ?? 0) > 0;
+        });
+    }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
+
+    const freshBaseCount = useMemo(() => {
+        return candidatePool.filter((i) => {
+            if (i.recency_days !== 0 || i.streak !== 1) return false;
+            const vsOk = i.vol_surge != null && i.vol_surge >= 1.5;
+            const gapOk = (i.base_gap_days != null && i.base_gap_days >= 20) || i.count_60d === 1;
+            return vsOk && gapOk;
+        }).length;
+    }, [candidatePool]);
+
+    const multiYearCount = useMemo(() => {
+        return (lookback === 60 ? candidatePool60 : candidatePool).filter((i) => Boolean(i.multi_year_level)).length;
+    }, [candidatePool, candidatePool60, lookback]);
+
+    const vcpFlagCount = useMemo(() => {
+        return candidatePool60.filter((i) => {
+            const rOk = i.recency_days != null && i.recency_days >= 4 && i.recency_days <= 45;
+            const emaOk = i.ema_20_ext != null && i.ema_20_ext >= -2.0 && i.ema_20_ext <= 4.0;
+            const vsOk = i.vol_surge != null && i.vol_surge < 0.85;
+            return rOk && emaOk && vsOk;
+        }).length;
+    }, [candidatePool60]);
+
+    const cprCoilingCount = useMemo(() => {
+        return candidatePool60.filter((i) => {
+            const cwOk = i.cpr_width_pct != null && i.cpr_width_pct <= 2.5;
+            const posOk = i.cpr_pos === "inside" || i.cpr_pos === "above";
+            const vsOk = i.vol_surge != null && i.vol_surge < 1.0;
+            const distOk = i.cpr_pos === "inside" || i.cpr_dist_top == null || i.cpr_dist_top <= 3.0;
+            return cwOk && posOk && vsOk && distOk;
+        }).length;
+    }, [candidatePool60]);
+
     const streakCount = useMemo(() => {
         return candidatePool.filter((i) => i.streak >= 2).length;
     }, [candidatePool]);
@@ -1416,7 +1515,10 @@ export function Recurrence52WScanner({
                             <button
                                 key={days}
                                 type="button"
-                                onClick={() => setLookback(days)}
+                                onClick={() => {
+                                    prevLookbackRef.current = days;
+                                    setLookback(days);
+                                }}
                                 className={`px-2.5 py-1 text-xs font-medium rounded transition-all ${
                                     lookback === days
                                         ? "bg-blue-600 text-white shadow-sm font-semibold"
@@ -1653,19 +1755,36 @@ export function Recurrence52WScanner({
 
                     {direction === "high" ? (
                         <>
+                            <div className="h-4 w-px bg-gray-800 hidden sm:block" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Breakouts</span>
                             <button
                                 type="button"
-                                onClick={() => togglePreset("one_day_pause")}
+                                onClick={() => togglePreset("fresh_base")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    selectedPresets.has("one_day_pause")
-                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
-                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                    selectedPresets.has("fresh_base")
+                                        ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-sm shadow-emerald-500/20"
+                                        : "text-emerald-400/90 bg-emerald-950/20 hover:bg-emerald-950/40 border border-emerald-800/40"
                                 }`}
-                                title="1D Pause / Retest: 52W High hit yesterday, resting / pulling back near 20 EMA or CPR"
+                                title="Fresh Base: Day 0 breakout (recency=0d, streak=1) with volume surge >= 1.5x after base consolidation (gap >= 20d or 1st in 60d)"
                             >
-                                <span>🎯 1D Pause / Retest</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
-                                    {oneDayPauseCount}
+                                <span>🌱 Fresh Base (30-120d)</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">
+                                    {freshBaseCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("multi_year")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("multi_year")
+                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm shadow-purple-500/20"
+                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
+                                }`}
+                                title="Multi-Year / ATH: Stocks breaking out to 2Y, 3Y, 5Y or All-Time Highs"
+                            >
+                                <span>👑 Multi-Year / ATH</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
+                                    {multiYearCount}
                                 </span>
                             </button>
                             <button
@@ -1681,21 +1800,6 @@ export function Recurrence52WScanner({
                                 <span>⚡ Shakeout Breakout</span>
                                 <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
                                     {shakeoutCount}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => togglePreset("hammer_bounce")}
-                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    selectedPresets.has("hammer_bounce")
-                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm"
-                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
-                                }`}
-                                title="Hammer / Bounce: Hammer pattern near 20 EMA (+/- 2.5%) or CPR Top (+/- 2.0%)"
-                            >
-                                <span>🔨 Hammer / Bounce</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
-                                    {hammerCount}
                                 </span>
                             </button>
                             <button
@@ -1728,9 +1832,74 @@ export function Recurrence52WScanner({
                                     {sectorWaveCount}
                                 </span>
                             </button>
+
+                            <div className="h-4 w-px bg-gray-800 hidden sm:block" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Coiling</span>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("vcp_flag")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("vcp_flag")
+                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
+                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                }`}
+                                title="VCP / Tight Flag: Coiling 4-45 sessions after 52W high, near 20 EMA (-2% to +4%), volume contracting (<0.85x)"
+                            >
+                                <span>🌀 VCP / Tight Flag</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                                    {vcpFlagCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("cpr_coiling")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("cpr_coiling")
+                                        ? "bg-indigo-500/25 text-indigo-300 border border-indigo-500/50 shadow-sm shadow-indigo-500/20"
+                                        : "text-indigo-400/90 bg-indigo-950/20 hover:bg-indigo-950/40 border border-indigo-800/40"
+                                }`}
+                                title="CPR Coiling: Tight CPR width <= 2.5%, inside or <= 3% above CPR Top, volume contracting (<1.0x)"
+                            >
+                                <span>🧱 CPR Coiling</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                                    {cprCoilingCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("one_day_pause")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("one_day_pause")
+                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
+                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                }`}
+                                title="1D Pause / Retest: 52W High hit yesterday, resting / pulling back near 20 EMA or CPR"
+                            >
+                                <span>🎯 1D Pause / Retest</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                                    {oneDayPauseCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("hammer_bounce")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("hammer_bounce")
+                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm"
+                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
+                                }`}
+                                title="Hammer / Bounce: Hammer pattern near 20 EMA (+/- 2.5%) or CPR Top (+/- 2.0%)"
+                            >
+                                <span>🔨 Hammer / Bounce</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
+                                    {hammerCount}
+                                </span>
+                            </button>
                         </>
                     ) : (
                         <>
+                            <div className="h-4 w-px bg-gray-800 hidden sm:block" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Breakdowns</span>
                             <button
                                 type="button"
                                 onClick={() => togglePreset("dist_flush")}
@@ -1764,47 +1933,22 @@ export function Recurrence52WScanner({
                         </>
                     )}
 
+                    <div className="h-4 w-px bg-gray-800 hidden sm:block" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Leaders</span>
                     <button
                         type="button"
-                        onClick={() => togglePreset("streak")}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            selectedPresets.has("streak")
+                        onClick={() => togglePreset("rs_lead")}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                            selectedPresets.has("rs_lead")
                                 ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
+                        title="Relative Strength line at 52-week high before price"
                     >
-                        <Flame className="w-3 h-3 text-amber-400" />
-                        Active Streak (≥ 2d)
-                        <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300">
-                            {streakCount}
-                        </span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => togglePreset("persistent")}
-                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            selectedPresets.has("persistent")
-                                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold"
-                                : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
-                        }`}
-                    >
-                        ⭐ Persistent (≥ 3 in {lookback}D)
-                        <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
-                            {persistentCount}
-                        </span>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => togglePreset("fresh")}
-                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            selectedPresets.has("fresh")
-                                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold"
-                                : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
-                        }`}
-                    >
-                        {direction === "high" ? "🚀 Fresh Breakouts (1st in 20d)" : "🧊 Fresh Breakdowns (1st in 20d)"}
-                        <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300">
-                            {freshCount}
+                        <Sparkles className="w-3 h-3 text-amber-400" />
+                        RS Lead Breakout (*)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
+                            {rsLeadCount}
                         </span>
                     </button>
                     <button
@@ -1815,6 +1959,7 @@ export function Recurrence52WScanner({
                                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
+                        title="High Relative Strength (RS Rating >= 80)"
                     >
                         💎 High RS (≥ 80)
                         <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">
@@ -1823,17 +1968,48 @@ export function Recurrence52WScanner({
                     </button>
                     <button
                         type="button"
-                        onClick={() => togglePreset("rs_lead")}
+                        onClick={() => togglePreset("persistent")}
                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                            selectedPresets.has("rs_lead")
+                            selectedPresets.has("persistent")
+                                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold"
+                                : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
+                        }`}
+                        title="Hit 52W High >= 3 times in selected window"
+                    >
+                        ⭐ Persistent (≥ 3 in {lookback}D)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                            {persistentCount}
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => togglePreset("streak")}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                            selectedPresets.has("streak")
                                 ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold"
                                 : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
                         }`}
+                        title="Hit 52W High >= 2 consecutive trading sessions"
                     >
-                        <Sparkles className="w-3 h-3 text-amber-400" />
-                        RS Lead Breakout (*)
-                        <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
-                            {rsLeadCount}
+                        <Flame className="w-3 h-3 text-amber-400" />
+                        Active Streak (≥ 2d)
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300">
+                            {streakCount}
+                        </span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => togglePreset("fresh")}
+                        className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                            selectedPresets.has("fresh")
+                                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold"
+                                : "text-gray-400 bg-gray-950 hover:bg-gray-800/50 border border-gray-800"
+                        }`}
+                        title="First 52W High/Low in 20 sessions"
+                    >
+                        {direction === "high" ? "🚀 Fresh Breakouts (1st in 20d)" : "🧊 Fresh Breakdowns (1st in 20d)"}
+                        <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300">
+                            {freshCount}
                         </span>
                     </button>
                 </div>
@@ -3994,6 +4170,22 @@ export function Recurrence52WScanner({
                                                     >
                                                         {item.clean_symbol}
                                                     </a>
+                                                    {item.multi_year_level && (
+                                                        <span
+                                                            className={`text-[9px] font-sans px-1.5 py-0.2 rounded font-bold border transition-colors ${
+                                                                item.multi_year_level === "ATH"
+                                                                    ? "bg-purple-500/25 text-purple-300 border-purple-500/40 shadow-sm shadow-purple-500/20"
+                                                                    : item.multi_year_level === "5Y"
+                                                                    ? "bg-blue-500/25 text-blue-300 border-blue-500/40 shadow-sm shadow-blue-500/20"
+                                                                    : item.multi_year_level === "3Y"
+                                                                    ? "bg-cyan-500/25 text-cyan-300 border-cyan-500/40 shadow-sm shadow-cyan-500/20"
+                                                                    : "bg-emerald-500/25 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20"
+                                                            }`}
+                                                            title={`Multi-Year Breakout Level: ${item.multi_year_level}`}
+                                                        >
+                                                            {item.multi_year_level === "ATH" ? "👑 ATH" : item.multi_year_level}
+                                                        </span>
+                                                    )}
                                                     {item.is_fresh_20d && (
                                                         <span className="text-[9px] font-sans px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                                                             Fresh
@@ -4026,7 +4218,13 @@ export function Recurrence52WScanner({
                                                     {item.setup_label ? (
                                                         <span
                                                             className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold border ${
-                                                                item.setup_type === "shakeout_breakout"
+                                                                item.setup_type === "fresh_base"
+                                                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                                                                    : item.setup_type === "vcp_coiling"
+                                                                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
+                                                                    : item.setup_type === "cpr_coiling"
+                                                                    ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
+                                                                    : item.setup_type === "shakeout_breakout"
                                                                     ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
                                                                     : item.setup_type === "one_day_pause"
                                                                     ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40"
@@ -4135,6 +4333,14 @@ export function Recurrence52WScanner({
                                                                         {item.recency_days === 0
                                                                             ? (direction === "high" ? "Hit Today (T)" : "Hit Today (T)")
                                                                             : `${item.recency_days} sessions ago (${item.last_hit_date})`}
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                            {item.multi_year_level && (
+                                                                <div className="flex justify-between items-center gap-3 text-gray-400 text-[10px] font-sans">
+                                                                    <span className="shrink-0">Multi-Year Ceiling:</span>
+                                                                    <span className="text-purple-300 font-mono font-semibold whitespace-nowrap text-right">
+                                                                        {item.multi_year_level === "ATH" ? "👑 All-Time High" : `${item.multi_year_level} Ceiling Breakout`}
                                                                     </span>
                                                                 </div>
                                                             )}

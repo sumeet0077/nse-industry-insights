@@ -911,13 +911,13 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
     if env_pq_dir:
         parquet_paths.append(Path(env_pq_dir))
     parquet_paths.extend([
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
         source_dir / "nse_master_adjusted_2014_onwards.parquet",
         source_dir / "parquet",
         source_dir.parent / "Stock_market/data/parquet/master_copy.parquet",
         source_dir.parent / "Stock_market/NSE Master parquet/nse_master_adjusted_2014_onwards.parquet",
         Path("data/parquet"),
         Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
-        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
         Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
     ])
     valid_parquets = [p for p in parquet_paths if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet"))))]
@@ -1263,6 +1263,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
 
     micro_lookup = {}
     cpr_lookup = {}
+    multi_year_lookup = {}
 
     if chosen_pq and selected_dates:
         try:
@@ -1310,6 +1311,59 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             ORDER BY symbol, trade_date ASC
             """
             daily_df = con.execute(q_daily).pl()
+
+            # Multi-Year ceiling query (ATH, 5Y, 3Y, 2Y) with session-count guards
+            pq_cols = [c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{pq_pattern}', union_by_name=true)").fetchall()]
+            h_col = "adj_high" if "adj_high" in pq_cols else "high"
+
+            q_my = f"""
+            WITH daily_bars AS (
+                SELECT 
+                    TRIM(symbol) as symbol,
+                    CAST(trade_date AS DATE) as d,
+                    MAX({h_col}) as h_val
+                FROM read_parquet('{pq_pattern}', union_by_name=true)
+                WHERE series IN ('EQ', 'BE', 'BZ')
+                GROUP BY TRIM(symbol), CAST(trade_date AS DATE)
+            ),
+            history AS (
+                SELECT 
+                    symbol,
+                    d,
+                    h_val,
+                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 1000 PRECEDING AND 1 PRECEDING) as max_5y,
+                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 600 PRECEDING AND 1 PRECEDING) as max_3y,
+                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 400 PRECEDING AND 1 PRECEDING) as max_2y,
+                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) as max_ath
+                FROM daily_bars
+            ),
+            counts AS (
+                SELECT symbol, COUNT(*) as session_count
+                FROM daily_bars
+                GROUP BY symbol
+            ),
+            ranked AS (
+                SELECT 
+                    h.symbol,
+                    h.d,
+                    c.session_count,
+                    h.h_val as adj_high,
+                    h.max_5y,
+                    h.max_3y,
+                    h.max_2y,
+                    h.max_ath,
+                    ROW_NUMBER() OVER (PARTITION BY h.symbol ORDER BY h.d DESC) as rn
+                FROM history h
+                JOIN counts c ON h.symbol = c.symbol
+            )
+            SELECT symbol, session_count, adj_high, max_5y, max_3y, max_2y, max_ath
+            FROM ranked
+            WHERE rn = 1
+            """
+            my_rows = con.execute(q_my).fetchall()
+            for sym, cnt, th, m5, m3, m2, ath in my_rows:
+                multi_year_lookup[sym] = (cnt, th, m5, m3, m2, ath)
+
             con.close()
 
             if len(daily_df) > 0:
@@ -1507,6 +1561,52 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["today_low"] = None
                 item["risk_pct"] = None
 
+            # Multi-Year Level assignment (High side only)
+            if is_high:
+                my_tuple = multi_year_lookup.get(clean)
+                th = item.get("today_high")
+                if my_tuple:
+                    cnt, th_pq, m5, m3, m2, ath = my_tuple
+                    cmp_high = th if th is not None else th_pq
+                    if cmp_high is not None:
+                        if cnt >= 1260 and ath is not None and cmp_high >= (ath - 1e-2):
+                            item["multi_year_level"] = "ATH"
+                        elif cnt >= 1000 and m5 is not None and cmp_high >= (m5 - 1e-2):
+                            item["multi_year_level"] = "5Y"
+                        elif cnt >= 600 and m3 is not None and cmp_high >= (m3 - 1e-2):
+                            item["multi_year_level"] = "3Y"
+                        elif cnt >= 400 and m2 is not None and cmp_high >= (m2 - 1e-2):
+                            item["multi_year_level"] = "2Y"
+                        else:
+                            item["multi_year_level"] = None
+                    else:
+                        item["multi_year_level"] = None
+                else:
+                    item["multi_year_level"] = None
+            else:
+                item["multi_year_level"] = None
+
+            # Base gap calculation
+            h60 = item.get("history_60d") or []
+            c60 = item.get("count_60d") or 0
+            stk = item.get("streak") or 0
+            if r_days == 0:
+                if c60 == 1:
+                    item["base_gap_days"] = max(0, len(h60) - 1)
+                else:
+                    prior_hit = None
+                    search_end = max(0, len(h60) - stk - 1)
+                    for idx in range(search_end, -1, -1):
+                        if h60[idx] == 1:
+                            prior_hit = idx
+                            break
+                    if prior_hit is not None:
+                        item["base_gap_days"] = (len(h60) - stk) - 1 - prior_hit
+                    else:
+                        item["base_gap_days"] = max(0, len(h60) - stk)
+            else:
+                item["base_gap_days"] = None
+
             # Setup classification
             if is_high:
                 c_pat = item.get("candle_pattern")
@@ -1515,6 +1615,9 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 ema_ext = item.get("ema_20_ext")
                 cpr_dist = item.get("cpr_dist_top")
                 cpr_pos = item.get("cpr_pos")
+                cpr_w = item.get("cpr_width_pct")
+                vol_s = item.get("vol_surge")
+                bgap = item.get("base_gap_days")
 
                 prev_color_desc = "🔴 Red" if prev_c == "red" else ("🟢 Green" if prev_c == "green" else ("⚪ Flat" if prev_c == "flat" else "—"))
 
@@ -1531,7 +1634,16 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 near_ema_cpr = (ema_ext is not None and -2.0 <= ema_ext <= 8.0) or (cpr_dist is not None and -2.0 <= cpr_dist <= 6.0) or (cpr_pos in ("above", "inside"))
                 is_rest_bar = (c_pat in ("normal", "hammer") or p1d <= 2.5) and (c_pat != "rejection" or p1d >= -3.0)
 
-                if is_hammer and (near_ema_tight or near_cpr_tight):
+                # New setups
+                is_fresh_base = (r_days == 0 and stk == 1 and ((bgap is not None and bgap >= 20) or c60 == 1) and (vol_s is not None and vol_s >= 1.5))
+                is_vcp = (4 <= r_days <= 45 and ema_ext is not None and -2.0 <= ema_ext <= 4.0 and vol_s is not None and vol_s < 0.85)
+                is_cpr_coil = (cpr_w is not None and cpr_w <= 2.5 and cpr_pos in ("above", "inside") and vol_s is not None and vol_s < 1.0 and (cpr_pos == "inside" or cpr_dist is None or cpr_dist <= 3.0))
+
+                if is_fresh_base:
+                    item["setup_type"] = "fresh_base"
+                    item["setup_label"] = f"🌱 Fresh Base ({bgap}D)"
+                    item["setup_bar_desc"] = f"T: 🚀 Day 1 | Gap: {bgap}d base"
+                elif is_hammer and (near_ema_tight or near_cpr_tight):
                     item["setup_type"] = "hammer_bounce"
                     item["setup_label"] = "🔨 Hammer @ Support"
                     item["setup_bar_desc"] = f"T: 🔨 Pin Bar | T-1: {prev_color_desc}"
@@ -1543,6 +1655,14 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     item["setup_type"] = "one_day_pause"
                     item["setup_label"] = "🎯 1D Pause / Retest"
                     item["setup_bar_desc"] = "T: 🔴 Rest | T-1: ⭐ 52W"
+                elif is_vcp:
+                    item["setup_type"] = "vcp_coiling"
+                    item["setup_label"] = "🌀 VCP / Flag"
+                    item["setup_bar_desc"] = f"T: 💧 Dry-up ({vol_s}x) | Peak: {r_days}d ago"
+                elif is_cpr_coil:
+                    item["setup_type"] = "cpr_coiling"
+                    item["setup_label"] = "🧱 CPR Coil"
+                    item["setup_bar_desc"] = f"T: 🧱 Narrow CPR ({cpr_w}%)"
                 elif r_days == 0 and c_pat == "thrust":
                     item["setup_type"] = "fresh_thrust"
                     item["setup_label"] = "🚀 Fresh Thrust"
@@ -1641,7 +1761,17 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid risk_pct ({item.get('risk_pct')}) on {item['symbol']}")
         if item.get("recency_days") is not None and (not isinstance(item["recency_days"], int) or item["recency_days"] < 0):
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid recency_days ({item.get('recency_days')}) on {item['symbol']}")
-        valid_setups = {"shakeout_breakout", "one_day_pause", "hammer_bounce", "fresh_thrust", "consolidation_base", "normal"}
+        valid_setups = {
+            "shakeout_breakout",
+            "one_day_pause",
+            "hammer_bounce",
+            "fresh_thrust",
+            "consolidation_base",
+            "fresh_base",
+            "vcp_coiling",
+            "cpr_coiling",
+            "normal",
+        }
         if item.get("setup_type") is not None and item["setup_type"] not in valid_setups:
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid setup_type ({item.get('setup_type')}) on {item['symbol']}")
         if item.get("setup_type") != "normal":
@@ -1652,6 +1782,11 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         else:
             if item.get("setup_label") is not None or item.get("setup_bar_desc") is not None:
                 raise ValueError(f"Section 8 Invariant 7 Violation: Normal setup should not have label/desc on {item['symbol']}")
+
+        if item.get("multi_year_level") is not None and item["multi_year_level"] not in ("ATH", "5Y", "3Y", "2Y"):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid multi_year_level ({item.get('multi_year_level')}) on {item['symbol']}")
+        if item.get("base_gap_days") is not None and (not isinstance(item["base_gap_days"], int) or item["base_gap_days"] < 0):
+            raise ValueError(f"Section 8 Invariant 7 Violation: Invalid base_gap_days ({item.get('base_gap_days')}) on {item['symbol']}")
 
     print("  ✅ Section 8 Audit Harness: 100% PASSED")
 

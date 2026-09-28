@@ -4001,47 +4001,47 @@ export function Recurrence52WScanner({
                                                     )}
 
                                                     {/* Tomorrow's Execution Plan Hover Flyout */}
-                                                    <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/candle:block w-64 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
-                                                        <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
+                                                    <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/candle:block w-80 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
+                                                        <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                             <span>Tomorrow&apos;s Execution Plan</span>
-                                                            <span className="text-[9px] font-mono text-cyan-400 uppercase">
+                                                            <span className="text-[9px] font-mono text-cyan-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/50">
                                                                 {item.setup_type && item.setup_type !== "normal" ? item.setup_type.replace(/_/g, " ") : (item.candle_pattern || "Normal")}
                                                             </span>
                                                         </div>
                                                         <div className="space-y-1.5 font-mono text-[10px]">
-                                                            <div className="flex justify-between items-center">
-                                                                <span className="text-gray-400">Buy Stop (High):</span>
-                                                                <span className="text-emerald-400 font-semibold">{item.today_high ? `₹${item.today_high.toLocaleString("en-IN")}` : "—"}</span>
+                                                            <div className="flex justify-between items-center gap-3">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Buy Stop (High):</span>
+                                                                <span className="text-emerald-400 font-semibold whitespace-nowrap text-right">{item.today_high ? `₹${item.today_high.toLocaleString("en-IN")}` : "—"}</span>
                                                             </div>
-                                                            <div className="flex justify-between items-center">
-                                                                <span className="text-gray-400">Stop Loss (Low / 20 EMA):</span>
-                                                                <span className="text-rose-400 font-semibold">
+                                                            <div className="flex justify-between items-center gap-3">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Stop Loss (Low / 20 EMA):</span>
+                                                                <span className="text-rose-400 font-semibold whitespace-nowrap text-right">
                                                                     {item.today_low ? `₹${item.today_low.toLocaleString("en-IN")}` : "—"}
                                                                     {item.ema_20 ? ` / ₹${item.ema_20.toLocaleString("en-IN")}` : ""}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between items-center border-t border-gray-800/60 pt-1">
-                                                                <span className="text-gray-400">Risk %:</span>
-                                                                <span className="text-amber-400 font-semibold">{item.risk_pct != null ? `${item.risk_pct.toFixed(2)}%` : "—"}</span>
+                                                            <div className="flex justify-between items-center gap-3 border-t border-gray-800/60 pt-1.5">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Risk %:</span>
+                                                                <span className="text-amber-400 font-semibold whitespace-nowrap text-right">{item.risk_pct != null ? `${item.risk_pct.toFixed(2)}%` : "—"}</span>
                                                             </div>
                                                             {item.setup_bar_desc && (
-                                                                <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans border-t border-gray-800/60 pt-1">
-                                                                    <span>Setup Bar:</span>
-                                                                    <span className="text-cyan-300 font-mono">{item.setup_bar_desc}</span>
+                                                                <div className="flex justify-between items-center gap-3 text-gray-400 text-[10px] font-sans border-t border-gray-800/60 pt-1.5">
+                                                                    <span className="shrink-0">Setup Bar:</span>
+                                                                    <span className="text-cyan-300 font-mono whitespace-nowrap text-right">{item.setup_bar_desc}</span>
                                                                 </div>
                                                             )}
-                                                            <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans">
-                                                                <span>Prior Day Bar (T-1):</span>
-                                                                <span className={item.prev_color === "red" ? "text-rose-300 font-medium" : item.prev_color === "green" ? "text-emerald-300 font-medium" : "text-gray-400"}>
+                                                            <div className="flex justify-between items-center gap-3 text-gray-400 text-[10px] font-sans">
+                                                                <span className="shrink-0">Prior Day Bar (T-1):</span>
+                                                                <span className={`whitespace-nowrap text-right font-medium ${item.prev_color === "red" ? "text-rose-300" : item.prev_color === "green" ? "text-emerald-300" : "text-gray-400"}`}>
                                                                     {item.prev_color === "red" ? "Red (Shakeout)" : item.prev_color === "green" ? "Green (Follow-through)" : "Flat / Unknown"}
                                                                 </span>
                                                             </div>
                                                             {item.recency_days != null && (
-                                                                <div className="flex justify-between items-center text-gray-400 text-[9px] font-sans">
-                                                                    <span>{direction === "high" ? "52W Peak Recency:" : "52W Trough Recency:"}</span>
-                                                                    <span className="text-purple-300 font-mono">
+                                                                <div className="flex justify-between items-center gap-3 text-gray-400 text-[10px] font-sans">
+                                                                    <span className="shrink-0">{direction === "high" ? "52W Peak Recency:" : "52W Trough Recency:"}</span>
+                                                                    <span className="text-purple-300 font-mono whitespace-nowrap text-right">
                                                                         {item.recency_days === 0
-                                                                            ? (direction === "high" ? "Hit 52W High Today (T)" : "Hit 52W Low Today (T)")
+                                                                            ? (direction === "high" ? "Hit Today (T)" : "Hit Today (T)")
                                                                             : `${item.recency_days} sessions ago (${item.last_hit_date})`}
                                                                     </span>
                                                                 </div>
@@ -4075,21 +4075,21 @@ export function Recurrence52WScanner({
                                                         </span>
 
                                                         {/* Hover Tooltip */}
-                                                        <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/ema:block w-52 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
-                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
+                                                        <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/ema:block w-64 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
+                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                                 <span>20-Day EMA Anatomy</span>
                                                                 <span className="text-[10px] font-mono text-cyan-400">59D Warmup</span>
                                                             </div>
-                                                            <div className="space-y-1 font-mono text-[10px]">
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-400">20 EMA Level:</span>
-                                                                    <span className="text-gray-200">{item.ema_20 ? `₹${item.ema_20.toLocaleString("en-IN")}` : "—"}</span>
+                                                            <div className="space-y-1.5 font-mono text-[10px]">
+                                                                <div className="flex justify-between items-center gap-2">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">20 EMA Level:</span>
+                                                                    <span className="text-gray-200 font-semibold whitespace-nowrap text-right">{item.ema_20 ? `₹${item.ema_20.toLocaleString("en-IN")}` : "—"}</span>
                                                                 </div>
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-400">Extension:</span>
-                                                                    <span className="text-gray-200 font-semibold">{item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(2)}%` : `${item.ema_20_ext.toFixed(2)}%`}</span>
+                                                                <div className="flex justify-between items-center gap-2">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">Extension:</span>
+                                                                    <span className="text-gray-200 font-semibold whitespace-nowrap text-right">{item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(2)}%` : `${item.ema_20_ext.toFixed(2)}%`}</span>
                                                                 </div>
-                                                                <div className="text-[9px] font-sans text-gray-400 pt-1 border-t border-gray-800/60">
+                                                                <div className="text-[10px] font-sans text-gray-300 pt-1.5 border-t border-gray-800/60 leading-relaxed">
                                                                     {item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0
                                                                         ? "✅ Sweet Spot: +1.46% median 20D follow-through"
                                                                         : item.ema_20_ext > 12.0
@@ -4139,27 +4139,27 @@ export function Recurrence52WScanner({
                                                         </span>
 
                                                         {/* Hover Tooltip */}
-                                                        <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/cpr:block w-56 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
-                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
+                                                        <div className={`absolute left-0 ${tooltipDropClass} hidden group-hover/cpr:block w-72 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 pointer-events-none`}>
+                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                                 <span>Monthly Central Pivot Range</span>
                                                                 <span className="text-[10px] font-mono text-cyan-400">Prior Month</span>
                                                             </div>
-                                                            <div className="space-y-1 font-mono text-[10px]">
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-400">Pivot (P):</span>
-                                                                    <span className="text-gray-200">{item.cpr_pivot ? `₹${item.cpr_pivot.toFixed(2)}` : "—"}</span>
+                                                            <div className="space-y-1.5 font-mono text-[10px]">
+                                                                <div className="flex justify-between items-center gap-2">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">Pivot (P):</span>
+                                                                    <span className="text-gray-200 whitespace-nowrap text-right">{item.cpr_pivot ? `₹${item.cpr_pivot.toFixed(2)}` : "—"}</span>
                                                                 </div>
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-400">CPR Top (TC):</span>
-                                                                    <span className="text-gray-200">{item.cpr_top ? `₹${item.cpr_top.toFixed(2)}` : "—"}</span>
+                                                                <div className="flex justify-between items-center gap-2">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">CPR Top (TC):</span>
+                                                                    <span className="text-gray-200 whitespace-nowrap text-right">{item.cpr_top ? `₹${item.cpr_top.toFixed(2)}` : "—"}</span>
                                                                 </div>
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-400">CPR Bottom (BC):</span>
-                                                                    <span className="text-gray-200">{item.cpr_bot ? `₹${item.cpr_bot.toFixed(2)}` : "—"}</span>
+                                                                <div className="flex justify-between items-center gap-2">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">CPR Bottom (BC):</span>
+                                                                    <span className="text-gray-200 whitespace-nowrap text-right">{item.cpr_bot ? `₹${item.cpr_bot.toFixed(2)}` : "—"}</span>
                                                                 </div>
-                                                                <div className="flex justify-between border-t border-gray-800/60 pt-1">
-                                                                    <span className="text-gray-400">Dist to CPR Top:</span>
-                                                                    <span className="text-cyan-400 font-semibold">
+                                                                <div className="flex justify-between items-center gap-2 border-t border-gray-800/60 pt-1.5">
+                                                                    <span className="text-gray-400 shrink-0 font-sans">Dist to CPR Top:</span>
+                                                                    <span className="text-cyan-400 font-semibold whitespace-nowrap text-right">
                                                                         {item.cpr_dist_top != null ? `${item.cpr_dist_top > 0 ? "+" : ""}${item.cpr_dist_top.toFixed(2)}%` : "—"}
                                                                     </span>
                                                                 </div>
@@ -4193,27 +4193,27 @@ export function Recurrence52WScanner({
                                                     )}
 
                                                     {/* Hover Tooltip */}
-                                                    <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/voldeliv:block w-56 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
-                                                        <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
+                                                    <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/voldeliv:block w-72 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
+                                                        <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                             <span>Volume &amp; Delivery Breakdown</span>
                                                             <span className="text-[10px] font-mono text-cyan-400">vs 20 SMA</span>
                                                         </div>
-                                                        <div className="space-y-1 font-mono text-[10px]">
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-400">Volume Surge:</span>
-                                                                <span className={`font-semibold ${item.vol_surge && item.vol_surge >= 1.5 ? "text-emerald-400" : "text-gray-200"}`}>
+                                                        <div className="space-y-1.5 font-mono text-[10px]">
+                                                            <div className="flex justify-between items-center gap-2">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Volume Surge:</span>
+                                                                <span className={`font-semibold whitespace-nowrap text-right ${item.vol_surge && item.vol_surge >= 1.5 ? "text-emerald-400" : "text-gray-200"}`}>
                                                                     {item.vol_surge != null ? `${item.vol_surge.toFixed(2)}× SMA20` : "—"}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-400">Delivery %:</span>
-                                                                <span className="text-gray-200">
-                                                                    {item.series === "BE" || item.series === "BZ" ? "100% (Trade-to-Trade Series)" : item.deliv_pct != null ? `${item.deliv_pct.toFixed(1)}%` : "—"}
+                                                            <div className="flex justify-between items-center gap-2">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Delivery %:</span>
+                                                                <span className="text-gray-200 whitespace-nowrap text-right">
+                                                                    {item.series === "BE" || item.series === "BZ" ? "100% (Trade-to-Trade)" : item.deliv_pct != null ? `${item.deliv_pct.toFixed(1)}%` : "—"}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-400">Delivery Surge:</span>
-                                                                <span className="text-gray-200">{item.deliv_surge != null ? `${item.deliv_surge.toFixed(2)}× SMA20` : "—"}</span>
+                                                            <div className="flex justify-between items-center gap-2">
+                                                                <span className="text-gray-400 shrink-0 font-sans">Delivery Surge:</span>
+                                                                <span className="text-gray-200 whitespace-nowrap text-right">{item.deliv_surge != null ? `${item.deliv_surge.toFixed(2)}× SMA20` : "—"}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -4237,8 +4237,8 @@ export function Recurrence52WScanner({
                                                         </span>
 
                                                         {/* Hover Tooltip with Peers */}
-                                                        <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/wave:block w-64 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-2.5 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
-                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1 mb-1.5 text-gray-100 flex items-center justify-between">
+                                                        <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/wave:block w-80 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
+                                                            <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                                 <span>10D Sector Wave Cluster</span>
                                                                 <span className="text-[10px] font-mono text-cyan-400">
                                                                     {item.sector_wave_count} stocks

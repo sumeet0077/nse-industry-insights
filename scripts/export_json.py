@@ -387,8 +387,9 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
     out_file = perf_dir / "constituent_performance_latest.json"
 
     parquet_paths = [
-        source_dir / "nse_master_adjusted_2014_onwards.parquet",
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
         Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
+        source_dir / "nse_master_adjusted_2014_onwards.parquet",
         Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_bhav_with_delivery_2014_onwards.parquet"),
     ]
     parquet_file = next((p for p in parquet_paths if p.exists()), None)
@@ -901,121 +902,139 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                         if dt_k not in drilldown_data:
                             drilldown_data[dt_k] = dt_v
 
-    # 2. DuckDB fallback if drilldown data is empty
-    if not drilldown_data:
-        print("  Drilldowns not found; attempting DuckDB fallback on master parquet...")
-        parquet_paths = []
-        env_pq_path = os.environ.get("NSE_PARQUET_PATH", "").strip()
-        if env_pq_path:
-            parquet_paths.append(Path(env_pq_path))
-        env_pq_dir = os.environ.get("NSE_PARQUET_DIR", "").strip()
-        if env_pq_dir:
-            parquet_paths.append(Path(env_pq_dir))
-        parquet_paths.extend([
-            source_dir / "nse_master_adjusted_2014_onwards.parquet",
-            source_dir / "parquet",
-            source_dir.parent / "Stock_market/data/parquet/master_copy.parquet",
-            source_dir.parent / "Stock_market/NSE Master parquet/nse_master_adjusted_2014_onwards.parquet",
-            Path("data/parquet"),
-            Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
-            Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
-            Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
-        ])
-        chosen_parquet = None
-        for p in parquet_paths:
-            if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet")))):
-                chosen_parquet = p
-                break
+    # 2. Check candidate parquets and determine max available date
+    parquet_paths = []
+    env_pq_path = os.environ.get("NSE_PARQUET_PATH", "").strip()
+    if env_pq_path:
+        parquet_paths.append(Path(env_pq_path))
+    env_pq_dir = os.environ.get("NSE_PARQUET_DIR", "").strip()
+    if env_pq_dir:
+        parquet_paths.append(Path(env_pq_dir))
+    parquet_paths.extend([
+        source_dir / "nse_master_adjusted_2014_onwards.parquet",
+        source_dir / "parquet",
+        source_dir.parent / "Stock_market/data/parquet/master_copy.parquet",
+        source_dir.parent / "Stock_market/NSE Master parquet/nse_master_adjusted_2014_onwards.parquet",
+        Path("data/parquet"),
+        Path("/Users/sumeetdas/Desktop/Antigravity Workspaces/Stock_market/data/parquet/master_copy.parquet"),
+        Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
+        Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
+    ])
+    valid_parquets = [p for p in parquet_paths if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet"))))]
+    chosen_parquet = None
+    max_pq_date = None
+    for p in valid_parquets:
+        try:
+            import duckdb
+            con_chk = duckdb.connect()
+            pq_pattern_chk = f"{p}/**/*.parquet" if p.is_dir() else str(p)
+            r_chk = con_chk.execute(f"SELECT STRFTIME(CAST(MAX(trade_date) AS DATE), '%Y-%m-%d') FROM read_parquet('{pq_pattern_chk}', union_by_name=true)").fetchone()
+            con_chk.close()
+            if r_chk and r_chk[0]:
+                if max_pq_date is None or r_chk[0] > max_pq_date:
+                    max_pq_date = r_chk[0]
+                    chosen_parquet = p
+        except Exception as e:
+            print(f"  Notice: Could not check master parquet max date for {p}: {e}")
 
-        if chosen_parquet:
-            print(f"  Calculating 52W history using DuckDB from {chosen_parquet}...")
+    drilldown_max_date = max(drilldown_data.keys(), default="")
+    needs_duckdb = (not drilldown_data) or (max_pq_date is not None and drilldown_max_date < max_pq_date)
+
+    if needs_duckdb and chosen_parquet:
+        if drilldown_max_date and max_pq_date and drilldown_max_date < max_pq_date:
+            print(f"  Notice: Drilldowns date ({drilldown_max_date}) < master parquet ({max_pq_date}). Supplementing sessions using DuckDB from {chosen_parquet}...")
+        else:
+            print(f"  Drilldowns not found; calculating 52W history using DuckDB from {chosen_parquet}...")
+        existing_drilldown_dates = set(drilldown_data.keys())
+        try:
+            import duckdb
+            con = duckdb.connect()
             try:
-                import duckdb
-                con = duckdb.connect()
-                try:
-                    from corporate_actions_util import register_corporate_actions_duckdb
-                    register_corporate_actions_duckdb(con)
-                    has_ca = True
-                except Exception as e:
-                    print(f"  Notice: Corporate actions DuckDB table: {e}")
-                    has_ca = False
-
-                parquet_pattern = f"{chosen_parquet}/**/*.parquet" if chosen_parquet.is_dir() else str(chosen_parquet)
-
-                ca_join = """
-                LEFT JOIN corporate_action_intervals cai
-                  ON b.symbol = cai.symbol
-                 AND b.d >= cai.start_date
-                 AND b.d <= cai.end_date
-                """ if has_ca else ""
-                adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
-
-                query = f"""
-                WITH base AS (
-                    SELECT 
-                        TRIM(symbol) as symbol,
-                        CAST(trade_date AS DATE) as d,
-                        close,
-                        open,
-                        high,
-                        low,
-                        volume
-                    FROM read_parquet('{parquet_pattern}', union_by_name=true)
-                    WHERE series IN ('EQ', 'BE', 'BZ')
-                ),
-                adjusted AS (
-                    SELECT 
-                        b.symbol,
-                        b.d,
-                        b.close * {adj_factor_expr} as adj_close,
-                        b.high * {adj_factor_expr} as adj_high,
-                        b.low * {adj_factor_expr} as adj_low,
-                        b.close as raw_close,
-                        b.volume,
-                        ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
-                        LAG(b.close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
-                        LAG(b.close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
-                        MAX(b.high * {adj_factor_expr}) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as high_52w,
-                        MIN(b.low * {adj_factor_expr}) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as low_52w
-                    FROM base b
-                    {ca_join}
-                )
-                SELECT 
-                    symbol,
-                    d::VARCHAR as date_str,
-                    raw_close,
-                    ROUND(((adj_close - prev_close) / prev_close) * 100.0, 2) as pct_1d,
-                    ROUND(((adj_close - prev_5d_close) / prev_5d_close) * 100.0, 2) as pct_5d,
-                    volume,
-                    ROUND(raw_close * volume / 10000000.0, 2) as turnover_cr,
-                    CASE WHEN session_num >= 252 AND adj_high >= high_52w THEN 1 ELSE 0 END as is_high,
-                    CASE WHEN session_num >= 252 AND adj_low <= low_52w AND NOT (adj_high >= high_52w) THEN 1 ELSE 0 END as is_low
-                FROM adjusted
-                WHERE d >= (SELECT MAX(d) - INTERVAL 120 DAY FROM base)
-                ORDER BY d ASC
-                """
-                rows = con.execute(query).fetchall()
-                con.close()
-
-                for sym, d_str, c, p1, p5, v, t, is_h, is_l in rows:
-                    if is_etf_or_re(sym):
-                        continue
-                    if d_str not in drilldown_data:
-                        drilldown_data[d_str] = {"high52w": [], "low52w": []}
-                    if is_h:
-                        drilldown_data[d_str]["high52w"].append([sym, c, p1 or 0.0, p5 or 0.0, v or 0, t or 0.0])
-                    if is_l:
-                        drilldown_data[d_str]["low52w"].append([sym, c, p1 or 0.0, p5 or 0.0, v or 0, t or 0.0])
+                from corporate_actions_util import register_corporate_actions_duckdb
+                register_corporate_actions_duckdb(con)
+                has_ca = True
             except Exception as e:
-                print(f"  DuckDB fallback error: {e}")
+                print(f"  Notice: Corporate actions DuckDB table: {e}")
+                has_ca = False
+
+            parquet_pattern = f"{chosen_parquet}/**/*.parquet" if chosen_parquet.is_dir() else str(chosen_parquet)
+
+            ca_join = """
+            LEFT JOIN corporate_action_intervals cai
+              ON b.symbol = cai.symbol
+             AND b.d >= cai.start_date
+             AND b.d <= cai.end_date
+            """ if has_ca else ""
+            adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
+
+            query = f"""
+            WITH base AS (
+                SELECT 
+                    TRIM(symbol) as symbol,
+                    CAST(trade_date AS DATE) as d,
+                    close,
+                    open,
+                    high,
+                    low,
+                    volume
+                FROM read_parquet('{parquet_pattern}', union_by_name=true)
+                WHERE series IN ('EQ', 'BE', 'BZ')
+            ),
+            adjusted AS (
+                SELECT 
+                    b.symbol,
+                    b.d,
+                    b.close * {adj_factor_expr} as adj_close,
+                    b.high * {adj_factor_expr} as adj_high,
+                    b.low * {adj_factor_expr} as adj_low,
+                    b.close as raw_close,
+                    b.volume,
+                    ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
+                    LAG(b.close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
+                    LAG(b.close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
+                    MAX(b.high * {adj_factor_expr}) OVER (
+                        PARTITION BY b.symbol 
+                        ORDER BY b.d 
+                        ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
+                    ) as high_52w,
+                    MIN(b.low * {adj_factor_expr}) OVER (
+                        PARTITION BY b.symbol 
+                        ORDER BY b.d 
+                        ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
+                    ) as low_52w
+                FROM base b
+                {ca_join}
+            )
+            SELECT 
+                symbol,
+                d::VARCHAR as date_str,
+                raw_close,
+                ROUND(((adj_close - prev_close) / prev_close) * 100.0, 2) as pct_1d,
+                ROUND(((adj_close - prev_5d_close) / prev_5d_close) * 100.0, 2) as pct_5d,
+                volume,
+                ROUND(raw_close * volume / 10000000.0, 2) as turnover_cr,
+                CASE WHEN session_num >= 252 AND adj_high >= high_52w THEN 1 ELSE 0 END as is_high,
+                CASE WHEN session_num >= 252 AND adj_low <= low_52w AND NOT (adj_high >= high_52w) THEN 1 ELSE 0 END as is_low
+            FROM adjusted
+            WHERE d >= (SELECT MAX(d) - INTERVAL 120 DAY FROM base)
+            ORDER BY d ASC
+            """
+            rows = con.execute(query).fetchall()
+            con.close()
+
+            for sym, d_str, c, p1, p5, v, t, is_h, is_l in rows:
+                if is_etf_or_re(sym):
+                    continue
+                if d_str in existing_drilldown_dates:
+                    continue
+                if d_str not in drilldown_data:
+                    drilldown_data[d_str] = {"high52w": [], "low52w": []}
+                if is_h:
+                    drilldown_data[d_str]["high52w"].append([sym, c, p1 or 0.0, p5 or 0.0, v or 0, t or 0.0])
+                if is_l:
+                    drilldown_data[d_str]["low52w"].append([sym, c, p1 or 0.0, p5 or 0.0, v or 0, t or 0.0])
+        except Exception as e:
+            print(f"  DuckDB fallback error: {e}")
 
     if not drilldown_data:
         print("  WARN: No 52-Week High/Low history data could be calculated.")
@@ -1083,11 +1102,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
 
     # Load High/Low mapping from parquet if available for circuit lock detection
     hl_lookup = {}
-    chosen_pq = None
-    for p in parquet_paths:
-        if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet")))):
-            chosen_pq = p
-            break
+    chosen_pq = chosen_parquet
 
     if chosen_pq and selected_dates:
         try:

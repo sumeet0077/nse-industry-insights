@@ -1,7 +1,6 @@
 import os
 import json
 from datetime import datetime, timedelta
-import polars as pl
 import duckdb
 
 DEFAULT_CA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "corporate_actions.json")
@@ -62,13 +61,19 @@ def register_corporate_actions_duckdb(con, file_path=None, table_name="corporate
     actions = load_corporate_actions(file_path)
     intervals = build_corporate_action_intervals(actions)
     if intervals:
-        df_intervals = pl.DataFrame(intervals).with_columns([
-            pl.col('start_date').str.to_date(),
-            pl.col('end_date').str.to_date(),
-            pl.col('adj_factor').cast(pl.Float64)
-        ])
-        con.register("temp_ca_df", df_intervals)
-        con.execute(f"CREATE OR REPLACE TEMP TABLE {table_name} AS SELECT symbol, start_date, end_date, adj_factor FROM temp_ca_df")
+        try:
+            import polars as pl
+            df_intervals = pl.DataFrame(intervals).with_columns([
+                pl.col('start_date').str.to_date(),
+                pl.col('end_date').str.to_date(),
+                pl.col('adj_factor').cast(pl.Float64)
+            ])
+            con.register("temp_ca_df", df_intervals)
+            con.execute(f"CREATE OR REPLACE TEMP TABLE {table_name} AS SELECT symbol, start_date, end_date, adj_factor FROM temp_ca_df")
+        except ImportError:
+            con.execute(f"CREATE OR REPLACE TEMP TABLE {table_name} (symbol VARCHAR, start_date DATE, end_date DATE, adj_factor DOUBLE)")
+            con.executemany(f"INSERT INTO {table_name} VALUES (?, CAST(? AS DATE), CAST(? AS DATE), ?)",
+                            [(i['symbol'], i['start_date'], i['end_date'], float(i['adj_factor'])) for i in intervals])
     else:
         con.execute(f"CREATE OR REPLACE TEMP TABLE {table_name} (symbol VARCHAR, start_date DATE, end_date DATE, adj_factor DOUBLE)")
 
@@ -78,6 +83,7 @@ def apply_corporate_actions_polars(df, file_path=None):
     Expects columns: Symbol, Date, High, Low, Close (and optionally Open).
     Adds 'AdjFactor', 'AdjOpen', 'AdjHigh', 'AdjLow', 'AdjClose'.
     """
+    import polars as pl
     actions = load_corporate_actions(file_path)
     intervals = build_corporate_action_intervals(actions)
     if not intervals:

@@ -123,6 +123,7 @@ export interface ColumnFilters {
     prevColor: "all" | "red" | "green";
     minEmaExt: number | null;
     maxEmaExt: number | null;
+    emaPresets: string[];
     cprPositions: string[];
     maxCprWidth: number;
     minVolSurge: number;
@@ -153,6 +154,7 @@ export const defaultColumnFilters: ColumnFilters = {
     prevColor: "all",
     minEmaExt: null,
     maxEmaExt: null,
+    emaPresets: [],
     cprPositions: [],
     maxCprWidth: 0,
     minVolSurge: 0,
@@ -587,7 +589,7 @@ export function Recurrence52WScanner({
         if (col === "pct_5d") return columnFilters.minPct5d !== 0 || columnFilters.maxPct5d !== 0 || columnFilters.pct5dDirection !== "all";
         if (col === "turnover") return columnFilters.minTurnover > 0;
         if (col === "candle") return columnFilters.candlePatterns.length > 0 || columnFilters.prevColor !== "all";
-        if (col === "ema_ext") return columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null;
+        if (col === "ema_ext") return columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null || (columnFilters.emaPresets && columnFilters.emaPresets.length > 0);
         if (col === "cpr") return columnFilters.cprPositions.length > 0 || columnFilters.maxCprWidth > 0;
         if (col === "vol_deliv") return columnFilters.minVolSurge > 0 || columnFilters.minDelivPct > 0 || columnFilters.minDelivSurge > 0;
         if (col === "wave") return columnFilters.minSectorWave > 0;
@@ -607,7 +609,7 @@ export function Recurrence52WScanner({
         if (columnFilters.minPct5d !== 0 || columnFilters.maxPct5d !== 0 || columnFilters.pct5dDirection !== "all") count++;
         if (columnFilters.minTurnover > 0) count++;
         if (columnFilters.candlePatterns.length > 0 || columnFilters.prevColor !== "all") count++;
-        if (columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null) count++;
+        if (columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null || (columnFilters.emaPresets && columnFilters.emaPresets.length > 0)) count++;
         if (columnFilters.cprPositions.length > 0 || columnFilters.maxCprWidth > 0) count++;
         if (columnFilters.minVolSurge > 0 || columnFilters.minDelivPct > 0 || columnFilters.minDelivSurge > 0) count++;
         if (columnFilters.minSectorWave > 0) count++;
@@ -645,6 +647,7 @@ export function Recurrence52WScanner({
             } else if (col === "ema_ext") {
                 next.minEmaExt = null;
                 next.maxEmaExt = null;
+                next.emaPresets = [];
             } else if (col === "cpr") {
                 next.cprPositions = [];
                 next.maxCprWidth = 0;
@@ -911,7 +914,31 @@ export function Recurrence52WScanner({
                 if (item.prev_color !== columnFilters.prevColor) return false;
             }
 
-            // 20 EMA Extension filter
+            // 20 EMA Extension filter (Multi-select Quick Presets + Custom Bounds)
+            if (columnFilters.emaPresets && columnFilters.emaPresets.length > 0) {
+                if (item.ema_20_ext == null) return false;
+                const ext = item.ema_20_ext;
+
+                const positivePresets = columnFilters.emaPresets.filter((p) => p !== "exclude_climax");
+                const hasExcludeClimax = columnFilters.emaPresets.includes("exclude_climax");
+
+                // If "exclude_climax" is checked, stock must not exceed 12%
+                if (hasExcludeClimax && ext > 12.0) {
+                    return false;
+                }
+
+                // If positive presets are selected, stock must match at least one of them (OR logic)
+                if (positivePresets.length > 0) {
+                    const matchesAny = positivePresets.some((p) => {
+                        if (p === "sweet_spot") return ext >= 2.0 && ext <= 6.0;
+                        if (p === "tight") return ext >= 0.0 && ext <= 2.0;
+                        if (p === "extended") return ext > 6.0;
+                        if (p === "below_ema") return ext < 0.0;
+                        return false;
+                    });
+                    if (!matchesAny) return false;
+                }
+            }
             if (columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null) {
                 if (item.ema_20_ext == null) return false;
                 if (columnFilters.minEmaExt !== null && item.ema_20_ext < columnFilters.minEmaExt) return false;
@@ -977,6 +1004,7 @@ export function Recurrence52WScanner({
         columnFilters.prevColor,
         columnFilters.minEmaExt,
         columnFilters.maxEmaExt,
+        columnFilters.emaPresets,
         columnFilters.cprPositions,
         columnFilters.maxCprWidth,
         columnFilters.minVolSurge,
@@ -2511,7 +2539,14 @@ export function Recurrence52WScanner({
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2">
-                                            <span className="font-semibold text-xs text-gray-200">Filter 20 EMA</span>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="font-semibold text-xs text-gray-200">Filter 20 EMA</span>
+                                                {((columnFilters.emaPresets || []).length > 0 || columnFilters.minEmaExt !== null || columnFilters.maxEmaExt !== null) && (
+                                                    <span className="text-[10px] text-blue-400 font-mono">
+                                                        {(columnFilters.emaPresets || []).length > 0 ? `(${(columnFilters.emaPresets || []).length} active)` : "(custom)"}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <div className="flex items-center gap-2">
                                                 {hasColumnFilter("ema_ext") && (
                                                     <button
@@ -2532,31 +2567,54 @@ export function Recurrence52WScanner({
                                             </div>
                                         </div>
                                         <div className="space-y-2.5">
-                                            <div className="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Quick Presets</div>
-                                            <div className="flex flex-wrap gap-1">
-                                                {[
-                                                    { label: "Sweet Spot (2–6%)", min: 2, max: 6 },
-                                                    { label: "Tight (0–2%)", min: 0, max: 2 },
-                                                    { label: "Extended (>6%)", min: 6, max: null },
-                                                    { label: "Exclude Climax (>12%)", min: null, max: 12 },
-                                                ].map((p, idx) => (
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-[10px] uppercase font-semibold text-gray-400 tracking-wider">Quick Presets (Multi-select)</div>
+                                                {(columnFilters.emaPresets || []).length > 0 && (
                                                     <button
-                                                        key={idx}
                                                         type="button"
-                                                        onClick={() => setColumnFilters((prev) => ({ ...prev, minEmaExt: p.min, maxEmaExt: p.max }))}
-                                                        className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
-                                                            columnFilters.minEmaExt === p.min && columnFilters.maxEmaExt === p.max
-                                                                ? "bg-blue-600 text-white border-blue-500 font-semibold"
-                                                                : "bg-gray-800 text-gray-300 border-gray-700 hover:text-white"
-                                                        }`}
+                                                        onClick={() => setColumnFilters((prev) => ({ ...prev, emaPresets: [] }))}
+                                                        className="text-[10px] text-gray-500 hover:text-gray-300"
                                                     >
-                                                        {p.label}
+                                                        Reset
                                                     </button>
-                                                ))}
+                                                )}
                                             </div>
-                                            <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-800">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {[
+                                                    { id: "sweet_spot", label: "Sweet Spot (2–6%)" },
+                                                    { id: "tight", label: "Tight (0–2%)" },
+                                                    { id: "extended", label: "Extended (>6%)" },
+                                                    { id: "exclude_climax", label: "Exclude Climax (>12%)" },
+                                                    { id: "below_ema", label: "Below EMA (<0%)" },
+                                                ].map((p) => {
+                                                    const active = (columnFilters.emaPresets || []).includes(p.id);
+                                                    return (
+                                                        <button
+                                                            key={p.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setColumnFilters((prev) => {
+                                                                    const cur = prev.emaPresets || [];
+                                                                    const next = cur.includes(p.id)
+                                                                        ? cur.filter((x) => x !== p.id)
+                                                                        : [...cur, p.id];
+                                                                    return { ...prev, emaPresets: next };
+                                                                });
+                                                            }}
+                                                            className={`px-2 py-1 rounded text-[10px] border transition-all ${
+                                                                active
+                                                                    ? "bg-blue-600 text-white border-blue-500 font-semibold shadow-sm"
+                                                                    : "bg-gray-800 text-gray-300 border-gray-700 hover:text-white hover:bg-gray-700"
+                                                            }`}
+                                                        >
+                                                            {active ? "✓ " : ""}{p.label}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800">
                                                 <div>
-                                                    <label className="text-[10px] text-gray-400 block mb-1">Min %</label>
+                                                    <label className="text-[10px] text-gray-400 block mb-1">Custom Min %</label>
                                                     <input
                                                         type="number"
                                                         step="0.5"
@@ -2567,7 +2625,7 @@ export function Recurrence52WScanner({
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="text-[10px] text-gray-400 block mb-1">Max %</label>
+                                                    <label className="text-[10px] text-gray-400 block mb-1">Custom Max %</label>
                                                     <input
                                                         type="number"
                                                         step="0.5"
@@ -2693,7 +2751,7 @@ export function Recurrence52WScanner({
                                                         <button
                                                             key={idx}
                                                             type="button"
-                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, maxCprWidth: w.max }))}
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, maxCprWidth: prev.maxCprWidth === w.max ? 0 : w.max }))}
                                                             className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
                                                                 columnFilters.maxCprWidth === w.max
                                                                     ? "bg-blue-600 text-white border-blue-500 font-semibold"
@@ -2795,7 +2853,7 @@ export function Recurrence52WScanner({
                                                         <button
                                                             key={idx}
                                                             type="button"
-                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minVolSurge: v.min }))}
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minVolSurge: prev.minVolSurge === v.min ? 0 : v.min }))}
                                                             className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
                                                                 columnFilters.minVolSurge === v.min
                                                                     ? "bg-blue-600 text-white border-blue-500 font-semibold"
@@ -2821,7 +2879,7 @@ export function Recurrence52WScanner({
                                                         <button
                                                             key={idx}
                                                             type="button"
-                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minDelivPct: d.min }))}
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minDelivPct: prev.minDelivPct === d.min ? 0 : d.min }))}
                                                             className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
                                                                 columnFilters.minDelivPct === d.min
                                                                     ? "bg-blue-600 text-white border-blue-500 font-semibold"
@@ -2846,7 +2904,7 @@ export function Recurrence52WScanner({
                                                         <button
                                                             key={idx}
                                                             type="button"
-                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minDelivSurge: ds.min }))}
+                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minDelivSurge: prev.minDelivSurge === ds.min ? 0 : ds.min }))}
                                                             className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
                                                                 columnFilters.minDelivSurge === ds.min
                                                                     ? "bg-blue-600 text-white border-blue-500 font-semibold"
@@ -2937,7 +2995,7 @@ export function Recurrence52WScanner({
                                                     <button
                                                         key={idx}
                                                         type="button"
-                                                        onClick={() => setColumnFilters((prev) => ({ ...prev, minSectorWave: w.min }))}
+                                                        onClick={() => setColumnFilters((prev) => ({ ...prev, minSectorWave: prev.minSectorWave === w.min ? 0 : w.min }))}
                                                         className={`w-full text-left px-2.5 py-1.5 rounded text-xs border transition-colors ${
                                                             columnFilters.minSectorWave === w.min
                                                                 ? "bg-blue-600 text-white border-blue-500 font-semibold"
@@ -3138,7 +3196,7 @@ export function Recurrence52WScanner({
                                                             <button
                                                                 key={d}
                                                                 type="button"
-                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minStreak: d }))}
+                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minStreak: prev.minStreak === d ? 0 : d }))}
                                                                 className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
                                                                     columnFilters.minStreak === d
                                                                         ? "bg-blue-600 text-white border-blue-500 font-bold"
@@ -3232,7 +3290,7 @@ export function Recurrence52WScanner({
                                                             <button
                                                                 key={f}
                                                                 type="button"
-                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minFrequency: f }))}
+                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minFrequency: prev.minFrequency === f ? 0 : f }))}
                                                                 className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
                                                                     columnFilters.minFrequency === f
                                                                         ? "bg-blue-600 text-white border-blue-500 font-bold"
@@ -3342,7 +3400,7 @@ export function Recurrence52WScanner({
                                                             <button
                                                                 key={r}
                                                                 type="button"
-                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minRS: r }))}
+                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minRS: prev.minRS === r ? 0 : r }))}
                                                                 className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
                                                                     columnFilters.minRS === r
                                                                         ? "bg-blue-600 text-white border-blue-500 font-bold"
@@ -3459,20 +3517,26 @@ export function Recurrence52WScanner({
                                                             { label: "₹50–₹500", min: 50, max: 500 },
                                                             { label: "> ₹500", min: 500, max: 0 },
                                                             { label: "> ₹1,000", min: 1000, max: 0 },
-                                                        ].map((p, idx) => (
-                                                            <button
-                                                                key={idx}
-                                                                type="button"
-                                                                onClick={() => setColumnFilters((prev) => ({ ...prev, minClose: p.min, maxClose: p.max }))}
-                                                                className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
-                                                                    columnFilters.minClose === p.min && columnFilters.maxClose === p.max
-                                                                        ? "bg-blue-600 text-white border-blue-500 font-semibold"
-                                                                        : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
-                                                                }`}
-                                                            >
-                                                                {p.label}
-                                                            </button>
-                                                        ))}
+                                                        ].map((p, idx) => {
+                                                            const isActive = columnFilters.minClose === p.min && columnFilters.maxClose === p.max;
+                                                            return (
+                                                                <button
+                                                                    key={idx}
+                                                                    type="button"
+                                                                    onClick={() => setColumnFilters((prev) => {
+                                                                        const wasActive = prev.minClose === p.min && prev.maxClose === p.max;
+                                                                        return { ...prev, minClose: wasActive ? 0 : p.min, maxClose: wasActive ? 0 : p.max };
+                                                                    })}
+                                                                    className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
+                                                                        isActive
+                                                                            ? "bg-blue-600 text-white border-blue-500 font-semibold"
+                                                                            : "bg-gray-800 text-gray-400 border-gray-700 hover:text-white"
+                                                                    }`}
+                                                                >
+                                                                    {p.label}
+                                                                </button>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </div>
                                             </div>
@@ -3588,16 +3652,30 @@ export function Recurrence52WScanner({
                                                         { label: "≥ +2%", min: 2 },
                                                         { label: "≥ +5%", min: 5 },
                                                         { label: "≥ +10%", min: 10 },
-                                                    ].map((preset, idx) => (
-                                                        <button
-                                                            key={idx}
-                                                            type="button"
-                                                            onClick={() => setColumnFilters((prev) => ({ ...prev, minPct1d: preset.min, pct1dDirection: "positive" }))}
-                                                            className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20"
-                                                        >
-                                                            {preset.label}
-                                                        </button>
-                                                    ))}
+                                                    ].map((preset, idx) => {
+                                                        const isActive = columnFilters.minPct1d === preset.min && columnFilters.pct1dDirection === "positive";
+                                                        return (
+                                                            <button
+                                                                key={idx}
+                                                                type="button"
+                                                                onClick={() => setColumnFilters((prev) => {
+                                                                    const wasActive = prev.minPct1d === preset.min && prev.pct1dDirection === "positive";
+                                                                    return {
+                                                                        ...prev,
+                                                                        minPct1d: wasActive ? 0 : preset.min,
+                                                                        pct1dDirection: wasActive ? "all" : "positive"
+                                                                    };
+                                                                })}
+                                                                className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
+                                                                    isActive
+                                                                        ? "bg-emerald-600 text-white border-emerald-500 font-semibold"
+                                                                        : "bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20"
+                                                                }`}
+                                                            >
+                                                                {preset.label}
+                                                            </button>
+                                                        );
+                                                    })}
                                                 </div>
                                             </div>
                                         </div>
@@ -3713,16 +3791,30 @@ export function Recurrence52WScanner({
                                                                 { label: "≥ +5%", min: 5 },
                                                                 { label: "≥ +10%", min: 10 },
                                                                 { label: "≥ +20%", min: 20 },
-                                                            ].map((preset, idx) => (
-                                                                <button
-                                                                    key={idx}
-                                                                    type="button"
-                                                                    onClick={() => setColumnFilters((prev) => ({ ...prev, minPct5d: preset.min, pct5dDirection: "positive" }))}
-                                                                    className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/20"
-                                                                >
-                                                                    {preset.label}
-                                                                </button>
-                                                            ))}
+                                                            ].map((preset, idx) => {
+                                                                const isActive = columnFilters.minPct5d === preset.min && columnFilters.pct5dDirection === "positive";
+                                                                return (
+                                                                    <button
+                                                                        key={idx}
+                                                                        type="button"
+                                                                        onClick={() => setColumnFilters((prev) => {
+                                                                            const wasActive = prev.minPct5d === preset.min && prev.pct5dDirection === "positive";
+                                                                            return {
+                                                                                ...prev,
+                                                                                minPct5d: wasActive ? 0 : preset.min,
+                                                                                pct5dDirection: wasActive ? "all" : "positive"
+                                                                            };
+                                                                        })}
+                                                                        className={`px-2 py-0.5 rounded text-[10px] border transition-colors ${
+                                                                            isActive
+                                                                                ? "bg-emerald-600 text-white border-emerald-500 font-semibold"
+                                                                                : "bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20"
+                                                                        }`}
+                                                                    >
+                                                                        {preset.label}
+                                                                    </button>
+                                                                );
+                                                            })}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3805,7 +3897,7 @@ export function Recurrence52WScanner({
                                                                 <button
                                                                     key={t}
                                                                     type="button"
-                                                                    onClick={() => setColumnFilters((prev) => ({ ...prev, minTurnover: t }))}
+                                                                    onClick={() => setColumnFilters((prev) => ({ ...prev, minTurnover: prev.minTurnover === t ? 0 : t }))}
                                                                     className={`px-2 py-0.5 rounded text-[10px] font-mono border transition-colors ${
                                                                         columnFilters.minTurnover === t
                                                                             ? "bg-blue-600 text-white border-blue-500 font-bold"

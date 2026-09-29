@@ -446,6 +446,14 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                     df_master = pd.read_parquet(parquet_file, columns=["symbol", "trade_date", "adj_close"])
                     df_master = df_master.rename(columns={"adj_close": "close"})
 
+        # Apply symbol change resolution to unify historical ticker renames
+        try:
+            from symbol_change_util import get_terminal_symbol_map
+            terminal_map = get_terminal_symbol_map()
+            df_master["symbol"] = df_master["symbol"].astype(str).str.strip().str.upper().map(lambda s: terminal_map.get(s, s))
+        except Exception as e:
+            print(f"    (Notice: symbol change resolution skipped in export_constituent_performance: {e})")
+
         df_master["symbol_ns"] = df_master["symbol"].astype(str).apply(lambda s: s if s.endswith(".NS") else f"{s}.NS")
 
         # Prefer EQ series when multiple series (EQ, BL, P1, T0, etc.) exist for the
@@ -798,10 +806,21 @@ def export_stock_search_index(output_dir: Path):
             clean = ticker.replace(".NS", "").replace(".BO", "")
             if clean not in reverse_index:
                 reverse_index[clean] = []
-            # Avoid duplicate entries
             if theme_entry not in reverse_index[clean]:
                 reverse_index[clean].append(theme_entry)
-    
+
+    # 4.1 Index legacy aliases so searching for former symbols (e.g. HEG, SANGINITA) still resolves
+    try:
+        from symbol_change_util import load_symbol_changes
+        changes = load_symbol_changes()
+        for c in changes:
+            old_s = c.get("old_symbol")
+            new_s = c.get("new_symbol")
+            if new_s in reverse_index and old_s and old_s not in reverse_index:
+                reverse_index[old_s] = reverse_index[new_s]
+    except Exception:
+        pass
+
     # 5. Sort tickers alphabetically and write
     sorted_index = dict(sorted(reverse_index.items()))
     
@@ -1052,7 +1071,13 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             json.dump(payload, f, indent=2)
         return
 
-    # Sanitize drilldown entries (deduplicate, filter ETFs, REs, unseasoned stocks, and enforce mutual exclusion)
+    # Sanitize drilldown entries (harmonize symbols, deduplicate, filter ETFs, REs, unseasoned stocks, and enforce mutual exclusion)
+    try:
+        from symbol_change_util import get_terminal_symbol_map
+        terminal_map = get_terminal_symbol_map()
+    except Exception:
+        terminal_map = {}
+
     for dt in list(drilldown_data.keys()):
         session = drilldown_data[dt]
         raw_highs = session.get("high52w", [])
@@ -1063,22 +1088,28 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         for row in raw_highs:
             if not row or not row[0]:
                 continue
-            sym = str(row[0]).strip().upper().replace(".NS", "")
+            raw_sym = str(row[0]).strip().upper().replace(".NS", "")
+            sym = terminal_map.get(raw_sym, raw_sym)
             if not sym or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE") or sym in ("LUMINO", "SKYWAYS"):
                 continue
             seen_highs.add(sym)
-            clean_highs.append(row)
+            row_copy = list(row)
+            row_copy[0] = sym
+            clean_highs.append(row_copy)
 
         clean_lows = []
         seen_lows = set()
         for row in raw_lows:
             if not row or not row[0]:
                 continue
-            sym = str(row[0]).strip().upper().replace(".NS", "")
+            raw_sym = str(row[0]).strip().upper().replace(".NS", "")
+            sym = terminal_map.get(raw_sym, raw_sym)
             if not sym or sym in seen_lows or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE") or sym in ("LUMINO", "SKYWAYS"):
                 continue
             seen_lows.add(sym)
-            clean_lows.append(row)
+            row_copy = list(row)
+            row_copy[0] = sym
+            clean_lows.append(row_copy)
 
         drilldown_data[dt]["high52w"] = clean_highs
         drilldown_data[dt]["low52w"] = clean_lows
@@ -1118,7 +1149,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             rows = con.execute(q).fetchall()
             con.close()
             for s, dt_str, h, l, ser in rows:
-                hl_lookup[(s, dt_str)] = (float(h) if h is not None else None, float(l) if l is not None else None, ser)
+                clean_s = terminal_map.get(s, s)
+                hl_lookup[(clean_s, dt_str)] = (float(h) if h is not None else None, float(l) if l is not None else None, ser)
         except Exception as e:
             print(f"  Notice: High/Low parquet lookup: {e}")
 
@@ -1274,18 +1306,32 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
             min_date = selected_dates[0]
 
+            # Register symbol change mapping table for SQL unification
+            has_sym_map = False
+            if terminal_map:
+                try:
+                    con.execute("CREATE OR REPLACE TEMP TABLE symbol_changes_map (old_symbol VARCHAR, new_symbol VARCHAR)")
+                    con.executemany("INSERT INTO symbol_changes_map VALUES (?, ?)", list(terminal_map.items()))
+                    has_sym_map = True
+                except Exception as e:
+                    print(f"  Notice: Could not register symbol_changes_map in DuckDB: {e}")
+
+            sym_expr = "COALESCE(m.new_symbol, TRIM(b.symbol))" if has_sym_map else "TRIM(b.symbol)"
+            sym_join = "LEFT JOIN symbol_changes_map m ON TRIM(b.symbol) = m.old_symbol" if has_sym_map else ""
+
             # Monthly CPR query (anchored to prior calendar month)
             q_cpr = f"""
             SELECT 
-                TRIM(symbol) as symbol,
-                DATE_TRUNC('month', CAST(trade_date AS DATE)) as month_start,
-                MAX(high) as m_high,
-                MIN(low) as m_low,
-                ARG_MAX(close, CAST(trade_date AS DATE)) as m_close
-            FROM read_parquet('{pq_pattern}', union_by_name=true)
-            WHERE series IN ('EQ', 'BE', 'BZ')
-              AND trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 120 DAY)
-            GROUP BY TRIM(symbol), DATE_TRUNC('month', CAST(trade_date AS DATE))
+                {sym_expr} as symbol,
+                DATE_TRUNC('month', CAST(b.trade_date AS DATE)) as month_start,
+                MAX(b.high) as m_high,
+                MIN(b.low) as m_low,
+                ARG_MAX(b.close, CAST(b.trade_date AS DATE)) as m_close
+            FROM read_parquet('{pq_pattern}', union_by_name=true) b
+            {sym_join}
+            WHERE b.series IN ('EQ', 'BE', 'BZ')
+              AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 120 DAY)
+            GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
             """
             cpr_rows = con.execute(q_cpr).fetchall()
             for sym, m_start, mh, ml, mc in cpr_rows:
@@ -1295,19 +1341,20 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             # Daily warmup query (90-day warmup before selected_dates[0])
             q_daily = f"""
             SELECT 
-                TRIM(symbol) as symbol,
-                STRFTIME(CAST(trade_date AS DATE), '%Y-%m-%d') as trade_date,
-                open,
-                high,
-                low,
-                close,
-                volume,
-                deliv_qty,
-                deliv_pct,
-                series
-            FROM read_parquet('{pq_pattern}', union_by_name=true)
-            WHERE series IN ('EQ', 'BE', 'BZ')
-              AND trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 90 DAY)
+                {sym_expr} as symbol,
+                STRFTIME(CAST(b.trade_date AS DATE), '%Y-%m-%d') as trade_date,
+                b.open,
+                b.high,
+                b.low,
+                b.close,
+                b.volume,
+                b.deliv_qty,
+                b.deliv_pct,
+                b.series
+            FROM read_parquet('{pq_pattern}', union_by_name=true) b
+            {sym_join}
+            WHERE b.series IN ('EQ', 'BE', 'BZ')
+              AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 90 DAY)
             ORDER BY symbol, trade_date ASC
             """
             daily_df = con.execute(q_daily).pl()
@@ -1319,12 +1366,13 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             q_my = f"""
             WITH daily_bars AS (
                 SELECT 
-                    TRIM(symbol) as symbol,
-                    CAST(trade_date AS DATE) as d,
-                    MAX({h_col}) as h_val
-                FROM read_parquet('{pq_pattern}', union_by_name=true)
-                WHERE series IN ('EQ', 'BE', 'BZ')
-                GROUP BY TRIM(symbol), CAST(trade_date AS DATE)
+                    {sym_expr} as symbol,
+                    CAST(b.trade_date AS DATE) as d,
+                    MAX(b.{h_col}) as h_val
+                FROM read_parquet('{pq_pattern}', union_by_name=true) b
+                {sym_join}
+                WHERE b.series IN ('EQ', 'BE', 'BZ')
+                GROUP BY {sym_expr}, CAST(b.trade_date AS DATE)
             ),
             history AS (
                 SELECT 
@@ -1867,6 +1915,46 @@ def main():
 
     print("\nExporting market status...")
     export_json_file(output_dir, source_dir, "market_status_latest.json", "market_status", "market_status_latest.json")
+    ms_out = output_dir / "market_status" / "market_status_latest.json"
+    if ms_out.exists():
+        try:
+            root_dir = Path(__file__).resolve().parent.parent
+            scripts_dir = Path(__file__).resolve().parent
+            if str(root_dir) not in sys.path:
+                sys.path.insert(0, str(root_dir))
+            if str(scripts_dir) not in sys.path:
+                sys.path.insert(0, str(scripts_dir))
+
+            from symbol_change_util import get_terminal_symbol_map
+            t_map = get_terminal_symbol_map()
+            with open(ms_out, "r") as f:
+                ms_data = json.load(f)
+            
+            # 1. Map ALL tickers across all themes and indices to active terminal symbols
+            for entry_name, entry in ms_data.items():
+                if isinstance(entry, dict):
+                    for list_key in ("above", "below", "new_stock"):
+                        if list_key in entry and isinstance(entry[list_key], list):
+                            entry[list_key] = [
+                                f"{t_map.get(s.replace('.NS', ''), s.replace('.NS', ''))}.NS" 
+                                for s in entry[list_key]
+                            ]
+
+            # 2. Re-align industry theme constituents to ensure completeness
+            from industry_themes import INDUSTRY_THEMES
+            for th_name, th_stocks in INDUSTRY_THEMES.items():
+                if th_name in ms_data and isinstance(ms_data[th_name], dict):
+                    entry = ms_data[th_name]
+                    curr_stocks = set(entry.get("above", []) + entry.get("below", []) + entry.get("new_stock", []))
+                    for target_s in th_stocks:
+                        mapped_target = f"{t_map.get(target_s.replace('.NS', ''), target_s.replace('.NS', ''))}.NS"
+                        if mapped_target not in curr_stocks:
+                            entry.setdefault("above", []).append(mapped_target)
+            
+            with open(ms_out, "w") as f:
+                json.dump(ms_data, f, indent=2)
+        except Exception as e:
+            print(f"  Notice: market_status harmonization: {e}")
 
     print("\nExporting 52W High/Low recurrence history...")
     export_52w_high_low_history(output_dir, source_dir)

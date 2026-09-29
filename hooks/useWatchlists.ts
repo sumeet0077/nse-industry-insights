@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { cleanTicker, normalizeTickerSymbol } from "@/lib/utils";
+import { cleanTicker, normalizeTickerSymbol, TRADINGVIEW_SYMBOL_ALIASES } from "@/lib/utils";
 
 export interface Watchlist {
     id: string;
@@ -60,7 +60,7 @@ const DEFAULT_WATCHLISTS: Watchlist[] = [
             "WIPRO.NS",
             "TECHM.NS",
             "PERSISTENT.NS",
-            "LTIM.NS",
+            "LTM.NS",
             "OFSS.NS",
             "COFORGE.NS",
         ],
@@ -104,6 +104,11 @@ export function useWatchlists(systemWatchlists?: Watchlist[]) {
                         .map((w: Watchlist) => ({
                             ...w,
                             folder: w.folder || (w.isDefault ? "Core Themes" : "Custom"),
+                            tickers: (w.tickers || []).map((t: string) => {
+                                const clean = cleanTicker(t).toUpperCase();
+                                const mapped = TRADINGVIEW_SYMBOL_ALIASES[clean] || clean;
+                                return t.includes(".BO") ? `${mapped}.BO` : `${mapped}.NS`;
+                            }),
                         }));
                     if (migrated.length > 0) {
                         setUserWatchlists(migrated);

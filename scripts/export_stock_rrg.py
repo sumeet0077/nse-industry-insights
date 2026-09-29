@@ -18,6 +18,11 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
+# Ensure scripts directory is in sys.path
+scripts_dir = Path(__file__).resolve().parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
+
 def resample_pivot(df_pivot, tf):
     if tf == "D":
         return df_pivot
@@ -134,6 +139,13 @@ def main():
 
     if close_col != "close" and close_col in df_master.columns:
         df_master = df_master.rename(columns={close_col: "close"})
+
+    try:
+        from symbol_change_util import get_terminal_symbol_map
+        terminal_map = get_terminal_symbol_map()
+        df_master["symbol"] = df_master["symbol"].astype(str).str.strip().str.upper().map(lambda s: terminal_map.get(s, s))
+    except Exception as e:
+        print(f"Notice: symbol mapping in export_stock_rrg: {e}", flush=True)
 
     df_master["symbol_ns"] = df_master["symbol"].astype(str).apply(lambda s: s if s.endswith(".NS") else f"{s}.NS")
     clean_universe_set = set(all_universe_tickers_list)

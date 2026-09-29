@@ -1,0 +1,6398 @@
+[
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF  Sr. x Plan E -  GO",
+    "old_symbol": "RDAXEDG",
+    "new_symbol": "NDAXEDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF  Sr. x Plan E - DPO",
+    "old_symbol": "RDAXEDD",
+    "new_symbol": "NDAXEDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF  Sr. x Plan E-DPGO",
+    "old_symbol": "RDAXEDDG",
+    "new_symbol": "NDAXEDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-NIPPON INDIA Dual Advantage FTF Sr.x Plan E- DP- DPO",
+    "old_symbol": "RDAXEDDD",
+    "new_symbol": "NDAXEDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "360 ONE WAM LIMITED",
+    "old_symbol": "IIFLWAM",
+    "new_symbol": "360ONE",
+    "effective_date": "2023-01-23"
+  },
+  {
+    "company": "3M India Limited",
+    "old_symbol": "BIRLA3M",
+    "new_symbol": "3MINDIA",
+    "effective_date": "2004-06-15"
+  },
+  {
+    "company": "3P Land Holdings Limited",
+    "old_symbol": "PDUMJEAGRO",
+    "new_symbol": "PDUMJEIND",
+    "effective_date": "2008-03-28"
+  },
+  {
+    "company": "3P Land Holdings Limited",
+    "old_symbol": "PDUMJEIND",
+    "new_symbol": "3PLAND",
+    "effective_date": "2018-05-04"
+  },
+  {
+    "company": "63 moons technologies limited",
+    "old_symbol": "FINANTECH",
+    "new_symbol": "63MOONS",
+    "effective_date": "2017-01-19"
+  },
+  {
+    "company": "A2Z Infra Engineering Limited",
+    "old_symbol": "A2ZMES",
+    "new_symbol": "A2ZINFRA",
+    "effective_date": "2014-12-31"
+  },
+  {
+    "company": "AJR INFRA AND TOLLING LIMITED",
+    "old_symbol": "GAMMNINFRA",
+    "new_symbol": "AJRINFRA",
+    "effective_date": "2021-08-16"
+  },
+  {
+    "company": "AMBANI ORGOCHEM LIMITED",
+    "old_symbol": "AMBANIORG",
+    "new_symbol": "AMBANIORGO",
+    "effective_date": "2024-08-01"
+  },
+  {
+    "company": "AMD Industries Limited",
+    "old_symbol": "AMDMET",
+    "new_symbol": "AMDIND",
+    "effective_date": "2008-02-25"
+  },
+  {
+    "company": "ANDHRA PAPER LIMITED",
+    "old_symbol": "IPAPPM",
+    "new_symbol": "ANDPAPER",
+    "effective_date": "2020-01-22"
+  },
+  {
+    "company": "ANDHRA PAPER LIMITED",
+    "old_symbol": "APPAPER",
+    "new_symbol": "IPAPPM",
+    "effective_date": "2014-01-21"
+  },
+  {
+    "company": "ANDHRA PAPER LIMITED",
+    "old_symbol": "ANDPAPER",
+    "new_symbol": "ANDHRAPAP",
+    "effective_date": "2020-03-05"
+  },
+  {
+    "company": "ANG Industries Limited",
+    "old_symbol": "ANGAUTO",
+    "new_symbol": "ANGIND",
+    "effective_date": "2010-06-16"
+  },
+  {
+    "company": "ARVIND PORT AND INFRA LIMITED",
+    "old_symbol": "ACSAL",
+    "new_symbol": "ARVINDPORT",
+    "effective_date": "2024-12-09"
+  },
+  {
+    "company": "ATLANTAA LIMITED",
+    "old_symbol": "ATLANTA",
+    "new_symbol": "ATLANTAA",
+    "effective_date": "2023-12-15"
+  },
+  {
+    "company": "ATN International Limited",
+    "old_symbol": "ARIHANTCRE",
+    "new_symbol": "ATNINT",
+    "effective_date": "2003-09-17"
+  },
+  {
+    "company": "AURUS GEM CORPORATION LIMITED",
+    "old_symbol": "LYPSAGEMS",
+    "new_symbol": "AURUS",
+    "effective_date": "2026-07-14"
+  },
+  {
+    "company": "AVATAR Industries Limited",
+    "old_symbol": "ASLIND",
+    "new_symbol": "AVATAR",
+    "effective_date": "2026-04-24"
+  },
+  {
+    "company": "AVRO INDIA LIMITED",
+    "old_symbol": "AVONMPL",
+    "new_symbol": "AVROIND",
+    "effective_date": "2019-11-01"
+  },
+  {
+    "company": "AXIS MUTUAL FUND - AXIS NIFTY IT ETF",
+    "old_symbol": "AXISTECETF",
+    "new_symbol": "ITAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "AXIS MUTUAL FUND - Axis NIFTY 50 ETF",
+    "old_symbol": "AXISNIFTY",
+    "new_symbol": "NIFTYAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "AXIS MUTUAL FUND - Axis NIFTY Bank ETF",
+    "old_symbol": "AXISBNKETF",
+    "new_symbol": "BNKETFAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "AXIS MUTUAL FUND - Axis NIFTY Healthcare ETF",
+    "old_symbol": "AXISHCETF",
+    "new_symbol": "HEALTHAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "AXIS MUTUAL FUND - Axis NIFTY India Consumption ETF",
+    "old_symbol": "AXISCETF",
+    "new_symbol": "CONSUMAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "AXISCADES Technologies Limited",
+    "old_symbol": "IT&T",
+    "new_symbol": "AXIS-IT&T",
+    "effective_date": "2005-08-16"
+  },
+  {
+    "company": "AXISCADES Technologies Limited",
+    "old_symbol": "AXIS-IT&T",
+    "new_symbol": "AXISCADES",
+    "effective_date": "2014-10-08"
+  },
+  {
+    "company": "AYM Syntex Limited",
+    "old_symbol": "WELSYNTEX",
+    "new_symbol": "AYMSYNTEX",
+    "effective_date": "2016-02-03"
+  },
+  {
+    "company": "Aban Offshore Limited",
+    "old_symbol": "ABANLOYD",
+    "new_symbol": "ABAN",
+    "effective_date": "2006-08-18"
+  },
+  {
+    "company": "Aban Offshore Limited",
+    "old_symbol": "ABANLLOYD",
+    "new_symbol": "ABANLOYD",
+    "effective_date": "2005-01-17"
+  },
+  {
+    "company": "Abans Financial Services Limited",
+    "old_symbol": "AHL",
+    "new_symbol": "AFSL",
+    "effective_date": "2025-04-01"
+  },
+  {
+    "company": "Abhishek Corporation Limited",
+    "old_symbol": "AML",
+    "new_symbol": "ABHISHEK",
+    "effective_date": "2008-06-26"
+  },
+  {
+    "company": "Accelya Solutions India Limited",
+    "old_symbol": "KALECONSUL",
+    "new_symbol": "ACCELYA",
+    "effective_date": "2012-09-06"
+  },
+  {
+    "company": "Acutaas Chemicals Limited",
+    "old_symbol": "AMIORG",
+    "new_symbol": "ACUTAAS",
+    "effective_date": "2025-06-02"
+  },
+  {
+    "company": "Adani Energy Solutions Limited",
+    "old_symbol": "ADANITRANS",
+    "new_symbol": "ADANIENSOL",
+    "effective_date": "2023-08-24"
+  },
+  {
+    "company": "Adani Enterprises Limited",
+    "old_symbol": "ADANIEXPO",
+    "new_symbol": "ADANIENT",
+    "effective_date": "2006-09-20"
+  },
+  {
+    "company": "Adani Ports and Special Economic Zone Limited",
+    "old_symbol": "MUNDRAPORT",
+    "new_symbol": "ADANIPORTS",
+    "effective_date": "2012-01-17"
+  },
+  {
+    "company": "Adani Total Gas Limited",
+    "old_symbol": "ADANIGAS",
+    "new_symbol": "ATGL",
+    "effective_date": "2021-01-13"
+  },
+  {
+    "company": "Addictive Learning Technology Limited",
+    "old_symbol": "LAWSIKHO",
+    "new_symbol": "ADDICTIVE",
+    "effective_date": "2025-12-17"
+  },
+  {
+    "company": "Aditya Birla Capital Limited",
+    "old_symbol": "76100ABCL3",
+    "new_symbol": "761ABCL35A",
+    "effective_date": "2026-06-08"
+  },
+  {
+    "company": "Aditya Birla Capital Limited",
+    "old_symbol": "761ABCL35A",
+    "new_symbol": "761ABCL35A",
+    "effective_date": "2026-06-08"
+  },
+  {
+    "company": "Aditya Birla Chemicals (India) Limited",
+    "old_symbol": "BCCL",
+    "new_symbol": "ABCIL",
+    "effective_date": "2009-03-09"
+  },
+  {
+    "company": "Aditya Birla Chemicals (India) Limited",
+    "old_symbol": "BIHARCAUST",
+    "new_symbol": "BCCL",
+    "effective_date": "2005-12-05"
+  },
+  {
+    "company": "Aditya Birla Fashion and Retail Limited",
+    "old_symbol": "PFRL",
+    "new_symbol": "ABFRL",
+    "effective_date": "2016-01-29"
+  },
+  {
+    "company": "Aditya Birla Money Limited",
+    "old_symbol": "APOLLOSIND",
+    "new_symbol": "BIRLAMONEY",
+    "effective_date": "2009-09-09"
+  },
+  {
+    "company": "Aditya Birla Nuvo Limited",
+    "old_symbol": "INDRAYON",
+    "new_symbol": "ABIRLANUVO",
+    "effective_date": "2005-12-07"
+  },
+  {
+    "company": "Aditya Birla Real Estate Limited",
+    "old_symbol": "CENTURYTEX",
+    "new_symbol": "ABREL",
+    "effective_date": "2024-10-10"
+  },
+  {
+    "company": "Ador Welding Limited",
+    "old_symbol": "ADVANIORLI",
+    "new_symbol": "ADORWELD",
+    "effective_date": "2004-09-27"
+  },
+  {
+    "company": "Ador Welding Limited",
+    "old_symbol": "ADORWELD",
+    "new_symbol": "ADOR",
+    "effective_date": "2025-04-11"
+  },
+  {
+    "company": "Adroit Infotech Limited",
+    "old_symbol": "SPHEREGSL",
+    "new_symbol": "ADROITINFO",
+    "effective_date": "2018-04-19"
+  },
+  {
+    "company": "Adroit Infotech Limited",
+    "old_symbol": "COLORCHIPS",
+    "new_symbol": "SPHEREGSL",
+    "effective_date": "2015-10-13"
+  },
+  {
+    "company": "Adroit Infotech Limited",
+    "old_symbol": "ARHAMFISCL",
+    "new_symbol": "COLORCHIPS",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "Advani Hotels & Resorts (India) Limited",
+    "old_symbol": "RAMADHOTEL",
+    "new_symbol": "ADVANIHOTR",
+    "effective_date": "2007-06-25"
+  },
+  {
+    "company": "Aegis Logistics Limited",
+    "old_symbol": "AEGISCHEM",
+    "new_symbol": "AEGISLOG",
+    "effective_date": "2024-06-07"
+  },
+  {
+    "company": "Aeroflex Enterprises Limited",
+    "old_symbol": "SATINDLTD",
+    "new_symbol": "AEROENTER",
+    "effective_date": "2025-06-25"
+  },
+  {
+    "company": "Aeroflex Neu Limited",
+    "old_symbol": "SAH",
+    "new_symbol": "AERONEU",
+    "effective_date": "2025-08-22"
+  },
+  {
+    "company": "Aftek Limited",
+    "old_symbol": "AFTEKINFO",
+    "new_symbol": "AFTEK",
+    "effective_date": "2006-11-27"
+  },
+  {
+    "company": "Agastya Energy and Infrastructure Limited",
+    "old_symbol": "SANGINITA",
+    "new_symbol": "AGASTYAEN",
+    "effective_date": "2026-09-25"
+  },
+  {
+    "company": "Agro Tech Foods Limited",
+    "old_symbol": "ITCAGRO",
+    "new_symbol": "ATFL",
+    "effective_date": "2002-12-31"
+  },
+  {
+    "company": "Ajmera Realty & Infra India Limited",
+    "old_symbol": "SHREE",
+    "new_symbol": "AJMERA",
+    "effective_date": "2009-06-23"
+  },
+  {
+    "company": "Akzo Nobel India Limited",
+    "old_symbol": "ICI",
+    "new_symbol": "AKZOINDIA",
+    "effective_date": "2010-05-27"
+  },
+  {
+    "company": "Alcokraft Distilleries Limited",
+    "old_symbol": "AURDIS",
+    "new_symbol": "ALCODIS",
+    "effective_date": "2025-11-18"
+  },
+  {
+    "company": "Alembic Limited",
+    "old_symbol": "ALMBICHEM",
+    "new_symbol": "ALEMBICLTD",
+    "effective_date": "1999-09-22"
+  },
+  {
+    "company": "Alicon Castalloy Limited",
+    "old_symbol": "ENKEI",
+    "new_symbol": "ALICON",
+    "effective_date": "2011-03-04"
+  },
+  {
+    "company": "Alivus Life Sciences Limited",
+    "old_symbol": "GLS",
+    "new_symbol": "ALIVUS",
+    "effective_date": "2025-01-20"
+  },
+  {
+    "company": "Allcargo Gati Limited",
+    "old_symbol": "GATI",
+    "new_symbol": "ACLGATI",
+    "effective_date": "2023-11-30"
+  },
+  {
+    "company": "Alldigi Tech Limited",
+    "old_symbol": "ALLSEC",
+    "new_symbol": "ALLDIGI",
+    "effective_date": "2024-09-27"
+  },
+  {
+    "company": "Alpha Alternatives Financial Services Private Limited",
+    "old_symbol": "AAFS27B",
+    "new_symbol": "AAFS27C",
+    "effective_date": "2026-05-28"
+  },
+  {
+    "company": "Amara Raja Energy & Mobility Limited",
+    "old_symbol": "AMARAJABAT",
+    "new_symbol": "ARE&M",
+    "effective_date": "2023-10-27"
+  },
+  {
+    "company": "Ambuja Cement Rajasthan Limited",
+    "old_symbol": "DLFCEMENT",
+    "new_symbol": "AMBUJARAJN",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "Ambuja Cements Limited",
+    "old_symbol": "GUJAMBCEM",
+    "new_symbol": "AMBUJACEM",
+    "effective_date": "2007-07-24"
+  },
+  {
+    "company": "Amir Chand Jagdish Kumar (Exports) Limited",
+    "old_symbol": "AMIRCHAND",
+    "new_symbol": "AEROPLANE",
+    "effective_date": "2026-07-20"
+  },
+  {
+    "company": "Amj Land Holdings Limited",
+    "old_symbol": "PDUMJEPULP",
+    "new_symbol": "AMJLAND",
+    "effective_date": "2018-01-19"
+  },
+  {
+    "company": "Angel One Limited",
+    "old_symbol": "ANGELBRKG",
+    "new_symbol": "ANGELONE",
+    "effective_date": "2021-11-11"
+  },
+  {
+    "company": "Anik Industries Limited",
+    "old_symbol": "MPGLYCEM",
+    "new_symbol": "ANIKINDS",
+    "effective_date": "2008-05-21"
+  },
+  {
+    "company": "Ansal Properties & Infrastructure Limited",
+    "old_symbol": "ANSALPROP",
+    "new_symbol": "ANSALINFRA",
+    "effective_date": "2006-01-27"
+  },
+  {
+    "company": "Ansal Properties & Infrastructure Limited",
+    "old_symbol": "ANSALINFRA",
+    "new_symbol": "ANSALAPI",
+    "effective_date": "2010-05-14"
+  },
+  {
+    "company": "Antelopus Selan Energy Limited",
+    "old_symbol": "SELAN",
+    "new_symbol": "ANTELOPUS",
+    "effective_date": "2025-09-22"
+  },
+  {
+    "company": "Apcotex Industries Limited",
+    "old_symbol": "APCOTEXLAT",
+    "new_symbol": "APCOTEXIND",
+    "effective_date": "2006-11-01"
+  },
+  {
+    "company": "Aqylon Nexus Limited",
+    "old_symbol": "SABTNL",
+    "new_symbol": "AQYLON",
+    "effective_date": "2026-02-11"
+  },
+  {
+    "company": "Arihant Academy Limited",
+    "old_symbol": "AAL",
+    "new_symbol": "ARIHANTACA",
+    "effective_date": "2023-01-02"
+  },
+  {
+    "company": "Arisinfra Solutions Limited",
+    "old_symbol": "ARISINFRA",
+    "new_symbol": "ARIS",
+    "effective_date": "2026-02-09"
+  },
+  {
+    "company": "Arrow Greentech Limited",
+    "old_symbol": "ARROWCOAT",
+    "new_symbol": "ARROWGREEN",
+    "effective_date": "2016-05-11"
+  },
+  {
+    "company": "Arvind Limited",
+    "old_symbol": "ARVINDMILL",
+    "new_symbol": "ARVIND",
+    "effective_date": "2008-07-07"
+  },
+  {
+    "company": "Arvind SmartSpaces Limited",
+    "old_symbol": "ARVINFRA",
+    "new_symbol": "ARVSMART",
+    "effective_date": "2016-12-05"
+  },
+  {
+    "company": "Ashika Global Securities Limited",
+    "old_symbol": "ASHIKA",
+    "new_symbol": "ASHIKAG",
+    "effective_date": "2026-07-27"
+  },
+  {
+    "company": "AstraZeneca Pharma India Limited",
+    "old_symbol": "ASTRAIDL",
+    "new_symbol": "ASTRAZEN",
+    "effective_date": "2007-04-10"
+  },
+  {
+    "company": "Atcom Technologies Limited",
+    "old_symbol": "ATCOIND",
+    "new_symbol": "ATCOM",
+    "effective_date": "2004-04-29"
+  },
+  {
+    "company": "Atul Limited",
+    "old_symbol": "ATULPROD",
+    "new_symbol": "ATUL",
+    "effective_date": "2005-03-10"
+  },
+  {
+    "company": "Auri Grow India Limited",
+    "old_symbol": "GODHA",
+    "new_symbol": "AURIGROW",
+    "effective_date": "2025-10-17"
+  },
+  {
+    "company": "Aurum PropTech Limited",
+    "old_symbol": "MAJESCO",
+    "new_symbol": "AURUM",
+    "effective_date": "2021-10-22"
+  },
+  {
+    "company": "Ausom Enterprise Limited",
+    "old_symbol": "COREBIO",
+    "new_symbol": "COREEMBLG",
+    "effective_date": "2001-10-15"
+  },
+  {
+    "company": "Ausom Enterprise Limited",
+    "old_symbol": "COREEMBLG",
+    "new_symbol": "AUSOMENT",
+    "effective_date": "2009-12-01"
+  },
+  {
+    "company": "Automotive Stampings and Assemblies Limited",
+    "old_symbol": "JBMT",
+    "new_symbol": "ASAL",
+    "effective_date": "2003-10-14"
+  },
+  {
+    "company": "Aventus Buildcon Limited",
+    "old_symbol": "RATNAINFRA",
+    "new_symbol": "AVENTUS",
+    "effective_date": "2017-08-03"
+  },
+  {
+    "company": "AvenuesAI Limited",
+    "old_symbol": "INFIBEAM",
+    "new_symbol": "CCAVENUE",
+    "effective_date": "2026-02-03"
+  },
+  {
+    "company": "Axis BSE SENSEX ETF",
+    "old_symbol": "AXSENSEX",
+    "new_symbol": "SENSEXAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Axis Bank Limited",
+    "old_symbol": "UTIBANK",
+    "new_symbol": "AXISBANK",
+    "effective_date": "2007-08-16"
+  },
+  {
+    "company": "Axis Mutual Fund - Axis Gold ETF",
+    "old_symbol": "AXISGOLD",
+    "new_symbol": "GOLDAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Axis Mutual Fund - Axis Nifty500 Value 50 ETF",
+    "old_symbol": "AXISVALUE",
+    "new_symbol": "VALUEAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Axis Mutual Fund - Axis Silver ETF",
+    "old_symbol": "AXISILVER",
+    "new_symbol": "SILVERAXIS",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Aztecsoft Limited",
+    "old_symbol": "AZTEC",
+    "new_symbol": "AZTECSOFT",
+    "effective_date": "2006-09-20"
+  },
+  {
+    "company": "BALAXI PHARMACEUTICALS LIMITED",
+    "old_symbol": "ANANDAMRUB",
+    "new_symbol": "BALAXI",
+    "effective_date": "2017-09-27"
+  },
+  {
+    "company": "BIL VYAPAR LIMITED",
+    "old_symbol": "BINANIIND",
+    "new_symbol": "BILVYAPAR",
+    "effective_date": "2025-07-14"
+  },
+  {
+    "company": "BIRLASOFT LIMITED",
+    "old_symbol": "KPIT",
+    "new_symbol": "BSOFT",
+    "effective_date": "2019-02-26"
+  },
+  {
+    "company": "BOROSIL RENEWABLES LIMITED",
+    "old_symbol": "BOROSIL",
+    "new_symbol": "BORORENEW",
+    "effective_date": "2020-02-20"
+  },
+  {
+    "company": "BOSCH HOME COMFORT INDIA LIMITED",
+    "old_symbol": "JCHAC",
+    "new_symbol": "BOSCH-HCIL",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "BS Limited",
+    "old_symbol": "BSTRANSCOM",
+    "new_symbol": "BSLIMITED",
+    "effective_date": "2012-11-29"
+  },
+  {
+    "company": "BSEL Infrastructure Realty Limited",
+    "old_symbol": "BSELINFO",
+    "new_symbol": "BSELINFRA",
+    "effective_date": "2004-03-12"
+  },
+  {
+    "company": "Baba Agro Food Limited",
+    "old_symbol": "SKML",
+    "new_symbol": "BABAFOOD",
+    "effective_date": "2019-05-27"
+  },
+  {
+    "company": "Bajaj Consumer Care Limited",
+    "old_symbol": "BAJAJCORP",
+    "new_symbol": "BAJAJCON",
+    "effective_date": "2019-01-15"
+  },
+  {
+    "company": "Bajaj Finance Limited",
+    "old_symbol": "BAJAUTOFIN",
+    "new_symbol": "BAJFINANCE",
+    "effective_date": "2010-09-29"
+  },
+  {
+    "company": "Bajaj Holdings & Investment Limited",
+    "old_symbol": "BAJAJAUTO",
+    "new_symbol": "BAJAJHLDNG",
+    "effective_date": "2008-03-14"
+  },
+  {
+    "company": "Balkrishna Paper Mills Limited",
+    "old_symbol": "NIRVIKARA",
+    "new_symbol": "BALKRISHNA",
+    "effective_date": "2016-09-06"
+  },
+  {
+    "company": "Banco Products (I) Limited",
+    "old_symbol": "BANCOPROD",
+    "new_symbol": "BANCOINDIA",
+    "effective_date": "2006-12-22"
+  },
+  {
+    "company": "Bhagyanagar India Limited",
+    "old_symbol": "BAGYAMETAL",
+    "new_symbol": "BHAGYNAGAR",
+    "effective_date": "2006-09-12"
+  },
+  {
+    "company": "Bhansali Engineering Polymers Limited",
+    "old_symbol": "BHANSALENG",
+    "new_symbol": "BEPL",
+    "effective_date": "2005-03-21"
+  },
+  {
+    "company": "Bharat Bijlee Limited",
+    "old_symbol": "BARATBIJLE",
+    "new_symbol": "BBL",
+    "effective_date": "2006-11-21"
+  },
+  {
+    "company": "Bharat Financial Inclusion Limited",
+    "old_symbol": "SKSMICRO",
+    "new_symbol": "BHARATFIN",
+    "effective_date": "2016-07-01"
+  },
+  {
+    "company": "Bharati Defence and Infrastructure Limited",
+    "old_symbol": "BHARTISHIP",
+    "new_symbol": "BHARATIDIL",
+    "effective_date": "2016-02-26"
+  },
+  {
+    "company": "Bharti Airtel Limited",
+    "old_symbol": "BHARTI",
+    "new_symbol": "BHARTIARTL",
+    "effective_date": "2006-06-19"
+  },
+  {
+    "company": "Bharti Hexacom Limited",
+    "old_symbol": "LIST000857",
+    "new_symbol": "BHARTIHEXA",
+    "effective_date": "2024-04-08"
+  },
+  {
+    "company": "Birla Cable Limited",
+    "old_symbol": "BIRLAERIC",
+    "new_symbol": "BIRLACABLE",
+    "effective_date": "2016-09-26"
+  },
+  {
+    "company": "Birla Corporation Limited",
+    "old_symbol": "BIRLAJUTE",
+    "new_symbol": "BIRLACORPN",
+    "effective_date": "2008-07-28"
+  },
+  {
+    "company": "Birla Power Solutions Limited",
+    "old_symbol": "BIRLAYAMAH",
+    "new_symbol": "BIRLAPOWER",
+    "effective_date": "2007-06-06"
+  },
+  {
+    "company": "BirlaNu Limited",
+    "old_symbol": "HIL",
+    "new_symbol": "BIRLANU",
+    "effective_date": "2025-04-09"
+  },
+  {
+    "company": "Bkm Industries Limited",
+    "old_symbol": "MANAKINDST",
+    "new_symbol": "BKMINDST",
+    "effective_date": "2017-11-23"
+  },
+  {
+    "company": "Black Box Limited",
+    "old_symbol": "AVAYAGCL",
+    "new_symbol": "AGCNET",
+    "effective_date": "2010-06-08"
+  },
+  {
+    "company": "Black Box Limited",
+    "old_symbol": "AGCNET",
+    "new_symbol": "BBOX",
+    "effective_date": "2021-12-03"
+  },
+  {
+    "company": "Black Box Limited",
+    "old_symbol": "TATATELECM",
+    "new_symbol": "AVAYAGCL",
+    "effective_date": "2004-11-01"
+  },
+  {
+    "company": "Blue Coast Hotels Limited",
+    "old_symbol": "MOREPENHTL",
+    "new_symbol": "BLUECOAST",
+    "effective_date": "2006-12-05"
+  },
+  {
+    "company": "Bosch Chassis Systems India Limited",
+    "old_symbol": "KALYANBRAK",
+    "new_symbol": "BOSCHCHASY",
+    "effective_date": "2006-02-10"
+  },
+  {
+    "company": "Bosch Limited",
+    "old_symbol": "MICO",
+    "new_symbol": "BOSCHLTD",
+    "effective_date": "2008-02-28"
+  },
+  {
+    "company": "Brabourne Enterprises Limited",
+    "old_symbol": "RPGLS",
+    "new_symbol": "BRABOURNE",
+    "effective_date": "2008-03-14"
+  },
+  {
+    "company": "Brabourne Enterprises Limited",
+    "old_symbol": "SEARLEIND",
+    "new_symbol": "RPGLS",
+    "effective_date": "2006-12-05"
+  },
+  {
+    "company": "Brightcom Group Limited",
+    "old_symbol": "LYCOS",
+    "new_symbol": "BCG",
+    "effective_date": "2018-10-08"
+  },
+  {
+    "company": "CARYSIL LIMITED",
+    "old_symbol": "ACRYSIL",
+    "new_symbol": "CARYSIL",
+    "effective_date": "2022-11-18"
+  },
+  {
+    "company": "CARYSIL LIMITED",
+    "old_symbol": "1201210518",
+    "new_symbol": "ACRYSIL",
+    "effective_date": "2021-01-12"
+  },
+  {
+    "company": "CG Power and Industrial Solutions Limited",
+    "old_symbol": "CROMPGREAV",
+    "new_symbol": "CGPOWER",
+    "effective_date": "2017-03-08"
+  },
+  {
+    "company": "CIE Automotive India Limited",
+    "old_symbol": "MAHINDCIE",
+    "new_symbol": "CIEINDIA",
+    "effective_date": "2023-06-19"
+  },
+  {
+    "company": "CLC Industries Limited",
+    "old_symbol": "SPENTEX",
+    "new_symbol": "CLCIND",
+    "effective_date": "2026-01-01"
+  },
+  {
+    "company": "CORE Education & Technologies Limited",
+    "old_symbol": "COREPROTEC",
+    "new_symbol": "COREEDUTEC",
+    "effective_date": "2011-09-07"
+  },
+  {
+    "company": "COSMO FIRST LIMITED",
+    "old_symbol": "COSMOFILMS",
+    "new_symbol": "COSMOFIRST",
+    "effective_date": "2022-07-25"
+  },
+  {
+    "company": "CP Capital Limited",
+    "old_symbol": "CAREERP",
+    "new_symbol": "CPCAP",
+    "effective_date": "2025-03-20"
+  },
+  {
+    "company": "CRESTO TECHNO LIMITED",
+    "old_symbol": "SILLYMONKS",
+    "new_symbol": "CRESTO",
+    "effective_date": "2026-09-10"
+  },
+  {
+    "company": "Capital First Limited",
+    "old_symbol": "FCH",
+    "new_symbol": "CAPF",
+    "effective_date": "2012-12-06"
+  },
+  {
+    "company": "Capri Global Capital Limited",
+    "old_symbol": "MMFSL",
+    "new_symbol": "CGCL",
+    "effective_date": "2013-08-05"
+  },
+  {
+    "company": "Career Point Limited",
+    "old_symbol": "CPIL",
+    "new_symbol": "CAREERP",
+    "effective_date": "2011-11-16"
+  },
+  {
+    "company": "Carol Info Services Limited",
+    "old_symbol": "WOCKLIFE",
+    "new_symbol": "CAROLINFO",
+    "effective_date": "2004-09-27"
+  },
+  {
+    "company": "Castex Technologies Limited",
+    "old_symbol": "AMTEKINDIA",
+    "new_symbol": "CASTEXTECH",
+    "effective_date": "2015-06-11"
+  },
+  {
+    "company": "Cemindia Projects Limited",
+    "old_symbol": "ITDCEM",
+    "new_symbol": "CEMPRO",
+    "effective_date": "2025-09-17"
+  },
+  {
+    "company": "Centurion Bank of Punjab Limited",
+    "old_symbol": "CENBNK",
+    "new_symbol": "CENTBOP",
+    "effective_date": "2005-12-06"
+  },
+  {
+    "company": "Chembond Chemicals Limited",
+    "old_symbol": "CHEMBONDIN",
+    "new_symbol": "CHEMBONDCH",
+    "effective_date": "2025-07-21"
+  },
+  {
+    "company": "Chennai Petroleum Corporation Limited",
+    "old_symbol": "MADRASREFN",
+    "new_symbol": "CHENNPETRO",
+    "effective_date": "2000-08-09"
+  },
+  {
+    "company": "Chettinad Cement Corporation Limited",
+    "old_symbol": "CHETNADCEM",
+    "new_symbol": "CHETTINAD",
+    "effective_date": "2007-05-17"
+  },
+  {
+    "company": "Cholamandalam Financial Holdings Limited",
+    "old_symbol": "TIFIN",
+    "new_symbol": "CHOLAHLDNG",
+    "effective_date": "2019-04-09"
+  },
+  {
+    "company": "Cholamandalam Investment and Finance Company Limited",
+    "old_symbol": "CHOLADBS",
+    "new_symbol": "CHOLAFIN",
+    "effective_date": "2010-06-22"
+  },
+  {
+    "company": "Cholamandalam Investment and Finance Company Limited",
+    "old_symbol": "CHOLAINV",
+    "new_symbol": "CHOLADBS",
+    "effective_date": "2006-06-01"
+  },
+  {
+    "company": "Cineline India Limited",
+    "old_symbol": "CINEPRO",
+    "new_symbol": "CINELINE",
+    "effective_date": "2013-08-23"
+  },
+  {
+    "company": "Clariant Chemicals (India) Limited",
+    "old_symbol": "COLORCHEM",
+    "new_symbol": "CLNINDIA",
+    "effective_date": "2006-06-05"
+  },
+  {
+    "company": "Coforge Limited",
+    "old_symbol": "NIITTECH",
+    "new_symbol": "COFORGE",
+    "effective_date": "2020-08-20"
+  },
+  {
+    "company": "Cohance Lifesciences Limited",
+    "old_symbol": "SUVENPHAR",
+    "new_symbol": "COHANCE",
+    "effective_date": "2025-05-19"
+  },
+  {
+    "company": "Coral Hub Limited",
+    "old_symbol": "VITLINFO",
+    "new_symbol": "CORALHUB",
+    "effective_date": "2010-07-26"
+  },
+  {
+    "company": "Coromandel International Limited",
+    "old_symbol": "COROMNFERT",
+    "new_symbol": "COROMANDEL",
+    "effective_date": "2009-10-12"
+  },
+  {
+    "company": "Country Condo's Limited",
+    "old_symbol": "NEOCURE",
+    "new_symbol": "COUNCODOS",
+    "effective_date": "2012-08-31"
+  },
+  {
+    "company": "Creative Newtech Limited",
+    "old_symbol": "CREATIVE",
+    "new_symbol": "CNL",
+    "effective_date": "2025-12-10"
+  },
+  {
+    "company": "Crest Animation Studios Limited",
+    "old_symbol": "CRESTCOMM",
+    "new_symbol": "CRESTANI",
+    "effective_date": "2005-01-04"
+  },
+  {
+    "company": "Crest Ventures Limited",
+    "old_symbol": "SHARYANRES",
+    "new_symbol": "SHARRESLTD",
+    "effective_date": "2006-12-27"
+  },
+  {
+    "company": "Crest Ventures Limited",
+    "old_symbol": "SHARRESLTD",
+    "new_symbol": "CREST",
+    "effective_date": "2014-10-16"
+  },
+  {
+    "company": "Cummins India Limited",
+    "old_symbol": "KIRLOSKCUM",
+    "new_symbol": "CUMMINSIND",
+    "effective_date": "2005-06-17"
+  },
+  {
+    "company": "Cura Technologies Limited",
+    "old_symbol": "SOFTPRO",
+    "new_symbol": "CURATECH",
+    "effective_date": "2010-11-23"
+  },
+  {
+    "company": "Cyient Limited",
+    "old_symbol": "INFOTECENT",
+    "new_symbol": "CYIENT",
+    "effective_date": "2014-05-22"
+  },
+  {
+    "company": "DCB Bank Limited",
+    "old_symbol": "DCB",
+    "new_symbol": "DCBBANK",
+    "effective_date": "2014-01-15"
+  },
+  {
+    "company": "DCM Shriram Limited",
+    "old_symbol": "DCMSRMCONS",
+    "new_symbol": "DCMSHRIRAM",
+    "effective_date": "2014-03-13"
+  },
+  {
+    "company": "DEEP ENERGY RESOURCES LIMITED",
+    "old_symbol": "DEEPIND",
+    "new_symbol": "DEEPENR",
+    "effective_date": "2020-09-30"
+  },
+  {
+    "company": "DELPHI WORLD MONEY LIMITED",
+    "old_symbol": "WEIZFOREX",
+    "new_symbol": "EBIXFOREX",
+    "effective_date": "2020-03-20"
+  },
+  {
+    "company": "DELPHI WORLD MONEY LIMITED",
+    "old_symbol": "EBIXFOREX",
+    "new_symbol": "DELPHIFX",
+    "effective_date": "2021-09-01"
+  },
+  {
+    "company": "DHARAN INFRA-EPC LIMITED",
+    "old_symbol": "KBCGLOBAL",
+    "new_symbol": "DHARAN",
+    "effective_date": "2025-06-26"
+  },
+  {
+    "company": "DIC India Limited",
+    "old_symbol": "COATESIND",
+    "new_symbol": "DICIND",
+    "effective_date": "2004-09-06"
+  },
+  {
+    "company": "DMCC SPECIALITY CHEMICALS LIMITED",
+    "old_symbol": "DHARAMSI",
+    "new_symbol": "DMCC",
+    "effective_date": "2022-11-02"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty 50 ETF",
+    "old_symbol": "DSPN50ETF",
+    "new_symbol": "NIFTY50ADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty 50 ETF",
+    "old_symbol": "NIFTY50ADD",
+    "new_symbol": "NIFTYADD",
+    "effective_date": "2025-12-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty 50 Equal Weight ETF",
+    "old_symbol": "DSPNEWETF",
+    "new_symbol": "EQUAL50ADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty Bank ETF",
+    "old_symbol": "DSPBANKETF",
+    "new_symbol": "BANKETFADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty Bank ETF",
+    "old_symbol": "BANKETFADD",
+    "new_symbol": "BANKADD",
+    "effective_date": "2025-12-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Nifty Midcap 150 Quality 50 ETF",
+    "old_symbol": "DSPQ50ETF",
+    "new_symbol": "MIDQ50ADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP  Mutual Fund - DSP Silver ETF",
+    "old_symbol": "DSPSILVETF",
+    "new_symbol": "SILVERADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP BSE Sensex ETF",
+    "old_symbol": "DSPSENXETF",
+    "new_symbol": "SENSEXADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Gold ETF",
+    "old_symbol": "DSPGOLDETF",
+    "new_symbol": "GOLDETFADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Gold ETF",
+    "old_symbol": "GOLDETFADD",
+    "new_symbol": "GOLDADD",
+    "effective_date": "2025-12-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Nifty IT ETF",
+    "old_symbol": "DSPITETF",
+    "new_symbol": "ITETFADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Nifty IT ETF",
+    "old_symbol": "ITETFADD",
+    "new_symbol": "ITADD",
+    "effective_date": "2025-12-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Nifty PSU Bank ETF",
+    "old_symbol": "DSPPSBKETF",
+    "new_symbol": "PSUBANKADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "DSP Mutual Fund - DSP Nifty Private Bank ETF",
+    "old_symbol": "DSPPVBKETF",
+    "new_symbol": "PVTBANKADD",
+    "effective_date": "2024-02-15"
+  },
+  {
+    "company": "Dalmia Bharat Limited",
+    "old_symbol": "DALMIABEL",
+    "new_symbol": "DALMIABHA",
+    "effective_date": "2013-01-09"
+  },
+  {
+    "company": "Dalmia Bharat Sugar and Industries Limited",
+    "old_symbol": "DALMIACEM",
+    "new_symbol": "DALMIASUG",
+    "effective_date": "2010-09-30"
+  },
+  {
+    "company": "Dalmia Refractories Limited",
+    "old_symbol": "SHRINATRAJ",
+    "new_symbol": "DALMIAREF",
+    "effective_date": "2014-05-22"
+  },
+  {
+    "company": "Datamatics Global Services Limited",
+    "old_symbol": "DATATECH",
+    "new_symbol": "DATAMATICS",
+    "effective_date": "2009-04-20"
+  },
+  {
+    "company": "De Nora India Limited",
+    "old_symbol": "TITANOCOMP",
+    "new_symbol": "DENORA",
+    "effective_date": "2007-08-20"
+  },
+  {
+    "company": "Deccan Cements Limited",
+    "old_symbol": "DECCANCEM",
+    "new_symbol": "DECCANCE",
+    "effective_date": "2007-08-02"
+  },
+  {
+    "company": "Delta Corp Limited",
+    "old_symbol": "ARROWGROUP",
+    "new_symbol": "DELTACORP",
+    "effective_date": "2008-12-11"
+  },
+  {
+    "company": "Delta Manufacturing Limited",
+    "old_symbol": "GPELECT",
+    "new_symbol": "DELTAMAGNT",
+    "effective_date": "2008-12-15"
+  },
+  {
+    "company": "Dewan Housing Finance Corporation Limited",
+    "old_symbol": "DEWANHOUS",
+    "new_symbol": "DHFL",
+    "effective_date": "2012-05-22"
+  },
+  {
+    "company": "Dhani Loans and Services Limited",
+    "old_symbol": "ICFL",
+    "new_symbol": "DHANILOANS",
+    "effective_date": "2020-09-17"
+  },
+  {
+    "company": "Dhani Services Limited",
+    "old_symbol": "IBVENTURES",
+    "new_symbol": "DHANI",
+    "effective_date": "2020-10-28"
+  },
+  {
+    "company": "Dhani Services Limited",
+    "old_symbol": "IBVENTPP",
+    "new_symbol": "DHANIPP",
+    "effective_date": "2020-10-28"
+  },
+  {
+    "company": "Dhani Services Limited",
+    "old_symbol": "IBSEC",
+    "new_symbol": "IBVENTURES",
+    "effective_date": "2015-04-01"
+  },
+  {
+    "company": "Dhansa Labs Limited",
+    "old_symbol": "AMBEY",
+    "new_symbol": "DHANSA",
+    "effective_date": "2026-06-01"
+  },
+  {
+    "company": "Dhanuka Infra Realty Limited",
+    "old_symbol": "DRL",
+    "new_symbol": "DIRL",
+    "effective_date": "2026-01-02"
+  },
+  {
+    "company": "Dhunseri Ventures Limited",
+    "old_symbol": "DTIL",
+    "new_symbol": "DPTL",
+    "effective_date": "2010-07-26"
+  },
+  {
+    "company": "Dhunseri Ventures Limited",
+    "old_symbol": "DPTL",
+    "new_symbol": "DPL",
+    "effective_date": "2014-11-12"
+  },
+  {
+    "company": "Dhunseri Ventures Limited",
+    "old_symbol": "DPL",
+    "new_symbol": "DVL",
+    "effective_date": "2019-01-02"
+  },
+  {
+    "company": "DiGiSPICE Technologies Limited",
+    "old_symbol": "SPICEMOBI",
+    "new_symbol": "DIGISPICE",
+    "effective_date": "2019-08-28"
+  },
+  {
+    "company": "DiGiSPICE Technologies Limited",
+    "old_symbol": "SPICEMOBIL",
+    "new_symbol": "SMOBILITY",
+    "effective_date": "2011-07-26"
+  },
+  {
+    "company": "DiGiSPICE Technologies Limited",
+    "old_symbol": "SMOBILITY",
+    "new_symbol": "SPICEMOBI",
+    "effective_date": "2014-08-19"
+  },
+  {
+    "company": "Digjam Limited",
+    "old_symbol": "BVXL",
+    "new_symbol": "DIGJAM",
+    "effective_date": "2008-04-28"
+  },
+  {
+    "company": "Dolat Algotech Limited",
+    "old_symbol": "DOLAT",
+    "new_symbol": "DOLATALGO",
+    "effective_date": "2021-12-20"
+  },
+  {
+    "company": "Dr. Datson's Labs Limited",
+    "old_symbol": "AANJANEYA",
+    "new_symbol": "DRDATSONS",
+    "effective_date": "2013-09-02"
+  },
+  {
+    "company": "Ducon Infratechnologies Limited",
+    "old_symbol": "DYNATECH",
+    "new_symbol": "DUCON",
+    "effective_date": "2016-05-11"
+  },
+  {
+    "company": "E-Land Apparel Limited",
+    "old_symbol": "MUDRA",
+    "new_symbol": "ELAND",
+    "effective_date": "2015-03-13"
+  },
+  {
+    "company": "EIH Associated Hotels Limited",
+    "old_symbol": "OBERHOTEL",
+    "new_symbol": "EIHAHOTELS",
+    "effective_date": "2008-04-08"
+  },
+  {
+    "company": "EMA Partners India Limited",
+    "old_symbol": "EMAIN",
+    "new_symbol": "EMAPARTNER",
+    "effective_date": "2025-03-11"
+  },
+  {
+    "company": "EPL Limited",
+    "old_symbol": "ESSELPACK",
+    "new_symbol": "EPL",
+    "effective_date": "2020-10-19"
+  },
+  {
+    "company": "ETERNAL LIMITED",
+    "old_symbol": "ZOMATO",
+    "new_symbol": "ETERNAL",
+    "effective_date": "2025-04-09"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 14 - DP-GO",
+    "old_symbol": "JD14G",
+    "new_symbol": "ED14G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 14 - Direct Plan - Dividend",
+    "old_symbol": "JD14D",
+    "new_symbol": "ED14D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 14 - Regular Plan - Dividend",
+    "old_symbol": "JP14D",
+    "new_symbol": "E14D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 14 - Regular Plan - Growth",
+    "old_symbol": "JP14G",
+    "new_symbol": "E14G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 20 - Direct Plan - Dividend",
+    "old_symbol": "JD20D",
+    "new_symbol": "ED20D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 20 - Direct Plan - Growth",
+    "old_symbol": "JD20G",
+    "new_symbol": "ED20G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 20 - Regular Plan - Dividend",
+    "old_symbol": "JP20D",
+    "new_symbol": "E20D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 20 - Regular Plan - Growth",
+    "old_symbol": "JP20G",
+    "new_symbol": "E20G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 35 - Direct Plan - Growth",
+    "old_symbol": "JD35G",
+    "new_symbol": "ED35G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 35 - Regular Plan - Dividend",
+    "old_symbol": "JP35D",
+    "new_symbol": "E35D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 35 - Regular Plan - Growth",
+    "old_symbol": "JP35G",
+    "new_symbol": "E35G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 37 - Direct Plan - Growth",
+    "old_symbol": "JD37G",
+    "new_symbol": "ED37G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 37 - Regular Plan - Dividend",
+    "old_symbol": "JP37D",
+    "new_symbol": "E37D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 37 - Regular Plan - Growth",
+    "old_symbol": "JP37G",
+    "new_symbol": "E37G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 38 - Direct Plan - Growth",
+    "old_symbol": "JD38G",
+    "new_symbol": "ED38G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 38 - Regular Plan - Dividend",
+    "old_symbol": "JP38D",
+    "new_symbol": "E38D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 38 - Regular Plan - Growth",
+    "old_symbol": "JP38G",
+    "new_symbol": "E38G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 40 - Direct Plan - Growth",
+    "old_symbol": "JD40G",
+    "new_symbol": "ED40G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 40 - Regular Plan - Dividend",
+    "old_symbol": "JP40D",
+    "new_symbol": "E40D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 40 - Regular Plan - Growth",
+    "old_symbol": "JP40G",
+    "new_symbol": "E40G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 502 - Dividend Option",
+    "old_symbol": "J502D",
+    "new_symbol": "E502D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Fixed Maturity Plan - Series 502 - Growth Option",
+    "old_symbol": "J502G",
+    "new_symbol": "E502G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Income Fund - Series 501 - Dividend",
+    "old_symbol": "J501D",
+    "new_symbol": "E501D",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Edelweiss Income Fund - Series 501 - Growth",
+    "old_symbol": "J501G",
+    "new_symbol": "E501G",
+    "effective_date": "2016-11-28"
+  },
+  {
+    "company": "Elecon Engineering Company Limited",
+    "old_symbol": "ELECONENGG",
+    "new_symbol": "ELECON",
+    "effective_date": "2006-09-29"
+  },
+  {
+    "company": "Elgi Rubber Company Limited",
+    "old_symbol": "ELGITYRE",
+    "new_symbol": "ELGIRUBBER",
+    "effective_date": "2008-12-22"
+  },
+  {
+    "company": "Emami Realty Limited",
+    "old_symbol": "EMAMIINFRA",
+    "new_symbol": "EMAMIREAL",
+    "effective_date": "2018-11-15"
+  },
+  {
+    "company": "Embassy Developments Limited",
+    "old_symbol": "IBREALEST",
+    "new_symbol": "EMBDL",
+    "effective_date": "2024-07-08"
+  },
+  {
+    "company": "Entegra Limited",
+    "old_symbol": "INDUJENERT",
+    "new_symbol": "ENTEGRA",
+    "effective_date": "2007-04-25"
+  },
+  {
+    "company": "Eon Electric Limited",
+    "old_symbol": "INDOASIFU",
+    "new_symbol": "EONELECT",
+    "effective_date": "2011-08-18"
+  },
+  {
+    "company": "Epigral Limited",
+    "old_symbol": "MFL",
+    "new_symbol": "EPIGRAL",
+    "effective_date": "2023-09-11"
+  },
+  {
+    "company": "Equippp Social Impact Technologies Limited",
+    "old_symbol": "PROINDIA",
+    "new_symbol": "EQUIPPP",
+    "effective_date": "2021-11-30"
+  },
+  {
+    "company": "Era Infra Engineering Limited",
+    "old_symbol": "ERACONS",
+    "new_symbol": "ERAINFRA",
+    "effective_date": "2008-02-25"
+  },
+  {
+    "company": "Everest Industries Limited",
+    "old_symbol": "ETERNEVRST",
+    "new_symbol": "EVERESTIND",
+    "effective_date": "2005-05-27"
+  },
+  {
+    "company": "Excel Realty N Infra Limited",
+    "old_symbol": "EXCELINFO",
+    "new_symbol": "EXCEL",
+    "effective_date": "2015-05-05"
+  },
+  {
+    "company": "Exide Industries Limited",
+    "old_symbol": "CHLORIDIND",
+    "new_symbol": "EXIDEIND",
+    "effective_date": "2005-09-12"
+  },
+  {
+    "company": "Expleo Solutions Limited",
+    "old_symbol": "THINKSOFT",
+    "new_symbol": "SQSBFSI",
+    "effective_date": "2014-09-30"
+  },
+  {
+    "company": "Expleo Solutions Limited",
+    "old_symbol": "SQSBFSI",
+    "new_symbol": "EXPLEOSOL",
+    "effective_date": "2019-05-02"
+  },
+  {
+    "company": "FORCE MOTORS LTD",
+    "old_symbol": "BAJAJTEMPO",
+    "new_symbol": "FORCEMOT",
+    "effective_date": "2019-08-19"
+  },
+  {
+    "company": "Fame India Limited",
+    "old_symbol": "SHRINGAR",
+    "new_symbol": "FAME",
+    "effective_date": "2008-02-25"
+  },
+  {
+    "company": "Fedders Electric and Engineering Limited",
+    "old_symbol": "FEDDERLOYD",
+    "new_symbol": "FEDDERELEC",
+    "effective_date": "2017-06-13"
+  },
+  {
+    "company": "Federal-Mogul Goetze (India) Limited.",
+    "old_symbol": "GOETZEIND",
+    "new_symbol": "FMGOETZE",
+    "effective_date": "2006-09-12"
+  },
+  {
+    "company": "Fidelity Mutual Fund - Fidelity Fixed Maturity Plan -SVI- Plan F - DP",
+    "old_symbol": "FIFMPS6FD",
+    "new_symbol": "LTFMPS6FD",
+    "effective_date": "2013-01-14"
+  },
+  {
+    "company": "Flextronics Software Systems Limited",
+    "old_symbol": "HUGHESSOFT",
+    "new_symbol": "FSS",
+    "effective_date": "2005-03-17"
+  },
+  {
+    "company": "Fresenius Kabi Oncology Limited",
+    "old_symbol": "DABURPHARM",
+    "new_symbol": "FKONCO",
+    "effective_date": "2009-02-19"
+  },
+  {
+    "company": "Future Consumer Limited",
+    "old_symbol": "FCEL",
+    "new_symbol": "FCONSUMER",
+    "effective_date": "2016-10-25"
+  },
+  {
+    "company": "Future Consumer Limited",
+    "old_symbol": "FVIL",
+    "new_symbol": "FCEL",
+    "effective_date": "2013-10-17"
+  },
+  {
+    "company": "Future Enterprises Limited",
+    "old_symbol": "FRL",
+    "new_symbol": "FEL",
+    "effective_date": "2016-05-13"
+  },
+  {
+    "company": "Future Enterprises Limited",
+    "old_symbol": "FRLDVR",
+    "new_symbol": "FELDVR",
+    "effective_date": "2016-05-13"
+  },
+  {
+    "company": "Future Enterprises Limited",
+    "old_symbol": "PANTALOONR",
+    "new_symbol": "FRL",
+    "effective_date": "2013-04-11"
+  },
+  {
+    "company": "Future Enterprises Limited",
+    "old_symbol": "PRETAILDVR",
+    "new_symbol": "FRLDVR",
+    "effective_date": "2013-04-11"
+  },
+  {
+    "company": "Future Market Networks Limited",
+    "old_symbol": "AGRE",
+    "new_symbol": "FMNL",
+    "effective_date": "2012-03-06"
+  },
+  {
+    "company": "G-TEC JAINX EDUCATION LIMITED",
+    "old_symbol": "KEERTI",
+    "new_symbol": "GTECJAINX",
+    "effective_date": "2023-09-12"
+  },
+  {
+    "company": "GACM Technologies Limited",
+    "old_symbol": "STAMPEDE",
+    "new_symbol": "GATECH",
+    "effective_date": "2023-07-14"
+  },
+  {
+    "company": "GACM Technologies Limited",
+    "old_symbol": "SCAPDVR",
+    "new_symbol": "GATECHDVR",
+    "effective_date": "2023-08-08"
+  },
+  {
+    "company": "GANESH HOUSING LIMITED",
+    "old_symbol": "GANESHHOUC",
+    "new_symbol": "GANESHHOU",
+    "effective_date": "2025-09-15"
+  },
+  {
+    "company": "GB Global Limited",
+    "old_symbol": "MIL",
+    "new_symbol": "GBGLOBAL",
+    "effective_date": "2019-09-09"
+  },
+  {
+    "company": "GE Power India Limited",
+    "old_symbol": "GEPIL",
+    "new_symbol": "GVPIL",
+    "effective_date": "2025-08-28"
+  },
+  {
+    "company": "GE Power India Limited",
+    "old_symbol": "ABBALPO",
+    "new_symbol": "APIL",
+    "effective_date": "2003-05-19"
+  },
+  {
+    "company": "GE Power India Limited",
+    "old_symbol": "AIL",
+    "new_symbol": "GEPIL",
+    "effective_date": "2016-09-14"
+  },
+  {
+    "company": "GE Power India Limited",
+    "old_symbol": "APIL",
+    "new_symbol": "AIL",
+    "effective_date": "2012-07-11"
+  },
+  {
+    "company": "GE T&D India Limited",
+    "old_symbol": "GECALSTHOM",
+    "new_symbol": "AREVA",
+    "effective_date": "2008-06-30"
+  },
+  {
+    "company": "GE T&D India Limited",
+    "old_symbol": "ALSTOMT&D",
+    "new_symbol": "GET&D",
+    "effective_date": "2016-09-14"
+  },
+  {
+    "company": "GE T&D India Limited",
+    "old_symbol": "AREVA",
+    "new_symbol": "AREVAT&D",
+    "effective_date": "2008-07-14"
+  },
+  {
+    "company": "GE T&D India Limited",
+    "old_symbol": "AREVAT&D",
+    "new_symbol": "ALSTOMT&D",
+    "effective_date": "2012-03-12"
+  },
+  {
+    "company": "GE Vernova T&D India Limited",
+    "old_symbol": "GET&D",
+    "new_symbol": "GVT&D",
+    "effective_date": "2024-11-05"
+  },
+  {
+    "company": "GFL Limited",
+    "old_symbol": "GUJFLUORO",
+    "new_symbol": "GFLLIMITED",
+    "effective_date": "2019-07-25"
+  },
+  {
+    "company": "GMR AIRPORTS LIMITED",
+    "old_symbol": "GMRINFRA",
+    "new_symbol": "GMRAIRPORT",
+    "effective_date": "2024-12-11"
+  },
+  {
+    "company": "GMR Industries Limited",
+    "old_symbol": "GMRVASAVI",
+    "new_symbol": "GMRINDSTRS",
+    "effective_date": "2006-04-28"
+  },
+  {
+    "company": "GOCL Corporation Limited",
+    "old_symbol": "GULFCORP",
+    "new_symbol": "GOCLCORP",
+    "effective_date": "2015-11-10"
+  },
+  {
+    "company": "GP Petroleums Limited",
+    "old_symbol": "SAHPETRO",
+    "new_symbol": "GULFPETRO",
+    "effective_date": "2015-05-06"
+  },
+  {
+    "company": "GSL Nova Petrochemicals Limited",
+    "old_symbol": "NOVA",
+    "new_symbol": "GSLNOVA",
+    "effective_date": "2009-12-18"
+  },
+  {
+    "company": "GSS Infotech Limited",
+    "old_symbol": "GSSAMERICA",
+    "new_symbol": "GSS",
+    "effective_date": "2011-08-24"
+  },
+  {
+    "company": "GTL Limited",
+    "old_symbol": "GLOBALTELE",
+    "new_symbol": "GTL",
+    "effective_date": "2005-01-14"
+  },
+  {
+    "company": "GTN Industries Limited",
+    "old_symbol": "GTNTEXT",
+    "new_symbol": "GTNIND",
+    "effective_date": "2006-02-24"
+  },
+  {
+    "company": "GUJARAT ENERGY LIMITED",
+    "old_symbol": "GUJGASLTD",
+    "new_symbol": "GUJENERGY",
+    "effective_date": "2026-07-01"
+  },
+  {
+    "company": "GVP Infotech Limited",
+    "old_symbol": "4THDIM",
+    "new_symbol": "GVPTECH",
+    "effective_date": "2023-07-31"
+  },
+  {
+    "company": "Ganesh Housing Corporation Limited",
+    "old_symbol": "GANHSGFIN",
+    "new_symbol": "GANESHHOUC",
+    "effective_date": "2007-03-02"
+  },
+  {
+    "company": "Garware Technical Fibres Limited",
+    "old_symbol": "GARWALLROP",
+    "new_symbol": "GARFIBRES",
+    "effective_date": "2018-08-13"
+  },
+  {
+    "company": "GeeCee Ventures Limited",
+    "old_symbol": "GWALCHEM",
+    "new_symbol": "GEECEE",
+    "effective_date": "2010-03-05"
+  },
+  {
+    "company": "Genus Power Infrastructures Limited",
+    "old_symbol": "GENUSOVERE",
+    "new_symbol": "GENUSPOWER",
+    "effective_date": "2008-01-14"
+  },
+  {
+    "company": "Geodesic Limited",
+    "old_symbol": "GEOINFO",
+    "new_symbol": "GEODESIC",
+    "effective_date": "2008-10-06"
+  },
+  {
+    "company": "Geojit Financial Services Limited",
+    "old_symbol": "GEOJIT",
+    "new_symbol": "GEOJITBNPP",
+    "effective_date": "2009-06-05"
+  },
+  {
+    "company": "Geojit Financial Services Limited",
+    "old_symbol": "GEOJITBNPP",
+    "new_symbol": "GEOJITFSL",
+    "effective_date": "2017-03-02"
+  },
+  {
+    "company": "Gillette India Limited",
+    "old_symbol": "INDSHAVING",
+    "new_symbol": "GILLETTE",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "GlaxoSmithKline Consumer Healthcare Limited",
+    "old_symbol": "SMITKLBECH",
+    "new_symbol": "GSKCONS",
+    "effective_date": "2003-07-29"
+  },
+  {
+    "company": "Global Offshore Services Limited",
+    "old_symbol": "GARWOFFS",
+    "new_symbol": "GLOBOFFS",
+    "effective_date": "2011-06-07"
+  },
+  {
+    "company": "Glodyne Technoserve Limited",
+    "old_symbol": "PARADYNE",
+    "new_symbol": "GLODYNE",
+    "effective_date": "2007-11-19"
+  },
+  {
+    "company": "Golden Tobacco Limited",
+    "old_symbol": "GTCIND",
+    "new_symbol": "GOLDENTOBC",
+    "effective_date": "2008-09-29"
+  },
+  {
+    "company": "Goldkart Jewels Limited",
+    "old_symbol": "SONAHISONA",
+    "new_symbol": "GOLDKART",
+    "effective_date": "2023-12-01"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "692MH2039",
+    "new_symbol": "692GS2039",
+    "effective_date": "2024-11-25"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "182D260327",
+    "new_symbol": "182D250327",
+    "effective_date": "2026-09-24"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "364D240927",
+    "new_symbol": "364D230927",
+    "effective_date": "2026-09-24"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "91D251226",
+    "new_symbol": "91D241226",
+    "effective_date": "2026-09-24"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "620MH2029",
+    "new_symbol": "620GS2029",
+    "effective_date": "2026-08-18"
+  },
+  {
+    "company": "Government of India",
+    "old_symbol": "657MH2033",
+    "new_symbol": "657GS2033A",
+    "effective_date": "2026-08-18"
+  },
+  {
+    "company": "Graphite India Limited",
+    "old_symbol": "CARBEVFLOW",
+    "new_symbol": "GRAPHITE",
+    "effective_date": "2003-01-13"
+  },
+  {
+    "company": "Greaves Cotton Limited",
+    "old_symbol": "GREAVES",
+    "new_symbol": "GREAVESCOT",
+    "effective_date": "2004-09-09"
+  },
+  {
+    "company": "Greenply Industries Limited",
+    "old_symbol": "MITTALLAMI",
+    "new_symbol": "GREENPLY",
+    "effective_date": "2004-12-09"
+  },
+  {
+    "company": "Groww Mutual Fund - Groww Nifty EV & New Age Automotive ETF",
+    "old_symbol": "GROWEV",
+    "new_symbol": "GROWWEV",
+    "effective_date": "2024-08-23"
+  },
+  {
+    "company": "Gujarat Apollo Industries Limited",
+    "old_symbol": "GUJAPOLIND",
+    "new_symbol": "GUJAPOLLO",
+    "effective_date": "2007-07-06"
+  },
+  {
+    "company": "Gujarat Apollo Industries Limited",
+    "old_symbol": "GUJAPOLEQP",
+    "new_symbol": "GUJAPOLIND",
+    "effective_date": "2007-06-04"
+  },
+  {
+    "company": "Gulf Oil Corporation Limited",
+    "old_symbol": "IDLCHEM",
+    "new_symbol": "GULFOILCOR",
+    "effective_date": "2007-11-08"
+  },
+  {
+    "company": "HALEOS LABS LIMITED",
+    "old_symbol": "SMSLIFE",
+    "new_symbol": "HALEOSLABS",
+    "effective_date": "2025-11-26"
+  },
+  {
+    "company": "HBL Engineering Limited",
+    "old_symbol": "HBLPOWER",
+    "new_symbol": "HBLENGINE",
+    "effective_date": "2024-12-23"
+  },
+  {
+    "company": "HCL Infosystems Limited",
+    "old_symbol": "HCL-HP",
+    "new_symbol": "HCL-INSYS",
+    "effective_date": "2000-04-12"
+  },
+  {
+    "company": "HDFC BSE SENSEX ETF",
+    "old_symbol": "HDFCSENETF",
+    "new_symbol": "HDFCSENSEX",
+    "effective_date": "2023-06-16"
+  },
+  {
+    "company": "HDFC Gold ETF",
+    "old_symbol": "HDFCMFGETF",
+    "new_symbol": "HDFCGOLD",
+    "effective_date": "2023-06-16"
+  },
+  {
+    "company": "HDFC NIFTY 50 ETF",
+    "old_symbol": "HDFCNIFETF",
+    "new_symbol": "HDFCNIFTY",
+    "effective_date": "2023-06-16"
+  },
+  {
+    "company": "HDFC NIFTY Bank ETF",
+    "old_symbol": "HBANKETF",
+    "new_symbol": "HDFCNIFBAN",
+    "effective_date": "2023-06-16"
+  },
+  {
+    "company": "HEG Advanced Materials Limited",
+    "old_symbol": "HEG",
+    "new_symbol": "HEGAM",
+    "effective_date": "2026-09-22"
+  },
+  {
+    "company": "HIL Limited",
+    "old_symbol": "HYDRBADIND",
+    "new_symbol": "HIL",
+    "effective_date": "2012-10-26"
+  },
+  {
+    "company": "HLV LIMITED",
+    "old_symbol": "HOTELEELA",
+    "new_symbol": "HLVLTD",
+    "effective_date": "2020-01-08"
+  },
+  {
+    "company": "HSBC InvestDirect (India) Limited",
+    "old_symbol": "INVSTSMART",
+    "new_symbol": "HINVDIR",
+    "effective_date": "2009-09-07"
+  },
+  {
+    "company": "HSIL Limited",
+    "old_symbol": "HINDSANIT",
+    "new_symbol": "HSIL",
+    "effective_date": "2009-04-27"
+  },
+  {
+    "company": "HSIL Limited",
+    "old_symbol": "HSIL",
+    "new_symbol": "AGI",
+    "effective_date": "2022-05-11"
+  },
+  {
+    "company": "HandsOn Global Management (HGM) Limited",
+    "old_symbol": "HOVS",
+    "new_symbol": "HGM",
+    "effective_date": "2025-09-03"
+  },
+  {
+    "company": "Heads UP Ventures Limited",
+    "old_symbol": "TMRVL",
+    "new_symbol": "HEADSUP",
+    "effective_date": "2022-07-18"
+  },
+  {
+    "company": "Health X Platform Limited",
+    "old_symbol": "SASTASUNDR",
+    "new_symbol": "HEALTHX",
+    "effective_date": "2026-04-30"
+  },
+  {
+    "company": "HeidelbergCement India Limited",
+    "old_symbol": "MYSORECEM",
+    "new_symbol": "HEIDELBERG",
+    "effective_date": "2009-05-15"
+  },
+  {
+    "company": "Hero MotoCorp Limited",
+    "old_symbol": "HEROHONDA",
+    "new_symbol": "HEROMOTOCO",
+    "effective_date": "2011-08-08"
+  },
+  {
+    "company": "Himadri Speciality Chemical Limited",
+    "old_symbol": "HCIL",
+    "new_symbol": "HSCL",
+    "effective_date": "2016-08-16"
+  },
+  {
+    "company": "Himadri Speciality Chemical Limited",
+    "old_symbol": "HIMADCHEM",
+    "new_symbol": "HCIL",
+    "effective_date": "2007-03-02"
+  },
+  {
+    "company": "Hindalco Industries Limited",
+    "old_symbol": "HINDALC0",
+    "new_symbol": "HINDALCO",
+    "effective_date": "2007-08-27"
+  },
+  {
+    "company": "Hinduja Foundries Limited",
+    "old_symbol": "ENNOREFO",
+    "new_symbol": "HINDUJAFO",
+    "effective_date": "2008-03-24"
+  },
+  {
+    "company": "Hinduja Global Solutions Limited",
+    "old_symbol": "HGSL",
+    "new_symbol": "HGS",
+    "effective_date": "2011-11-30"
+  },
+  {
+    "company": "Hinduja Global Solutions Limited",
+    "old_symbol": "HTMTGLOBAL",
+    "new_symbol": "HGSL",
+    "effective_date": "2009-01-23"
+  },
+  {
+    "company": "Hinduja TMT Limited",
+    "old_symbol": "HINDUJAFIN",
+    "new_symbol": "HTMT",
+    "effective_date": "2003-01-13"
+  },
+  {
+    "company": "Hindustan Construction Company Limited",
+    "old_symbol": "HINDCONS",
+    "new_symbol": "HCC",
+    "effective_date": "2006-07-10"
+  },
+  {
+    "company": "Hindustan Unilever Limited",
+    "old_symbol": "HINDLEVER",
+    "new_symbol": "HINDUNILVR",
+    "effective_date": "2007-07-19"
+  },
+  {
+    "company": "Hindware Home Innovation Limited",
+    "old_symbol": "SHIL",
+    "new_symbol": "HINDWAREAP",
+    "effective_date": "2022-06-21"
+  },
+  {
+    "company": "Hitech Corporation Limited",
+    "old_symbol": "HITECHPLAS",
+    "new_symbol": "HITECHCORP",
+    "effective_date": "2017-05-23"
+  },
+  {
+    "company": "Honda India Power Products Limited",
+    "old_symbol": "SHRMHONDA",
+    "new_symbol": "HONDAPOWER",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "Honeywell Automation India Limited",
+    "old_symbol": "TATAHONEY",
+    "new_symbol": "HONAUT",
+    "effective_date": "2005-03-24"
+  },
+  {
+    "company": "Hubtown Limited",
+    "old_symbol": "AKRUTI",
+    "new_symbol": "ACKRUTI",
+    "effective_date": "2009-06-30"
+  },
+  {
+    "company": "Hubtown Limited",
+    "old_symbol": "ACKRUTI",
+    "new_symbol": "HUBTOWN",
+    "effective_date": "2011-11-15"
+  },
+  {
+    "company": "Huhtamaki India Limited",
+    "old_symbol": "PAPERPROD",
+    "new_symbol": "HUHTAMAKI",
+    "effective_date": "2020-11-26"
+  },
+  {
+    "company": "ICICI PRUDENTIAL MUTUAL FUND - ICICI Prudential Nifty FMCG ETF",
+    "old_symbol": "ICICIFMCG",
+    "new_symbol": "FMCGIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI PRUDENTIAL MUTUAL FUND - ICICI Prudential Nifty Healthcare ETF",
+    "old_symbol": "ICICIPHARM",
+    "new_symbol": "HEALTHIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI PRUDENTIAL MUTUAL FUND - ICICI Prudential Nifty IT ETF",
+    "old_symbol": "ICICITECH",
+    "new_symbol": "ITIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI PRUDENTIAL MUTUAL FUND - ICICI Prudential Nifty Midcap 150 ETF",
+    "old_symbol": "ICICIM150",
+    "new_symbol": "MIDCAPIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Pru Mutual Fund-ICICI Prudential Nifty 10 yr Benchmark G-Sec ETF",
+    "old_symbol": "ICICI10GS",
+    "new_symbol": "GSEC10IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential BSE 500 ETF",
+    "old_symbol": "ICICI500",
+    "new_symbol": "BSE500IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential BSE Liquid Rate ETF- IDCW",
+    "old_symbol": "ICICILIQ",
+    "new_symbol": "LIQUIDIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Bank ETF Nifty Bank Index",
+    "old_symbol": "IPRU5008",
+    "new_symbol": "ICICIBANKN",
+    "effective_date": "2019-07-19"
+  },
+  {
+    "company": "ICICI Prudential Gold ETF",
+    "old_symbol": "IGOLD",
+    "new_symbol": "GOLDIWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential Gold ETF",
+    "old_symbol": "GOLDIWIN",
+    "new_symbol": "ICICIGOLD",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Gold ETF",
+    "old_symbol": "IPGETF",
+    "new_symbol": "IGOLD",
+    "effective_date": "2014-05-05"
+  },
+  {
+    "company": "ICICI Prudential MF - ICICI Prudential IF S1 - DQDP",
+    "old_symbol": "IPRU8112",
+    "new_symbol": "IPRU8122",
+    "effective_date": "2013-12-16"
+  },
+  {
+    "company": "ICICI Prudential MF - ICICI Prudential Nifty 200 Quality 30 ETF",
+    "old_symbol": "ICICIQTY30",
+    "new_symbol": "QUAL30IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Midcap Select ETF",
+    "old_symbol": "IMIDCAP",
+    "new_symbol": "MIDCAPIWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential Midcap Select ETF",
+    "old_symbol": "MIDCAPIWIN",
+    "new_symbol": "ICICIMCAP",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund -  ICICI Pru Nifty 200 Momentum 30 ETF",
+    "old_symbol": "ICICIMOM30",
+    "new_symbol": "MOM30IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - BHARAT 22 ETF",
+    "old_symbol": "BHARATIWIN",
+    "new_symbol": "ICICIB22",
+    "effective_date": "2018-04-19"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Pru Nifty Fin Ser Ex-Bank ETF",
+    "old_symbol": "ICICIFIN",
+    "new_symbol": "FINIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Prudential  Nifty Auto ETF",
+    "old_symbol": "ICICIAUTO",
+    "new_symbol": "AUTOIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Prudential Nifty Commodities ETF",
+    "old_symbol": "ICICICOMMO",
+    "new_symbol": "COMMOIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Prudential Nifty Next 50 ETF",
+    "old_symbol": "ICICINXT50",
+    "new_symbol": "NEXT50IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Prudential Nifty PSU Bank ETF",
+    "old_symbol": "PSUBANKICI",
+    "new_symbol": "PSUBNKIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund - ICICI Prudential Silver ETF",
+    "old_symbol": "ICICISILVE",
+    "new_symbol": "SILVERIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Mutual Fund-ICICI Prudential Nifty Infrastructure ETF",
+    "old_symbol": "ICICIINFRA",
+    "new_symbol": "INFRAIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential NV20 ETF",
+    "old_symbol": "INV20",
+    "new_symbol": "NV20IWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential NV20 ETF",
+    "old_symbol": "NV20IWIN",
+    "new_symbol": "ICICINV20",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Nifty 100 ETF",
+    "old_symbol": "ICNX100",
+    "new_symbol": "NIF100IWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential Nifty 100 ETF",
+    "old_symbol": "NIF100IWIN",
+    "new_symbol": "ICICINF100",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Nifty 100 ETF",
+    "old_symbol": "ICCNX100",
+    "new_symbol": "ICNX100",
+    "effective_date": "2014-05-05"
+  },
+  {
+    "company": "ICICI Prudential Nifty 5 Yr Benchmark G-SEC ETF",
+    "old_symbol": "ICICI5GSEC",
+    "new_symbol": "GSEC5IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Nifty Alpha Low Volatility 30 ETF",
+    "old_symbol": "ICICIALPLV",
+    "new_symbol": "ALPL30IETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Nifty ETF",
+    "old_symbol": "INIFTY",
+    "new_symbol": "NIFTYIWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential Nifty ETF",
+    "old_symbol": "NIFTYIWIN",
+    "new_symbol": "ICICINIFTY",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Nifty ETF",
+    "old_symbol": "NIFETF",
+    "new_symbol": "INIFTY",
+    "effective_date": "2014-05-05"
+  },
+  {
+    "company": "ICICI Prudential Nifty India Consumption ETF",
+    "old_symbol": "ICICICONSU",
+    "new_symbol": "CONSUMIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Nifty Low Vol 30 ETF",
+    "old_symbol": "LOWVOLIWIN",
+    "new_symbol": "ICICILOVOL",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "ICICI Prudential Nifty Private Bank ETF - NIFTY PRIVATE BANK INDEX",
+    "old_symbol": "ICICIBANKP",
+    "new_symbol": "PVTBANIETF",
+    "effective_date": "2023-12-20"
+  },
+  {
+    "company": "ICICI Prudential Sensex ETF",
+    "old_symbol": "ISENSEX",
+    "new_symbol": "SENSEXIWIN",
+    "effective_date": "2016-07-25"
+  },
+  {
+    "company": "ICICI Prudential Sensex ETF",
+    "old_symbol": "SPICE",
+    "new_symbol": "ISENSEX",
+    "effective_date": "2014-08-18"
+  },
+  {
+    "company": "ICICI Prudential Sensex ETF",
+    "old_symbol": "SENSEXIWIN",
+    "new_symbol": "ICICISENSX",
+    "effective_date": "2018-04-10"
+  },
+  {
+    "company": "IDFC First Bank Limited",
+    "old_symbol": "IDFCBANK",
+    "new_symbol": "IDFCFIRSTB",
+    "effective_date": "2019-01-16"
+  },
+  {
+    "company": "IG Petrochemicals Limited",
+    "old_symbol": "IGPETRO",
+    "new_symbol": "IGPL",
+    "effective_date": "2007-01-29"
+  },
+  {
+    "company": "IIFL Capital Services Limited",
+    "old_symbol": "IIFLSEC",
+    "new_symbol": "IIFLCAPS",
+    "effective_date": "2024-12-03"
+  },
+  {
+    "company": "IIFL Finance Limited",
+    "old_symbol": "INDIAINFO",
+    "new_symbol": "IIFL",
+    "effective_date": "2014-03-13"
+  },
+  {
+    "company": "IL&FS Engineering and Construction Company Limited",
+    "old_symbol": "MAYTASINFR",
+    "new_symbol": "IL&FSENGG",
+    "effective_date": "2011-02-08"
+  },
+  {
+    "company": "IL&FS Transportation Networks Limited",
+    "old_symbol": "ILFSTRANS",
+    "new_symbol": "IL&FSTRANS",
+    "effective_date": "2010-04-16"
+  },
+  {
+    "company": "INCREDIBLE INDUSTRIES LIMITED",
+    "old_symbol": "ADHUNIKIND",
+    "new_symbol": "INCREDIBLE",
+    "effective_date": "2021-05-20"
+  },
+  {
+    "company": "INEOS Styrolution India Limited",
+    "old_symbol": "LANABS",
+    "new_symbol": "INEABS",
+    "effective_date": "2008-07-21"
+  },
+  {
+    "company": "INEOS Styrolution India Limited",
+    "old_symbol": "INEABS",
+    "new_symbol": "STYABS",
+    "effective_date": "2012-06-20"
+  },
+  {
+    "company": "INEOS Styrolution India Limited",
+    "old_symbol": "ABSIND",
+    "new_symbol": "LANABS",
+    "effective_date": "2005-06-14"
+  },
+  {
+    "company": "INEOS Styrolution India Limited",
+    "old_symbol": "STYABS",
+    "new_symbol": "INEOSSTYRO",
+    "effective_date": "2016-04-04"
+  },
+  {
+    "company": "ING Vysya Bank Limited",
+    "old_symbol": "VYSYABANK",
+    "new_symbol": "INGVYSYABK",
+    "effective_date": "2005-08-16"
+  },
+  {
+    "company": "IOL Netcom Limited",
+    "old_symbol": "IOLB",
+    "new_symbol": "IOLN",
+    "effective_date": "2008-02-18"
+  },
+  {
+    "company": "ITD Cementation India Limited",
+    "old_symbol": "TRAFALHSE",
+    "new_symbol": "ITDCEM",
+    "effective_date": "2005-08-16"
+  },
+  {
+    "company": "IVRCL Assets & Holdings Limited",
+    "old_symbol": "IVRPRIME",
+    "new_symbol": "IVRCLAH",
+    "effective_date": "2010-04-13"
+  },
+  {
+    "company": "IZMO Limited",
+    "old_symbol": "LOGIXMICRO",
+    "new_symbol": "IZMO",
+    "effective_date": "2015-05-15"
+  },
+  {
+    "company": "Igarashi Motors India Limited",
+    "old_symbol": "CGIGARSH",
+    "new_symbol": "IGARASHI",
+    "effective_date": "2005-04-21"
+  },
+  {
+    "company": "Imagicaaworld Entertainment Limited",
+    "old_symbol": "ADLABS",
+    "new_symbol": "IMAGICAA",
+    "effective_date": "2020-04-22"
+  },
+  {
+    "company": "Indbank Merchant Banking Services Limited",
+    "old_symbol": "INDBANKMER",
+    "new_symbol": "INDBANK",
+    "effective_date": "2008-10-08"
+  },
+  {
+    "company": "India Infoline Finance Limited",
+    "old_symbol": "IIISL",
+    "new_symbol": "IIFLFIN",
+    "effective_date": "2012-08-27"
+  },
+  {
+    "company": "Indiabulls Commercial Credit Limited",
+    "old_symbol": "955ICCL26",
+    "new_symbol": "955SFIL26",
+    "effective_date": "2025-12-26"
+  },
+  {
+    "company": "Indiabulls Commercial Credit Limited",
+    "old_symbol": "955SFIL26",
+    "new_symbol": "955SFIL26",
+    "effective_date": "2025-12-26"
+  },
+  {
+    "company": "Indiabulls Commercial Credit Limited",
+    "old_symbol": "980ICCL29",
+    "new_symbol": "980SFIL29",
+    "effective_date": "2025-12-26"
+  },
+  {
+    "company": "Indiabulls Commercial Credit Limited",
+    "old_symbol": "980SFIL29",
+    "new_symbol": "980SFIL29",
+    "effective_date": "2025-12-26"
+  },
+  {
+    "company": "Indiabulls Limited",
+    "old_symbol": "YAARI",
+    "new_symbol": "IBULLSLTD",
+    "effective_date": "2025-11-10"
+  },
+  {
+    "company": "Indo Count Industries Limited",
+    "old_symbol": "INDOCOUNT",
+    "new_symbol": "ICIL",
+    "effective_date": "2005-09-12"
+  },
+  {
+    "company": "Indosolar Limited",
+    "old_symbol": "INDOSOLAR",
+    "new_symbol": "WAAREEINDO",
+    "effective_date": "2025-06-17"
+  },
+  {
+    "company": "Indus Infra Trust",
+    "old_symbol": "BHINVIT",
+    "new_symbol": "INDUSINVIT",
+    "effective_date": "2025-01-23"
+  },
+  {
+    "company": "Indus Towers Limited",
+    "old_symbol": "INFRATEL",
+    "new_symbol": "INDUSTOWER",
+    "effective_date": "2020-12-18"
+  },
+  {
+    "company": "Infomedia India Limited",
+    "old_symbol": "TATAPRESS",
+    "new_symbol": "TATAINFO",
+    "effective_date": "2003-09-17"
+  },
+  {
+    "company": "Infosys Limited",
+    "old_symbol": "INFOSYSTCH",
+    "new_symbol": "INFY",
+    "effective_date": "2011-06-29"
+  },
+  {
+    "company": "Insecticides (India) Limited",
+    "old_symbol": "IILTD",
+    "new_symbol": "INSECTICID",
+    "effective_date": "2009-05-11"
+  },
+  {
+    "company": "Inspirisys Solutions Limited",
+    "old_symbol": "AFL",
+    "new_symbol": "INSPIRISYS",
+    "effective_date": "2018-10-12"
+  },
+  {
+    "company": "Interise Trust",
+    "old_symbol": "INDINFR",
+    "new_symbol": "INTERISE",
+    "effective_date": "2024-11-12"
+  },
+  {
+    "company": "Interise Trust",
+    "old_symbol": "INTERISE",
+    "new_symbol": "INTERISE",
+    "effective_date": "2024-11-12"
+  },
+  {
+    "company": "Invesco India Gold Exchange Traded Fund",
+    "old_symbol": "RELIGAREGO",
+    "new_symbol": "IVZINGOLD",
+    "effective_date": "2016-06-23"
+  },
+  {
+    "company": "Invesco India Nifty Exchange Traded Fund",
+    "old_symbol": "RELGRNIFTY",
+    "new_symbol": "IVZINNIFTY",
+    "effective_date": "2016-06-23"
+  },
+  {
+    "company": "Invesco MF \u2013 Invesco India AIF - Sr 1 - Pl B - DS-P-GO",
+    "old_symbol": "RIMFAI1BDG",
+    "new_symbol": "IVZINA1BDG",
+    "effective_date": "2016-06-23"
+  },
+  {
+    "company": "Invesco MF \u2013 Invesco India AIF - Sr 1 - Pl B - RS-P-GO",
+    "old_symbol": "RIMFAI1BRG",
+    "new_symbol": "IVZINA1BRG",
+    "effective_date": "2016-06-23"
+  },
+  {
+    "company": "JBM Auto Limited",
+    "old_symbol": "JBMAUTOCOM",
+    "new_symbol": "JBMA",
+    "effective_date": "2006-01-04"
+  },
+  {
+    "company": "JD Orgochem Limited",
+    "old_symbol": "JAYSYNTDYE",
+    "new_symbol": "JDORGO",
+    "effective_date": "2004-09-13"
+  },
+  {
+    "company": "JSW Dulux Limited",
+    "old_symbol": "AKZOINDIA",
+    "new_symbol": "JSWDULUX",
+    "effective_date": "2026-04-15"
+  },
+  {
+    "company": "JSW Holdings Limited",
+    "old_symbol": "JINDALSWHL",
+    "new_symbol": "JSWHL",
+    "effective_date": "2013-07-30"
+  },
+  {
+    "company": "JSW ISPAT Steel Limited",
+    "old_symbol": "ISPATIND",
+    "new_symbol": "JSWISPAT",
+    "effective_date": "2011-08-16"
+  },
+  {
+    "company": "JSW Ispat Special Products Limited",
+    "old_symbol": "AIONJSW",
+    "new_symbol": "JSWISPL",
+    "effective_date": "2020-10-12"
+  },
+  {
+    "company": "JSW Steel Limited",
+    "old_symbol": "JSWSTL",
+    "new_symbol": "JSWSTEEL",
+    "effective_date": "2005-09-16"
+  },
+  {
+    "company": "JTL INDUSTRIES LIMITED",
+    "old_symbol": "JTLINFRA",
+    "new_symbol": "JTLIND",
+    "effective_date": "2022-11-21"
+  },
+  {
+    "company": "Jai Balaji Industries Limited",
+    "old_symbol": "BALASPONGE",
+    "new_symbol": "JAIBALAJI",
+    "effective_date": "2007-08-10"
+  },
+  {
+    "company": "Jaiprakash Power Ventures Limited",
+    "old_symbol": "JPHYDRO",
+    "new_symbol": "JPPOWER",
+    "effective_date": "2010-01-08"
+  },
+  {
+    "company": "Jayaswal Neco Industries Limited",
+    "old_symbol": "NAGPURENG",
+    "new_symbol": "JAYNECOIND",
+    "effective_date": "2008-02-22"
+  },
+  {
+    "company": "Jindal Saw Limited",
+    "old_symbol": "SAWPIPES",
+    "new_symbol": "JINDALSAW",
+    "effective_date": "2005-02-18"
+  },
+  {
+    "company": "Jindal Stainless Limited",
+    "old_symbol": "JSTAINLESS",
+    "new_symbol": "JSL",
+    "effective_date": "2008-10-23"
+  },
+  {
+    "company": "Johnson Controls - Hitachi Air Conditioning India Limited",
+    "old_symbol": "HITACHIHOM",
+    "new_symbol": "JCHAC",
+    "effective_date": "2016-09-12"
+  },
+  {
+    "company": "Johnson Controls - Hitachi Air Conditioning India Limited",
+    "old_symbol": "AMTREXAPPL",
+    "new_symbol": "HITACHIHOM",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "Jtekt India Limited",
+    "old_symbol": "SONASTEER",
+    "new_symbol": "JTEKTINDIA",
+    "effective_date": "2018-04-23"
+  },
+  {
+    "company": "Jubilant Agri and Consumer Products Limited",
+    "old_symbol": "JACPL",
+    "new_symbol": "JUBLCPL",
+    "effective_date": "2025-07-03"
+  },
+  {
+    "company": "Jubilant Pharmova Limited",
+    "old_symbol": "VAMORGANIC",
+    "new_symbol": "JUBILANT",
+    "effective_date": "2003-09-30"
+  },
+  {
+    "company": "Jubilant Pharmova Limited",
+    "old_symbol": "JUBILANT",
+    "new_symbol": "JUBLPHARMA",
+    "effective_date": "2021-02-12"
+  },
+  {
+    "company": "Jupiter Wagons Limited",
+    "old_symbol": "CEBBCO",
+    "new_symbol": "JWL",
+    "effective_date": "2022-06-20"
+  },
+  {
+    "company": "KBC Global Limited",
+    "old_symbol": "KARDA",
+    "new_symbol": "KBCGLOBAL",
+    "effective_date": "2021-12-16"
+  },
+  {
+    "company": "KD Green Industries Limited",
+    "old_symbol": "MANBRO",
+    "new_symbol": "KDGREEN",
+    "effective_date": "2026-09-03"
+  },
+  {
+    "company": "KPI Green Energy Limited",
+    "old_symbol": "KPIGLOBAL",
+    "new_symbol": "KPIGREEN",
+    "effective_date": "2022-04-27"
+  },
+  {
+    "company": "KSS Limited",
+    "old_symbol": "KSERAPRO",
+    "new_symbol": "KSERASERA",
+    "effective_date": "2011-03-07"
+  },
+  {
+    "company": "Kalpataru Projects International Limited",
+    "old_symbol": "KALPATPOWR",
+    "new_symbol": "KPIL",
+    "effective_date": "2023-06-06"
+  },
+  {
+    "company": "Kalyani Steels Limited",
+    "old_symbol": "KALYANISTL",
+    "new_symbol": "KALSTEELS",
+    "effective_date": "2008-10-21"
+  },
+  {
+    "company": "Kamdhenu Limited",
+    "old_symbol": "KIL",
+    "new_symbol": "KAMDHENU",
+    "effective_date": "2016-03-18"
+  },
+  {
+    "company": "Kansai Nerolac Paints Limited",
+    "old_symbol": "GOODLASNER",
+    "new_symbol": "KANSAINER",
+    "effective_date": "2006-07-26"
+  },
+  {
+    "company": "Karuturi Global Limited",
+    "old_symbol": "KNL",
+    "new_symbol": "KGL",
+    "effective_date": "2008-11-20"
+  },
+  {
+    "company": "Kavveri Defence & Wireless Technologies Limited",
+    "old_symbol": "KAVVERITEL",
+    "new_symbol": "KAVDEFENCE",
+    "effective_date": "2025-06-23"
+  },
+  {
+    "company": "Kennametal India Limited",
+    "old_symbol": "WIDIA",
+    "new_symbol": "KENNAMET",
+    "effective_date": "2019-08-19"
+  },
+  {
+    "company": "Kesar Enterprises Limited",
+    "old_symbol": "KESARENTER",
+    "new_symbol": "KESARENT",
+    "effective_date": "2007-01-02"
+  },
+  {
+    "company": "Keynote Financial Services Limited",
+    "old_symbol": "KEYCORPSER",
+    "new_symbol": "KEYFINSERV",
+    "effective_date": "2019-05-03"
+  },
+  {
+    "company": "Kinetic Motor Company Limited",
+    "old_symbol": "KINHONDA",
+    "new_symbol": "KINETICMOT",
+    "effective_date": "2004-09-20"
+  },
+  {
+    "company": "Kingfisher Airlines Limited",
+    "old_symbol": "AIRDECCAN",
+    "new_symbol": "KFA",
+    "effective_date": "2008-10-06"
+  },
+  {
+    "company": "Kiri Industries Limited",
+    "old_symbol": "KIRIDYES",
+    "new_symbol": "KIRIINDUS",
+    "effective_date": "2011-03-28"
+  },
+  {
+    "company": "Kirloskar Electric Company Limited",
+    "old_symbol": "KIRELECTRI",
+    "new_symbol": "KECL",
+    "effective_date": "2010-03-09"
+  },
+  {
+    "company": "Kohinoor Foods Limited",
+    "old_symbol": "SATNAMOVER",
+    "new_symbol": "KOHINOOR",
+    "effective_date": "2006-08-18"
+  },
+  {
+    "company": "Kokuyo Camlin Limited",
+    "old_symbol": "CAMLIN",
+    "new_symbol": "KOKUYOCMLN",
+    "effective_date": "2012-02-14"
+  },
+  {
+    "company": "Kotak Mahindra Bank Limited",
+    "old_symbol": "KOTAKMAH",
+    "new_symbol": "KOTAKBANK",
+    "effective_date": "2003-04-21"
+  },
+  {
+    "company": "Kotak Mahindra MF - Kotak NV 20 ETF - DPO",
+    "old_symbol": "KTKNV20ETF",
+    "new_symbol": "KOTAKNV20",
+    "effective_date": "2015-12-21"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Nifty 1D Rate Liquid ETF",
+    "old_symbol": "KOTAKLIQ",
+    "new_symbol": "LIQUID1",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Nifty Alpha 50 ETF",
+    "old_symbol": "KOTAKALPHA",
+    "new_symbol": "ALPHA",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Nifty MNC ETF",
+    "old_symbol": "KOTAKMNC",
+    "new_symbol": "MNC",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Nifty200 Quality 30 ETF",
+    "old_symbol": "QUALITY30",
+    "new_symbol": "QUALITY30",
+    "effective_date": "2025-07-21"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Nifty200 Quality 30 ETF",
+    "old_symbol": "QUALITY",
+    "new_symbol": "QUALITY30",
+    "effective_date": "2025-07-18"
+  },
+  {
+    "company": "Kotak Mahindra Mutual Fund - Kotak Silver ETF",
+    "old_symbol": "KOTAKSILVE",
+    "new_symbol": "SILVER1",
+    "effective_date": "2024-04-16"
+  },
+  {
+    "company": "Kotak Mutual Fund - Gold Exchange Traded Fund",
+    "old_symbol": "KOTAKGOLD",
+    "new_symbol": "GOLD1",
+    "effective_date": "2024-04-16"
+  },
+  {
+    "company": "Kotak Nifty 100 Low Volatility 30 ETF",
+    "old_symbol": "KOTAKLOVOL",
+    "new_symbol": "LOWVOL1",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty 50 ETF",
+    "old_symbol": "KOTAKNIFTY",
+    "new_symbol": "NIFTY1",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty Bank ETF",
+    "old_symbol": "KOTAKBKETF",
+    "new_symbol": "BANKNIFTY1",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty IT ETF",
+    "old_symbol": "KOTAKIT",
+    "new_symbol": "IT",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty India Consumption ETF",
+    "old_symbol": "KOTAKCONS",
+    "new_symbol": "CONS",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty Midcap 50 ETF",
+    "old_symbol": "KOTAKMID50",
+    "new_symbol": "MIDCAP",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Kotak Nifty PSU Bank ETF",
+    "old_symbol": "KOTAKPSUBK",
+    "new_symbol": "PSUBANK",
+    "effective_date": "2024-03-20"
+  },
+  {
+    "company": "Ksb Limited",
+    "old_symbol": "KSBPUMPS",
+    "new_symbol": "KSB",
+    "effective_date": "2018-10-23"
+  },
+  {
+    "company": "Kundan Minerals and Metals Limited",
+    "old_symbol": "EASTSUGIND",
+    "new_symbol": "KUNDANMM",
+    "effective_date": "2024-10-09"
+  },
+  {
+    "company": "L&T Finance Limited",
+    "old_symbol": "L&TFH",
+    "new_symbol": "LTF",
+    "effective_date": "2024-04-23"
+  },
+  {
+    "company": "L&T Fixed Maturity Plan Series - VI Plan F",
+    "old_symbol": "FIFMPS6FG",
+    "new_symbol": "LTFMPS6FG",
+    "effective_date": "2013-01-14"
+  },
+  {
+    "company": "L&T Fixed Maturity Plane Series - VI Plan E",
+    "old_symbol": "FIFMPS6EG",
+    "new_symbol": "LTFMPS6EG",
+    "effective_date": "2013-01-14"
+  },
+  {
+    "company": "L&T Fixed Maturiy Plan Series - VI Plan F",
+    "old_symbol": "FIFMPS6ED",
+    "new_symbol": "LTFMPS6ED",
+    "effective_date": "2013-01-14"
+  },
+  {
+    "company": "LEAP India Limited",
+    "old_symbol": "LEAP",
+    "new_symbol": "LEAPIND",
+    "effective_date": "2026-08-21"
+  },
+  {
+    "company": "LEEL Electricals Limited",
+    "old_symbol": "LLOYDELENG",
+    "new_symbol": "LEEL",
+    "effective_date": "2017-06-19"
+  },
+  {
+    "company": "LIC MF - LIC MF EXCHANGE TRADED FUND - NIFTY 50",
+    "old_symbol": "LICNFENGP",
+    "new_symbol": "LICNETFN50",
+    "effective_date": "2015-12-30"
+  },
+  {
+    "company": "LIC MF - LIC MF G-sec LT ETF - GO",
+    "old_symbol": "LICNMFET",
+    "new_symbol": "LICNETFGSC",
+    "effective_date": "2015-12-30"
+  },
+  {
+    "company": "LIC MF Gold EXCHANGE TRADED FUND",
+    "old_symbol": "IDBIGOLD",
+    "new_symbol": "LICMFGOLD",
+    "effective_date": "2023-07-31"
+  },
+  {
+    "company": "LIC Mutual Fund - LIC MF EXCHANGE TRADED FUND - SENSEX",
+    "old_symbol": "LICNFESGP",
+    "new_symbol": "LICNETFSEN",
+    "effective_date": "2015-12-30"
+  },
+  {
+    "company": "LLOYDS ENGINEERING WORKS LIMITED",
+    "old_symbol": "LSIL",
+    "new_symbol": "LLOYDSENGG",
+    "effective_date": "2023-10-16"
+  },
+  {
+    "company": "LMW Limited",
+    "old_symbol": "LAXMIMACH",
+    "new_symbol": "LMW",
+    "effective_date": "2024-10-10"
+  },
+  {
+    "company": "LT Foods Limited",
+    "old_symbol": "DAAWAT",
+    "new_symbol": "LTFOODS",
+    "effective_date": "2023-11-06"
+  },
+  {
+    "company": "LTIMindtree Limited",
+    "old_symbol": "LTI",
+    "new_symbol": "LTIM",
+    "effective_date": "2022-12-05"
+  },
+  {
+    "company": "LTM Limited",
+    "old_symbol": "LTIM",
+    "new_symbol": "LTM",
+    "effective_date": "2026-02-27"
+  },
+  {
+    "company": "Landsmill Green Limited",
+    "old_symbol": "EXCEL",
+    "new_symbol": "LANDSMILL",
+    "effective_date": "2026-04-02"
+  },
+  {
+    "company": "Linc Limited",
+    "old_symbol": "LINCPEN",
+    "new_symbol": "LINC",
+    "effective_date": "2021-12-20"
+  },
+  {
+    "company": "Linde India Limited",
+    "old_symbol": "IOL",
+    "new_symbol": "BOC",
+    "effective_date": "2005-03-10"
+  },
+  {
+    "company": "Linde India Limited",
+    "old_symbol": "BOC",
+    "new_symbol": "LINDEINDIA",
+    "effective_date": "2013-04-10"
+  },
+  {
+    "company": "Lotte India Corporation Limited",
+    "old_symbol": "PARRYSCON",
+    "new_symbol": "LOTTEINDIA",
+    "effective_date": "2004-12-17"
+  },
+  {
+    "company": "MIRAE ASSET MUTUAL FUND - Mirae Asset Nifty 100 ESG Sector Leaders ETF",
+    "old_symbol": "MAESGETF",
+    "new_symbol": "ESG",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "MM Forgings Limited",
+    "old_symbol": "MMFORGINGS",
+    "new_symbol": "MMFL",
+    "effective_date": "2006-12-20"
+  },
+  {
+    "company": "MODISON LIMITED",
+    "old_symbol": "MODISNME",
+    "new_symbol": "MODISONLTD",
+    "effective_date": "2022-08-16"
+  },
+  {
+    "company": "MPS Limited",
+    "old_symbol": "MACMILLAN",
+    "new_symbol": "MPSLTD",
+    "effective_date": "2009-09-11"
+  },
+  {
+    "company": "Maan Aluminium Limited",
+    "old_symbol": "MANALU",
+    "new_symbol": "MAANALU",
+    "effective_date": "2011-03-16"
+  },
+  {
+    "company": "Madura Coats Limited",
+    "old_symbol": "COATVIYELA",
+    "new_symbol": "MADURACOAT",
+    "effective_date": "2002-11-29"
+  },
+  {
+    "company": "Mahindra CIE Automotive Limited",
+    "old_symbol": "MAHINDFORG",
+    "new_symbol": "MAHINDCIE",
+    "effective_date": "2013-12-17"
+  },
+  {
+    "company": "Mahindra Lifespace Developers Limited",
+    "old_symbol": "GESCOCORP",
+    "new_symbol": "MAHLIFE",
+    "effective_date": "2007-11-23"
+  },
+  {
+    "company": "Man Industries (India) Limited",
+    "old_symbol": "MANALUMN",
+    "new_symbol": "MANINDS",
+    "effective_date": "2005-06-24"
+  },
+  {
+    "company": "Marico Limited",
+    "old_symbol": "MARICOIND",
+    "new_symbol": "MARICO",
+    "effective_date": "2005-06-14"
+  },
+  {
+    "company": "Marksans Pharma Limited",
+    "old_symbol": "TASCPHARMA",
+    "new_symbol": "MARKSANS",
+    "effective_date": "2005-11-14"
+  },
+  {
+    "company": "Max Financial Services Limited",
+    "old_symbol": "MAX",
+    "new_symbol": "MFSL",
+    "effective_date": "2016-02-26"
+  },
+  {
+    "company": "Mercator Limited",
+    "old_symbol": "MLL",
+    "new_symbol": "MERCATOR",
+    "effective_date": "2011-12-08"
+  },
+  {
+    "company": "Metalyst Forgings Limited",
+    "old_symbol": "AHMEDFORGE",
+    "new_symbol": "METALFORGE",
+    "effective_date": "2015-06-01"
+  },
+  {
+    "company": "Metkore Alloys & Industries Limited",
+    "old_symbol": "GMRFER",
+    "new_symbol": "CRONIMET",
+    "effective_date": "2010-06-02"
+  },
+  {
+    "company": "Metkore Alloys & Industries Limited",
+    "old_symbol": "CRONIMET",
+    "new_symbol": "METKORE",
+    "effective_date": "2012-04-02"
+  },
+  {
+    "company": "Micro Inks Limited",
+    "old_symbol": "HINDINKS",
+    "new_symbol": "MICRO",
+    "effective_date": "2004-03-26"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - MIRAE ASSET NIFTY NEXT 50 ETF (MANXT50) - Mi",
+    "old_symbol": "MANXT50",
+    "new_symbol": "NEXT50",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Gold ETF",
+    "old_symbol": "MAGOLDETF",
+    "new_symbol": "GOLDETF",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty 100 Low Volatility 30 ETF",
+    "old_symbol": "MANV30F",
+    "new_symbol": "LOWVOL",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty 50 ETF",
+    "old_symbol": "MAN50ETF",
+    "new_symbol": "NIFTYETF",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty 8-13 yr G-Sec ETF",
+    "old_symbol": "MAGS813ETF",
+    "new_symbol": "GSEC10YEAR",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty Financial Services ETF",
+    "old_symbol": "MAFSETF",
+    "new_symbol": "BFSI",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty India Manufacturing ETF",
+    "old_symbol": "MAMFGETF",
+    "new_symbol": "MAKEINDIA",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Nifty Midcap 150 ETF",
+    "old_symbol": "MAM150ETF",
+    "new_symbol": "MIDCAPETF",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Silver ETF",
+    "old_symbol": "SILVRETF",
+    "new_symbol": "SILVERAG",
+    "effective_date": "2025-09-15"
+  },
+  {
+    "company": "Mirae Asset Mutual Fund - Mirae Asset Silver ETF",
+    "old_symbol": "MASILVER",
+    "new_symbol": "SILVRETF",
+    "effective_date": "2023-09-01"
+  },
+  {
+    "company": "Mirza International Limited",
+    "old_symbol": "MIRZATAN",
+    "new_symbol": "MIRZAINT",
+    "effective_date": "2006-07-05"
+  },
+  {
+    "company": "Mohota Industries Limited",
+    "old_symbol": "MOHOTAMILL",
+    "new_symbol": "MOHOTAIND",
+    "effective_date": "2017-12-26"
+  },
+  {
+    "company": "Mohota Industries Limited",
+    "old_symbol": "RAIREKMOH",
+    "new_symbol": "MOHOTAMILL",
+    "effective_date": "2017-08-01"
+  },
+  {
+    "company": "Motilal Oswal Mutual Fund - Motilal Oswal 5 Year G Sec ETF - Growth",
+    "old_symbol": "G5",
+    "new_symbol": "MOGSEC",
+    "effective_date": "2021-06-16"
+  },
+  {
+    "company": "Motilal Oswal Mutual Fund - Motilal Oswal MOSt Shares M100 ETF GO",
+    "old_symbol": "M100",
+    "new_symbol": "MOM100",
+    "effective_date": "2021-06-16"
+  },
+  {
+    "company": "Motilal Oswal Mutual Fund - Motilal Oswal MOSt Shares M50 ETF",
+    "old_symbol": "M50",
+    "new_symbol": "MOM50",
+    "effective_date": "2021-06-16"
+  },
+  {
+    "company": "Motilal Oswal Mutual Fund-Motilal Oswal MOSt Shares NASDAQ 100 ETF -GO",
+    "old_symbol": "N100",
+    "new_symbol": "MON100",
+    "effective_date": "2021-06-16"
+  },
+  {
+    "company": "MphasiS Limited",
+    "old_symbol": "MPHASISBFL",
+    "new_symbol": "MPHASIS",
+    "effective_date": "2006-12-26"
+  },
+  {
+    "company": "MphasiS Limited",
+    "old_symbol": "BFLSOFTWAR",
+    "new_symbol": "MPHASISBFL",
+    "effective_date": "2004-06-15"
+  },
+  {
+    "company": "NACL Industries Limited",
+    "old_symbol": "NAGAAGRI",
+    "new_symbol": "NACLIND",
+    "effective_date": "2017-09-29"
+  },
+  {
+    "company": "NAVA LIMITED",
+    "old_symbol": "NAVBARFERO",
+    "new_symbol": "NBVENTURES",
+    "effective_date": "2006-07-31"
+  },
+  {
+    "company": "NAVA LIMITED",
+    "old_symbol": "NBVENTURES",
+    "new_symbol": "NAVA",
+    "effective_date": "2022-07-29"
+  },
+  {
+    "company": "NCC Limited",
+    "old_symbol": "NAGARCONST",
+    "new_symbol": "NCC",
+    "effective_date": "2011-03-15"
+  },
+  {
+    "company": "NDL Ventures Limited",
+    "old_symbol": "NXTDIGITAL",
+    "new_symbol": "NDLVENTURE",
+    "effective_date": "2023-05-09"
+  },
+  {
+    "company": "NIPPON INDIA ETF CONSUMPTION",
+    "old_symbol": "RELCONS",
+    "new_symbol": "NETFCONSUM",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA ETF CONSUMPTION",
+    "old_symbol": "NETFCONSUM",
+    "new_symbol": "CONSUMBEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "NIPPON INDIA ETF LONG TERM GILT",
+    "old_symbol": "RRSLGETF",
+    "new_symbol": "NETFLTGILT",
+    "effective_date": "2016-07-08"
+  },
+  {
+    "company": "NIPPON INDIA ETF NIFTY 100",
+    "old_symbol": "RELCNX100",
+    "new_symbol": "NETFNIF100",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA ETF NIFTY 100",
+    "old_symbol": "NETFNIF100",
+    "new_symbol": "NIF100BEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "NIPPON INDIA ETF NIFTY MIDCAP 150",
+    "old_symbol": "RETFMID150",
+    "new_symbol": "NETFMID150",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA ETF NIFTY MIDCAP 150",
+    "old_symbol": "NETFMID150",
+    "new_symbol": "MID150BEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "NIPPON INDIA ETF NV20",
+    "old_symbol": "RELNV20",
+    "new_symbol": "NETFNV20",
+    "effective_date": "2015-06-22"
+  },
+  {
+    "company": "NIPPON INDIA ETF NV20",
+    "old_symbol": "NETFNV20",
+    "new_symbol": "NV20BEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr III Pl A - DP-GO",
+    "old_symbol": "RDAIIIADG",
+    "new_symbol": "NDAIIIADG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr III Pl A - DPO",
+    "old_symbol": "RDAIIIARD",
+    "new_symbol": "NDAIIIARD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr III Pl A - GO",
+    "old_symbol": "RDAIIIARG",
+    "new_symbol": "NDAIIIARG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl D - DP-DPO",
+    "old_symbol": "RDAIXDDD",
+    "new_symbol": "NDAIXDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl D - DP-GO",
+    "old_symbol": "RDAIXDDG",
+    "new_symbol": "NDAIXDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl D - DPO",
+    "old_symbol": "RDAIXDD",
+    "new_symbol": "NDAIXDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl D - GO",
+    "old_symbol": "RDAIXDG",
+    "new_symbol": "NDAIXDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl E - DP-DPO",
+    "old_symbol": "RDAIXEDDD",
+    "new_symbol": "NDAIXEDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl E - DP-GO",
+    "old_symbol": "RDAIXEDDG",
+    "new_symbol": "NDAIXEDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl E - DPO",
+    "old_symbol": "RDAIXEDD",
+    "new_symbol": "NDAIXEDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl E - GO",
+    "old_symbol": "RDAIXEDG",
+    "new_symbol": "NDAIXEDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl F - DP-DPO",
+    "old_symbol": "RDAIXFDDD",
+    "new_symbol": "NDAIXFDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl F - DP-GO",
+    "old_symbol": "RDAIXFDDG",
+    "new_symbol": "NDAIXFDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl F - DPO",
+    "old_symbol": "RDAIXFDD",
+    "new_symbol": "NDAIXFDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr IX Pl F - GO",
+    "old_symbol": "RDAIXFDG",
+    "new_symbol": "NDAIXFDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VII Pl C - DP-GO",
+    "old_symbol": "RDAVIIPCDG",
+    "new_symbol": "NDAVIIPCDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VII Pl D - DP-DPO",
+    "old_symbol": "RDAVIIPDDD",
+    "new_symbol": "NDAVIIPDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VII Pl D - DP-GO",
+    "old_symbol": "RDAVIIPDDG",
+    "new_symbol": "NDAVIIPDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VII Pl D - DPO",
+    "old_symbol": "RDAVIIPDD",
+    "new_symbol": "NDAVIIPDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VII Pl D - O",
+    "old_symbol": "RDAVIIPDG",
+    "new_symbol": "NDAVIIPDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VIII Pl C - DP-DPO",
+    "old_symbol": "RDAFVIIICX",
+    "new_symbol": "NDAFVIIICX",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr VIII Pl C - DPO",
+    "old_symbol": "RDAFVIIICD",
+    "new_symbol": "NDAFVIIICD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl A - DP-DPO",
+    "old_symbol": "RDAXADDD",
+    "new_symbol": "NDAXADDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl A - DP-GO",
+    "old_symbol": "RDAXADDG",
+    "new_symbol": "NDAXADDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl A - DPO",
+    "old_symbol": "RDAXADD",
+    "new_symbol": "NDAXADD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl A - GO",
+    "old_symbol": "RDAXADG",
+    "new_symbol": "NDAXADG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl D - DP-DPO",
+    "old_symbol": "RDAXDDDD",
+    "new_symbol": "NDAXDDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl D - DP-GO",
+    "old_symbol": "RDAXDDDG",
+    "new_symbol": "NDAXDDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl D - DPO",
+    "old_symbol": "RDAXDDD",
+    "new_symbol": "NDAXDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF Sr X Pl D - GO",
+    "old_symbol": "RDAXDDG",
+    "new_symbol": "NDAXDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF V - Pl C - DP-GO",
+    "old_symbol": "RDAFTVCDG",
+    "new_symbol": "NDAFTVCDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF V - Pl C - DPO",
+    "old_symbol": "RDAFTFVCD",
+    "new_symbol": "NDAFTFVCD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Adv FTF V - Pl C - GO",
+    "old_symbol": "RDAFTFVCG",
+    "new_symbol": "NDAFTFVCG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF XI Plan C - DP - DPO",
+    "old_symbol": "RDAXICDDD",
+    "new_symbol": "NDAXICDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF XI Plan C - DP - GO",
+    "old_symbol": "RDAXICDDG",
+    "new_symbol": "NDAXICDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF XI Plan C - DPO",
+    "old_symbol": "RDAXICDD",
+    "new_symbol": "NDAXICDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Dual Advantage FTF XI Plan C - GO",
+    "old_symbol": "RDAXICDG",
+    "new_symbol": "NDAXICDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA IF - AIF S-I - IDR",
+    "old_symbol": "RMFINAIDR1",
+    "new_symbol": "NMFINAIDR1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Intr Fund - QIF SR I-DIV",
+    "old_symbol": "RMFINQADP1",
+    "new_symbol": "NMFINQADP1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - NIPPON INDIA Intr Fund - QIF SR I-GRW",
+    "old_symbol": "RMFINQRAG1",
+    "new_symbol": "NMFINQRAG1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF - Nippon India DA Fixed Tenure Fund   Sr x Plan B - GO",
+    "old_symbol": "RDAXBDG",
+    "new_symbol": "NDAXBDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF- Nippon India DA Fixed Tenure Fund Sr x Plan B - DPO",
+    "old_symbol": "RDAXBDD",
+    "new_symbol": "NDAXBDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF- Nippon India DA Fixed Tenure Fund Sr x Plan B-DP-DPO",
+    "old_symbol": "RDAXBDDD",
+    "new_symbol": "NDAXBDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-Nippon India  Dual Adv. Fix. Ten. Fund Sr.x Plan C-GO",
+    "old_symbol": "RDAXCDG",
+    "new_symbol": "NDAXCDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-Nippon India  Dual Adv. Fix.Ten. Fund Sr.x Plan C-DPO",
+    "old_symbol": "RDAXCDD",
+    "new_symbol": "NDAXCDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-Nippon India DA Fixed Tenure Fund Sr x Plan B -DP - GO",
+    "old_symbol": "RDAXBDDG",
+    "new_symbol": "NDAXBDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-Nippon India Dual Adv.FixTen. Fund Sr.x Plan C-DP-GO",
+    "old_symbol": "RDAXCDDG",
+    "new_symbol": "NDAXCDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MF-Nippon India DualAdv. Fix.Ten. Fund Sr.x Plan C-DP-DPO",
+    "old_symbol": "RDAXCDDD",
+    "new_symbol": "NDAXCDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DA-FTF IV-P-C-D",
+    "old_symbol": "RDAFTFIVCD",
+    "new_symbol": "NDAFTFIVCD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DA-FTF IV-P-C-DD",
+    "old_symbol": "RDAFTIVCDD",
+    "new_symbol": "NDAFTIVCDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DA-FTF IV-P-C-DG",
+    "old_symbol": "RDAFTIVCDG",
+    "new_symbol": "NDAFTIVCDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DA-FTF IV-P-C-G",
+    "old_symbol": "RDAFTFIVCG",
+    "new_symbol": "NDAFTFIVCG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DAFTF II - P - G - DP",
+    "old_symbol": "RDAFTIIPGD",
+    "new_symbol": "NDAFTIIPGD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA DAFTF II - P - G - Growth",
+    "old_symbol": "RDAFTIIPGG",
+    "new_symbol": "NDAFTIIPGG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA Dual Ad FTF XI Plan A - GO",
+    "old_symbol": "RDAXIADG",
+    "new_symbol": "NDAXIADG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA Dual Ad FTF XI Plan D-DPDPO",
+    "old_symbol": "RDAXIDDDD",
+    "new_symbol": "NDAXIDDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA Dual Ad FTF XI Plan D-DPGO",
+    "old_symbol": "RDAXIDDDG",
+    "new_symbol": "NDAXIDDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA Dual Ad FTF XI Plan D-GO",
+    "old_symbol": "RDAXIDDG",
+    "new_symbol": "NDAXIDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND  - NIPPON INDIA Dual Ad FTF XII Plan A-DPDPO",
+    "old_symbol": "RDAXIIADDD",
+    "new_symbol": "NDAXIIADDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF V- Plan H - DPDPO",
+    "old_symbol": "RDAFDVHDR",
+    "new_symbol": "NDAFDVHDR",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF V- Plan H - DPGO",
+    "old_symbol": "RDAFDVHGR",
+    "new_symbol": "NDAFDVHGR",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF V- Plan H - DPO",
+    "old_symbol": "RDAFTVHDR",
+    "new_symbol": "NDAFTVHDR",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF V- Plan H - GO",
+    "old_symbol": "RDAFTVHGR",
+    "new_symbol": "NDAFTVHGR",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF XI Plan A - DPDPO",
+    "old_symbol": "RDAXIADDD",
+    "new_symbol": "NDAXIADDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF XI Plan A - DPGO",
+    "old_symbol": "RDAXIADDG",
+    "new_symbol": "NDAXIADDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad FTF XI Plan A - DPO",
+    "old_symbol": "RDAXIADD",
+    "new_symbol": "NDAXIADD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND - NIPPON INDIA Dual Ad Fixed Tenure Fund Seri",
+    "old_symbol": "RDAXFDDD",
+    "new_symbol": "NDAXFDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND -NIPPON INDIA Dual Ad Fixed Tenure Fund  Seri",
+    "old_symbol": "RDAXFDD",
+    "new_symbol": "NDAXFDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND -NIPPON INDIA Dual Ad Fixed Tenure Fund XI (P",
+    "old_symbol": "RDAXIEDG",
+    "new_symbol": "NDAXIEDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XI Plan D-DPO",
+    "old_symbol": "RDAXIDDD",
+    "new_symbol": "NDAXIDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XI Sr XI Plan B-DPO",
+    "old_symbol": "RDAXIBDD",
+    "new_symbol": "NDAXIBDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XI SrXI Plan B-DPGO",
+    "old_symbol": "RDAXIBDDG",
+    "new_symbol": "NDAXIBDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XII Plan A-DPGO",
+    "old_symbol": "RDAXIIADDG",
+    "new_symbol": "NDAXIIADDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XII Plan A-DPO",
+    "old_symbol": "RDAXIIADD",
+    "new_symbol": "NDAXIIADD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad FTF XII Plan A-GO",
+    "old_symbol": "RDAXIIADG",
+    "new_symbol": "NDAXIIADG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund  Seri",
+    "old_symbol": "RDAXFDDG",
+    "new_symbol": "NDAXFDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund  Seri",
+    "old_symbol": "RDAXFDG",
+    "new_symbol": "NDAXFDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund V- Pl",
+    "old_symbol": "RDAFVGDD",
+    "new_symbol": "NDAFVGDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund V- Pl",
+    "old_symbol": "RDAFVGDG",
+    "new_symbol": "NDAFVGDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund V- Pl",
+    "old_symbol": "RDAFVGDO",
+    "new_symbol": "NDAFVGDO",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund V- Pl",
+    "old_symbol": "RDAFVGGO",
+    "new_symbol": "NDAFVGGO",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund XI (P",
+    "old_symbol": "RDAXIEDD",
+    "new_symbol": "NDAXIEDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund XI (P",
+    "old_symbol": "RDAXIEDDD",
+    "new_symbol": "NDAXIEDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Dual Ad Fixed Tenure Fund XI (P",
+    "old_symbol": "RDAXIEDDG",
+    "new_symbol": "NDAXIEDDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND- NIPPON INDIA Int.Fund-QIF-SI-IP-DP-DPO",
+    "old_symbol": "RMFINQIDP1",
+    "new_symbol": "NMFINQIDP1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND-NIPPON INDIA Dual Ad FTF XI Sr XI Plan B - GO",
+    "old_symbol": "RDAXIBDG",
+    "new_symbol": "NDAXIBDG",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND-NIPPON INDIA Dual Ad FTF XI SrXI Plan B-DPDPO",
+    "old_symbol": "RDAXIBDDD",
+    "new_symbol": "NDAXIBDDD",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND-NIPPON INDIA Int. Fund-AIF-SI - RP- DP - RO",
+    "old_symbol": "RMFINARDR1",
+    "new_symbol": "NMFINARDR1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NIPPON INDIA MUTUAL FUND-NIPPON INDIA Int. Fund-QIF-SI-RP-DP-DPO",
+    "old_symbol": "RMFINQRDP1",
+    "new_symbol": "NMFINQRDP1",
+    "effective_date": "2019-10-30"
+  },
+  {
+    "company": "NLC India Limited",
+    "old_symbol": "NEYVELILIG",
+    "new_symbol": "NLCINDIA",
+    "effective_date": "2016-08-04"
+  },
+  {
+    "company": "NXTDIGITAL LIMITED",
+    "old_symbol": "HINDUJATMT",
+    "new_symbol": "HINDUJAVEN",
+    "effective_date": "2007-11-29"
+  },
+  {
+    "company": "NXTDIGITAL LIMITED",
+    "old_symbol": "HINDUJAVEN",
+    "new_symbol": "NXTDIGITAL",
+    "effective_date": "2019-11-11"
+  },
+  {
+    "company": "Nagreeka Exports Limited",
+    "old_symbol": "NAGREKAEXP",
+    "new_symbol": "NAGREEKA",
+    "effective_date": "2005-12-22"
+  },
+  {
+    "company": "Nahar Poly Films Limited",
+    "old_symbol": "NAHARINVST",
+    "new_symbol": "NAHARPOLY",
+    "effective_date": "2011-06-15"
+  },
+  {
+    "company": "Nahar Poly Films Limited",
+    "old_symbol": "NAHAREXPOT",
+    "new_symbol": "NAHARINVST",
+    "effective_date": "2007-11-01"
+  },
+  {
+    "company": "Nalwa Sons Investments Limited",
+    "old_symbol": "JSTRIPS",
+    "new_symbol": "NSIL",
+    "effective_date": "2005-06-07"
+  },
+  {
+    "company": "Nandan Denim Limited",
+    "old_symbol": "NANDANEXIM",
+    "new_symbol": "NDL",
+    "effective_date": "2013-11-21"
+  },
+  {
+    "company": "Nandani Creation Limited",
+    "old_symbol": "NANDANI",
+    "new_symbol": "JAIPURKURT",
+    "effective_date": "2021-08-06"
+  },
+  {
+    "company": "Nashik Municipal Corporation",
+    "old_symbol": "0503260317",
+    "new_symbol": "805NMC29",
+    "effective_date": "2026-03-09"
+  },
+  {
+    "company": "Nashik Municipal Corporation",
+    "old_symbol": "805NMC29",
+    "new_symbol": "805NMC29",
+    "effective_date": "2026-03-09"
+  },
+  {
+    "company": "National Bank For Financing Infrastructure And Development",
+    "old_symbol": "725NBFI40",
+    "new_symbol": "725NBFI40",
+    "effective_date": "2026-06-08"
+  },
+  {
+    "company": "National Bank For Financing Infrastructure And Development",
+    "old_symbol": "725NBFID40",
+    "new_symbol": "725NBFI40",
+    "effective_date": "2026-06-08"
+  },
+  {
+    "company": "Navneet Education Limited",
+    "old_symbol": "NAVNETPUBL",
+    "new_symbol": "NAVNETEDUL",
+    "effective_date": "2013-09-19"
+  },
+  {
+    "company": "Net 4 India Limited",
+    "old_symbol": "NET4INDIA",
+    "new_symbol": "NET4",
+    "effective_date": "2011-02-28"
+  },
+  {
+    "company": "Netvista Information Technology Limited",
+    "old_symbol": "KRAFTIND",
+    "new_symbol": "NETVISTAIT",
+    "effective_date": "2000-08-09"
+  },
+  {
+    "company": "Neueon Corporation Limited",
+    "old_symbol": "NTL",
+    "new_symbol": "NEUEON",
+    "effective_date": "2025-12-22"
+  },
+  {
+    "company": "Neueon Towers Limited",
+    "old_symbol": "SUJANATWR",
+    "new_symbol": "NTL",
+    "effective_date": "2017-02-17"
+  },
+  {
+    "company": "Next Mediaworks Limited",
+    "old_symbol": "MID-DAY",
+    "new_symbol": "NEXTMEDIA",
+    "effective_date": "2011-06-15"
+  },
+  {
+    "company": "Nido Home Finance Limited",
+    "old_symbol": "EHFLNCD",
+    "new_symbol": "NIDO",
+    "effective_date": "2023-07-18"
+  },
+  {
+    "company": "Nilkamal Limited",
+    "old_symbol": "NILKAMPLST",
+    "new_symbol": "NILKAMAL",
+    "effective_date": "2007-01-05"
+  },
+  {
+    "company": "Nippon India Mutual Fund - ETF Nifty SDL - 2026 Maturity",
+    "old_symbol": "NETFSDL26",
+    "new_symbol": "SDL26BEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon India Mutual Fund - Nippon India ETF 5 Year Gilt",
+    "old_symbol": "NETFGILT5Y",
+    "new_symbol": "GILT5YBEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon India Mutual Fund - Nippon India Nifty Auto ETF",
+    "old_symbol": "NETFAUTO",
+    "new_symbol": "AUTOBEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon India Mutual Fund - Nippon India Nifty Pharma ETF",
+    "old_symbol": "NETFPHARMA",
+    "new_symbol": "PHARMABEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon India Mutual Fund - Nippon India Silver ETF",
+    "old_symbol": "NETFSILVER",
+    "new_symbol": "SILVERBEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon India Mutual Fund-Nippon India ETF Nifty CPSE Bond Plus SDL-24",
+    "old_symbol": "NCPSESDL24",
+    "new_symbol": "SDL24BEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Nippon Life India Asset Management Limited",
+    "old_symbol": "RNAM",
+    "new_symbol": "NAM-INDIA",
+    "effective_date": "2020-01-23"
+  },
+  {
+    "company": "Nippon Life India Asset Management Limited",
+    "old_symbol": "NETFIT",
+    "new_symbol": "ITBEES",
+    "effective_date": "2022-05-10"
+  },
+  {
+    "company": "Noesis Industries Limited",
+    "old_symbol": "MEDIA",
+    "new_symbol": "MVLIND",
+    "effective_date": "2009-02-20"
+  },
+  {
+    "company": "Noesis Industries Limited",
+    "old_symbol": "MVLIND",
+    "new_symbol": "NOESISIND",
+    "effective_date": "2014-06-04"
+  },
+  {
+    "company": "NuCent Finance Limited",
+    "old_symbol": "PRESSMAN",
+    "new_symbol": "NUCENTFIN",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "OCL India Limited",
+    "old_symbol": "ORISSACEM",
+    "new_symbol": "OCL",
+    "effective_date": "2004-09-15"
+  },
+  {
+    "company": "OM INFRA LIMITED",
+    "old_symbol": "OMMETALS",
+    "new_symbol": "OMINFRAL",
+    "effective_date": "2021-02-10"
+  },
+  {
+    "company": "ORIENT CERATECH LIMITED",
+    "old_symbol": "ORIENTABRA",
+    "new_symbol": "ORIENTCER",
+    "effective_date": "2023-07-31"
+  },
+  {
+    "company": "ORTIN GLOBAL LIMITED",
+    "old_symbol": "ORTINLAB",
+    "new_symbol": "ORTINGLOBE",
+    "effective_date": "2024-09-03"
+  },
+  {
+    "company": "Oberoi Realty Limited",
+    "old_symbol": "OBEROIREAL",
+    "new_symbol": "OBEROIRLTY",
+    "effective_date": "2010-12-10"
+  },
+  {
+    "company": "Olectra Greentech Limited",
+    "old_symbol": "GOLDTELE",
+    "new_symbol": "GOLDINFRA",
+    "effective_date": "2008-02-29"
+  },
+  {
+    "company": "Olectra Greentech Limited",
+    "old_symbol": "GOLDINFRA",
+    "new_symbol": "OLECTRA",
+    "effective_date": "2018-07-26"
+  },
+  {
+    "company": "Onida Electronics Limited",
+    "old_symbol": "MIRCELECTR",
+    "new_symbol": "ONIDA",
+    "effective_date": "2026-06-19"
+  },
+  {
+    "company": "Oracle Financial Services Software Limited",
+    "old_symbol": "I-FLEX",
+    "new_symbol": "OFSS",
+    "effective_date": "2008-09-18"
+  },
+  {
+    "company": "Orchid Pharma Limited",
+    "old_symbol": "ORCHIDCHEM",
+    "new_symbol": "ORCHIDPHAR",
+    "effective_date": "2015-12-21"
+  },
+  {
+    "company": "Orient Bell Limited",
+    "old_symbol": "ORIENTCERA",
+    "new_symbol": "ORIENTBELL",
+    "effective_date": "2012-04-17"
+  },
+  {
+    "company": "Oriental Trimex Limited",
+    "old_symbol": "OTL",
+    "new_symbol": "ORIENTALTL",
+    "effective_date": "2009-12-17"
+  },
+  {
+    "company": "Oswal Greentech Limited",
+    "old_symbol": "BINDALAGRO",
+    "new_symbol": "OSWALGREEN",
+    "effective_date": "2023-05-19"
+  },
+  {
+    "company": "PAE Limited",
+    "old_symbol": "PREMAUTOEL",
+    "new_symbol": "PAEL",
+    "effective_date": "2005-11-23"
+  },
+  {
+    "company": "PARAMPARA DAIRY DELIGHTS LIMITED",
+    "old_symbol": "AMJUMBO",
+    "new_symbol": "PARAMPARA",
+    "effective_date": "2026-01-23"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - DPG",
+    "old_symbol": "DPRMDAD1",
+    "new_symbol": "PGIMDAD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - DPQDPO",
+    "old_symbol": "DPRMDAD3",
+    "new_symbol": "PGIMDAD3D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - DPRDPO",
+    "old_symbol": "DPRMDAD2",
+    "new_symbol": "PGIMDAD2D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - RPADPO",
+    "old_symbol": "DPRMDAAD",
+    "new_symbol": "PGIMDAADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - RPG",
+    "old_symbol": "DPRMDAGP",
+    "new_symbol": "PGIMDAGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - RPQDPO",
+    "old_symbol": "DPRMDAQD",
+    "new_symbol": "PGIMDAQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Dual Advantage Fund - Series 1 - RPRDPO",
+    "old_symbol": "DPRMDADP",
+    "new_symbol": "PGIMDADPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series 31 - DPG",
+    "old_symbol": "PRM1SD1",
+    "new_symbol": "PGIM1SD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series 31 - RPDPO",
+    "old_symbol": "PRM1SDP",
+    "new_symbol": "PGIM1SDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series 31 - RPG",
+    "old_symbol": "PRM1SGP",
+    "new_symbol": "PGIM1SGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AA - DPG",
+    "old_symbol": "DPRMAAD1",
+    "new_symbol": "PGIMAAD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AA - DPQDPO",
+    "old_symbol": "DPRMAAD3",
+    "new_symbol": "PGIMAAD3D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AA - RPADPO",
+    "old_symbol": "DPRMAAAD",
+    "new_symbol": "PGIMAAADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AA - RPG",
+    "old_symbol": "DPRMAAGP",
+    "new_symbol": "PGIMAAGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AA - RPQDPO",
+    "old_symbol": "DPRMAAQD",
+    "new_symbol": "PGIMAAQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AB - DPG",
+    "old_symbol": "DPRMABD1",
+    "new_symbol": "PGIMABD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AB - RPADPO",
+    "old_symbol": "DPRMABAD",
+    "new_symbol": "PGIMABADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AB - RPG",
+    "old_symbol": "DPRMABGP",
+    "new_symbol": "PGIMABGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AB - RPQDPO",
+    "old_symbol": "DPRMABQD",
+    "new_symbol": "PGIMABQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AB - RPRDPO",
+    "old_symbol": "DPRMABDP",
+    "new_symbol": "PGIMABDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - DPADPO",
+    "old_symbol": "DPRMACD4",
+    "new_symbol": "PGIMACD4D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - DPG",
+    "old_symbol": "DPRMACD1",
+    "new_symbol": "PGIMACD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - DPRDPO",
+    "old_symbol": "DPRMACD2",
+    "new_symbol": "PGIMACD2D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - RPADPO",
+    "old_symbol": "DPRMACAD",
+    "new_symbol": "PGIMACADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - RPG",
+    "old_symbol": "DPRMACGP",
+    "new_symbol": "PGIMACGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - RPQDPO",
+    "old_symbol": "DPRMACQD",
+    "new_symbol": "PGIMACQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AC - RPRDPO",
+    "old_symbol": "DPRMACDP",
+    "new_symbol": "PGIMACDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AE - DPADPO",
+    "old_symbol": "DPRMAED4",
+    "new_symbol": "PGIMAED4D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AE - DPG",
+    "old_symbol": "DPRMAED1",
+    "new_symbol": "PGIMAED1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AE - RPADPO",
+    "old_symbol": "DPRMAEAD",
+    "new_symbol": "PGIMAEADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AE - RPG",
+    "old_symbol": "DPRMAEGP",
+    "new_symbol": "PGIMAEGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AE - RPRDPO",
+    "old_symbol": "DPRMAEDP",
+    "new_symbol": "PGIMAEDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AF - DPADPO",
+    "old_symbol": "DPRMFAD4",
+    "new_symbol": "PGIMFAD4D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AF - DPG",
+    "old_symbol": "DPRMFAD1",
+    "new_symbol": "PGIMFAD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AF - RPADPO",
+    "old_symbol": "DPRMFAAD",
+    "new_symbol": "PGIMFAADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AF - RPG",
+    "old_symbol": "DPRMFAGP",
+    "new_symbol": "PGIMFAGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AF - RPQDPO",
+    "old_symbol": "DPRMFAQD",
+    "new_symbol": "PGIMFAQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AG - DPG",
+    "old_symbol": "DPRMAGD1",
+    "new_symbol": "PGIMAGD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AG - RPG",
+    "old_symbol": "DPRMAGGP",
+    "new_symbol": "PGIMAGGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - DPADPO",
+    "old_symbol": "DPRMAHD4",
+    "new_symbol": "PGIMAHD4D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - DPG",
+    "old_symbol": "DPRMAHD1",
+    "new_symbol": "PGIMAHD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - DPQDPO",
+    "old_symbol": "DPRMAHD3",
+    "new_symbol": "PGIMAHD3D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - RPADPO",
+    "old_symbol": "DPRMAHAD",
+    "new_symbol": "PGIMAHADD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - RPG",
+    "old_symbol": "DPRMAHGP",
+    "new_symbol": "PGIMAHGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AH - RPQDPO",
+    "old_symbol": "DPRMAHQD",
+    "new_symbol": "PGIMAHQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AP - DPG",
+    "old_symbol": "DPRMAPD1G",
+    "new_symbol": "PGIMAPD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AP - RPG",
+    "old_symbol": "DPRMAPGPG",
+    "new_symbol": "PGIMAPGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AP - RPSDPO",
+    "old_symbol": "DPRMAPDPD",
+    "new_symbol": "PGIMAPDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AQ - DPG",
+    "old_symbol": "DPRMAQD1G",
+    "new_symbol": "PGIMAQD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AQ - DPSDPO",
+    "old_symbol": "DPRMAQD2D",
+    "new_symbol": "PGIMAQD2D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AQ - RPG",
+    "old_symbol": "DPRMAQGPG",
+    "new_symbol": "PGIMAQGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AR - DPG",
+    "old_symbol": "DPRMARD1G",
+    "new_symbol": "PGIMRAD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AR - RPG",
+    "old_symbol": "DPRMARGPG",
+    "new_symbol": "PGIMRAGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AR - RPQDPO",
+    "old_symbol": "DPRMARQDD",
+    "new_symbol": "PGIMRAQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AR - RPSDPO",
+    "old_symbol": "DPRMARDPD",
+    "new_symbol": "PGIMRADPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AT - DPG",
+    "old_symbol": "DPRMATD1G",
+    "new_symbol": "PGIMATD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AT - RPG",
+    "old_symbol": "DPRMATGPG",
+    "new_symbol": "PGIMATGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AT - RPQDPO",
+    "old_symbol": "DPRMATQDD",
+    "new_symbol": "PGIMATQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AT - RPSDPO",
+    "old_symbol": "DPRMATDPD",
+    "new_symbol": "PGIMATDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AU - DPG",
+    "old_symbol": "DPRMAUD1G",
+    "new_symbol": "PGIMAUD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AU - RPG",
+    "old_symbol": "DPRMAUGPG",
+    "new_symbol": "PGIMAUGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AU - RPQDPO",
+    "old_symbol": "DPRMAUQDD",
+    "new_symbol": "PGIMAUQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AU - RPSDPO",
+    "old_symbol": "DPRMAUDPD",
+    "new_symbol": "PGIMAUDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AY - DPG",
+    "old_symbol": "DPRMAYD1G",
+    "new_symbol": "PGIMAYD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AY - RPG",
+    "old_symbol": "DPRMAYGPG",
+    "new_symbol": "PGIMAYGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AZ - DPG",
+    "old_symbol": "DPRMAZD1G",
+    "new_symbol": "PGIMAZD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AZ - RPG",
+    "old_symbol": "DPRMAZGPG",
+    "new_symbol": "PGIMAZGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series AZ - RPSDPO",
+    "old_symbol": "DPRMAZDPD",
+    "new_symbol": "PGIMAZDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BA - DPG",
+    "old_symbol": "DPRMBAD1G",
+    "new_symbol": "PGIMBAD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BA - RPG",
+    "old_symbol": "DPRMBAGPG",
+    "new_symbol": "PGIMBAGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BA - RPQDPO",
+    "old_symbol": "DPRMBAQDD",
+    "new_symbol": "PGIMBAQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BA - RPSDPO",
+    "old_symbol": "DPRMBADPD",
+    "new_symbol": "PGIMBADPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BB - DPG",
+    "old_symbol": "DPRMBBD1G",
+    "new_symbol": "PGIMBBD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BB - RPG",
+    "old_symbol": "DPRMBBGPG",
+    "new_symbol": "PGIMBBGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BB - RPQDPO",
+    "old_symbol": "DPRMBBQDD",
+    "new_symbol": "PGIMBBQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BB - RPSDPO",
+    "old_symbol": "DPRMBBDPD",
+    "new_symbol": "PGIMBBDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BC - DPG",
+    "old_symbol": "DPRMBCD1G",
+    "new_symbol": "PGIMBCD1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BC - DPSDT",
+    "old_symbol": "DPRMBCD2S",
+    "new_symbol": "PGIMBCD2S",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BC - RPG",
+    "old_symbol": "DPRMBCGPG",
+    "new_symbol": "PGIMBCGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BC - RPQDPO",
+    "old_symbol": "DPRMBCQDD",
+    "new_symbol": "PGIMBCQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BC - RPSDPO",
+    "old_symbol": "DPRMBCDPD",
+    "new_symbol": "PGIMBCDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BE - DPG",
+    "old_symbol": "DPRMBED1G",
+    "new_symbol": "PGIMBED1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BE - RPG",
+    "old_symbol": "DPRMBEGPG",
+    "new_symbol": "PGIMBEGPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BE - RPQDPO",
+    "old_symbol": "DPRMBEQDD",
+    "new_symbol": "PGIMBEQDD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Fixed Duration Fund - Series BE - RPSDPO",
+    "old_symbol": "DPRMBEDPD",
+    "new_symbol": "PGIMBEDPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Large Cap Fund Series 2 - DPDPO",
+    "old_symbol": "DWSLCFS2DD",
+    "new_symbol": "PGIMC6D2D",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Large Cap Fund Series 2 - DPG",
+    "old_symbol": "DWSLCFS2DG",
+    "new_symbol": "PGIMC6D1G",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Large Cap Fund Series 2 - RPDPO",
+    "old_symbol": "DWSLCFS2RD",
+    "new_symbol": "PGIMC6DPD",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PGIM India Large Cap Fund Series 2 - RPG",
+    "old_symbol": "DWSLCFS2RG",
+    "new_symbol": "PGIMC6GPG",
+    "effective_date": "2019-08-22"
+  },
+  {
+    "company": "PIL ITALICA LIFESTYLE LIMITED",
+    "old_symbol": "PILIND",
+    "new_symbol": "PILITA",
+    "effective_date": "2015-09-03"
+  },
+  {
+    "company": "PSL Limited",
+    "old_symbol": "PSLHOLD",
+    "new_symbol": "PSL",
+    "effective_date": "2003-05-19"
+  },
+  {
+    "company": "PVP Ventures Limited",
+    "old_symbol": "SOFTSOLINT",
+    "new_symbol": "PVP",
+    "effective_date": "2008-06-23"
+  },
+  {
+    "company": "PVR INOX Limited",
+    "old_symbol": "PVR",
+    "new_symbol": "PVRINOX",
+    "effective_date": "2023-05-12"
+  },
+  {
+    "company": "Paisalo Digital Limited",
+    "old_symbol": "SEINV",
+    "new_symbol": "PAISALO",
+    "effective_date": "2018-01-24"
+  },
+  {
+    "company": "Palred Technologies Limited",
+    "old_symbol": "FOURSOFT",
+    "new_symbol": "PALRED",
+    "effective_date": "2014-01-16"
+  },
+  {
+    "company": "Panasonic AVC Networks India Company Limited.",
+    "old_symbol": "MTAL",
+    "new_symbol": "PAVCI",
+    "effective_date": "2004-03-12"
+  },
+  {
+    "company": "Parrys Sugar Industries Limited",
+    "old_symbol": "GMRINDS",
+    "new_symbol": "PARRYSUGAR",
+    "effective_date": "2010-12-02"
+  },
+  {
+    "company": "Pearl Global Industries Limited",
+    "old_symbol": "HOPFL",
+    "new_symbol": "PGIL",
+    "effective_date": "2012-07-02"
+  },
+  {
+    "company": "Peninsula Land Limited",
+    "old_symbol": "MORARJESPG",
+    "new_symbol": "MORAREALTY",
+    "effective_date": "2004-10-15"
+  },
+  {
+    "company": "Peninsula Land Limited",
+    "old_symbol": "MORAREALTY",
+    "new_symbol": "PENINLAND",
+    "effective_date": "2006-06-09"
+  },
+  {
+    "company": "Pharmacia Healthcare Limited",
+    "old_symbol": "ABBOTTLAB",
+    "new_symbol": "PHARMACIA",
+    "effective_date": "2003-03-24"
+  },
+  {
+    "company": "Phoenix Lamps Limited",
+    "old_symbol": "HALONIX",
+    "new_symbol": "PHOENIXLL",
+    "effective_date": "2013-10-30"
+  },
+  {
+    "company": "Phoenix Lamps Limited",
+    "old_symbol": "PHOENIXLMP",
+    "new_symbol": "HALONIX",
+    "effective_date": "2009-03-09"
+  },
+  {
+    "company": "Piramal Enterprises Limited",
+    "old_symbol": "PIRHEALTH",
+    "new_symbol": "PEL",
+    "effective_date": "2012-09-21"
+  },
+  {
+    "company": "Piramal Enterprises Limited",
+    "old_symbol": "NICOLASPIR",
+    "new_symbol": "PIRHEALTH",
+    "effective_date": "2008-06-19"
+  },
+  {
+    "company": "Piramal Glass Limited",
+    "old_symbol": "GUJGLASS",
+    "new_symbol": "PIRGLASS",
+    "effective_date": "2008-05-12"
+  },
+  {
+    "company": "Piramal Phytocare Limited",
+    "old_symbol": "PIRLIFE",
+    "new_symbol": "PIRPHYTO",
+    "effective_date": "2013-10-23"
+  },
+  {
+    "company": "Pitti Engineering Limited",
+    "old_symbol": "PITTILAM",
+    "new_symbol": "PITTIENG",
+    "effective_date": "2018-06-06"
+  },
+  {
+    "company": "Poonawalla Fincorp Limited",
+    "old_symbol": "MAGMA",
+    "new_symbol": "POONAWALLA",
+    "effective_date": "2021-08-05"
+  },
+  {
+    "company": "Precot Limited",
+    "old_symbol": "PRECOTMILL",
+    "new_symbol": "PRECOT",
+    "effective_date": "2006-11-01"
+  },
+  {
+    "company": "Premier Limited",
+    "old_symbol": "PREMAUTO",
+    "new_symbol": "PREMIER",
+    "effective_date": "2005-06-14"
+  },
+  {
+    "company": "Pressman Advertising Limited",
+    "old_symbol": "NUCENT",
+    "new_symbol": "PRESSMN",
+    "effective_date": "2013-09-11"
+  },
+  {
+    "company": "Pricol Limited",
+    "old_symbol": "PREMINSTR",
+    "new_symbol": "PRICOL",
+    "effective_date": "2005-08-16"
+  },
+  {
+    "company": "Prism Johnson Limited",
+    "old_symbol": "PRISMCEM",
+    "new_symbol": "PRSMJOHNSN",
+    "effective_date": "2018-05-04"
+  },
+  {
+    "company": "Privi Speciality Chemicals Limited",
+    "old_symbol": "ADI",
+    "new_symbol": "FAIRCHEM",
+    "effective_date": "2017-01-19"
+  },
+  {
+    "company": "Privi Speciality Chemicals Limited",
+    "old_symbol": "FAIRCHEM",
+    "new_symbol": "PRIVISCL",
+    "effective_date": "2020-10-14"
+  },
+  {
+    "company": "Procter & Gamble Health Limited",
+    "old_symbol": "MERCK",
+    "new_symbol": "PGHL",
+    "effective_date": "2019-06-11"
+  },
+  {
+    "company": "Procter & Gamble Health Limited",
+    "old_symbol": "EMERCK",
+    "new_symbol": "MERCK",
+    "effective_date": "2007-11-05"
+  },
+  {
+    "company": "Procter & Gamble Hygiene and Health Care Limited",
+    "old_symbol": "P&G",
+    "new_symbol": "PGHH",
+    "effective_date": "2004-07-07"
+  },
+  {
+    "company": "Profectus Capital Private Limited",
+    "old_symbol": "975PCPL27A",
+    "new_symbol": "975PCPL27A",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Profectus Capital Private Limited",
+    "old_symbol": "PCPL27",
+    "new_symbol": "975PCPL27A",
+    "effective_date": "2026-07-03"
+  },
+  {
+    "company": "Profectus Capital Private Limited",
+    "old_symbol": "10157PCP24",
+    "new_symbol": "10157PCP27",
+    "effective_date": "2025-04-02"
+  },
+  {
+    "company": "Proseed India Limited",
+    "old_symbol": "GREENFIRE",
+    "new_symbol": "PROSEED",
+    "effective_date": "2018-07-18"
+  },
+  {
+    "company": "Prozone Intu Properties Limited",
+    "old_symbol": "PROZONE",
+    "new_symbol": "PROZONECSC",
+    "effective_date": "2012-09-24"
+  },
+  {
+    "company": "Prozone Intu Properties Limited",
+    "old_symbol": "PROZONECSC",
+    "new_symbol": "PROZONINTU",
+    "effective_date": "2014-10-07"
+  },
+  {
+    "company": "Prozone Realty Limited",
+    "old_symbol": "PROZONINTU",
+    "new_symbol": "PROZONER",
+    "effective_date": "2023-08-04"
+  },
+  {
+    "company": "Quintegra Solutions Limited",
+    "old_symbol": "SOFFIASOFT",
+    "new_symbol": "QUINTEGRA",
+    "effective_date": "2005-08-22"
+  },
+  {
+    "company": "RHI MAGNESITA INDIA LTD",
+    "old_symbol": "ORIENTREF",
+    "new_symbol": "RHIM",
+    "effective_date": "2021-07-22"
+  },
+  {
+    "company": "RPG Cables Limited",
+    "old_symbol": "RPGTELECOM",
+    "new_symbol": "RPGCABLES",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "RPG Transmission Limited",
+    "old_symbol": "SAELTD",
+    "new_symbol": "RPGTLTD",
+    "effective_date": "2006-12-05"
+  },
+  {
+    "company": "RPSG VENTURES LIMITED",
+    "old_symbol": "CESCVENT",
+    "new_symbol": "RPSGVENT",
+    "effective_date": "2021-02-01"
+  },
+  {
+    "company": "RSWM Limited",
+    "old_symbol": "RAJASSPG",
+    "new_symbol": "RSWM",
+    "effective_date": "2006-09-01"
+  },
+  {
+    "company": "Rain Industries Limited",
+    "old_symbol": "RAINCOM",
+    "new_symbol": "RAIN",
+    "effective_date": "2013-08-23"
+  },
+  {
+    "company": "Rain Industries Limited",
+    "old_symbol": "PRIYADCEM",
+    "new_symbol": "RAINCOM",
+    "effective_date": "2008-03-03"
+  },
+  {
+    "company": "Rane Holdings Limited",
+    "old_symbol": "RANEMADRAS",
+    "new_symbol": "RANEHOLDIN",
+    "effective_date": "2005-08-22"
+  },
+  {
+    "company": "RattanIndia Enterprises Limited",
+    "old_symbol": "IBIPL",
+    "new_symbol": "RTNINFRA",
+    "effective_date": "2014-11-20"
+  },
+  {
+    "company": "RattanIndia Enterprises Limited",
+    "old_symbol": "RTNINFRA",
+    "new_symbol": "RTNINDIA",
+    "effective_date": "2021-04-07"
+  },
+  {
+    "company": "RattanIndia Power Limited",
+    "old_symbol": "IBPOW",
+    "new_symbol": "RTNPOWER",
+    "effective_date": "2014-11-20"
+  },
+  {
+    "company": "Raymond Realty Limited",
+    "old_symbol": "RRL",
+    "new_symbol": "RAYMONDREL",
+    "effective_date": "2025-06-27"
+  },
+  {
+    "company": "Reliance Broadcast Network Limited",
+    "old_symbol": "RMEDIA",
+    "new_symbol": "RBN",
+    "effective_date": "2010-08-20"
+  },
+  {
+    "company": "Reliance Communications Limited",
+    "old_symbol": "RCVL",
+    "new_symbol": "RCOM",
+    "effective_date": "2006-06-30"
+  },
+  {
+    "company": "Reliance Infrastructure Limited",
+    "old_symbol": "REL",
+    "new_symbol": "RELINFRA",
+    "effective_date": "2008-05-16"
+  },
+  {
+    "company": "Reliance Infrastructure Limited",
+    "old_symbol": "BSES",
+    "new_symbol": "REL",
+    "effective_date": "2004-03-12"
+  },
+  {
+    "company": "Reliance MediaWorks Limited",
+    "old_symbol": "ADLABSFILM",
+    "new_symbol": "RELMEDIA",
+    "effective_date": "2009-10-20"
+  },
+  {
+    "company": "Reliance Naval and Engineering Limited",
+    "old_symbol": "PIPAVAVYD",
+    "new_symbol": "PIPAVAVDOC",
+    "effective_date": "2011-09-29"
+  },
+  {
+    "company": "Reliance Naval and Engineering Limited",
+    "old_symbol": "RDEL",
+    "new_symbol": "RNAVAL",
+    "effective_date": "2017-09-18"
+  },
+  {
+    "company": "Reliance Naval and Engineering Limited",
+    "old_symbol": "PIPAVAVDOC",
+    "new_symbol": "RDEL",
+    "effective_date": "2016-03-18"
+  },
+  {
+    "company": "Renaissance Global Limited",
+    "old_symbol": "RJL",
+    "new_symbol": "RGL",
+    "effective_date": "2019-04-08"
+  },
+  {
+    "company": "Renol Polychem Limited",
+    "old_symbol": "RENOL",
+    "new_symbol": "RNPL",
+    "effective_date": "2025-08-06"
+  },
+  {
+    "company": "Revathi Equipment India Limited",
+    "old_symbol": "REVATHIEQU",
+    "new_symbol": "RVTH",
+    "effective_date": "2024-11-26"
+  },
+  {
+    "company": "Roofit Industries Limited",
+    "old_symbol": "RATNABLDG",
+    "new_symbol": "ROOFITIND",
+    "effective_date": "1999-09-15"
+  },
+  {
+    "company": "SBI-ETF Gold",
+    "old_symbol": "SBIGETS",
+    "new_symbol": "SETFGOLD",
+    "effective_date": "2015-11-24"
+  },
+  {
+    "company": "SBI-ETF Nifty 50",
+    "old_symbol": "SETFNIFTY",
+    "new_symbol": "SETFNIF50",
+    "effective_date": "2015-11-24"
+  },
+  {
+    "company": "SBI-ETF Nifty Bank",
+    "old_symbol": "SETFBANK",
+    "new_symbol": "SETFNIFBK",
+    "effective_date": "2015-11-24"
+  },
+  {
+    "company": "SBI-ETF Nifty Next 50",
+    "old_symbol": "SETFNIFJR",
+    "new_symbol": "SETFNN50",
+    "effective_date": "2015-11-24"
+  },
+  {
+    "company": "SECUREKLOUD TECHNOLOGIES LIMITED",
+    "old_symbol": "8KMILES",
+    "new_symbol": "SECURKLOUD",
+    "effective_date": "2021-01-20"
+  },
+  {
+    "company": "SEJAL GLASS LIMITED",
+    "old_symbol": "SEZAL",
+    "new_symbol": "SEJAL",
+    "effective_date": "2021-08-16"
+  },
+  {
+    "company": "SI Group - India Limited",
+    "old_symbol": "SCHENHERD",
+    "new_symbol": "SIGROUPIND",
+    "effective_date": "2006-11-28"
+  },
+  {
+    "company": "SI Group - India Limited",
+    "old_symbol": "HERDILCHEM",
+    "new_symbol": "SCHENHERD",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "SIGMA ADVANCED SYSTEMS LIMITED",
+    "old_symbol": "MEGASOFT",
+    "new_symbol": "SIGMAADV",
+    "effective_date": "2026-02-09"
+  },
+  {
+    "company": "SIL Investments Limited",
+    "old_symbol": "SUTLEJINDS",
+    "new_symbol": "SILINV",
+    "effective_date": "2007-06-21"
+  },
+  {
+    "company": "SKF India Limited",
+    "old_symbol": "SKFBEARING",
+    "new_symbol": "SKFINDIA",
+    "effective_date": "2004-10-20"
+  },
+  {
+    "company": "SKIL Infrastructure Limited",
+    "old_symbol": "HORIZONINF",
+    "new_symbol": "SKIL",
+    "effective_date": "2014-03-24"
+  },
+  {
+    "company": "SKIL Infrastructure Limited",
+    "old_symbol": "HORIZONBAT",
+    "new_symbol": "HORIZONINF",
+    "effective_date": "2008-02-22"
+  },
+  {
+    "company": "SML Isuzu Limited",
+    "old_symbol": "SWARAJMAZD",
+    "new_symbol": "SMLISUZU",
+    "effective_date": "2011-01-17"
+  },
+  {
+    "company": "SML Mahindra Limited",
+    "old_symbol": "SMLISUZU",
+    "new_symbol": "SMLMAH",
+    "effective_date": "2025-11-10"
+  },
+  {
+    "company": "SONAM LIMITED",
+    "old_symbol": "SONAMCLOCK",
+    "new_symbol": "SONAMLTD",
+    "effective_date": "2023-11-15"
+  },
+  {
+    "company": "SORIL Infra Resources Limited",
+    "old_symbol": "IBRETAILS",
+    "new_symbol": "STOREONE",
+    "effective_date": "2009-10-26"
+  },
+  {
+    "company": "SORIL Infra Resources Limited",
+    "old_symbol": "STOREONE",
+    "new_symbol": "SORILINFRA",
+    "effective_date": "2017-01-10"
+  },
+  {
+    "company": "SORIL Infra Resources Limited",
+    "old_symbol": "PIRAMYDRET",
+    "new_symbol": "IBRETAILS",
+    "effective_date": "2008-06-09"
+  },
+  {
+    "company": "SOVEREIGN GOLD BONDS 2.50% JULY 2029 SR-IV 2021-22",
+    "old_symbol": "SGBJUN29IV",
+    "new_symbol": "SGBJUL29IV",
+    "effective_date": "2021-07-28"
+  },
+  {
+    "company": "SPICEJET LTD",
+    "old_symbol": "MODILUFT",
+    "new_symbol": "SPICEJET",
+    "effective_date": "2019-08-19"
+  },
+  {
+    "company": "SPML Infra Limited",
+    "old_symbol": "SUBHASPROJ",
+    "new_symbol": "SPMLINFRA",
+    "effective_date": "2010-05-14"
+  },
+  {
+    "company": "SREI Infrastructure Finance Limited",
+    "old_symbol": "SREINTFIN",
+    "new_symbol": "SREINFRA",
+    "effective_date": "2010-07-21"
+  },
+  {
+    "company": "SVOGL Oil Gas And Energy Limited",
+    "old_symbol": "SHIV-VANI",
+    "new_symbol": "SVOGL",
+    "effective_date": "2015-10-23"
+  },
+  {
+    "company": "SWAN CORP LIMITED",
+    "old_symbol": "SWANENERGY",
+    "new_symbol": "SWANCORP",
+    "effective_date": "2025-09-04"
+  },
+  {
+    "company": "Sagar Cements Limited",
+    "old_symbol": "SAGARCEM",
+    "new_symbol": "SAGCEM",
+    "effective_date": "2007-01-29"
+  },
+  {
+    "company": "Sambhaav Media Limited",
+    "old_symbol": "PERLENGINF",
+    "new_symbol": "SAMBHAAV",
+    "effective_date": "2005-10-18"
+  },
+  {
+    "company": "Sammaan Capital Limited",
+    "old_symbol": "IBULHSGFIN",
+    "new_symbol": "SAMMAANCAP",
+    "effective_date": "2024-07-26"
+  },
+  {
+    "company": "Sammaan Capital Limited",
+    "old_symbol": "IBULPP",
+    "new_symbol": "SCLPP",
+    "effective_date": "2024-07-26"
+  },
+  {
+    "company": "Sampann Utpadan India Limited",
+    "old_symbol": "SEPOWER",
+    "new_symbol": "SAMPANN",
+    "effective_date": "2023-08-23"
+  },
+  {
+    "company": "Samvardhana Motherson International Limited",
+    "old_symbol": "MOTHERSUMI",
+    "new_symbol": "MOTHERSON",
+    "effective_date": "2022-06-09"
+  },
+  {
+    "company": "Sanofi India Limited",
+    "old_symbol": "HOECHST",
+    "new_symbol": "AVENTIS",
+    "effective_date": "2003-05-19"
+  },
+  {
+    "company": "Sanofi India Limited",
+    "old_symbol": "AVENTIS",
+    "new_symbol": "SANOFI",
+    "effective_date": "2012-07-11"
+  },
+  {
+    "company": "Saregama India Limited",
+    "old_symbol": "GRAMOPHONE",
+    "new_symbol": "SAREGAMA",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "Sastasundar Ventures Limited",
+    "old_symbol": "MICROSEC",
+    "new_symbol": "SASTASUNDR",
+    "effective_date": "2016-11-22"
+  },
+  {
+    "company": "Sathavahana Ispat Limited",
+    "old_symbol": "SATHVANISP",
+    "new_symbol": "SATHAISPAT",
+    "effective_date": "2006-12-27"
+  },
+  {
+    "company": "Savita Oil Technologies Limited",
+    "old_symbol": "SAVITACHEM",
+    "new_symbol": "SOTL",
+    "effective_date": "2009-08-24"
+  },
+  {
+    "company": "Schaeffler India Limited",
+    "old_symbol": "FAGPRECISN",
+    "new_symbol": "FAGBEARING",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "Schaeffler India Limited",
+    "old_symbol": "FAGBEARING",
+    "new_symbol": "SCHAEFFLER",
+    "effective_date": "2017-08-01"
+  },
+  {
+    "company": "Seamec Limited",
+    "old_symbol": "PEERLESHIP",
+    "new_symbol": "SEAMECLTD",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "Semac Construction Limited",
+    "old_symbol": "REVATHI",
+    "new_symbol": "SEMAC",
+    "effective_date": "2023-09-21"
+  },
+  {
+    "company": "Setubandhan Infrastructure Limited",
+    "old_symbol": "PRAKASHCON",
+    "new_symbol": "SETUINFRA",
+    "effective_date": "2019-07-30"
+  },
+  {
+    "company": "Sezal Glass Limited",
+    "old_symbol": "SEJALGLASS",
+    "new_symbol": "SEZALGLASS",
+    "effective_date": "2010-07-14"
+  },
+  {
+    "company": "Shah Metacorp Limited",
+    "old_symbol": "GAL",
+    "new_symbol": "SHAH",
+    "effective_date": "2023-07-03"
+  },
+  {
+    "company": "Shalimar Paints Limited",
+    "old_symbol": "SHALMPAINT",
+    "new_symbol": "SHALPAINTS",
+    "effective_date": "2008-03-03"
+  },
+  {
+    "company": "Shasun Pharmaceuticals Limited",
+    "old_symbol": "SHASUNCHEM",
+    "new_symbol": "SHASUNPHAR",
+    "effective_date": "2011-01-28"
+  },
+  {
+    "company": "Shekhawati Industries Limited",
+    "old_symbol": "SPYL",
+    "new_symbol": "SHEKHAWATI",
+    "effective_date": "2024-08-09"
+  },
+  {
+    "company": "Shirpur Gold Refinery Limited",
+    "old_symbol": "AGEEGOLD",
+    "new_symbol": "SHIRPUR-G",
+    "effective_date": "2013-01-17"
+  },
+  {
+    "company": "Shiva Texyarn Limited",
+    "old_symbol": "ANAMALFIN",
+    "new_symbol": "SHIVTEX",
+    "effective_date": "2004-01-22"
+  },
+  {
+    "company": "Shreyas Shipping & Logistics Limited",
+    "old_symbol": "SHREYASHIP",
+    "new_symbol": "SHREYAS",
+    "effective_date": "2006-04-03"
+  },
+  {
+    "company": "Shri Aster Silicates Limited",
+    "old_symbol": "ASTERSILI",
+    "new_symbol": "SHRIASTER",
+    "effective_date": "2014-02-03"
+  },
+  {
+    "company": "Shriram Finance Limited",
+    "old_symbol": "SRTRANSFIN",
+    "new_symbol": "SHRIRAMFIN",
+    "effective_date": "2022-12-20"
+  },
+  {
+    "company": "Simplex Infrastructures Limited",
+    "old_symbol": "SIMPLEXCON",
+    "new_symbol": "SIMPLEXINF",
+    "effective_date": "2005-12-21"
+  },
+  {
+    "company": "Siti Networks Limited",
+    "old_symbol": "SITICABLE",
+    "new_symbol": "SITINET",
+    "effective_date": "2016-08-17"
+  },
+  {
+    "company": "Siti Networks Limited",
+    "old_symbol": "WWIL",
+    "new_symbol": "SITICABLE",
+    "effective_date": "2012-10-03"
+  },
+  {
+    "company": "Siyaram Silk Mills Limited",
+    "old_symbol": "SIYARSILK",
+    "new_symbol": "SIYSIL",
+    "effective_date": "2007-01-29"
+  },
+  {
+    "company": "Small Industries Development Bank of India",
+    "old_symbol": "768SIDBI27",
+    "new_symbol": "768SID27",
+    "effective_date": "2026-09-11"
+  },
+  {
+    "company": "Smartlink Holdings Limited",
+    "old_symbol": "D-LINK",
+    "new_symbol": "SMARTLINK",
+    "effective_date": "2009-07-29"
+  },
+  {
+    "company": "Solar Industries India Limited",
+    "old_symbol": "SOLAREX",
+    "new_symbol": "SOLARINDS",
+    "effective_date": "2009-04-13"
+  },
+  {
+    "company": "Somany Ceramics Limited",
+    "old_symbol": "SPLLTD",
+    "new_symbol": "SOMANYCERA",
+    "effective_date": "2007-03-21"
+  },
+  {
+    "company": "Sovereign Gold Bonds 2.75% NOV 2023 Tr-I",
+    "old_symbol": "GBNOV23",
+    "new_symbol": "SBNOV23",
+    "effective_date": "2016-09-15"
+  },
+  {
+    "company": "Sovereign Gold Bonds 2.75% NOV 2023 Tr-I",
+    "old_symbol": "SBNOV23",
+    "new_symbol": "SGBNOV23",
+    "effective_date": "2016-09-15"
+  },
+  {
+    "company": "Spentex Industries Limited",
+    "old_symbol": "SPENTXIND",
+    "new_symbol": "SPENTEX",
+    "effective_date": "2006-12-20"
+  },
+  {
+    "company": "Sri Havisha Hospitality and Infrastructure Limited",
+    "old_symbol": "SHAKTIGAS",
+    "new_symbol": "HAVISHA",
+    "effective_date": "2018-04-12"
+  },
+  {
+    "company": "Srikalahasthi Pipes Limited",
+    "old_symbol": "LANCOIND",
+    "new_symbol": "LANCOIN",
+    "effective_date": "2007-08-28"
+  },
+  {
+    "company": "Srikalahasthi Pipes Limited",
+    "old_symbol": "LANCOIN",
+    "new_symbol": "SRIPIPES",
+    "effective_date": "2014-12-17"
+  },
+  {
+    "company": "Standard Engineering Technology Limited",
+    "old_symbol": "SGLTL",
+    "new_symbol": "SETL",
+    "effective_date": "2026-01-19"
+  },
+  {
+    "company": "Stel Holdings Limited",
+    "old_symbol": "SENTINEL",
+    "new_symbol": "STEL",
+    "effective_date": "2011-11-08"
+  },
+  {
+    "company": "Sterling Biotech Limited",
+    "old_symbol": "STERLINTEA",
+    "new_symbol": "STERLINBIO",
+    "effective_date": "2003-07-09"
+  },
+  {
+    "company": "Sterlite Technologies Limited",
+    "old_symbol": "STRTECH",
+    "new_symbol": "STLTECH",
+    "effective_date": "2020-10-29"
+  },
+  {
+    "company": "Sterlite Technologies Limited",
+    "old_symbol": "STROPTICAL",
+    "new_symbol": "STRTECH",
+    "effective_date": "2007-12-17"
+  },
+  {
+    "company": "Styrenix Performance Materials Limited",
+    "old_symbol": "INEOSSTYRO",
+    "new_symbol": "STYRENIX",
+    "effective_date": "2023-01-20"
+  },
+  {
+    "company": "Sudarshan Colorants India Limited",
+    "old_symbol": "HEUBACHIND",
+    "new_symbol": "SUDARCOLOR",
+    "effective_date": "2026-01-20"
+  },
+  {
+    "company": "Sudarshan Colorants India Limited",
+    "old_symbol": "CLNINDIA",
+    "new_symbol": "HEUBACHIND",
+    "effective_date": "2023-03-10"
+  },
+  {
+    "company": "Summit Securities Limited",
+    "old_symbol": "KECINTL",
+    "new_symbol": "KECINFRA",
+    "effective_date": "2006-02-21"
+  },
+  {
+    "company": "Summit Securities Limited",
+    "old_symbol": "KECINFRA",
+    "new_symbol": "SUMMIT",
+    "effective_date": "2008-04-21"
+  },
+  {
+    "company": "Sundrop Brands Limited",
+    "old_symbol": "ATFL",
+    "new_symbol": "SUNDROP",
+    "effective_date": "2025-03-28"
+  },
+  {
+    "company": "Sunflag Iron And Steel Company Limited",
+    "old_symbol": "SUNFLAGIRN",
+    "new_symbol": "SUNFLAG",
+    "effective_date": "2005-09-29"
+  },
+  {
+    "company": "Supreme Tex Mart Limited",
+    "old_symbol": "SUPREMYARN",
+    "new_symbol": "SUPREMETEX",
+    "effective_date": "2008-02-15"
+  },
+  {
+    "company": "Surana Solar Limited",
+    "old_symbol": "SURANAVEL",
+    "new_symbol": "SURANASOL",
+    "effective_date": "2014-11-19"
+  },
+  {
+    "company": "Surana Telecom and Power Limited",
+    "old_symbol": "SURANATELE",
+    "new_symbol": "SURANAT&P",
+    "effective_date": "2010-02-08"
+  },
+  {
+    "company": "Swelect Energy Systems Limited",
+    "old_symbol": "NUMERICPW",
+    "new_symbol": "SWELECTES",
+    "effective_date": "2012-07-09"
+  },
+  {
+    "company": "TATA CONSUMER PRODUCTS LIMITED",
+    "old_symbol": "TATAGLOBAL",
+    "new_symbol": "TATACONSUM",
+    "effective_date": "2020-02-27"
+  },
+  {
+    "company": "TATA CONSUMER PRODUCTS LIMITED",
+    "old_symbol": "TATATEA",
+    "new_symbol": "TATAGLOBAL",
+    "effective_date": "2010-07-21"
+  },
+  {
+    "company": "TGB Banquets And Hotels Limited",
+    "old_symbol": "BHAGWATIHO",
+    "new_symbol": "TGBHOTELS",
+    "effective_date": "2013-05-31"
+  },
+  {
+    "company": "TITAGARH RAIL SYSTEMS LIMITED",
+    "old_symbol": "TWL",
+    "new_symbol": "TITAGARH",
+    "effective_date": "2023-06-19"
+  },
+  {
+    "company": "TRANSWORLD SHIPPING LINES LIMITED",
+    "old_symbol": "SHREYAS",
+    "new_symbol": "TRANSWORLD",
+    "effective_date": "2024-10-23"
+  },
+  {
+    "company": "TSF INVESTMENTS LIMITED",
+    "old_symbol": "SUNDARMHLD",
+    "new_symbol": "TSFINV",
+    "effective_date": "2025-10-16"
+  },
+  {
+    "company": "TV18 Broadcast Limited",
+    "old_symbol": "IBN18",
+    "new_symbol": "TV18BRDCST",
+    "effective_date": "2011-07-19"
+  },
+  {
+    "company": "TV18 Broadcast Limited",
+    "old_symbol": "GBN",
+    "new_symbol": "IBN18",
+    "effective_date": "2008-05-15"
+  },
+  {
+    "company": "TVS Holdings Limited",
+    "old_symbol": "SUNCLAYLTD",
+    "new_symbol": "TVSHLTD",
+    "effective_date": "2023-08-10"
+  },
+  {
+    "company": "TVS Motor Company Limited",
+    "old_symbol": "TVS-SUZUKI",
+    "new_symbol": "TVSMOTOR",
+    "effective_date": "2001-12-03"
+  },
+  {
+    "company": "TVS Srichakra Limited",
+    "old_symbol": "SRICHAKTYR",
+    "new_symbol": "TVSSRICHAK",
+    "effective_date": "2007-02-13"
+  },
+  {
+    "company": "Tarmat Limited",
+    "old_symbol": "ROMAN",
+    "new_symbol": "TARMAT",
+    "effective_date": "2012-09-12"
+  },
+  {
+    "company": "Tata Coffee Limited",
+    "old_symbol": "CONSCOFFEE",
+    "new_symbol": "TATACOFFEE",
+    "effective_date": "2006-04-04"
+  },
+  {
+    "company": "Tata Communications Limited",
+    "old_symbol": "VSNL",
+    "new_symbol": "TATACOMM",
+    "effective_date": "2008-02-25"
+  },
+  {
+    "company": "Tata Investment Corporation Limited",
+    "old_symbol": "INVESTCORP",
+    "new_symbol": "TATAINVEST",
+    "effective_date": "2005-07-07"
+  },
+  {
+    "company": "Tata Motors Limited",
+    "old_symbol": "TELCO",
+    "new_symbol": "TATAMOTORS",
+    "effective_date": "2003-12-26"
+  },
+  {
+    "company": "Tata Motors Passenger Vehicles Limited",
+    "old_symbol": "TATAMOTORS",
+    "new_symbol": "TMPV",
+    "effective_date": "2025-10-24"
+  },
+  {
+    "company": "Tata Steel Bsl Limited",
+    "old_symbol": "BHUSANSTL",
+    "new_symbol": "TATASTLBSL",
+    "effective_date": "2018-12-10"
+  },
+  {
+    "company": "Tata Steel Limited",
+    "old_symbol": "TISCO",
+    "new_symbol": "TATASTEEL",
+    "effective_date": "2005-10-17"
+  },
+  {
+    "company": "Tata Steel Long Products Limited",
+    "old_symbol": "IPITATASPO",
+    "new_symbol": "TATASPONGE",
+    "effective_date": "2004-02-11"
+  },
+  {
+    "company": "Tata Steel Long Products Limited",
+    "old_symbol": "TATASPONGE",
+    "new_symbol": "TATASTLLP",
+    "effective_date": "2019-09-03"
+  },
+  {
+    "company": "Tata Teleservices (Maharashtra) Limited",
+    "old_symbol": "HUGHESTELE",
+    "new_symbol": "TATATELSER",
+    "effective_date": "2003-06-25"
+  },
+  {
+    "company": "Tata Teleservices (Maharashtra) Limited",
+    "old_symbol": "TATATELSER",
+    "new_symbol": "TTML",
+    "effective_date": "2005-01-14"
+  },
+  {
+    "company": "Team India Guaranty Limited",
+    "old_symbol": "TIMESGTY",
+    "new_symbol": "TEAMGTY",
+    "effective_date": "2025-08-13"
+  },
+  {
+    "company": "Teamo Productions HQ Limited",
+    "old_symbol": "GISOLUTION",
+    "new_symbol": "TPHQ",
+    "effective_date": "2023-10-20"
+  },
+  {
+    "company": "Techindia Nirman Limited",
+    "old_symbol": "NATHSEED",
+    "new_symbol": "TECHIN",
+    "effective_date": "2014-10-31"
+  },
+  {
+    "company": "Tembo Global Industries Limited",
+    "old_symbol": "SAKETH",
+    "new_symbol": "TEMBO",
+    "effective_date": "2020-04-13"
+  },
+  {
+    "company": "Texmaco Infrastructure & Holdings Limited",
+    "old_symbol": "TEXMACOLTD",
+    "new_symbol": "TEXINFRA",
+    "effective_date": "2012-03-20"
+  },
+  {
+    "company": "The Investment Trust Of India Limited",
+    "old_symbol": "FORTUNEFIN",
+    "new_symbol": "THEINVEST",
+    "effective_date": "2018-07-25"
+  },
+  {
+    "company": "The Madras Aluminium Company Limited",
+    "old_symbol": "MADRASALMN",
+    "new_symbol": "MALCO",
+    "effective_date": "2007-04-12"
+  },
+  {
+    "company": "The Ramco Cements Limited",
+    "old_symbol": "MADRASCEM",
+    "new_symbol": "RAMCOCEM",
+    "effective_date": "2013-09-30"
+  },
+  {
+    "company": "Timken India Limited",
+    "old_symbol": "TATATIMKEN",
+    "new_symbol": "TIMKEN",
+    "effective_date": "2007-02-06"
+  },
+  {
+    "company": "Tips Music Limited",
+    "old_symbol": "TIPSINDLTD",
+    "new_symbol": "TIPSMUSIC",
+    "effective_date": "2024-09-30"
+  },
+  {
+    "company": "Tirupati Forge Limited",
+    "old_symbol": "FORGE",
+    "new_symbol": "TIRUPATIFL",
+    "effective_date": "2018-01-15"
+  },
+  {
+    "company": "Torrent Power AEC Limited",
+    "old_symbol": "AHMEDELEC",
+    "new_symbol": "TORRENTAEC",
+    "effective_date": "2005-06-17"
+  },
+  {
+    "company": "Torrent Power SEC Limited",
+    "old_symbol": "SURATELEC",
+    "new_symbol": "TORRENTSEC",
+    "effective_date": "2005-06-07"
+  },
+  {
+    "company": "Transformers And Rectifiers (India) Limited",
+    "old_symbol": "TRIL",
+    "new_symbol": "TARIL",
+    "effective_date": "2024-08-26"
+  },
+  {
+    "company": "Trent Limited",
+    "old_symbol": "LAKME",
+    "new_symbol": "TRENT",
+    "effective_date": "2004-06-07"
+  },
+  {
+    "company": "Trident Limited",
+    "old_symbol": "ABSHEKINDS",
+    "new_symbol": "TRIDENT",
+    "effective_date": "2011-05-03"
+  },
+  {
+    "company": "Trigyn Technologies Limited",
+    "old_symbol": "LEADEDSYS",
+    "new_symbol": "TRIGYN",
+    "effective_date": "2005-07-26"
+  },
+  {
+    "company": "TruCap Finance Limited",
+    "old_symbol": "DHANVARSHA",
+    "new_symbol": "TRU",
+    "effective_date": "2022-09-01"
+  },
+  {
+    "company": "Twamev Construction and Infrastructure Limited",
+    "old_symbol": "TCLCONS",
+    "new_symbol": "TICL",
+    "effective_date": "2025-02-07"
+  },
+  {
+    "company": "UCAL LIMITED",
+    "old_symbol": "UCALFUEL",
+    "new_symbol": "UCAL",
+    "effective_date": "2023-07-26"
+  },
+  {
+    "company": "UFLEX Limited",
+    "old_symbol": "FLEX",
+    "new_symbol": "UFLEX",
+    "effective_date": "2007-04-17"
+  },
+  {
+    "company": "UMIYA BUILDCON LIMITED",
+    "old_symbol": "MRO-TEK",
+    "new_symbol": "UMIYA-MRO",
+    "effective_date": "2025-04-15"
+  },
+  {
+    "company": "UNO Minda Limited",
+    "old_symbol": "MINDAIND",
+    "new_symbol": "UNOMINDA",
+    "effective_date": "2022-08-05"
+  },
+  {
+    "company": "UPL Limited",
+    "old_symbol": "UNIPHOS",
+    "new_symbol": "UPL",
+    "effective_date": "2013-10-23"
+  },
+  {
+    "company": "UTI BSE Sensex ETF",
+    "old_symbol": "UTISENSETF",
+    "new_symbol": "SENSEXBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI BSE Sensex Next 50 ETF",
+    "old_symbol": "UTISXN50",
+    "new_symbol": "SNXT50BETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Gold Exchange Traded Fund",
+    "old_symbol": "GOLDSHARE",
+    "new_symbol": "GOLDBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI NIfty Next 50 Exchange Traded Fund - UTI NIFTY N",
+    "old_symbol": "UTINEXT50",
+    "new_symbol": "NEXT50BETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Nifty 10 yr Benchmark G-Sec ETF",
+    "old_symbol": "NIF10GETF",
+    "new_symbol": "GILT10BETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Nifty 5 yr Benchmark G-Sec ETF",
+    "old_symbol": "NIF5GETF",
+    "new_symbol": "GILT5BETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Nifty IT ETF",
+    "old_symbol": "NIFITETF",
+    "new_symbol": "ITBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Nifty Midcap 150 Exchange Traded Fund (ETF)",
+    "old_symbol": "NIFMID150",
+    "new_symbol": "MIDCAPBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Mutual Fund - UTI Silver Exchange Traded Fund (UTI Silver ETF)",
+    "old_symbol": "SILVERETF",
+    "new_symbol": "SILVERBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Nifty 50 ETF",
+    "old_symbol": "UTINIFTETF",
+    "new_symbol": "NIFTYBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "UTI Nifty Bank ETF",
+    "old_symbol": "UTIBANKETF",
+    "new_symbol": "BANKBETA",
+    "effective_date": "2025-12-24"
+  },
+  {
+    "company": "Ujaas Energy Limited",
+    "old_symbol": "MBSWITCH",
+    "new_symbol": "UJAAS",
+    "effective_date": "2013-09-23"
+  },
+  {
+    "company": "United Foodbrands Limited",
+    "old_symbol": "BARBEQUE",
+    "new_symbol": "UFBL",
+    "effective_date": "2025-10-13"
+  },
+  {
+    "company": "United Spirits Limited",
+    "old_symbol": "MCDOWELL-N",
+    "new_symbol": "UNITDSPR",
+    "effective_date": "2024-06-07"
+  },
+  {
+    "company": "Univa Foods Limited",
+    "old_symbol": "HOTELRUGBY",
+    "new_symbol": "UNIVAFOODS",
+    "effective_date": "2022-11-23"
+  },
+  {
+    "company": "Uravi Defence and Technology Limited",
+    "old_symbol": "URAVI",
+    "new_symbol": "URAVIDEF",
+    "effective_date": "2025-01-16"
+  },
+  {
+    "company": "Usha Martin Education & Solutions Limited",
+    "old_symbol": "UMITL",
+    "new_symbol": "UMESL",
+    "effective_date": "2010-01-07"
+  },
+  {
+    "company": "Usha Martin Limited",
+    "old_symbol": "USHABEL",
+    "new_symbol": "USHAMART",
+    "effective_date": "2004-10-20"
+  },
+  {
+    "company": "Uttam Value Steels Limited",
+    "old_symbol": "LLOYDSTEEL",
+    "new_symbol": "UTTAMVALUE",
+    "effective_date": "2013-04-29"
+  },
+  {
+    "company": "V2 Retail Limited",
+    "old_symbol": "VISHALRET",
+    "new_symbol": "V2RETAIL",
+    "effective_date": "2012-02-24"
+  },
+  {
+    "company": "VA Tech Wabag Limited",
+    "old_symbol": "VATECH",
+    "new_symbol": "WABAG",
+    "effective_date": "2010-12-15"
+  },
+  {
+    "company": "VARVEE GLOBAL LIMITED",
+    "old_symbol": "AARVEEDEN",
+    "new_symbol": "VGL",
+    "effective_date": "2025-10-13"
+  },
+  {
+    "company": "VIP Clothing Limited",
+    "old_symbol": "MAXWELL",
+    "new_symbol": "VIPCLOTHNG",
+    "effective_date": "2016-12-21"
+  },
+  {
+    "company": "VISA Chrome Limited",
+    "old_symbol": "VISASTEEL",
+    "new_symbol": "VISACHROME",
+    "effective_date": "2026-05-20"
+  },
+  {
+    "company": "VTX Industries Limited",
+    "old_symbol": "VIJAYTEX",
+    "new_symbol": "VTXIND",
+    "effective_date": "2011-04-04"
+  },
+  {
+    "company": "Vaibhav Global Limited",
+    "old_symbol": "VAIBHAVGEM",
+    "new_symbol": "VAIBHAVGBL",
+    "effective_date": "2012-12-24"
+  },
+  {
+    "company": "Vakrangee Limited",
+    "old_symbol": "VAKRANSOFT",
+    "new_symbol": "VAKRANGEE",
+    "effective_date": "2013-11-27"
+  },
+  {
+    "company": "Value Industries Limited",
+    "old_symbol": "VDOCONAPPL",
+    "new_symbol": "VALUEIND",
+    "effective_date": "2008-05-22"
+  },
+  {
+    "company": "Vardhman Holdings Limited",
+    "old_symbol": "VSGML",
+    "new_symbol": "VHL",
+    "effective_date": "2006-04-17"
+  },
+  {
+    "company": "Vardhman Textiles Limited",
+    "old_symbol": "MAHAVIRSPG",
+    "new_symbol": "VTL",
+    "effective_date": "2006-10-11"
+  },
+  {
+    "company": "Vatsa Music Limited",
+    "old_symbol": "BABABUSERV",
+    "new_symbol": "VATSMUSC",
+    "effective_date": "2001-08-20"
+  },
+  {
+    "company": "Vedanta Limited",
+    "old_symbol": "SSLT",
+    "new_symbol": "VEDL",
+    "effective_date": "2015-05-07"
+  },
+  {
+    "company": "Vedanta Limited",
+    "old_symbol": "SESAGOA",
+    "new_symbol": "SSLT",
+    "effective_date": "2013-10-04"
+  },
+  {
+    "company": "Vedanta Power Limited",
+    "old_symbol": "VPL",
+    "new_symbol": "VEDPOWER",
+    "effective_date": "2026-06-11"
+  },
+  {
+    "company": "Veedol Corporation Limited",
+    "old_symbol": "TIDEWATER",
+    "new_symbol": "VEEDOL",
+    "effective_date": "2024-10-09"
+  },
+  {
+    "company": "Venky's (India) Limited",
+    "old_symbol": "WESTHATCH",
+    "new_symbol": "VENKEYS",
+    "effective_date": "2003-09-17"
+  },
+  {
+    "company": "Vertis Infrastructure Trust",
+    "old_symbol": "HIGHWAYS",
+    "new_symbol": "VERTIS",
+    "effective_date": "2025-07-22"
+  },
+  {
+    "company": "Vertis Infrastructure Trust",
+    "old_symbol": "VERTIS",
+    "new_symbol": "VERTIS",
+    "effective_date": "2025-07-22"
+  },
+  {
+    "company": "Videocon Industries Limited",
+    "old_symbol": "VDOLEASE",
+    "new_symbol": "VIDEOIND",
+    "effective_date": "2004-09-21"
+  },
+  {
+    "company": "Vidhi Specialty Food Ingredients Limited",
+    "old_symbol": "VIDHIDYE",
+    "new_symbol": "VIDHIING",
+    "effective_date": "2017-03-01"
+  },
+  {
+    "company": "Vikas EcoTech Limited",
+    "old_symbol": "VIKASGLOB",
+    "new_symbol": "VIKASECO",
+    "effective_date": "2015-12-21"
+  },
+  {
+    "company": "Vikas Lifecare Limited",
+    "old_symbol": "VIKASMCORP",
+    "new_symbol": "VIKASLIFE",
+    "effective_date": "2021-05-06"
+  },
+  {
+    "company": "Visdem Technosys Limited",
+    "old_symbol": "KEL",
+    "new_symbol": "VISDEM",
+    "effective_date": "2026-08-06"
+  },
+  {
+    "company": "Viyash Scientific Limited",
+    "old_symbol": "SEQUENT",
+    "new_symbol": "VIYASH",
+    "effective_date": "2026-01-23"
+  },
+  {
+    "company": "W S Industries (I) Limited",
+    "old_symbol": "WSIND",
+    "new_symbol": "WSI",
+    "effective_date": "2007-08-01"
+  },
+  {
+    "company": "WABCO India Limited",
+    "old_symbol": "WABCO-TVS",
+    "new_symbol": "WABCOINDIA",
+    "effective_date": "2011-09-06"
+  },
+  {
+    "company": "WE WIN LIMITED",
+    "old_symbol": "SUREVIN",
+    "new_symbol": "WEWIN",
+    "effective_date": "2020-07-01"
+  },
+  {
+    "company": "Wartsila India Limited",
+    "old_symbol": "WARTDEISEL",
+    "new_symbol": "WARTSILA",
+    "effective_date": "2000-09-20"
+  },
+  {
+    "company": "Welspun Corp Limited",
+    "old_symbol": "WELGUJ",
+    "new_symbol": "WELCORP",
+    "effective_date": "2010-05-17"
+  },
+  {
+    "company": "Welspun Enterprises Limited",
+    "old_symbol": "WELPROJ",
+    "new_symbol": "WELENT",
+    "effective_date": "2015-06-24"
+  },
+  {
+    "company": "Welspun Enterprises Limited",
+    "old_symbol": "MSKPROJ",
+    "new_symbol": "WELPROJ",
+    "effective_date": "2011-01-04"
+  },
+  {
+    "company": "Welspun Living Limited",
+    "old_symbol": "WELSPUNIND",
+    "new_symbol": "WELSPUNLIV",
+    "effective_date": "2023-12-14"
+  },
+  {
+    "company": "Wendt (India) Limited",
+    "old_symbol": "WENDTINDIA",
+    "new_symbol": "WENDT",
+    "effective_date": "2006-08-07"
+  },
+  {
+    "company": "WinPro Industries Limited",
+    "old_symbol": "JUMPNET",
+    "new_symbol": "WINPRO",
+    "effective_date": "2021-12-22"
+  },
+  {
+    "company": "Windsor Machines Limited",
+    "old_symbol": "DGPWINDSOR",
+    "new_symbol": "WINDSOR",
+    "effective_date": "2005-04-05"
+  },
+  {
+    "company": "Winsome Diamonds and Jewellery Limited",
+    "old_symbol": "SURAJDIAMN",
+    "new_symbol": "WINSOMEDJ",
+    "effective_date": "2012-07-24"
+  },
+  {
+    "company": "Wonder Electricals Limited",
+    "old_symbol": "WFL",
+    "new_symbol": "WEL",
+    "effective_date": "2023-01-04"
+  },
+  {
+    "company": "Wopolin Plastics Limited",
+    "old_symbol": "BAJAJPLAST",
+    "new_symbol": "WOPOLIN",
+    "effective_date": "2005-11-23"
+  },
+  {
+    "company": "Worth Peripherals Limited",
+    "old_symbol": "WORTH",
+    "new_symbol": "WORTHPERI",
+    "effective_date": "2025-10-10"
+  },
+  {
+    "company": "Wyeth Limited",
+    "old_symbol": "WYETHLEDE",
+    "new_symbol": "WYETH",
+    "effective_date": "2006-09-01"
+  },
+  {
+    "company": "XL Energy Limited",
+    "old_symbol": "XLTL",
+    "new_symbol": "XLTELENE",
+    "effective_date": "2009-07-22"
+  },
+  {
+    "company": "XL Energy Limited",
+    "old_symbol": "XLTELENE",
+    "new_symbol": "XLENERGY",
+    "effective_date": "2010-12-13"
+  },
+  {
+    "company": "Xchanging Solutions Limited",
+    "old_symbol": "CAMBRIDGE",
+    "new_symbol": "XCHANGING",
+    "effective_date": "2012-06-25"
+  },
+  {
+    "company": "Xchanging Solutions Limited",
+    "old_symbol": "SCANDENT",
+    "new_symbol": "CAMBRIDGE",
+    "effective_date": "2006-07-17"
+  },
+  {
+    "company": "Yaari Digital Integrated Services Limited",
+    "old_symbol": "IBWSL",
+    "new_symbol": "SORILHOLD",
+    "effective_date": "2017-04-18"
+  },
+  {
+    "company": "Yaari Digital Integrated Services Limited",
+    "old_symbol": "YAARII",
+    "new_symbol": "YAARI",
+    "effective_date": "2021-12-15"
+  },
+  {
+    "company": "Yaari Digital Integrated Services Limited",
+    "old_symbol": "SORILHOLD",
+    "new_symbol": "IBULISL",
+    "effective_date": "2018-06-08"
+  },
+  {
+    "company": "Yaari Digital Integrated Services Limited",
+    "old_symbol": "IBULISL",
+    "new_symbol": "YAARII",
+    "effective_date": "2020-12-08"
+  },
+  {
+    "company": "ZUARI INDUSTRIES LIMITED",
+    "old_symbol": "ZUARIAGRO",
+    "new_symbol": "ZUARIGLOB",
+    "effective_date": "2012-09-25"
+  },
+  {
+    "company": "ZUARI INDUSTRIES LIMITED",
+    "old_symbol": "ZUARIGLOB",
+    "new_symbol": "ZUARIIND",
+    "effective_date": "2022-07-04"
+  },
+  {
+    "company": "Zandu Realty Limited",
+    "old_symbol": "ZANDUPHARM",
+    "new_symbol": "ZANDUREALT",
+    "effective_date": "2010-03-10"
+  },
+  {
+    "company": "Zee Entertainment Enterprises Limited",
+    "old_symbol": "ZEETELE",
+    "new_symbol": "ZEEL",
+    "effective_date": "2007-02-28"
+  },
+  {
+    "company": "Zee Media Corporation Limited",
+    "old_symbol": "ZEENEWS",
+    "new_symbol": "ZEEMEDIA",
+    "effective_date": "2013-07-30"
+  },
+  {
+    "company": "Zenith Steel Pipes & Industries Limited",
+    "old_symbol": "ZENITHBIR",
+    "new_symbol": "ZENITHSTL",
+    "effective_date": "2020-08-19"
+  },
+  {
+    "company": "Zensar Technologies Limited",
+    "old_symbol": "FUJITSICIM",
+    "new_symbol": "ZENSARTECH",
+    "effective_date": "2004-03-04"
+  },
+  {
+    "company": "Zydus Lifesciences Limited",
+    "old_symbol": "CADILAHC",
+    "new_symbol": "ZYDUSLIFE",
+    "effective_date": "2022-03-07"
+  },
+  {
+    "company": "e-Serve International Limited",
+    "old_symbol": "CITICORSEC",
+    "new_symbol": "E-SERVEINT",
+    "effective_date": "2003-07-09"
+  },
+  {
+    "company": "iGate Global Solutions Limited",
+    "old_symbol": "MASCOT",
+    "new_symbol": "IGS",
+    "effective_date": "2003-08-07"
+  },
+  {
+    "company": "",
+    "old_symbol": "780LTFL30",
+    "new_symbol": "799LTFL30",
+    "effective_date": "2025-02-19"
+  },
+  {
+    "company": "Hawkins Cookers Limited",
+    "old_symbol": "HAWKINSCOOK",
+    "new_symbol": "HAWKINCOOK",
+    "effective_date": "2024-01-01"
+  }
+]

@@ -25,6 +25,12 @@ def build_corporate_action_intervals(actions):
         sym = a['symbol'].strip().upper()
         by_sym.setdefault(sym, []).append(a)
     
+    try:
+        from symbol_change_util import get_terminal_symbol_map
+        terminal_map = get_terminal_symbol_map()
+    except Exception:
+        terminal_map = {}
+
     intervals = []
     for sym, sym_actions in by_sym.items():
         by_date = {}
@@ -51,6 +57,15 @@ def build_corporate_action_intervals(actions):
                 'end_date': end_d_str,
                 'adj_factor': factor
             })
+            # Also add mapped terminal symbol if renamed (e.g. HEG -> HEGAM)
+            mapped_sym = terminal_map.get(sym)
+            if mapped_sym and mapped_sym != sym:
+                intervals.append({
+                    'symbol': mapped_sym,
+                    'start_date': start_d_str,
+                    'end_date': end_d_str,
+                    'adj_factor': factor
+                })
     return intervals
 
 def register_corporate_actions_duckdb(con, file_path=None, table_name="corporate_action_intervals"):

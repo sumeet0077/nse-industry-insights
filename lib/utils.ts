@@ -75,8 +75,19 @@ export function getReturnColor(value: number | null | undefined): string {
     return "text-gray-300";
 }
 
+export const TRADINGVIEW_SYMBOL_ALIASES: Record<string, string> = {
+    "SANGINITA": "AGASTYAEN",
+    "HEG": "HEGAM",
+    "CADILAHC": "ZYDUSLIFE",
+    "WELSPUNIND": "WELSPUNLIV",
+    "TATAMOTORS": "TMPV",
+    "LTIM": "LTM",
+    "HAWKINSCOOK": "HAWKINCOOK",
+};
+
 export function makeTradingViewSymbol(ticker: string): string {
-    const clean = ticker.replace(".NS", "").replace(".BO", "");
+    let clean = cleanTicker(ticker).toUpperCase();
+    clean = TRADINGVIEW_SYMBOL_ALIASES[clean] || clean;
     const tvSymbol = clean.replace(/-/g, "_").replace(/&/g, "_");
     const exchange = ticker.includes(".BO") ? "BSE" : "NSE";
     return `${exchange}:${tvSymbol}`;

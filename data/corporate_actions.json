@@ -432,5 +432,61 @@
     "action": "SPLIT",
     "ratio": 5.0,
     "description": "5:1 Stock Split (auto-detected)"
+  },
+  {
+    "symbol": "AMIORG",
+    "ex_date": "2025-04-25",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "ACUTAAS",
+    "ex_date": "2025-04-25",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "CHAVDA",
+    "ex_date": "2026-09-24",
+    "action": "SPLIT",
+    "ratio": 2.0,
+    "description": "2:1 Stock Split (FV 10 to 5)"
+  },
+  {
+    "symbol": "VMARCIND",
+    "ex_date": "2026-07-07",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
+  },
+  {
+    "symbol": "COOLCAPS",
+    "ex_date": "2025-07-04",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "CELLECOR",
+    "ex_date": "2024-08-09",
+    "action": "SPLIT",
+    "ratio": 10.0,
+    "description": "10:1 Stock Split (FV 10 to 1)"
+  },
+  {
+    "symbol": "BEWLTD",
+    "ex_date": "2024-10-25",
+    "action": "BONUS",
+    "ratio": 4.0,
+    "description": "3:1 Bonus Issue"
+  },
+  {
+    "symbol": "ORIANA",
+    "ex_date": "2026-09-18",
+    "action": "SPLIT",
+    "ratio": 5.0,
+    "description": "5:1 Stock Split (FV 10 to 2)"
   }
 ]

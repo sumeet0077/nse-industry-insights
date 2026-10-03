@@ -127,3 +127,103 @@ def apply_corporate_actions_polars(df, file_path=None):
         if c in df.columns:
             cols_to_add.append((pl.col(c) * pl.col("AdjFactor")).alias(f"Adj{c}"))
     return df.with_columns(cols_to_add)
+
+def apply_corporate_actions_pandas(df_pivot, file_path=None):
+    """
+    Applies cumulative backward corporate action adjustments to a pandas DataFrame pivot
+    (Index: DatetimeIndex of trading dates, Columns: symbols, Values: prices).
+    Uses exact floating-point compounding, transitive terminal symbol resolution,
+    and a distance-minimization pre-adjustment guardrail to prevent double adjustment.
+    """
+    import pandas as pd
+    if df_pivot is None or df_pivot.empty:
+        return df_pivot
+
+    actions = load_corporate_actions(file_path)
+    if not actions:
+        return df_pivot
+
+    df_pivot = df_pivot.copy()
+
+    # Ensure index is DatetimeIndex without timezone
+    if not isinstance(df_pivot.index, pd.DatetimeIndex):
+        df_pivot.index = pd.to_datetime(df_pivot.index)
+    if hasattr(df_pivot.index, 'tz') and df_pivot.index.tz is not None:
+        df_pivot.index = df_pivot.index.tz_localize(None)
+
+    try:
+        from symbol_change_util import get_terminal_symbol_map
+        terminal_map = get_terminal_symbol_map()
+    except Exception:
+        terminal_map = {}
+
+    # Build mapping from terminal symbol to matching columns in df_pivot
+    term_to_cols = {}
+    for col in df_pivot.columns:
+        clean = str(col).strip().upper().replace(".NS", "").replace(".BO", "")
+        term = terminal_map.get(clean, clean)
+        term_to_cols.setdefault(term, []).append(col)
+
+    # Group actions by terminal symbol
+    actions_by_term = {}
+    for a in actions:
+        sym = a.get("symbol", "").strip().upper()
+        if not sym:
+            continue
+        term = terminal_map.get(sym, sym)
+        actions_by_term.setdefault(term, []).append(a)
+
+    for term, sym_actions in actions_by_term.items():
+        cols = term_to_cols.get(term)
+        if not cols:
+            continue
+
+        # Compound multiple actions sharing the same ex_date
+        by_date = {}
+        for a in sym_actions:
+            d = a.get("ex_date", "").strip()
+            if not d:
+                continue
+            try:
+                r = float(a.get("ratio", 1.0))
+            except (ValueError, TypeError):
+                continue
+            if r > 0:
+                by_date[d] = by_date.get(d, 1.0) * r
+
+        sorted_dates = sorted(by_date.keys())
+        for col in cols:
+            for ex_date_str in sorted_dates:
+                factor = by_date[ex_date_str]
+                if factor == 1.0 or factor <= 0:
+                    continue
+
+                ex_dt = pd.to_datetime(ex_date_str)
+                s = df_pivot[col]
+                s_valid = s.dropna()
+                if s_valid.empty:
+                    continue
+
+                sub_prev = s_valid.loc[s_valid.index < ex_dt]
+                sub_curr = s_valid.loc[s_valid.index >= ex_dt]
+
+                if len(sub_prev) > 0 and len(sub_curr) > 0:
+                    p_prev = float(sub_prev.iloc[-1])
+                    p_curr = float(sub_curr.iloc[0])
+                    if p_prev > 0 and p_curr > 0:
+                        observed_ratio = p_curr / p_prev
+                        expected_ratio = 1.0 / factor
+                        dist_adjusted = abs(observed_ratio - 1.0)
+                        dist_unadjusted = abs(observed_ratio - expected_ratio)
+                        # Distance-minimization guardrail:
+                        # If price step is closer to 1.0 than to expected split drop (1/factor),
+                        # the series is already adjusted — skip to prevent double adjustment.
+                        if dist_adjusted < dist_unadjusted:
+                            continue
+
+                # Apply backward adjustment: divide prices prior to ex_date by factor
+                mask = df_pivot.index < ex_dt
+                df_pivot.loc[mask, col] = df_pivot.loc[mask, col] / factor
+
+    return df_pivot
+

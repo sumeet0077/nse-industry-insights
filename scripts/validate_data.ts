@@ -624,6 +624,119 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
     console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, price band enrichment, and microstructure confluence.");
 });
 
+// 9. Corporate Action Price Adjustment & RS Rating Integrity
+validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, warnings) => {
+    const cpPath = path.join(DATA_DIR, "constituent_performance", "constituent_performance_latest.json");
+    if (!fs.existsSync(cpPath)) {
+        errors.push("Missing file: data/constituent_performance/constituent_performance_latest.json");
+        return;
+    }
+    const cp: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpPath, "utf-8"));
+
+    // 1. GENESYS.NS (1:2 Bonus Issue)
+    const genesys = cp["GENESYS.NS"];
+    if (!genesys) {
+        errors.push("GENESYS.NS missing from constituent performance");
+    } else {
+        const rs = genesys.ibd_rs_rating;
+        const m3 = genesys["3M"];
+        const m6 = genesys["6M"];
+        if (rs === null || rs === undefined || rs < 55 || rs > 75) {
+            errors.push(`GENESYS.NS RS Rating (${rs}) outside expected range [55, 75]`);
+        }
+        if (m3 === null || m3 === undefined || m3 < 10) {
+            errors.push(`GENESYS.NS 3M return (${m3}%) below minimum 10%`);
+        }
+        if (m6 === null || m6 === undefined || m6 < 50) {
+            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 50%`);
+        }
+    }
+
+    // 2. TRENT.NS (1:2 Bonus Issue)
+    const trent = cp["TRENT.NS"];
+    if (!trent) {
+        errors.push("TRENT.NS missing from constituent performance");
+    } else {
+        const rs = trent.ibd_rs_rating;
+        const m6 = trent["6M"];
+        if (rs === null || rs === undefined || rs < 25 || rs > 45) {
+            errors.push(`TRENT.NS RS Rating (${rs}) outside expected range [25, 45]`);
+        }
+        if (m6 === null || m6 === undefined || m6 < 0) {
+            errors.push(`TRENT.NS 6M return (${m6}%) below minimum 0%`);
+        }
+    }
+
+    // 3. TRIVENI.NS (Demerger / Reorganization)
+    const triveni = cp["TRIVENI.NS"];
+    if (!triveni) {
+        errors.push("TRIVENI.NS missing from constituent performance");
+    } else {
+        const rs = triveni.ibd_rs_rating;
+        const m6 = triveni["6M"];
+        if (rs === null || rs === undefined || rs < 40 || rs > 65) {
+            errors.push(`TRIVENI.NS RS Rating (${rs}) outside expected range [40, 65]`);
+        }
+        if (m6 === null || m6 === undefined || m6 < -10) {
+            errors.push(`TRIVENI.NS 6M return (${m6}%) below minimum -10%`);
+        }
+    }
+
+    // 4. GOODYEAR.NS (1:2 Bonus Issue)
+    const goodyear = cp["GOODYEAR.NS"];
+    if (!goodyear) {
+        errors.push("GOODYEAR.NS missing from constituent performance");
+    } else {
+        const rs = goodyear.ibd_rs_rating;
+        if (rs === null || rs === undefined || rs < 25 || rs > 45) {
+            errors.push(`GOODYEAR.NS RS Rating (${rs}) outside expected range [25, 45]`);
+        }
+    }
+
+    // 5. HEGAM.NS (5:2 Stock Split)
+    const hegam = cp["HEGAM.NS"];
+    if (!hegam) {
+        errors.push("HEGAM.NS missing from constituent performance");
+    } else {
+        const rs = hegam.ibd_rs_rating;
+        if (rs === null || rs === undefined || rs < 75 || rs > 90) {
+            errors.push(`HEGAM.NS RS Rating (${rs}) outside expected range [75, 90]`);
+        }
+    }
+
+    // 6. AGASTYAEN.NS (High performer baseline)
+    const agastyaen = cp["AGASTYAEN.NS"];
+    if (!agastyaen) {
+        errors.push("AGASTYAEN.NS missing from constituent performance");
+    } else {
+        const rs = agastyaen.ibd_rs_rating;
+        if (rs === null || rs === undefined || rs < 90 || rs > 99) {
+            errors.push(`AGASTYAEN.NS RS Rating (${rs}) outside expected range [90, 99]`);
+        }
+    }
+
+    // 7. Universe RS Rating Mean Uniformity Check
+    const rsValues: number[] = [];
+    Object.values(cp).forEach((item) => {
+        if (typeof item.ibd_rs_rating === "number" && !isNaN(item.ibd_rs_rating)) {
+            rsValues.push(item.ibd_rs_rating);
+        }
+    });
+
+    if (rsValues.length === 0) {
+        errors.push("No valid RS Ratings found across constituent performance universe.");
+    } else {
+        const rsMean = rsValues.reduce((sum, v) => sum + v, 0) / rsValues.length;
+        if (rsMean < 45.0 || rsMean > 55.0) {
+            errors.push(`Universe RS Rating mean (${rsMean.toFixed(2)}) outside expected uniform range [45.0, 55.0]`);
+        } else {
+            console.log(`  ✓ Universe RS Rating mean is ${rsMean.toFixed(2)} (uniform distribution intact).`);
+        }
+    }
+
+    console.log("  ✓ All Corporate Action Price Adjustment & RS Rating Integrity checks passed.");
+});
+
 // Print Summary
 console.log("\n==================================================");
 console.log("📊 Verification Results");

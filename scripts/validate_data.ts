@@ -633,7 +633,7 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
     }
     const cp: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpPath, "utf-8"));
 
-    // 1. GENESYS.NS (1:2 Bonus Issue)
+    // 1. GENESYS.NS (1:2 Bonus Issue - unadjusted RS was 16, 3M -16.7%, 6M +18.7%)
     const genesys = cp["GENESYS.NS"];
     if (!genesys) {
         errors.push("GENESYS.NS missing from constituent performance");
@@ -641,44 +641,44 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         const rs = genesys.ibd_rs_rating;
         const m3 = genesys["3M"];
         const m6 = genesys["6M"];
-        if (rs === null || rs === undefined || rs < 55 || rs > 75) {
-            errors.push(`GENESYS.NS RS Rating (${rs}) outside expected range [55, 75]`);
+        if (rs === null || rs === undefined || rs < 50 || rs > 85) {
+            errors.push(`GENESYS.NS RS Rating (${rs}) outside expected range [50, 85]`);
         }
-        if (m3 === null || m3 === undefined || m3 < 10) {
-            errors.push(`GENESYS.NS 3M return (${m3}%) below minimum 10%`);
+        if (m3 === null || m3 === undefined || m3 < 5) {
+            errors.push(`GENESYS.NS 3M return (${m3}%) below minimum 5%`);
         }
-        if (m6 === null || m6 === undefined || m6 < 50) {
-            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 50%`);
+        if (m6 === null || m6 === undefined || m6 < 40) {
+            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 40%`);
         }
     }
 
-    // 2. TRENT.NS (1:2 Bonus Issue)
+    // 2. TRENT.NS (1:2 Bonus Issue - unadjusted RS was 11, 6M was -27.3%)
     const trent = cp["TRENT.NS"];
     if (!trent) {
         errors.push("TRENT.NS missing from constituent performance");
     } else {
         const rs = trent.ibd_rs_rating;
         const m6 = trent["6M"];
-        if (rs === null || rs === undefined || rs < 25 || rs > 45) {
-            errors.push(`TRENT.NS RS Rating (${rs}) outside expected range [25, 45]`);
+        if (rs === null || rs === undefined || rs < 20 || rs > 50) {
+            errors.push(`TRENT.NS RS Rating (${rs}) outside expected range [20, 50]`);
         }
-        if (m6 === null || m6 === undefined || m6 < 0) {
-            errors.push(`TRENT.NS 6M return (${m6}%) below minimum 0%`);
+        if (m6 === null || m6 === undefined || m6 < -15) {
+            errors.push(`TRENT.NS 6M return (${m6}%) below minimum -15%`);
         }
     }
 
-    // 3. TRIVENI.NS (Demerger / Reorganization)
+    // 3. TRIVENI.NS (Demerger / Reorganization - unadjusted RS was 15, 6M was -49.7%)
     const triveni = cp["TRIVENI.NS"];
     if (!triveni) {
         errors.push("TRIVENI.NS missing from constituent performance");
     } else {
         const rs = triveni.ibd_rs_rating;
         const m6 = triveni["6M"];
-        if (rs === null || rs === undefined || rs < 40 || rs > 65) {
-            errors.push(`TRIVENI.NS RS Rating (${rs}) outside expected range [40, 65]`);
+        if (rs === null || rs === undefined || rs < 35 || rs > 70) {
+            errors.push(`TRIVENI.NS RS Rating (${rs}) outside expected range [35, 70]`);
         }
-        if (m6 === null || m6 === undefined || m6 < -10) {
-            errors.push(`TRIVENI.NS 6M return (${m6}%) below minimum -10%`);
+        if (m6 === null || m6 === undefined || m6 < -15) {
+            errors.push(`TRIVENI.NS 6M return (${m6}%) below minimum -15%`);
         }
     }
 

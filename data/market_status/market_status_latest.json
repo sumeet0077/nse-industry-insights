@@ -1656,6 +1656,25 @@
     ],
     "new_stock": []
   },
+  "NIFTY PSU BANK": {
+    "above": [
+      "MAHABANK.NS",
+      "PNB.NS",
+      "UNIONBANK.NS"
+    ],
+    "below": [
+      "BANKBARODA.NS",
+      "BANKINDIA.NS",
+      "CANBK.NS",
+      "CENTRALBK.NS",
+      "INDIANB.NS",
+      "IOB.NS",
+      "PSB.NS",
+      "SBIN.NS",
+      "UCOBANK.NS"
+    ],
+    "new_stock": []
+  },
   "NIFTY REALTY": {
     "above": [
       "ANANTRAJ.NS",

@@ -1902,6 +1902,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
       "category": "industries"
@@ -1922,6 +1927,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_psu_banking",
@@ -2637,6 +2647,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
       "category": "industries"
@@ -2925,6 +2940,11 @@
       "id": "market_breadth_smallcap",
       "title": "Nifty Smallcap 250",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_psu_banking",
@@ -7029,6 +7049,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
       "category": "industries"
@@ -7337,6 +7362,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_psu_banking",
@@ -9326,6 +9356,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_psu_banking",
@@ -11597,6 +11632,11 @@
       "category": "sectors"
     },
     {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
       "category": "industries"
@@ -11894,6 +11934,11 @@
     }
   ],
   "PSB": [
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
     {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
@@ -12690,6 +12735,11 @@
     {
       "id": "breadth_finance",
       "title": "Nifty Financial Services",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
       "category": "sectors"
     },
     {
@@ -14891,6 +14941,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_psu_banking",
       "title": "PSU Banking",
       "category": "industries"
@@ -14953,6 +15008,11 @@
     {
       "id": "breadth_bank",
       "title": "Nifty Bank",
+      "category": "sectors"
+    },
+    {
+      "id": "breadth_psubank",
+      "title": "Nifty PSU Bank",
       "category": "sectors"
     },
     {

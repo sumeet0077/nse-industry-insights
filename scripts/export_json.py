@@ -413,7 +413,10 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         if parquet_file.is_dir():
             # Partitioned dataset — read per-partition to avoid int8 overflow
             import glob as _glob
-            _parts = sorted(_glob.glob(str(parquet_file / "**" / "*.parquet"), recursive=True))
+            import datetime as _dt
+            _min_year = _dt.date.today().year - 5
+            _all_parts = sorted(_glob.glob(str(parquet_file / "**" / "*.parquet"), recursive=True))
+            _parts = [p for p in _all_parts if not any(f"year={y}" in p for y in range(2000, _min_year))]
             if _parts:
                 _frames = []
                 for _pf in _parts:
@@ -534,6 +537,9 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         nifty_20d = float(nifty_ser.iloc[-21]) if nifty_ser is not None and len(nifty_ser) >= 21 else 0
         nifty_50d = float(nifty_ser.iloc[-51]) if nifty_ser is not None and len(nifty_ser) >= 51 else 0
 
+        # Pre-align Nifty with df_pivot for ultra-fast vectorized RS calculations
+        nifty_aligned = nifty_ser.reindex(df_pivot.index).ffill() if (nifty_ser is not None and not nifty_ser.empty) else None
+
         latest_date = df_pivot.index[-1]
         periods = {
             "1D": 1,
@@ -574,17 +580,17 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                         c_row["1D"] = None
                 elif p_name == "YTD":
                     ytd_target = pd.Timestamp(year=latest_date.year - 1, month=12, day=31)
-                    mask = ser.index <= ytd_target
-                    if mask.any():
-                        past_p = float(ser[mask].iloc[-1])
+                    idx = ser.index.searchsorted(ytd_target, side="right") - 1
+                    if idx >= 0:
+                        past_p = float(ser.iloc[idx])
                         c_row["YTD"] = round(((curr_price - past_p) / past_p) * 100, 2) if past_p > 0 else None
                     else:
                         c_row["YTD"] = None
                 else:
                     target_d = latest_date - timedelta(days=days)
-                    mask = ser.index <= target_d
-                    if mask.any():
-                        past_p = float(ser[mask].iloc[-1])
+                    idx = ser.index.searchsorted(target_d, side="right") - 1
+                    if idx >= 0:
+                        past_p = float(ser.iloc[idx])
                         c_row[p_name] = round(((curr_price - past_p) / past_p) * 100, 2) if past_p > 0 else None
                     else:
                         c_row[p_name] = None
@@ -648,19 +654,19 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             rs_dist_pct = None
             price_dist_pct = None
 
-            if nifty_ser is not None and len(nifty_ser) > 0:
-                # Align on common trading dates
-                aligned = pd.concat([ser.rename("stock"), nifty_ser.rename("nifty")], axis=1, join="inner").dropna()
-                if len(aligned) >= 20:
-                    rs_line = (aligned["stock"] / aligned["nifty"]) * 1000.0
+            if nifty_aligned is not None:
+                n_sub = nifty_aligned.loc[ser.index].dropna()
+                if len(n_sub) >= 20:
+                    s_sub = ser.loc[n_sub.index]
+                    rs_line = (s_sub / n_sub) * 1000.0
                     lookback_len = min(252, len(rs_line))
                     
                     rs_curr = float(rs_line.iloc[-1])
-                    price_curr = float(aligned["stock"].iloc[-1])
+                    price_curr = float(s_sub.iloc[-1])
                     
                     if lookback_len > 1:
                         rs_prior_max = float(rs_line.iloc[-lookback_len:-1].max())
-                        price_prior_max = float(aligned["stock"].iloc[-lookback_len:-1].max())
+                        price_prior_max = float(s_sub.iloc[-lookback_len:-1].max())
                         
                         rs_52w_high = bool(rs_curr >= rs_prior_max)
                         price_52w_high = bool(price_curr >= price_prior_max)

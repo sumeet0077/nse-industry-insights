@@ -135,7 +135,6 @@
       "AJANTPHARM.NS",
       "ANANDRATHI.NS",
       "ANANTRAJ.NS",
-      "ANGELONE.NS",
       "ANTHEM.NS",
       "APARINDS.NS",
       "APLAPOLLO.NS",
@@ -176,7 +175,6 @@
       "DIVISLAB.NS",
       "DIXON.NS",
       "DLF.NS",
-      "ECLERX.NS",
       "ELGIEQUIP.NS",
       "EMCURE.NS",
       "EMMVEE.NS",
@@ -317,6 +315,7 @@
       "ALKEM.NS",
       "AMBER.NS",
       "AMBUJACEM.NS",
+      "ANGELONE.NS",
       "ANURAS.NS",
       "APOLLOHOSP.NS",
       "APOLLOTYRE.NS",
@@ -384,6 +383,7 @@
       "DMART.NS",
       "DOMS.NS",
       "DRREDDY.NS",
+      "ECLERX.NS",
       "EICHERMOT.NS",
       "EIDPARRY.NS",
       "EIHOTEL.NS",
@@ -791,7 +791,6 @@
       "AJANTPHARM.NS",
       "ANANDRATHI.NS",
       "ANANTRAJ.NS",
-      "ANGELONE.NS",
       "ANTHEM.NS",
       "APARINDS.NS",
       "APLAPOLLO.NS",
@@ -826,7 +825,6 @@
       "DEEPAKFERT.NS",
       "DEVYANI.NS",
       "DIXON.NS",
-      "ECLERX.NS",
       "ELGIEQUIP.NS",
       "EMCURE.NS",
       "EMMVEE.NS",
@@ -947,6 +945,7 @@
       "AIAENG.NS",
       "ALKEM.NS",
       "AMBER.NS",
+      "ANGELONE.NS",
       "ANURAS.NS",
       "APOLLOTYRE.NS",
       "APTUS.NS",
@@ -996,6 +995,7 @@
       "DEEPAKNTR.NS",
       "DELHIVERY.NS",
       "DOMS.NS",
+      "ECLERX.NS",
       "EIDPARRY.NS",
       "EIHOTEL.NS",
       "ELECON.NS",
@@ -1193,7 +1193,6 @@
       "AETHER.NS",
       "ANANDRATHI.NS",
       "ANANTRAJ.NS",
-      "ANGELONE.NS",
       "ASAHIINDIA.NS",
       "ATHERENERG.NS",
       "AZAD.NS",
@@ -1220,7 +1219,6 @@
       "DATAPATTNS.NS",
       "DEEPAKFERT.NS",
       "DEVYANI.NS",
-      "ECLERX.NS",
       "ELGIEQUIP.NS",
       "EMCURE.NS",
       "EMMVEE.NS",
@@ -1302,6 +1300,7 @@
       "AFCONS.NS",
       "AFFLE.NS",
       "AMBER.NS",
+      "ANGELONE.NS",
       "ANURAS.NS",
       "APOLLOTYRE.NS",
       "APTUS.NS",
@@ -1331,6 +1330,7 @@
       "DEEPAKNTR.NS",
       "DELHIVERY.NS",
       "DOMS.NS",
+      "ECLERX.NS",
       "EIDPARRY.NS",
       "EIHOTEL.NS",
       "ELECON.NS",
@@ -1975,7 +1975,6 @@
     "above": [
       "BSE.NS",
       "MCX.NS",
-      "ANGELONE.NS",
       "MOTILALOFS.NS",
       "IIFLCAPS.NS",
       "GEOJITFSL.NS",
@@ -1985,7 +1984,8 @@
       "IEX.NS",
       "CDSL.NS",
       "CAMS.NS",
-      "KFINTECH.NS"
+      "KFINTECH.NS",
+      "ANGELONE.NS"
     ],
     "new_stock": []
   },
@@ -2078,10 +2078,10 @@
     "above": [
       "LALPATHLAB.NS",
       "THYROCARE.NS",
-      "VIJAYA.NS",
-      "METROPOLIS.NS"
+      "VIJAYA.NS"
     ],
     "below": [
+      "METROPOLIS.NS",
       "KRSNAA.NS"
     ],
     "new_stock": []

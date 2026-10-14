@@ -193,20 +193,17 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
                 if p_q1 > 0:
                     q1_ret = ((current_price - p_q1) / p_q1) * 100
             if n_bars >= 127:
-                p_q1 = float(df.iloc[-64]['Index_Close'])
                 p_q2 = float(df.iloc[-127]['Index_Close'])
                 if p_q2 > 0:
-                    q2_ret = ((p_q1 - p_q2) / p_q2) * 100
+                    q2_ret = ((current_price - p_q2) / p_q2) * 100
             if n_bars >= 190:
-                p_q2 = float(df.iloc[-127]['Index_Close'])
                 p_q3 = float(df.iloc[-190]['Index_Close'])
                 if p_q3 > 0:
-                    q3_ret = ((p_q2 - p_q3) / p_q3) * 100
+                    q3_ret = ((current_price - p_q3) / p_q3) * 100
             if n_bars >= 253:
-                p_q3 = float(df.iloc[-190]['Index_Close'])
                 p_q4 = float(df.iloc[-253]['Index_Close'])
                 if p_q4 > 0:
-                    q4_ret = ((p_q3 - p_q4) / p_q4) * 100
+                    q4_ret = ((current_price - p_q4) / p_q4) * 100
 
             rs_raw = None
             if q1_ret is not None and q2_ret is not None and q3_ret is not None and q4_ret is not None:
@@ -618,20 +615,17 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                 if p_q1 > 0:
                     q1_ret = ((curr_price - p_q1) / p_q1) * 100
             if listing_days >= 127:
-                p_q1 = float(ser.iloc[-64])
                 p_q2 = float(ser.iloc[-127])
                 if p_q2 > 0:
-                    q2_ret = ((p_q1 - p_q2) / p_q2) * 100
+                    q2_ret = ((curr_price - p_q2) / p_q2) * 100
             if listing_days >= 190:
-                p_q2 = float(ser.iloc[-127])
                 p_q3 = float(ser.iloc[-190])
                 if p_q3 > 0:
-                    q3_ret = ((p_q2 - p_q3) / p_q3) * 100
+                    q3_ret = ((curr_price - p_q3) / p_q3) * 100
             if listing_days >= 253:
-                p_q3 = float(ser.iloc[-190])
                 p_q4 = float(ser.iloc[-253])
                 if p_q4 > 0:
-                    q4_ret = ((p_q3 - p_q4) / p_q4) * 100
+                    q4_ret = ((curr_price - p_q4) / p_q4) * 100
 
             rs_raw = None
             if q1_ret is not None and q2_ret is not None and q3_ret is not None and q4_ret is not None:
@@ -2085,7 +2079,6 @@ def main():
     ensure_public_symlinks(output_dir)
 
     print(f"\n✓ Export complete → {output_dir.resolve()}")
-    import os
     os._exit(0)
 
 

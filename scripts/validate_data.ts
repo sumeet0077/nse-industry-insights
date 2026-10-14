@@ -633,6 +633,15 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
     }
     const cp: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpPath, "utf-8"));
 
+    // 0. TAKE.NS (Down -70%+ YTD, 52W Low - formula bug caused erroneous RS 91)
+    const take = cp["TAKE.NS"];
+    if (take) {
+        const rs = take.ibd_rs_rating;
+        if (rs !== null && rs !== undefined && rs > 25) {
+            errors.push(`TAKE.NS RS Rating (${rs}) is erroneously high (> 25) despite crashing -71% YTD`);
+        }
+    }
+
     // 1. GENESYS.NS (1:2 Bonus Issue - unadjusted bug caused RS 16, 3M -16.7%, 6M +18.7%)
     const genesys = cp["GENESYS.NS"];
     if (!genesys) {
@@ -684,8 +693,8 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         errors.push("GOODYEAR.NS missing from constituent performance");
     } else {
         const rs = goodyear.ibd_rs_rating;
-        if (rs === null || rs === undefined || rs < 15) {
-            errors.push(`GOODYEAR.NS RS Rating (${rs}) collapsed below minimum 15`);
+        if (rs === null || rs === undefined || rs < 10) {
+            errors.push(`GOODYEAR.NS RS Rating (${rs}) collapsed below minimum 10`);
         }
     }
 

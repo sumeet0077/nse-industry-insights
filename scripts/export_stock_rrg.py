@@ -267,7 +267,6 @@ def main():
             print(f"  ERR {dataFile}: {e}", flush=True)
 
     print(f"✓ Export complete: Vectorized stock RRG data exported for {success_count} index/theme pages.", flush=True)
-    import os
     os._exit(0)
 
 if __name__ == "__main__":

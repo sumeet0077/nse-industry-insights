@@ -2085,6 +2085,8 @@ def main():
     ensure_public_symlinks(output_dir)
 
     print(f"\n✓ Export complete → {output_dir.resolve()}")
+    import os
+    os._exit(0)
 
 
 if __name__ == "__main__":

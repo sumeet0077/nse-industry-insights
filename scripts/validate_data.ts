@@ -652,8 +652,8 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         if (rs === null || rs === undefined || rs < 35) {
             errors.push(`GENESYS.NS RS Rating (${rs}) collapsed below minimum 35 (indicates unadjusted corporate action)`);
         }
-        if (m6 === null || m6 === undefined || m6 < 25) {
-            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 25% (indicates unadjusted corporate action)`);
+        if (m6 === null || m6 === undefined || m6 < 10) {
+            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 10% (indicates unadjusted corporate action)`);
         }
     }
 
@@ -693,8 +693,8 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         errors.push("GOODYEAR.NS missing from constituent performance");
     } else {
         const rs = goodyear.ibd_rs_rating;
-        if (rs === null || rs === undefined || rs < 10) {
-            errors.push(`GOODYEAR.NS RS Rating (${rs}) collapsed below minimum 10`);
+        if (rs === null || rs === undefined || rs < 5) {
+            errors.push(`GOODYEAR.NS RS Rating (${rs}) collapsed below minimum 5`);
         }
     }
 

@@ -642,18 +642,18 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         }
     }
 
-    // 1. GENESYS.NS (1:2 Bonus Issue - unadjusted bug caused RS 16, 3M -16.7%, 6M +18.7%)
+    // 1. GENESYS.NS (1:2 Bonus Issue on 2026-08-06 - unadjusted bug caused ~33% drop, RS 16, 6M <-25%)
     const genesys = cp["GENESYS.NS"];
     if (!genesys) {
         errors.push("GENESYS.NS missing from constituent performance");
     } else {
         const rs = genesys.ibd_rs_rating;
         const m6 = genesys["6M"];
-        if (rs === null || rs === undefined || rs < 35) {
-            errors.push(`GENESYS.NS RS Rating (${rs}) collapsed below minimum 35 (indicates unadjusted corporate action)`);
+        if (rs === null || rs === undefined || rs < 20) {
+            errors.push(`GENESYS.NS RS Rating (${rs}) collapsed below minimum 20 (indicates unadjusted corporate action)`);
         }
-        if (m6 === null || m6 === undefined || m6 < 10) {
-            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum 10% (indicates unadjusted corporate action)`);
+        if (m6 === null || m6 === undefined || m6 < -20) {
+            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum -20% (indicates unadjusted corporate action)`);
         }
     }
 

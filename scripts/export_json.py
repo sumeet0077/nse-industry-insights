@@ -961,131 +961,66 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 has_ca = False
 
             parquet_pattern = f"{chosen_parquet}/**/*.parquet" if chosen_parquet.is_dir() else str(chosen_parquet)
-            pq_cols = set(c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{parquet_pattern}', union_by_name=true)").fetchall())
-            has_adj = "adj_close" in pq_cols
+            ca_join = """
+            LEFT JOIN corporate_action_intervals cai
+              ON b.symbol = cai.symbol
+             AND b.d >= cai.start_date
+             AND b.d <= cai.end_date
+            """ if has_ca else ""
+            adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
 
-            if has_adj:
-                query = f"""
-                WITH base AS (
-                    SELECT 
-                        TRIM(symbol) as symbol,
-                        CAST(trade_date AS DATE) as d,
-                        close as raw_close,
-                        open,
-                        adj_high as adj_high,
-                        adj_low as adj_low,
-                        adj_close as adj_close,
-                        volume
-                    FROM read_parquet('{parquet_pattern}', union_by_name=true)
-                    WHERE series IN ('EQ', 'BE', 'BZ')
-                ),
-                adjusted AS (
-                    SELECT 
-                        b.symbol,
-                        b.d,
-                        b.adj_close,
-                        b.adj_high,
-                        b.adj_low,
-                        b.raw_close,
-                        b.volume,
-                        ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
-                        LAG(b.adj_close, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
-                        LAG(b.adj_close, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
-                        MAX(b.adj_high) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as high_52w,
-                        MIN(b.adj_low) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as low_52w
-                    FROM base b
-                )
+            query = f"""
+            WITH base AS (
                 SELECT 
-                    symbol,
-                    d::VARCHAR as date_str,
-                    raw_close,
-                    ROUND(((adj_close - prev_close) / prev_close) * 100.0, 2) as pct_1d,
-                    ROUND(((adj_close - prev_5d_close) / prev_5d_close) * 100.0, 2) as pct_5d,
-                    volume,
-                    ROUND(raw_close * volume / 10000000.0, 2) as turnover_cr,
-                    CASE WHEN session_num >= 252 AND adj_high >= high_52w THEN 1 ELSE 0 END as is_high,
-                    CASE WHEN session_num >= 252 AND adj_low <= low_52w AND NOT (adj_high >= high_52w) THEN 1 ELSE 0 END as is_low
-                FROM adjusted
-                WHERE d >= (SELECT MAX(d) - INTERVAL 120 DAY FROM base)
-                ORDER BY d ASC
-                """
-            else:
-                try:
-                    from corporate_actions_util import register_corporate_actions_duckdb
-                    register_corporate_actions_duckdb(con)
-                    has_ca = True
-                except Exception as e:
-                    print(f"  Notice: Corporate actions DuckDB table: {e}")
-                    has_ca = False
-
-                ca_join = """
-                LEFT JOIN corporate_action_intervals cai
-                  ON b.symbol = cai.symbol
-                 AND b.d >= cai.start_date
-                 AND b.d <= cai.end_date
-                """ if has_ca else ""
-                adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
-
-                query = f"""
-                WITH base AS (
-                    SELECT 
-                        TRIM(symbol) as symbol,
-                        CAST(trade_date AS DATE) as d,
-                        close,
-                        open,
-                        high,
-                        low,
-                        volume
-                    FROM read_parquet('{parquet_pattern}', union_by_name=true)
-                    WHERE series IN ('EQ', 'BE', 'BZ')
-                ),
-                adjusted AS (
-                    SELECT 
-                        b.symbol,
-                        b.d,
-                        b.close * {adj_factor_expr} as adj_close,
-                        b.high * {adj_factor_expr} as adj_high,
-                        b.low * {adj_factor_expr} as adj_low,
-                        b.close as raw_close,
-                        b.volume,
-                        ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
-                        LAG(b.close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
-                        LAG(b.close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
-                        MAX(b.high * {adj_factor_expr}) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as high_52w,
-                        MIN(b.low * {adj_factor_expr}) OVER (
-                            PARTITION BY b.symbol 
-                            ORDER BY b.d 
-                            ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
-                        ) as low_52w
-                    FROM base b
-                    {ca_join}
-                )
+                    TRIM(symbol) as symbol,
+                    CAST(trade_date AS DATE) as d,
+                    close,
+                    open,
+                    high,
+                    low,
+                    volume
+                FROM read_parquet('{parquet_pattern}', union_by_name=true)
+                WHERE series IN ('EQ', 'BE', 'BZ')
+            ),
+            adjusted AS (
                 SELECT 
-                    symbol,
-                    d::VARCHAR as date_str,
-                    raw_close,
-                    ROUND(((adj_close - prev_close) / prev_close) * 100.0, 2) as pct_1d,
-                    ROUND(((adj_close - prev_5d_close) / prev_5d_close) * 100.0, 2) as pct_5d,
-                    volume,
-                    ROUND(raw_close * volume / 10000000.0, 2) as turnover_cr,
-                    CASE WHEN session_num >= 252 AND adj_high >= high_52w THEN 1 ELSE 0 END as is_high,
-                    CASE WHEN session_num >= 252 AND adj_low <= low_52w AND NOT (adj_high >= high_52w) THEN 1 ELSE 0 END as is_low
-                FROM adjusted
-                WHERE d >= (SELECT MAX(d) - INTERVAL 120 DAY FROM base)
-                ORDER BY d ASC
-                """
+                    b.symbol,
+                    b.d,
+                    b.close * {adj_factor_expr} as adj_close,
+                    b.high * {adj_factor_expr} as adj_high,
+                    b.low * {adj_factor_expr} as adj_low,
+                    b.close as raw_close,
+                    b.volume,
+                    ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
+                    LAG(b.close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
+                    LAG(b.close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
+                    MAX(b.high * {adj_factor_expr}) OVER (
+                        PARTITION BY b.symbol 
+                        ORDER BY b.d 
+                        ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
+                    ) as high_52w,
+                    MIN(b.low * {adj_factor_expr}) OVER (
+                        PARTITION BY b.symbol 
+                        ORDER BY b.d 
+                        ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
+                    ) as low_52w
+                FROM base b
+                {ca_join}
+            )
+            SELECT 
+                symbol,
+                d::VARCHAR as date_str,
+                raw_close,
+                ROUND(((adj_close - prev_close) / prev_close) * 100.0, 2) as pct_1d,
+                ROUND(((adj_close - prev_5d_close) / prev_5d_close) * 100.0, 2) as pct_5d,
+                volume,
+                ROUND(raw_close * volume / 10000000.0, 2) as turnover_cr,
+                CASE WHEN session_num >= 252 AND adj_high >= high_52w THEN 1 ELSE 0 END as is_high,
+                CASE WHEN session_num >= 252 AND adj_low <= low_52w AND NOT (adj_high >= high_52w) THEN 1 ELSE 0 END as is_low
+            FROM adjusted
+            WHERE d >= (SELECT MAX(d) - INTERVAL 120 DAY FROM base)
+            ORDER BY d ASC
+            """
             rows = con.execute(query).fetchall()
             con.close()
 
@@ -1189,12 +1124,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             con = duckdb.connect()
             pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
             min_date = selected_dates[0]
-            pq_cols = set(c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{pq_pattern}', union_by_name=true)").fetchall())
-            has_adj = "adj_close" in pq_cols
-            h_col = "adj_high" if (has_adj and "adj_high" in pq_cols) else "high"
-            l_col = "adj_low" if (has_adj and "adj_low" in pq_cols) else "low"
             q = f"""
-            SELECT TRIM(symbol), STRFTIME(CAST(trade_date AS DATE), '%Y-%m-%d'), {h_col}, {l_col}, series
+            SELECT TRIM(symbol), STRFTIME(CAST(trade_date AS DATE), '%Y-%m-%d'), high, low, series
             FROM read_parquet('{pq_pattern}', union_by_name=true)
             WHERE trade_date >= '{min_date}'
             """
@@ -1376,31 +1307,24 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
 
             ca_join = ""
             ca_factor_expr = "1.0"
-            if not has_adj:
-                try:
-                    from corporate_actions_util import register_corporate_actions_duckdb
-                    register_corporate_actions_duckdb(con)
-                    ca_join = """
-                    LEFT JOIN corporate_action_intervals cai
-                      ON TRIM(b.symbol) = cai.symbol
-                     AND CAST(b.trade_date AS DATE) >= cai.start_date
-                     AND CAST(b.trade_date AS DATE) <= cai.end_date
-                    """
-                    ca_factor_expr = "COALESCE(cai.adj_factor, 1.0)"
-                except Exception as e:
-                    print(f"  Notice: Corporate actions DuckDB table: {e}")
+            try:
+                from corporate_actions_util import register_corporate_actions_duckdb
+                register_corporate_actions_duckdb(con)
+                ca_join = """
+                LEFT JOIN corporate_action_intervals cai
+                  ON TRIM(b.symbol) = cai.symbol
+                 AND CAST(b.trade_date AS DATE) >= cai.start_date
+                 AND CAST(b.trade_date AS DATE) <= cai.end_date
+                """
+                ca_factor_expr = "COALESCE(cai.adj_factor, 1.0)"
+            except Exception as e:
+                print(f"  Notice: Corporate actions DuckDB table: {e}")
 
             # Monthly CPR query (anchored to prior calendar month)
-            if has_adj:
-                cpr_h = "MAX(b.adj_high)" if "adj_high" in pq_cols else "MAX(b.high)"
-                cpr_l = "MIN(b.adj_low)" if "adj_low" in pq_cols else "MIN(b.low)"
-                cpr_c = "ARG_MAX(b.adj_close, CAST(b.trade_date AS DATE))" if "adj_close" in pq_cols else "ARG_MAX(b.close, CAST(b.trade_date AS DATE))"
-                cpr_ca_join = ""
-            else:
-                cpr_h = f"MAX(b.high * {ca_factor_expr})"
-                cpr_l = f"MIN(b.low * {ca_factor_expr})"
-                cpr_c = f"ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE))"
-                cpr_ca_join = ca_join
+            cpr_h = f"MAX(b.high * {ca_factor_expr})"
+            cpr_l = f"MIN(b.low * {ca_factor_expr})"
+            cpr_c = f"ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE))"
+            cpr_ca_join = ca_join
 
             q_cpr = f"""
             SELECT 
@@ -1422,18 +1346,11 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     cpr_lookup[(sym, m_start.year, m_start.month)] = (float(mh), float(ml), float(mc))
 
             # Daily warmup query (90-day warmup before selected_dates[0])
-            if has_adj:
-                d_open = "b.adj_open as open" if "adj_open" in pq_cols else "b.open as open"
-                d_high = "b.adj_high as high" if "adj_high" in pq_cols else "b.high as high"
-                d_low = "b.adj_low as low" if "adj_low" in pq_cols else "b.low as low"
-                d_close = "b.adj_close as close" if "adj_close" in pq_cols else "b.close as close"
-                daily_ca_join = ""
-            else:
-                d_open = f"b.open * {ca_factor_expr} as open"
-                d_high = f"b.high * {ca_factor_expr} as high"
-                d_low = f"b.low * {ca_factor_expr} as low"
-                d_close = f"b.close * {ca_factor_expr} as close"
-                daily_ca_join = ca_join
+            d_open = f"b.open * {ca_factor_expr} as open"
+            d_high = f"b.high * {ca_factor_expr} as high"
+            d_low = f"b.low * {ca_factor_expr} as low"
+            d_close = f"b.close * {ca_factor_expr} as close"
+            daily_ca_join = ca_join
 
             q_daily = f"""
             SELECT 
@@ -1456,17 +1373,16 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             """
             daily_df = con.execute(q_daily).pl()
 
-            # Multi-Year ceiling query (ATH, 5Y, 3Y, 2Y) with session-count guards
-            h_col = "adj_high" if (has_adj and "adj_high" in pq_cols) else "high"
-
+            # Multi-Year ceiling query (ATH, 5Y, 3Y, 2Y) with session-count guards and split/bonus adjustment
             q_my = f"""
             WITH daily_bars AS (
                 SELECT 
                     {sym_expr} as symbol,
                     CAST(b.trade_date AS DATE) as d,
-                    MAX(b.{h_col}) as h_val
+                    MAX(b.high * {ca_factor_expr}) as h_val
                 FROM read_parquet('{pq_pattern}', union_by_name=true) b
                 {sym_join}
+                {ca_join}
                 WHERE b.series IN ('EQ', 'BE', 'BZ')
                 GROUP BY {sym_expr}, CAST(b.trade_date AS DATE)
             ),

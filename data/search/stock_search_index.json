@@ -6648,7 +6648,7 @@
       "category": "industries"
     }
   ],
-  "ICICIPRULI": [
+  "ICICILIFE": [
     {
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
@@ -6663,7 +6663,9 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
-    },
+    }
+  ],
+  "ICICIPRULI": [
     {
       "id": "breadth_theme_life_insurance",
       "title": "Life Insurance",

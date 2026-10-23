@@ -401,6 +401,9 @@ export function Recurrence52WScanner({
     );
     const [isColumnDropdownOpen, setIsColumnDropdownOpen] = useState(false);
     const columnDropdownRef = useRef<HTMLDivElement>(null);
+    const [isCopyDropdownOpen, setIsCopyDropdownOpen] = useState(false);
+    const copyDropdownRef = useRef<HTMLDivElement>(null);
+    const copyDropdownTimerRef = useRef<NodeJS.Timeout | null>(null);
     const tableContainerRef = useRef<HTMLDivElement>(null);
 
     // Column Widths with Draggable Resizers
@@ -536,6 +539,44 @@ export function Recurrence52WScanner({
             return () => document.removeEventListener("mousedown", handleClickOutside);
         }
     }, [isColumnDropdownOpen]);
+
+    // Copy TV Batches dropdown hover & outside click management
+    const handleCopyMouseEnter = useCallback(() => {
+        if (copyDropdownTimerRef.current) {
+            clearTimeout(copyDropdownTimerRef.current);
+            copyDropdownTimerRef.current = null;
+        }
+        setIsCopyDropdownOpen(true);
+    }, []);
+
+    const handleCopyMouseLeave = useCallback(() => {
+        if (copyDropdownTimerRef.current) {
+            clearTimeout(copyDropdownTimerRef.current);
+        }
+        copyDropdownTimerRef.current = setTimeout(() => {
+            setIsCopyDropdownOpen(false);
+        }, 250);
+    }, []);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (copyDropdownRef.current && !copyDropdownRef.current.contains(event.target as Node)) {
+                setIsCopyDropdownOpen(false);
+            }
+        }
+        if (isCopyDropdownOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+        }
+    }, [isCopyDropdownOpen]);
+
+    useEffect(() => {
+        return () => {
+            if (copyDropdownTimerRef.current) {
+                clearTimeout(copyDropdownTimerRef.current);
+            }
+        };
+    }, []);
 
     const isConfluenceView = useMemo(() => {
         return SCANNER_COLUMNS.every((col) => {
@@ -2151,83 +2192,113 @@ export function Recurrence52WScanner({
                     )}
 
                     {/* TradingView Copy Batches */}
-                    <div className="relative group">
+                    <div
+                        className="relative"
+                        ref={copyDropdownRef}
+                        onMouseEnter={handleCopyMouseEnter}
+                        onMouseLeave={handleCopyMouseLeave}
+                    >
                         <button
                             type="button"
-                            onClick={() => copyTradingView()}
+                            onClick={() => {
+                                if (isCopyDropdownOpen) {
+                                    setIsCopyDropdownOpen(false);
+                                } else {
+                                    handleCopyMouseEnter();
+                                }
+                            }}
                             disabled={targetTickersForActions.length === 0}
-                            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 rounded-lg text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                            className={`flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 rounded-lg text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                                isCopyDropdownOpen ? "bg-gray-700 border-gray-600 text-white" : ""
+                            }`}
+                            aria-expanded={isCopyDropdownOpen}
+                            aria-label="Copy TradingView Batches"
                         >
                             <Copy className="w-3.5 h-3.5 text-gray-400" />
                             Copy TV Batches
-                            <ChevronDown className="w-3 h-3 text-gray-400" />
+                            <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-200 ${isCopyDropdownOpen ? "rotate-180" : ""}`} />
                         </button>
-                        {targetTickersForActions.length > 0 && (
-                            <div className="absolute right-0 top-full mt-1 hidden group-hover:block w-52 max-h-72 overflow-y-auto bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-1 z-50">
-                                <button
-                                    type="button"
-                                    onClick={() => copyTradingView()}
-                                    className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between"
-                                >
-                                    <span>Copy All</span>
-                                    <span className="text-[10px] text-gray-500 font-mono">
-                                        {targetTickersForActions.length}
-                                    </span>
-                                </button>
-                                {targetTickersForActions.length > 15 && (
-                                    <div className="border-t border-gray-800 my-1 pt-1">
-                                        <div className="px-2 py-0.5 text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
-                                            Batches of 15
+                        {targetTickersForActions.length > 0 && isCopyDropdownOpen && (
+                            <div
+                                className="absolute right-0 top-full pt-1.5 z-50 animate-in fade-in zoom-in-95 duration-100"
+                                onMouseEnter={handleCopyMouseEnter}
+                                onMouseLeave={handleCopyMouseLeave}
+                            >
+                                <div className="w-56 max-h-72 overflow-y-auto bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-1.5 custom-scrollbar">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            copyTradingView();
+                                            setIsCopyDropdownOpen(false);
+                                        }}
+                                        className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between transition-colors"
+                                    >
+                                        <span className="font-medium">Copy All</span>
+                                        <span className="text-[10px] text-gray-400 font-mono bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700">
+                                            {targetTickersForActions.length}
+                                        </span>
+                                    </button>
+                                    {targetTickersForActions.length > 15 && (
+                                        <div className="border-t border-gray-800 my-1 pt-1">
+                                            <div className="px-2 py-0.5 text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
+                                                Batches of 15
+                                            </div>
+                                            {Array.from(
+                                                { length: Math.ceil(targetTickersForActions.length / 15) },
+                                                (_, idx) => {
+                                                    const start = idx * 15 + 1;
+                                                    const end = Math.min((idx + 1) * 15, targetTickersForActions.length);
+                                                    return (
+                                                        <button
+                                                            key={`b15-${idx}`}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                copyTradingView(15, idx);
+                                                                setIsCopyDropdownOpen(false);
+                                                            }}
+                                                            className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between transition-colors"
+                                                        >
+                                                            <span>Batch {idx + 1} ({start}–{end})</span>
+                                                            <span className="text-[10px] text-gray-400 font-mono bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700">
+                                                                {end - start + 1}
+                                                            </span>
+                                                        </button>
+                                                    );
+                                                }
+                                            )}
                                         </div>
-                                        {Array.from(
-                                             { length: Math.ceil(targetTickersForActions.length / 15) },
-                                            (_, idx) => {
-                                                const start = idx * 15 + 1;
-                                                const end = Math.min((idx + 1) * 15, targetTickersForActions.length);
-                                                return (
-                                                    <button
-                                                        key={`b15-${idx}`}
-                                                        type="button"
-                                                        onClick={() => copyTradingView(15, idx)}
-                                                        className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between"
-                                                    >
-                                                        <span>Batch {idx + 1} ({start}–{end})</span>
-                                                        <span className="text-[10px] text-gray-500 font-mono">
-                                                            {end - start + 1}
-                                                        </span>
-                                                    </button>
-                                                );
-                                            }
-                                        )}
-                                    </div>
-                                )}
-                                {targetTickersForActions.length > 30 && (
-                                    <div className="border-t border-gray-800 my-1 pt-1">
-                                        <div className="px-2 py-0.5 text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
-                                            Batches of 30
+                                    )}
+                                    {targetTickersForActions.length > 30 && (
+                                        <div className="border-t border-gray-800 my-1 pt-1">
+                                            <div className="px-2 py-0.5 text-[10px] text-gray-500 font-semibold uppercase tracking-wider">
+                                                Batches of 30
+                                            </div>
+                                            {Array.from(
+                                                { length: Math.ceil(targetTickersForActions.length / 30) },
+                                                (_, idx) => {
+                                                    const start = idx * 30 + 1;
+                                                    const end = Math.min((idx + 1) * 30, targetTickersForActions.length);
+                                                    return (
+                                                        <button
+                                                            key={`b30-${idx}`}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                copyTradingView(30, idx);
+                                                                setIsCopyDropdownOpen(false);
+                                                            }}
+                                                            className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between transition-colors"
+                                                        >
+                                                            <span>Batch {idx + 1} ({start}–{end})</span>
+                                                            <span className="text-[10px] text-gray-400 font-mono bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700">
+                                                                {end - start + 1}
+                                                            </span>
+                                                        </button>
+                                                    );
+                                                }
+                                            )}
                                         </div>
-                                        {Array.from(
-                                            { length: Math.ceil(targetTickersForActions.length / 30) },
-                                            (_, idx) => {
-                                                const start = idx * 30 + 1;
-                                                const end = Math.min((idx + 1) * 30, targetTickersForActions.length);
-                                                return (
-                                                    <button
-                                                        key={`b30-${idx}`}
-                                                        type="button"
-                                                        onClick={() => copyTradingView(30, idx)}
-                                                        className="w-full text-left px-2.5 py-1.5 text-xs text-gray-200 hover:bg-gray-800 rounded flex items-center justify-between"
-                                                    >
-                                                        <span>Batch {idx + 1} ({start}–{end})</span>
-                                                        <span className="text-[10px] text-gray-500 font-mono">
-                                                            {end - start + 1}
-                                                        </span>
-                                                    </button>
-                                                );
-                                            }
-                                        )}
-                                    </div>
-                                )}
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

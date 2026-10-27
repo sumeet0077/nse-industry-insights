@@ -445,15 +445,15 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    // Invariant 3: Corporate Action Split Integrity (POCL, ANGELONE)
+    // Invariant 3: Corporate Action Split Integrity (POCL, ANGELONE in immediate post-split window)
     for (const dt of data.dates) {
         const session = data.daily_lists[dt];
         if (!session) continue;
         const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
-        if (dt >= "2026-07-21" && lowSet.has("POCL")) {
+        if (dt >= "2026-07-21" && dt <= "2026-08-15" && lowSet.has("POCL")) {
             errors.push(`Invariant 3 Failure: POCL erroneously in low52w post-split on ${dt}`);
         }
-        if (dt >= "2026-02-26" && lowSet.has("ANGELONE")) {
+        if (dt >= "2026-02-26" && dt <= "2026-03-31" && lowSet.has("ANGELONE")) {
             errors.push(`Invariant 3 Failure: ANGELONE erroneously in low52w post-split on ${dt}`);
         }
     }

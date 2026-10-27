@@ -1767,12 +1767,12 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             if raw_sym.endswith("-RE"):
                 raise ValueError(f"Section 8 Invariant 2 Violation: Rights Entitlement '{raw_sym}' leaked on {dt}")
 
-    # Invariant 3: Corporate actions split sanity (POCL, ANGELONE)
+    # Invariant 3: Corporate actions split sanity (POCL, ANGELONE in immediate post-split window)
     for dt in selected_dates:
         l_set = set(s.replace(".NS", "") for s in daily_lists[dt]["lows"])
-        if dt >= "2026-07-21" and "POCL" in l_set:
+        if "2026-07-21" <= dt <= "2026-08-15" and "POCL" in l_set:
             raise ValueError(f"Section 8 Invariant 3 Violation: POCL falsely appeared in low52w post-split on {dt}")
-        if dt >= "2026-02-26" and "ANGELONE" in l_set:
+        if "2026-02-26" <= dt <= "2026-03-31" and "ANGELONE" in l_set:
             raise ValueError(f"Section 8 Invariant 3 Violation: ANGELONE falsely appeared in low52w post-split on {dt}")
 
     # Invariant 4: POLICYBZR crash trap

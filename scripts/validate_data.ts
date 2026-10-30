@@ -3,6 +3,7 @@ import path from "path";
 import { ALL_CONFIGS, BROAD_MARKET, SECTORS } from "../lib/config";
 import { REQUIRED_CONSTITUENT_METRICS } from "../lib/metrics";
 import { resolveDataKey, parseBulkTickers, toCAGR, cleanTicker } from "../lib/utils";
+import { getAllThemesBreadthMetrics, GAINER_TIMEFRAMES } from "../lib/data";
 import type { MarketStatus, ConstituentPerformanceMap, PerformanceRow } from "../types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -740,6 +741,64 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
     }
 
     console.log("  ✓ All Corporate Action Price Adjustment & RS Rating Integrity checks passed.");
+});
+
+// 8. Validate Breadth & Timeframe Gainers Metrics Engine
+validate("Breadth & Timeframe Gainers Engine (lib/data.ts)", (errors, warnings) => {
+    const breadthMap = getAllThemesBreadthMetrics();
+    const configCount = ALL_CONFIGS.length;
+    let matchedConfigs = 0;
+
+    for (const cfg of ALL_CONFIGS) {
+        const metrics = breadthMap[cfg.title];
+        if (!metrics) {
+            errors.push(`Config "${cfg.title}" has no computed breadth metrics in AllThemesBreadthMap`);
+            continue;
+        }
+        matchedConfigs++;
+
+        // Basic boundary checks
+        if (metrics.totalStocks < 0) {
+            errors.push(`Theme "${cfg.title}" totalStocks (${metrics.totalStocks}) is negative`);
+        }
+        if (metrics.above200Sma < 0 || metrics.above200Sma > metrics.totalStocks) {
+            errors.push(`Theme "${cfg.title}" above200Sma (${metrics.above200Sma}) out of range [0, ${metrics.totalStocks}]`);
+        }
+        if (metrics.pctAbove200Sma < 0 || metrics.pctAbove200Sma > 100) {
+            errors.push(`Theme "${cfg.title}" pctAbove200Sma (${metrics.pctAbove200Sma}) out of range [0, 100]`);
+        }
+
+        // Timeframe gainers checks
+        for (const tf of GAINER_TIMEFRAMES) {
+            const stat = metrics.timeframes?.[tf];
+            if (!stat) {
+                errors.push(`Theme "${cfg.title}" missing timeframes["${tf}"]`);
+                continue;
+            }
+
+            if (stat.gained < 0 || stat.declined < 0 || stat.flat < 0) {
+                errors.push(`Theme "${cfg.title}" ${tf} has negative counts: gained=${stat.gained}, declined=${stat.declined}, flat=${stat.flat}`);
+            }
+
+            if (stat.total < 0 || stat.total > metrics.totalStocks) {
+                errors.push(`Theme "${cfg.title}" ${tf} active total (${stat.total}) out of bounds [0, ${metrics.totalStocks}]`);
+            }
+
+            if (stat.pct < 0 || stat.pct > 100) {
+                errors.push(`Theme "${cfg.title}" ${tf} pct (${stat.pct}) out of range [0, 100]`);
+            }
+
+            if (stat.gained + stat.declined + stat.flat !== stat.total) {
+                errors.push(`Theme "${cfg.title}" ${tf} sum of gained+declined+flat (${stat.gained + stat.declined + stat.flat}) != active total (${stat.total})`);
+            }
+
+            if (stat.total + stat.unlisted !== metrics.totalStocks) {
+                errors.push(`Theme "${cfg.title}" ${tf} active total + unlisted (${stat.total + stat.unlisted}) != total stocks (${metrics.totalStocks})`);
+            }
+        }
+    }
+
+    console.log(`  ✓ All ${matchedConfigs}/${configCount} themes computed valid breadth and timeframe gainer metrics with 100% integrity.`);
 });
 
 // Print Summary

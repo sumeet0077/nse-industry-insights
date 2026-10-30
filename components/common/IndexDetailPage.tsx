@@ -6,11 +6,13 @@ import { ThemePriceChart } from "@/components/charts/ThemePriceChart";
 import { StockRRGClient } from "@/components/StockRRGClient";
 import { MetricCardsRow } from "@/components/common/MetricCard";
 import { ConstituentTable } from "@/components/tables/ConstituentTable";
-import type { BreadthDataPoint, MarketStatusEntry } from "@/types";
+import type { BreadthDataPoint, MarketStatusEntry, TimeframeGainersStat } from "@/types";
 import type { StockRRGPayload } from "@/lib/data";
+import { GAINER_TIMEFRAMES } from "@/lib/metrics";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { makeTradingViewUrl, getTickerLabel } from "@/lib/utils";
+import { TimeframeGainersBar, ActiveBreadthFilter } from "@/components/common/TimeframeGainersBar";
 
 interface IndexDetailPageProps {
     title: string;
@@ -48,6 +50,7 @@ export function IndexDetailPage({
     }, []);
 
     const [showCagr, setShowCagr] = useState(false);
+    const [activeBreadthFilter, setActiveBreadthFilter] = useState<ActiveBreadthFilter | null>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
     // Latest + previous data points for metric cards
@@ -71,6 +74,75 @@ export function IndexDetailPage({
             return newRow;
         })
         : constituentData;
+
+    // Compute breadth and timeframe gainers metrics
+    const themeBreadth = useMemo(() => {
+        const totalStocks = constituentData?.length || 0;
+        const above200Sma = marketStatus?.above?.length || 0;
+        const below200Sma = marketStatus?.below?.length || 0;
+        const pctAbove200Sma = totalStocks > 0 ? (above200Sma / totalStocks) * 100 : 0;
+
+        const timeframes: Record<string, TimeframeGainersStat> = {};
+        for (const tf of GAINER_TIMEFRAMES) {
+            let gained = 0;
+            let declined = 0;
+            let flat = 0;
+            let active = 0;
+
+            if (constituentData) {
+                for (const row of constituentData) {
+                    const ret = row[tf];
+                    if (ret === null || ret === undefined || isNaN(Number(ret))) continue;
+                    active++;
+                    const val = Number(ret);
+                    if (val > 0) gained++;
+                    else if (val < 0) declined++;
+                    else flat++;
+                }
+            }
+            const unlisted = totalStocks - active;
+            const pct = active > 0 ? (gained / active) * 100 : 0;
+            timeframes[tf] = { gained, declined, flat, total: active, unlisted, pct };
+        }
+
+        return {
+            totalStocks,
+            above200Sma,
+            below200Sma,
+            pctAbove200Sma,
+            timeframes,
+        };
+    }, [constituentData, marketStatus]);
+
+    // Handle clicking a card in TimeframeGainersBar
+    const handleBreadthFilterChange = (filter: ActiveBreadthFilter | null) => {
+        setActiveBreadthFilter(filter);
+        if (filter && activeTab !== "constituents") {
+            setActiveTab("constituents");
+        }
+    };
+
+    // Filter constituents based on active breadth filter
+    const filteredConstituents = useMemo(() => {
+        if (!displayConstituents) return [];
+        if (!activeBreadthFilter) return displayConstituents;
+
+        if (activeBreadthFilter.type === "200sma") {
+            const aboveSet = new Set(marketStatus?.above || []);
+            return displayConstituents.filter((row) => aboveSet.has(row.ticker));
+        }
+
+        if (activeBreadthFilter.type === "timeframe" && activeBreadthFilter.timeframe) {
+            const tf = activeBreadthFilter.timeframe;
+            return displayConstituents.filter((row) => {
+                const val = row[tf];
+                if (val === null || val === undefined || isNaN(Number(val))) return false;
+                return Number(val) > 0;
+            });
+        }
+
+        return displayConstituents;
+    }, [displayConstituents, activeBreadthFilter, marketStatus]);
 
 
     // Component-level Data Freshness Check
@@ -112,6 +184,19 @@ export function IndexDetailPage({
                     prevAbove={prev.Above}
                     prevBelow={prev.Below}
                     prevPercentage={prev.Percentage}
+                />
+            )}
+
+            {/* Timeframe Gainers & Breadth Breakdown Strip */}
+            {constituentData && constituentData.length > 0 && (
+                <TimeframeGainersBar
+                    totalStocks={themeBreadth.totalStocks}
+                    above200Sma={themeBreadth.above200Sma}
+                    below200Sma={themeBreadth.below200Sma}
+                    pctAbove200Sma={themeBreadth.pctAbove200Sma}
+                    timeframes={themeBreadth.timeframes}
+                    activeFilter={activeBreadthFilter}
+                    onSelectFilter={handleBreadthFilterChange}
                 />
             )}
 
@@ -295,9 +380,9 @@ export function IndexDetailPage({
                 </>
             )}
 
-            {activeTab === "constituents" && displayConstituents && (
+            {activeTab === "constituents" && filteredConstituents && (
                 <div>
-                    <ConstituentTable data={displayConstituents} showCagr={showCagr} />
+                    <ConstituentTable data={filteredConstituents} showCagr={showCagr} />
                 </div>
             )}
 

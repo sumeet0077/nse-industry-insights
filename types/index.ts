@@ -65,6 +65,26 @@ export interface MarketStatusEntry {
 
 export type MarketStatus = Record<string, MarketStatusEntry>;
 
+export interface TimeframeGainersStat {
+    gained: number;
+    declined: number;
+    flat: number;
+    total: number;       // total eligible active stocks with data for this period
+    unlisted: number;    // IPO stocks not yet listed during this period
+    pct: number;         // (gained / total) * 100
+}
+
+export interface ThemeBreadthSummaryMetrics {
+    theme: string;
+    totalStocks: number;
+    above200Sma: number;
+    below200Sma: number;
+    pctAbove200Sma: number;
+    timeframes: Record<string, TimeframeGainersStat>;
+}
+
+export type AllThemesBreadthMap = Record<string, ThemeBreadthSummaryMetrics>;
+
 export type ConstituentPerformanceMap = Record<string, ConstituentPerformance>;
 
 export type ThemeCategory = "broad-market" | "sectors" | "industries";

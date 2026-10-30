@@ -11,6 +11,9 @@ import type {
     MarketStatusEntry,
     ConstituentPerformanceMap,
     RRGDataPoint,
+    TimeframeGainersStat,
+    ThemeBreadthSummaryMetrics,
+    AllThemesBreadthMap,
 } from "@/types";
 import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
 import { resolveDataKey } from "./utils";
@@ -262,4 +265,112 @@ export interface StockRRGPayload {
 export function getStockRRGData(dataFile: string): StockRRGPayload | null {
     return readJson<StockRRGPayload>(`stock_rrg/${dataFile}.json`);
 }
+
+import { GAINER_TIMEFRAMES, type GainerTimeframe } from "@/lib/metrics";
+export { GAINER_TIMEFRAMES, type GainerTimeframe };
+
+/**
+ * Computes comprehensive breadth participation and timeframe gainer metrics
+ * across all 96 themes, sectors, and indices.
+ * Runs in-memory (< 15ms) during SSG build.
+ */
+export function getAllThemesBreadthMetrics(): AllThemesBreadthMap {
+    const marketStatus = getMarketStatus();
+    const constituentPerf = getConstituentPerformance();
+    const map: AllThemesBreadthMap = {};
+
+    for (const [themeKey, entry] of Object.entries(marketStatus)) {
+        const tickers = [...(entry.above || []), ...(entry.below || []), ...(entry.new_stock || [])];
+        const totalStocks = tickers.length;
+        const above200Sma = entry.above?.length || 0;
+        const below200Sma = entry.below?.length || 0;
+        const pctAbove200Sma = totalStocks > 0 ? Number(((above200Sma / totalStocks) * 100).toFixed(1)) : 0;
+
+        const timeframes: Record<string, TimeframeGainersStat> = {};
+
+        for (const tf of GAINER_TIMEFRAMES) {
+            let gained = 0;
+            let declined = 0;
+            let flat = 0;
+            let active = 0;
+
+            for (const ticker of tickers) {
+                const perf = constituentPerf[ticker];
+                if (!perf) continue;
+                const ret = perf[tf];
+                if (ret === null || ret === undefined || isNaN(Number(ret))) {
+                    continue; // unseasoned / IPO not active for this period
+                }
+                active++;
+                const val = Number(ret);
+                if (val > 0) gained++;
+                else if (val < 0) declined++;
+                else flat++;
+            }
+
+            const unlisted = totalStocks - active;
+            const pct = active > 0 ? Number(((gained / active) * 100).toFixed(1)) : 0;
+
+            timeframes[tf] = {
+                gained,
+                declined,
+                flat,
+                total: active,
+                unlisted,
+                pct,
+            };
+        }
+
+        const metricObj: ThemeBreadthSummaryMetrics = {
+            theme: themeKey,
+            totalStocks,
+            above200Sma,
+            below200Sma,
+            pctAbove200Sma,
+            timeframes,
+        };
+
+        map[themeKey] = metricObj;
+        map[themeKey.toLowerCase()] = metricObj;
+        map[themeKey.toUpperCase()] = metricObj;
+        map[resolveDataKey(themeKey)] = metricObj;
+    }
+
+    // Ensure all config titles resolve directly
+    const configs = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
+    for (const c of configs) {
+        if (!map[c.title]) {
+            const found = getThemeBreadthMetrics(c.title, map);
+            if (found) {
+                map[c.title] = found;
+            }
+        }
+    }
+
+    return map;
+}
+
+/**
+ * Look up breadth summary metrics for a given config title.
+ * Handles aliases, casing, and prefix variances.
+ */
+export function getThemeBreadthMetrics(
+    configTitle: string,
+    allMetrics?: AllThemesBreadthMap
+): ThemeBreadthSummaryMetrics | null {
+    const metrics = allMetrics || getAllThemesBreadthMetrics();
+    if (metrics[configTitle]) return metrics[configTitle];
+    const upper = configTitle.toUpperCase();
+    if (metrics[upper]) return metrics[upper];
+    if (configTitle.startsWith("Nifty ")) {
+        const niftyUpper = "NIFTY " + configTitle.slice(6).toUpperCase();
+        if (metrics[niftyUpper]) return metrics[niftyUpper];
+    }
+    const resolvedTitle = resolveDataKey(configTitle);
+    for (const key of Object.keys(metrics)) {
+        if (key.toLowerCase() === resolvedTitle) return metrics[key];
+    }
+    return null;
+}
+
 

@@ -38,6 +38,9 @@ export const REQUIRED_CONSTITUENT_METRICS = [
 
 export type RequiredConstituentMetric = typeof REQUIRED_CONSTITUENT_METRICS[number];
 
+export const GAINER_TIMEFRAMES = ["1D", "1W", "1M", "3M", "6M", "YTD", "1Y"] as const;
+export type GainerTimeframe = typeof GAINER_TIMEFRAMES[number];
+
 /**
  * Safely extracts a metric value from a stock record or constituent object.
  * Handles exact key match, field mapped match, and case-insensitive aliases.

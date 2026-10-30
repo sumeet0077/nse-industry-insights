@@ -61,6 +61,7 @@
       "ADANIENSOL.NS",
       "ADANIGREEN.NS",
       "BOSCHLTD.NS",
+      "CGPOWER.NS",
       "DIVISLAB.NS",
       "DLF.NS",
       "GAIL.NS",
@@ -83,7 +84,6 @@
       "BPCL.NS",
       "BRITANNIA.NS",
       "CANBK.NS",
-      "CGPOWER.NS",
       "CHOLAFIN.NS",
       "CUMMINSIND.NS",
       "DMART.NS",
@@ -150,6 +150,7 @@
       "CASTROLIND.NS",
       "CEMPRO.NS",
       "CGCL.NS",
+      "CGPOWER.NS",
       "CHENNPETRO.NS",
       "CIPLA.NS",
       "CLEANMAX.NS",
@@ -161,6 +162,7 @@
       "CUB.NS",
       "CUPID.NS",
       "CYIENT.NS",
+      "DATAPATTNS.NS",
       "DIVISLAB.NS",
       "DLF.NS",
       "DRREDDY.NS",
@@ -201,6 +203,7 @@
       "KAJARIACER.NS",
       "KALYANKJIL.NS",
       "KARURVYSYA.NS",
+      "KIRLOSENG.NS",
       "KOTAKBANK.NS",
       "KPIL.NS",
       "KPRMILL.NS",
@@ -277,6 +280,7 @@
       "WIPRO.NS",
       "WOCKPHARMA.NS",
       "ZENSARTECH.NS",
+      "ZENTEC.NS",
       "ZYDUSLIFE.NS"
     ],
     "below": [
@@ -347,7 +351,6 @@
       "CEATLTD.NS",
       "CENTRALBK.NS",
       "CESC.NS",
-      "CGPOWER.NS",
       "CHAMBLFERT.NS",
       "CHOICEIN.NS",
       "CHOLAFIN.NS",
@@ -365,7 +368,6 @@
       "CUMMINSIND.NS",
       "DABUR.NS",
       "DALBHARAT.NS",
-      "DATAPATTNS.NS",
       "DEEPAKFERT.NS",
       "DEEPAKNTR.NS",
       "DELHIVERY.NS",
@@ -468,7 +470,6 @@
       "KFINTECH.NS",
       "KIMS.NS",
       "KIRLOSBROS.NS",
-      "KIRLOSENG.NS",
       "KPITTECH.NS",
       "KSB.NS",
       "LEMONTREE.NS",
@@ -605,7 +606,6 @@
       "WHIRLPOOL.NS",
       "YESBANK.NS",
       "ZEEL.NS",
-      "ZENTEC.NS",
       "ZFCVINDIA.NS",
       "ZYDUSWELL.NS"
     ],
@@ -814,6 +814,7 @@
       "CUB.NS",
       "CUPID.NS",
       "CYIENT.NS",
+      "DATAPATTNS.NS",
       "EMCURE.NS",
       "ENGINERSIN.NS",
       "FEDERALBNK.NS",
@@ -843,6 +844,7 @@
       "KAJARIACER.NS",
       "KALYANKJIL.NS",
       "KARURVYSYA.NS",
+      "KIRLOSENG.NS",
       "KPIL.NS",
       "KPRMILL.NS",
       "LALPATHLAB.NS",
@@ -906,7 +908,8 @@
       "WELCORP.NS",
       "WELSPUNLIV.NS",
       "WOCKPHARMA.NS",
-      "ZENSARTECH.NS"
+      "ZENSARTECH.NS",
+      "ZENTEC.NS"
     ],
     "below": [
       "360ONE.NS",
@@ -976,7 +979,6 @@
       "CROMPTON.NS",
       "DABUR.NS",
       "DALBHARAT.NS",
-      "DATAPATTNS.NS",
       "DEEPAKFERT.NS",
       "DEEPAKNTR.NS",
       "DELHIVERY.NS",
@@ -1061,7 +1063,6 @@
       "KFINTECH.NS",
       "KIMS.NS",
       "KIRLOSBROS.NS",
-      "KIRLOSENG.NS",
       "KPITTECH.NS",
       "KSB.NS",
       "LEMONTREE.NS",
@@ -1168,7 +1169,6 @@
       "WHIRLPOOL.NS",
       "YESBANK.NS",
       "ZEEL.NS",
-      "ZENTEC.NS",
       "ZFCVINDIA.NS",
       "ZYDUSWELL.NS"
     ],
@@ -1209,6 +1209,7 @@
       "CUB.NS",
       "CUPID.NS",
       "CYIENT.NS",
+      "DATAPATTNS.NS",
       "EMCURE.NS",
       "ENGINERSIN.NS",
       "FINCABLES.NS",
@@ -1227,6 +1228,7 @@
       "JYOTICNC.NS",
       "KAJARIACER.NS",
       "KARURVYSYA.NS",
+      "KIRLOSENG.NS",
       "KPIL.NS",
       "LALPATHLAB.NS",
       "MINDACORP.NS",
@@ -1266,7 +1268,8 @@
       "WELCORP.NS",
       "WELSPUNLIV.NS",
       "WOCKPHARMA.NS",
-      "ZENSARTECH.NS"
+      "ZENSARTECH.NS",
+      "ZENTEC.NS"
     ],
     "below": [
       "AADHARHFC.NS",
@@ -1312,7 +1315,6 @@
       "CONCORDBIO.NS",
       "CREDITACC.NS",
       "CROMPTON.NS",
-      "DATAPATTNS.NS",
       "DEEPAKFERT.NS",
       "DEEPAKNTR.NS",
       "DELHIVERY.NS",
@@ -1365,7 +1367,6 @@
       "KFINTECH.NS",
       "KIMS.NS",
       "KIRLOSBROS.NS",
-      "KIRLOSENG.NS",
       "KPITTECH.NS",
       "KSB.NS",
       "LEMONTREE.NS",
@@ -1425,7 +1426,6 @@
       "VTL.NS",
       "WHIRLPOOL.NS",
       "ZEEL.NS",
-      "ZENTEC.NS",
       "ZFCVINDIA.NS",
       "ZYDUSWELL.NS"
     ],
@@ -1743,6 +1743,7 @@
       "AEGISLOG.NS",
       "BHEL.NS",
       "CASTROLIND.NS",
+      "CGPOWER.NS",
       "GAIL.NS",
       "NHPC.NS",
       "PETRONET.NS",
@@ -1754,7 +1755,6 @@
       "ATGL.NS",
       "BPCL.NS",
       "CESC.NS",
-      "CGPOWER.NS",
       "COALINDIA.NS",
       "ENRIN.NS",
       "GVT&D.NS",
@@ -1789,6 +1789,7 @@
       "ADANIPORTS.NS",
       "APOLLOHOSP.NS",
       "BHARTIARTL.NS",
+      "CGPOWER.NS",
       "DLF.NS",
       "GAIL.NS",
       "GRASIM.NS",
@@ -1801,7 +1802,6 @@
       "ASHOKLEY.NS",
       "BHARATFORG.NS",
       "BPCL.NS",
-      "CGPOWER.NS",
       "CUMMINSIND.NS",
       "FORTIS.NS",
       "GVT&D.NS",
@@ -1942,6 +1942,8 @@
   "Capital Goods": {
     "above": [
       "BHEL.NS",
+      "CGPOWER.NS",
+      "KIRLOSENG.NS",
       "JYOTICNC.NS",
       "PTCIL.NS",
       "APARINDS.NS",
@@ -1954,11 +1956,9 @@
       "LT.NS",
       "ABB.NS",
       "SIEMENS.NS",
-      "CGPOWER.NS",
       "THERMAX.NS",
       "CUMMINSIND.NS",
       "ELGIEQUIP.NS",
-      "KIRLOSENG.NS",
       "AIAENG.NS",
       "HONAUT.NS",
       "TIMKEN.NS",
@@ -2057,9 +2057,11 @@
     "above": [
       "HAL.NS",
       "SOLARINDS.NS",
+      "DATAPATTNS.NS",
       "PARAS.NS",
       "ASTRAMICRO.NS",
       "MTARTECH.NS",
+      "ZENTEC.NS",
       "KRISHNADEF.NS"
     ],
     "below": [
@@ -2068,9 +2070,7 @@
       "COCHINSHIP.NS",
       "BDL.NS",
       "GRSE.NS",
-      "DATAPATTNS.NS",
       "IDEAFORGE.NS",
-      "ZENTEC.NS",
       "DCXINDIA.NS"
     ],
     "new_stock": []
@@ -2634,6 +2634,7 @@
   },
   "Power T&D": {
     "above": [
+      "CGPOWER.NS",
       "QPOWER.NS",
       "VOLTAMP.NS",
       "APARINDS.NS",
@@ -2644,7 +2645,6 @@
     "below": [
       "POWERGRID.NS",
       "SIEMENS.NS",
-      "CGPOWER.NS",
       "POWERINDIA.NS",
       "SCHNEIDER.NS",
       "GVT&D.NS",
@@ -2760,6 +2760,7 @@
   },
   "Semiconductors & EMS": {
     "above": [
+      "CGPOWER.NS",
       "AVALON.NS",
       "SYRMA.NS",
       "CYIENT.NS",
@@ -2768,7 +2769,6 @@
     ],
     "below": [
       "BEL.NS",
-      "CGPOWER.NS",
       "DIXON.NS",
       "KAYNES.NS",
       "MOSCHIP.NS",
@@ -2966,11 +2966,11 @@
   "Wealth Management": {
     "above": [
       "NUVAMA.NS",
-      "ANANDRATHI.NS"
+      "ANANDRATHI.NS",
+      "PRUDENT.NS"
     ],
     "below": [
-      "360ONE.NS",
-      "PRUDENT.NS"
+      "360ONE.NS"
     ],
     "new_stock": []
   },

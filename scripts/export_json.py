@@ -475,11 +475,11 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
         # same (symbol, date).  Block-deal (BL) and auction (P1) close prices differ
         # from the regular EQ close — using them silently corrupts 1D/1W returns.
         if has_series:
-            # Strictly filter to equity series (EQ, BE, BZ for Mainboard, SM, ST, SZ for SME) to purge debt/bond
+            # Strictly filter to equity series (EQ, BE, BZ for Mainboard, SM, ST, SZ for SME, RR for REITs) to purge debt/bond
             # instruments (N1-N9, NC, Y*, Z*, etc.) which trade at debt face values (₹1,000+) and corrupt equity price histories (e.g. TATACAP).
-            equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ"]
+            equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ", "RR"]
             df_master = df_master[df_master["series"].isin(equity_series)]
-            _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5}
+            _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5, "RR": 6}
             df_master["_sprio"] = df_master["series"].map(lambda s: _series_priority.get(s, 99) if isinstance(s, str) else 99)
             df_master = df_master.sort_values(["symbol_ns", "trade_date", "_sprio"])
             df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"], keep="first")
@@ -980,7 +980,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     low,
                     volume
                 FROM read_parquet('{parquet_pattern}', union_by_name=true)
-                WHERE series IN ('EQ', 'BE', 'BZ')
+                WHERE series IN ('EQ', 'BE', 'BZ', 'RR')
             ),
             adjusted AS (
                 SELECT 
@@ -1336,7 +1336,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             FROM read_parquet('{pq_pattern}', union_by_name=true) b
             {sym_join}
             {cpr_ca_join}
-            WHERE b.series IN ('EQ', 'BE', 'BZ')
+            WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
               AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 120 DAY)
             GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
             """
@@ -1367,7 +1367,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             FROM read_parquet('{pq_pattern}', union_by_name=true) b
             {sym_join}
             {daily_ca_join}
-            WHERE b.series IN ('EQ', 'BE', 'BZ')
+            WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
               AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 90 DAY)
             ORDER BY symbol, trade_date ASC
             """
@@ -1383,7 +1383,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 FROM read_parquet('{pq_pattern}', union_by_name=true) b
                 {sym_join}
                 {ca_join}
-                WHERE b.series IN ('EQ', 'BE', 'BZ')
+                WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
                 GROUP BY {sym_expr}, CAST(b.trade_date AS DATE)
             ),
             history AS (

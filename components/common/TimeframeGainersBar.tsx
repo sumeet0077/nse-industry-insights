@@ -112,10 +112,16 @@ export function TimeframeGainersBar({
                     </div>
 
                     {/* Mini Participation Bar */}
-                    <div className="w-full h-1.5 bg-red-950/60 rounded-full overflow-hidden flex">
+                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
                         <div
                             className="h-full bg-emerald-500 transition-all duration-300"
-                            style={{ width: `${Math.min(Math.max(pctAbove200Sma, 0), 100)}%` }}
+                            style={{ width: `${totalStocks > 0 ? (above200Sma / totalStocks) * 100 : 0}%` }}
+                            title={`Above 200 SMA: ${above200Sma}`}
+                        />
+                        <div
+                            className="h-full bg-red-500 transition-all duration-300"
+                            style={{ width: `${totalStocks > 0 ? (below200Sma / totalStocks) * 100 : 0}%` }}
+                            title={`Below 200 SMA: ${below200Sma}`}
                         />
                     </div>
                     <span className="text-[9px] text-slate-500 mt-1 truncate">

@@ -69,16 +69,16 @@ function getBreadthHeatmapStyle(params: CellClassParams): { [key: string]: strin
     if (v >= 50) {
         const intensity = (v - 50) / 50; // 0 to 1
         return {
-            backgroundColor: `rgba(34, 197, 94, ${0.1 + intensity * 0.35})`,
-            color: v >= 70 ? "#86efac" : "#4ade80",
-            fontWeight: "500",
+            backgroundColor: `rgba(16, 185, 129, ${0.05 + intensity * 0.18})`,
+            color: v >= 70 ? "#6ee7b7" : "#34d399",
+            fontWeight: "600",
         };
     } else {
         const intensity = (50 - v) / 50; // 0 to 1
         return {
-            backgroundColor: `rgba(239, 68, 68, ${0.1 + intensity * 0.35})`,
+            backgroundColor: `rgba(239, 68, 68, ${0.05 + intensity * 0.18})`,
             color: v <= 30 ? "#fca5a5" : "#f87171",
-            fontWeight: "500",
+            fontWeight: "600",
         };
     }
 }
@@ -402,15 +402,22 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             cols.push({
                 headerName: "Total",
                 field: "breadth_totalStocks",
-                width: 85,
-                minWidth: 75,
+                width: 80,
+                minWidth: 70,
                 sortable: true,
+                suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    return <span className="font-mono text-slate-300 font-semibold">{params.value}</span>;
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 font-mono text-[11px] text-slate-300 font-semibold">
+                                {params.value}
+                            </span>
+                        </div>
+                    );
                 },
             });
 
@@ -418,9 +425,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             cols.push({
                 headerName: "> 200 SMA",
                 field: "breadth_pctAbove200Sma",
-                width: 145,
-                minWidth: 130,
+                width: 125,
+                minWidth: 110,
                 sortable: true,
+                suppressHeaderMenuButton: true,
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
@@ -430,9 +438,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500 font-mono">—</span>;
                     const tooltip = `${params.data["Theme/Index"]}\nAbove 200 SMA: ${b.above200Sma} / ${b.totalStocks} (${b.pctAbove200Sma.toFixed(1)}%)\nBelow 200 SMA: ${b.below200Sma} / ${b.totalStocks}`;
                     return (
-                        <div className="flex items-center justify-between w-full font-mono text-xs px-1" title={tooltip}>
-                            <span className="font-semibold">{b.pctAbove200Sma.toFixed(1)}%</span>
-                            <span className="text-[11px] opacity-80">({b.above200Sma}/{b.totalStocks})</span>
+                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
+                            <span className="font-bold text-xs">{b.pctAbove200Sma.toFixed(1)}%</span>
+                            <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                                {b.above200Sma}/{b.totalStocks}
+                            </span>
                         </div>
                     );
                 },
@@ -443,9 +453,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cols.push({
                     headerName: `${tf} Gainers`,
                     field: `breadth_${tf}_pct`,
-                    width: 135,
-                    minWidth: 125,
+                    width: 120,
+                    minWidth: 105,
                     sortable: true,
+                    suppressHeaderMenuButton: true,
                     cellStyle: getBreadthHeatmapStyle,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
@@ -456,11 +467,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                         const themeName = params.data["Theme/Index"];
                         const tooltip = `${themeName} — ${tf} Breadth\n────────────────────────\nActive Constituents: ${stat.total}\nGainers (>0%): ${stat.gained} / ${stat.total} (${stat.pct.toFixed(1)}%)\nDecliners (<0%): ${stat.declined} / ${stat.total}\nFlat (0%): ${stat.flat}${stat.unlisted > 0 ? `\nRecent IPOs (<${tf}): ${stat.unlisted} (Excluded from denominator)` : ""}`;
                         return (
-                            <div className="flex items-center justify-between w-full font-mono text-xs px-1" title={tooltip}>
-                                <span className="font-semibold">{stat.pct.toFixed(1)}%</span>
-                                <span className="text-[11px] opacity-80">
-                                    ({stat.gained}/{stat.total})
-                                    {stat.unlisted > 0 && <span className="text-[9px] text-amber-300 ml-0.5" title={`${stat.unlisted} IPO stock(s) listed < ${tf}`}>*</span>}
+                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
+                                <span className="font-bold text-xs">{stat.pct.toFixed(1)}%</span>
+                                <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                                    {stat.gained}/{stat.total}
                                 </span>
                             </div>
                         );
@@ -484,12 +494,19 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 width: 80,
                 minWidth: 70,
                 sortable: true,
+                suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    return <span className="font-mono text-slate-300 font-semibold">{params.value}</span>;
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 font-mono text-[11px] text-slate-300 font-semibold">
+                                {params.value}
+                            </span>
+                        </div>
+                    );
                 },
             });
 
@@ -497,9 +514,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             cols.push({
                 headerName: "> 200 SMA",
                 field: "breadth_pctAbove200Sma",
-                width: 135,
-                minWidth: 125,
+                width: 125,
+                minWidth: 110,
                 sortable: true,
+                suppressHeaderMenuButton: true,
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
@@ -508,9 +526,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     const b: ThemeBreadthSummaryMetrics | null = params.data?.breadth;
                     if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500 font-mono">—</span>;
                     return (
-                        <div className="flex flex-col justify-center h-full text-center leading-tight font-mono">
-                            <span className="font-semibold text-xs">{b.pctAbove200Sma.toFixed(1)}%</span>
-                            <span className="text-[10px] text-slate-300/80">({b.above200Sma}/{b.totalStocks})</span>
+                        <div className="flex flex-col items-center justify-center h-full text-center leading-tight font-mono py-0.5">
+                            <span className="font-bold text-xs">{b.pctAbove200Sma.toFixed(1)}%</span>
+                            <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                                {b.above200Sma}/{b.totalStocks}
+                            </span>
                         </div>
                     );
                 },
@@ -522,9 +542,10 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cols.push({
                     headerName: metricCol,
                     field: metricCol,
-                    width: 130,
-                    minWidth: 120,
+                    width: 120,
+                    minWidth: 105,
                     sortable: true,
+                    suppressHeaderMenuButton: true,
                     cellStyle: getHeatmapStyle,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
@@ -538,11 +559,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                             ? `${params.data["Theme/Index"]} — ${tf}\nReturn: ${formattedRet}\nGainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)\nDecliners: ${stat.declined}${stat.unlisted > 0 ? `\nRecent IPOs: ${stat.unlisted}` : ""}` 
                             : `Return: ${formattedRet}`;
                         return (
-                            <div className="flex flex-col justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
-                                <span className="font-semibold text-xs">{formattedRet}</span>
+                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
+                                <span className="font-bold text-xs">{formattedRet}</span>
                                 {stat && stat.total > 0 && (
-                                    <span className="text-[10px] text-slate-300/90 font-medium">
-                                        {stat.gained}/{stat.total} ({stat.pct.toFixed(0)}%)
+                                    <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                                        {stat.gained}/{stat.total}
                                     </span>
                                 )}
                             </div>
@@ -864,7 +885,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             <div 
                 ref={tableRef} 
                 className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px] w-full" 
-                style={{ height: Math.max(Math.min(displayData.length * (viewMode === "combined" ? 44 : 36) + 80, 820), 500) }}
+                style={{ height: Math.max(Math.min(displayData.length * (viewMode === "returns" ? 36 : 42) + 80, 820), 500) }}
             >
                 <AgGridReact
                     ref={gridRef}
@@ -872,7 +893,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     rowData={displayData}
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
-                    rowHeight={viewMode === "combined" ? 42 : 36}
+                    rowHeight={viewMode === "returns" ? 36 : 42}
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"

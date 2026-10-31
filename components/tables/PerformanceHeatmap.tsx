@@ -4,12 +4,12 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { PerformanceRow, MarketStatus, AllThemesBreadthMap, ThemeBreadthSummaryMetrics } from "@/types";
+import { PerformanceRow, MarketStatus, AllThemesBreadthMap, ThemeBreadthSummaryMetrics, DailyBreadthHistory1Y } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
 import { formatMetricReturn } from "@/lib/metrics";
 import { makeTradingViewUrl, resolveDataKey } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers, Zap, Calendar, RotateCcw } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
@@ -17,13 +17,14 @@ import { GAINER_TIMEFRAMES, GainerTimeframe } from "@/lib/metrics";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-export type HeatmapViewMode = "returns" | "breadth" | "combined";
+export type HeatmapViewMode = "returns" | "breadth" | "combined" | "forecaster";
 
 interface PerformanceHeatmapProps {
     data: PerformanceRow[];
     globalLatestDate?: string | null;
     marketStatus?: MarketStatus;
     breadthMetrics?: AllThemesBreadthMap;
+    availableDates?: string[];
 }
 
 const myTheme = themeQuartz.withParams({
@@ -115,15 +116,303 @@ function lookupThemeBreadth(title: string, metrics?: AllThemesBreadthMap): Theme
     return null;
 }
 
-export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, breadthMetrics }: PerformanceHeatmapProps) {
+export const MODEL1 = {
+    intercept: -0.30206,
+    coef_1w: 0.00726,
+    coef_1m: -0.03215,
+    coef_interaction: 0.01895,
+    coef_200sma: 0.00249,
+};
+
+export function computeExpansionOdds(b1w: number, b1m: number, b200sma: number): number {
+    const interaction = (b1w * (100 - b1m)) / 100;
+    const z = MODEL1.intercept +
+        MODEL1.coef_1w * b1w +
+        MODEL1.coef_1m * b1m +
+        MODEL1.coef_interaction * interaction +
+        MODEL1.coef_200sma * b200sma;
+    const p = 1 / (1 + Math.exp(-z));
+    return Number((p * 100).toFixed(1));
+}
+
+export const REGIME_CONFIGS: Record<string, {
+    code: string;
+    badge: string;
+    name: string;
+    guidance: string;
+    bgClass: string;
+    textClass: string;
+    borderClass: string;
+}> = {
+    pullback_thrust: {
+        code: "pullback_thrust",
+        badge: "🚀 Pullback Thrust",
+        name: "Bull Pullback Thrust",
+        guidance: "High conviction (61% 20D win rate, 1.88 PF, 70% breadth expansion)",
+        bgClass: "bg-emerald-950/80",
+        textClass: "text-emerald-300",
+        borderClass: "border-emerald-600/80 shadow-sm shadow-emerald-500/20",
+    },
+    bear_bounce: {
+        code: "bear_bounce",
+        badge: "⚠️ Bear Bounce Thrust",
+        name: "Bear Bounce Thrust",
+        guidance: "High expansion (65%), near-term supply digestion (48%-50% 10D win rate)",
+        bgClass: "bg-amber-950/80",
+        textClass: "text-amber-300",
+        borderClass: "border-amber-600/80 shadow-sm shadow-amber-500/20",
+    },
+    early_thrust: {
+        code: "early_thrust",
+        badge: "🚀 Early Thrust",
+        name: "Early Breadth Thrust",
+        guidance: "Rapid thrust into oversold base (65%-70% expansion odds)",
+        bgClass: "bg-cyan-950/80",
+        textClass: "text-cyan-300",
+        borderClass: "border-cyan-600/80 shadow-sm shadow-cyan-500/20",
+    },
+    sustained_bull: {
+        code: "sustained_bull",
+        badge: "🔥 Sustained Bull",
+        name: "Sustained Bull Trend",
+        guidance: "Max price alpha (67.5% win rate, +2.67% med return, 3.15 PF at T+20)",
+        bgClass: "bg-emerald-900/60",
+        textClass: "text-emerald-200",
+        borderClass: "border-emerald-500/60",
+    },
+    rollover_alert: {
+        code: "rollover_alert",
+        badge: "⚠️ Rollover Alert",
+        name: "Breadth Rollover Alert",
+        guidance: "Internal decay; high risk of pullback in next 5-10 sessions",
+        bgClass: "bg-orange-950/80",
+        textClass: "text-orange-300",
+        borderClass: "border-orange-600/80",
+    },
+    capitulation: {
+        code: "capitulation",
+        badge: "🩸 Capitulation Slump",
+        name: "Capitulation Slump",
+        guidance: "Deep oversold base; wait for 1W thrust before entering",
+        bgClass: "bg-rose-950/80",
+        textClass: "text-rose-300",
+        borderClass: "border-rose-600/80",
+    },
+    accumulation: {
+        code: "accumulation",
+        badge: "🌱 Accumulation",
+        name: "Oversold Accumulation",
+        guidance: "Bottom-fishing reversal taking root; monitor for 1W thrust",
+        bgClass: "bg-lime-950/70",
+        textClass: "text-lime-300",
+        borderClass: "border-lime-600/70",
+    },
+    neutral: {
+        code: "neutral",
+        badge: "⚖️ Neutral / Mixed",
+        name: "Neutral / Mixed",
+        guidance: "Balanced participation; rotational churn",
+        bgClass: "bg-slate-900/80",
+        textClass: "text-slate-400",
+        borderClass: "border-slate-700/60",
+    },
+};
+
+export function classifyRegimeTS(b1w: number, b1m: number, b200sma: number) {
+    if (b1w >= 70 && b1m <= 35) {
+        if (b200sma >= 50) return REGIME_CONFIGS.pullback_thrust;
+        if (b200sma < 35) return REGIME_CONFIGS.bear_bounce;
+        return REGIME_CONFIGS.early_thrust;
+    }
+    if (b1w >= 60 && b1m >= 60 && b200sma >= 60) return REGIME_CONFIGS.sustained_bull;
+    if (b1w <= 30 && b1m >= 60) return REGIME_CONFIGS.rollover_alert;
+    if (b1w <= 25 && b1m <= 25 && b200sma <= 25) return REGIME_CONFIGS.capitulation;
+    if (b1w >= 50 && b200sma <= 30) return REGIME_CONFIGS.accumulation;
+    return REGIME_CONFIGS.neutral;
+}
+
+export function formatDateLabel(dateStr?: string | null): string {
+    if (!dateStr) return "Latest";
+    try {
+        const d = new Date(dateStr + "T00:00:00");
+        return d.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
+    } catch {
+        return dateStr;
+    }
+}
+
+function unpackHistoricalSession(rows: (string | number | null)[][], showCagr: boolean = false): any[] {
+    return rows.map((r) => {
+        const theme = String(r[0]);
+        const r1d = r[1] !== null ? Number(r[1]) : null;
+        const r1w = r[2] !== null ? Number(r[2]) : null;
+        const r1m = r[3] !== null ? Number(r[3]) : null;
+        const r3m = r[4] !== null ? Number(r[4]) : null;
+        const r6m = r[5] !== null ? Number(r[5]) : null;
+        const rytd = r[6] !== null ? Number(r[6]) : null;
+        const r1y = r[7] !== null ? Number(r[7]) : null;
+        let r3y = r[8] !== null ? Number(r[8]) : null;
+        let r5y = r[9] !== null ? Number(r[9]) : null;
+        const rs5d = r[10] !== null ? Number(r[10]) : null;
+        const rs10d = r[11] !== null ? Number(r[11]) : null;
+        const rs20d = r[12] !== null ? Number(r[12]) : null;
+        const rs50d = r[13] !== null ? Number(r[13]) : null;
+        const rs = r[14] !== null ? Number(r[14]) : null;
+        const tot = Number(r[15] ?? 0);
+        const a200 = Number(r[16] ?? 0);
+        const b200 = Number(r[17] ?? 0);
+        const p200 = Number(r[18] ?? 0);
+        const g1d = r[19] !== null ? Number(r[19]) : null;
+        const g1w = r[20] !== null ? Number(r[20]) : null;
+        const g1m = r[21] !== null ? Number(r[21]) : null;
+        const g3m = r[22] !== null ? Number(r[22]) : null;
+        const g6m = r[23] !== null ? Number(r[23]) : null;
+        const gytd = r[24] !== null ? Number(r[24]) : null;
+        const g1y = r[25] !== null ? Number(r[25]) : null;
+        const velo = r[26] !== null ? Number(r[26]) : 0;
+        const odds = r[27] !== null ? Number(r[27]) : 0;
+        const regimeCode = String(r[28] || "neutral");
+        const regConfig = REGIME_CONFIGS[regimeCode] || REGIME_CONFIGS.neutral;
+
+        if (showCagr) {
+            if (typeof r3y === "number" && r3y !== null) {
+                r3y = (Math.pow(1 + r3y / 100, 1 / 3) - 1) * 100;
+            }
+            if (typeof r5y === "number" && r5y !== null) {
+                r5y = (Math.pow(1 + r5y / 100, 1 / 5) - 1) * 100;
+            }
+        }
+
+        const timeframes: Record<string, any> = {
+            "1D": { pct: g1d ?? 0, gained: Math.round(((g1d ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "1W": { pct: g1w ?? 0, gained: Math.round(((g1w ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "1M": { pct: g1m ?? 0, gained: Math.round(((g1m ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "3M": { pct: g3m ?? 0, gained: Math.round(((g3m ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "6M": { pct: g6m ?? 0, gained: Math.round(((g6m ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "YTD": { pct: gytd ?? 0, gained: Math.round(((gytd ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+            "1Y": { pct: g1y ?? 0, gained: Math.round(((g1y ?? 0) / 100) * tot), total: tot, declined: 0, flat: 0, unlisted: 0 },
+        };
+
+        const breadthObj: ThemeBreadthSummaryMetrics = {
+            theme,
+            totalStocks: tot,
+            above200Sma: a200,
+            below200Sma: b200,
+            pctAbove200Sma: p200,
+            timeframes,
+        };
+
+        return {
+            "Theme/Index": theme,
+            "1 Day": r1d,
+            "1 Week": r1w,
+            "1 Month": r1m,
+            "3 Months": r3m,
+            "6 Months": r6m,
+            "YTD": rytd,
+            "1 Year": r1y,
+            "3 Years": r3y,
+            "5 Years": r5y,
+            "RS (5D)": rs5d,
+            "RS (10D)": rs10d,
+            "RS (20D)": rs20d,
+            "RS (50D)": rs50d,
+            "RS Rating": rs,
+            "IBD RS Rating": rs,
+            breadth: breadthObj,
+            breadth_totalStocks: tot,
+            breadth_above200Sma: a200,
+            breadth_below200Sma: b200,
+            breadth_pctAbove200Sma: p200,
+            breadth_1D_pct: g1d,
+            breadth_1W_pct: g1w,
+            breadth_1M_pct: g1m,
+            breadth_3M_pct: g3m,
+            breadth_6M_pct: g6m,
+            breadth_YTD_pct: gytd,
+            breadth_1Y_pct: g1y,
+            breadth_velocity: velo,
+            expansion_odds: odds,
+            regime: regimeCode,
+            forward_guidance: regConfig.guidance,
+        };
+    });
+}
+
+export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, breadthMetrics, availableDates }: PerformanceHeatmapProps) {
     const [viewMode, setViewMode] = useLocalStorage<HeatmapViewMode>("ph_viewMode", "returns");
     const [showCagr, setShowCagr] = useLocalStorage("ph_showCagr", false);
     const [searchQuery, setSearchQuery] = useState("");
     const [displayedCount, setDisplayedCount] = useState<number>(data.length);
 
+    // Time-Travel / Historical Replay State
+    const [selectedDate, setSelectedDate] = useState<string>("latest");
+    const [historyData, setHistoryData] = useState<DailyBreadthHistory1Y | null>(null);
+    const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
+    const [isDateDropdownOpen, setIsDateDropdownOpen] = useState<boolean>(false);
+    const [dateSearchQuery, setDateSearchQuery] = useState<string>("");
+    const dateDropdownRef = useRef<HTMLDivElement>(null);
+
+    // Fetch rolling 1Y history on mount
     useEffect(() => {
-        setDisplayedCount(data.length);
-    }, [data.length]);
+        let isMounted = true;
+        async function loadHistory() {
+            if (historyData) return;
+            setIsLoadingHistory(true);
+            try {
+                const res = await fetch("/data/history/daily_breadth_history_1y.json");
+                if (res.ok) {
+                    const json: DailyBreadthHistory1Y = await res.json();
+                    if (isMounted) {
+                        setHistoryData(json);
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load daily_breadth_history_1y.json", err);
+            } finally {
+                if (isMounted) setIsLoadingHistory(false);
+            }
+        }
+        loadHistory();
+        return () => { isMounted = false; };
+    }, [historyData]);
+
+    const selectableDates = useMemo(() => {
+        if (historyData?.dates && historyData.dates.length > 0) {
+            return historyData.dates;
+        }
+        if (availableDates && availableDates.length > 0) {
+            return availableDates;
+        }
+        return globalLatestDate ? [globalLatestDate] : [];
+    }, [historyData, availableDates, globalLatestDate]);
+
+    const filteredDates = useMemo(() => {
+        // Exclude newest session since it is already represented by 'Latest Session (Live)' at the top
+        const pastDates = selectableDates.slice(1);
+        if (!dateSearchQuery.trim()) return pastDates;
+        const q = dateSearchQuery.toLowerCase();
+        return pastDates.filter(d => {
+            if (d.toLowerCase().includes(q)) return true;
+            const formatted = formatDateLabel(d).toLowerCase();
+            return formatted.includes(q);
+        });
+    }, [selectableDates, dateSearchQuery]);
+
+    // Close date dropdown on outside click
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dateDropdownRef.current && !dateDropdownRef.current.contains(event.target as Node)) {
+                setIsDateDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [showSelectedOnly, setShowSelectedOnly] = useLocalStorage("ph_showSelectedOnly", false);
@@ -269,9 +558,67 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 }
             }
 
+            const g1w = augmented[`breadth_1W_pct`];
+            const g1m = augmented[`breadth_1M_pct`];
+            const p200 = augmented[`breadth_pctAbove200Sma`] ?? 0;
+            if (g1w !== null && g1w !== undefined && g1m !== null && g1m !== undefined) {
+                const velo = Number((g1w - g1m).toFixed(1));
+                const odds = computeExpansionOdds(g1w, g1m, p200);
+                const regObj = classifyRegimeTS(g1w, g1m, p200);
+                augmented.breadth_velocity = velo;
+                augmented.expansion_odds = odds;
+                augmented.regime = regObj.code;
+                augmented.forward_guidance = regObj.guidance;
+            } else {
+                augmented.breadth_velocity = null;
+                augmented.expansion_odds = null;
+                augmented.regime = "neutral";
+                augmented.forward_guidance = REGIME_CONFIGS.neutral.guidance;
+            }
+
             return augmented;
         });
     }, [data, showCagr, breadthMetrics]);
+
+    const activeData = useMemo(() => {
+        if (selectedDate !== "latest" && historyData?.sessions?.[selectedDate]) {
+            return unpackHistoricalSession(historyData.sessions[selectedDate], showCagr);
+        }
+        return displayData;
+    }, [selectedDate, historyData, displayData, showCagr]);
+
+    // Synchronize AgGrid sort state on viewMode switch
+    useEffect(() => {
+        const api = gridRef.current?.api;
+        if (!api) return;
+        const storedState = window.localStorage.getItem(`agGridState_heatmap_${viewMode}`);
+        if (storedState) {
+            try {
+                const parsed = JSON.parse(storedState);
+                if (Array.isArray(parsed)) {
+                    const sortState = parsed
+                        .filter((s: any) => s.sort != null)
+                        .map((s: any) => ({ colId: s.colId, sort: s.sort, sortIndex: s.sortIndex }));
+                    if (sortState.length > 0) {
+                        api.applyColumnState({ state: sortState, applyOrder: false });
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn("Failed to apply AG grid sort state", e);
+            }
+        }
+        if (viewMode === "forecaster") {
+            api.applyColumnState({
+                state: [{ colId: "breadth_velocity", sort: "desc" }],
+                defaultState: { sort: null },
+            });
+        }
+    }, [viewMode]);
+
+    useEffect(() => {
+        setDisplayedCount(activeData.length);
+    }, [activeData.length]);
 
     const numberFilterParams = {
         filterOptions: [
@@ -577,6 +924,242 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             return cols;
         }
 
+        // 4. FORECASTER MODE (Predictive Momentum & Thrust Scanner)
+        if (viewMode === "forecaster") {
+            const cols = [...baseCols];
+
+            // 1W Breadth
+            cols.push({
+                headerName: "1W Breadth",
+                field: "breadth_1W_pct",
+                width: 125,
+                minWidth: 110,
+                sortable: true,
+                cellStyle: getBreadthHeatmapStyle,
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "1-Week Participation: % and count of constituents with positive 1-week return",
+                cellRenderer: (params: any) => {
+                    const v = params.value;
+                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
+                    const stat = params.data?.breadth?.timeframes?.["1W"];
+                    const tooltip = stat ? `1W Gainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)` : `${v}%`;
+                    return (
+                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
+                            <span className="text-[13px] font-semibold tracking-tight">{Number(v).toFixed(1)}%</span>
+                            {stat && stat.total > 0 && (
+                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
+                                    {stat.gained}/{stat.total}
+                                </span>
+                            )}
+                        </div>
+                    );
+                },
+            });
+
+            // 1M Breadth
+            cols.push({
+                headerName: "1M Breadth",
+                field: "breadth_1M_pct",
+                width: 125,
+                minWidth: 110,
+                sortable: true,
+                cellStyle: getBreadthHeatmapStyle,
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "1-Month Participation: % and count of constituents with positive 1-month return",
+                cellRenderer: (params: any) => {
+                    const v = params.value;
+                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
+                    const stat = params.data?.breadth?.timeframes?.["1M"];
+                    const tooltip = stat ? `1M Gainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)` : `${v}%`;
+                    return (
+                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
+                            <span className="text-[13px] font-semibold tracking-tight">{Number(v).toFixed(1)}%</span>
+                            {stat && stat.total > 0 && (
+                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
+                                    {stat.gained}/{stat.total}
+                                </span>
+                            )}
+                        </div>
+                    );
+                },
+            });
+
+            // Velocity (1W - 1M)
+            cols.push({
+                headerName: "Velocity (1W-1M)",
+                field: "breadth_velocity",
+                width: 145,
+                minWidth: 130,
+                sortable: true,
+                sort: "desc",
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "Breadth Velocity = 1W Gainers % minus 1M Gainers % (Fast vs Intermediate participation acceleration)",
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    const v = Number(params.value);
+                    const sign = v > 0 ? "+" : "";
+                    let pillClass = "bg-slate-800/80 text-slate-300 border-slate-700";
+                    if (v >= 40) {
+                        pillClass = "bg-emerald-950/90 text-emerald-300 border-emerald-600 shadow-sm shadow-emerald-500/20";
+                    } else if (v >= 15) {
+                        pillClass = "bg-emerald-900/40 text-emerald-400 border-emerald-700/60";
+                    } else if (v <= -40) {
+                        pillClass = "bg-red-950/90 text-red-300 border-red-600 shadow-sm shadow-red-500/20";
+                    } else if (v <= -15) {
+                        pillClass = "bg-red-900/40 text-red-400 border-red-700/60";
+                    }
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono border ${pillClass}`}>
+                                {sign}{v.toFixed(1)}%
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // Regime Setup
+            cols.push({
+                headerName: "Regime Setup",
+                field: "regime",
+                width: 195,
+                minWidth: 175,
+                sortable: true,
+                filter: "agTextColumnFilter",
+                headerTooltip: "Two-Stage Regime Classification (Bull Pullback Thrust, Bear Bounce, Sustained Bull, etc.)",
+                cellRenderer: (params: { value: string | null; data: any }) => {
+                    const code = params.value || "neutral";
+                    const config = REGIME_CONFIGS[code] || REGIME_CONFIGS.neutral;
+                    return (
+                        <div className="flex items-center h-full" title={config.guidance}>
+                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${config.bgClass} ${config.textClass} ${config.borderClass}`}>
+                                {config.badge}
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 10D Breadth Expansion Odds
+            cols.push({
+                headerName: "10D Expansion Odds",
+                field: "expansion_odds",
+                width: 165,
+                minWidth: 150,
+                sortable: true,
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "Calibrated empirical probability (Model 1) of 1M Breadth expanding by >= +15% over next 10 trading sessions",
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    const odds = Number(params.value);
+                    let barColor = "bg-slate-600";
+                    let textColor = "text-slate-300";
+                    if (odds >= 75) {
+                        barColor = "bg-emerald-500";
+                        textColor = "text-emerald-300 font-bold";
+                    } else if (odds >= 60) {
+                        barColor = "bg-cyan-500";
+                        textColor = "text-cyan-300 font-semibold";
+                    } else if (odds <= 30) {
+                        barColor = "bg-red-500";
+                        textColor = "text-red-400";
+                    }
+                    return (
+                        <div className="flex flex-col justify-center h-full w-full gap-1">
+                            <div className="flex justify-between items-center text-xs">
+                                <span className={`font-mono ${textColor}`}>{odds.toFixed(1)}%</span>
+                                <span className="text-[10px] text-slate-500 font-medium">Model 1</span>
+                            </div>
+                            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                <div className={`h-full ${barColor} rounded-full transition-all duration-300`} style={{ width: `${Math.min(Math.max(odds, 0), 100)}%` }} />
+                            </div>
+                        </div>
+                    );
+                },
+            });
+
+            // Forward Price Expectation (Guidance)
+            cols.push({
+                headerName: "Forward Expectation (12Y Empirical)",
+                field: "forward_guidance",
+                width: 320,
+                minWidth: 260,
+                sortable: false,
+                headerTooltip: "Empirical forward price and breadth expectation based on 12-year backtest data",
+                cellRenderer: (params: { value: string | null; data: any }) => {
+                    const guidance = params.value || params.data?.forward_guidance || "";
+                    if (!guidance) return <span className="text-gray-500">—</span>;
+                    return (
+                        <div className="flex items-center h-full text-xs text-slate-300 truncate font-medium antialiased" title={guidance}>
+                            {guidance}
+                        </div>
+                    );
+                },
+            });
+
+            // > 200 SMA
+            cols.push({
+                headerName: "> 200 SMA",
+                field: "breadth_pctAbove200Sma",
+                width: 115,
+                minWidth: 100,
+                sortable: true,
+                suppressHeaderMenuButton: true,
+                cellStyle: getBreadthHeatmapStyle,
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "% of constituents trading above their 200-day Simple Moving Average",
+                cellRenderer: (params: any) => {
+                    const v = params.value;
+                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
+                    const a = params.data?.breadth_above200Sma;
+                    const tot = params.data?.breadth_totalStocks;
+                    return (
+                        <div className="flex flex-col items-center justify-center h-full text-center leading-none py-0.5 antialiased">
+                            <span className="text-[13px] font-medium tracking-tight">{Number(v).toFixed(1)}%</span>
+                            {a !== undefined && tot !== undefined && (
+                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
+                                    {a}/{tot}
+                                </span>
+                            )}
+                        </div>
+                    );
+                },
+            });
+
+            // Total Stocks
+            cols.push({
+                headerName: "Total",
+                field: "breadth_totalStocks",
+                width: 75,
+                minWidth: 65,
+                sortable: true,
+                suppressHeaderMenuButton: true,
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: "Total number of constituent stocks tracked in this theme",
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 font-medium antialiased">
+                                {params.value}
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // RS Rating
+            cols.push(rsRatingCol);
+
+            return cols;
+        }
+
         return baseCols;
     }, [viewMode, visibleColumns, rsRatingCol, themeRenderer]);
 
@@ -711,6 +1294,124 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                             <Layers size={13} />
                             Combined
                         </button>
+                        <button
+                            onClick={() => setViewMode("forecaster")}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all font-medium ${
+                                viewMode === "forecaster"
+                                    ? "bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-sm font-semibold"
+                                    : "text-amber-400/90 hover:text-amber-300"
+                            }`}
+                        >
+                            <Zap size={13} className={viewMode === "forecaster" ? "text-amber-200 fill-amber-200" : ""} />
+                            ⚡ Forecaster
+                        </button>
+                    </div>
+
+                    {/* Session Date Selector (Time-Travel / Replay) */}
+                    <div className="relative" ref={dateDropdownRef}>
+                        <button
+                            onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
+                            className={`flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg border transition-all font-medium shadow-sm ${
+                                selectedDate !== "latest"
+                                    ? "bg-amber-500/20 border-amber-500/50 text-amber-200 ring-1 ring-amber-500/30"
+                                    : "bg-slate-900 border-slate-700/80 text-slate-300 hover:border-slate-600"
+                            }`}
+                            title="Time-Travel: Replay dashboard metrics as of any past session from the last 250 trading days"
+                        >
+                            <Calendar size={13} className={selectedDate !== "latest" ? "text-amber-400" : "text-blue-400"} />
+                            <span>
+                                {selectedDate === "latest" ? (
+                                    <>Session: <strong className="text-white font-semibold">{formatDateLabel(globalLatestDate)}</strong> <span className="text-[10px] text-emerald-400 font-bold ml-1 px-1.5 py-0.5 bg-emerald-950/80 rounded border border-emerald-800/80">LIVE</span></>
+                                ) : (
+                                    <>Replay: <strong className="text-amber-300 font-bold font-mono">{formatDateLabel(selectedDate)}</strong> {isLoadingHistory && <span className="text-[10px] text-amber-400/80 animate-pulse ml-1">(loading...)</span>}</>
+                                )}
+                            </span>
+                            <ChevronDown size={12} className={`transition-transform duration-200 text-slate-400 ${isDateDropdownOpen ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {isDateDropdownOpen && (
+                            <div className="absolute left-0 top-full mt-2 w-72 bg-[#111118] border border-slate-700 rounded-lg shadow-2xl overflow-hidden z-50">
+                                <div className="p-2 border-b border-slate-700/60 bg-slate-900/60">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                                            <Calendar size={12} className="text-blue-400" />
+                                            Session Replay
+                                        </span>
+                                        <span className="text-[10px] text-slate-500 font-mono">
+                                            {selectableDates.length} trading days
+                                        </span>
+                                    </div>
+                                    <div className="relative">
+                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" size={12} />
+                                        <input
+                                            type="text"
+                                            placeholder="Search date (e.g. Oct 2026)..."
+                                            value={dateSearchQuery}
+                                            onChange={(e) => setDateSearchQuery(e.target.value)}
+                                            className="w-full bg-slate-950/80 border border-slate-700/80 rounded py-1 pl-8 pr-6 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        />
+                                        {dateSearchQuery && (
+                                            <button onClick={() => setDateSearchQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                                                <X size={10} />
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="p-1 max-h-64 overflow-y-auto">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedDate("latest");
+                                            setIsDateDropdownOpen(false);
+                                        }}
+                                        className={`w-full flex items-center justify-between px-3 py-2 rounded text-xs transition-colors ${
+                                            selectedDate === "latest"
+                                                ? "bg-blue-600/20 text-blue-300 font-semibold border border-blue-500/30"
+                                                : "text-slate-300 hover:bg-slate-800/60"
+                                        }`}
+                                    >
+                                        <span className="flex items-center gap-2">
+                                            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                                            Latest Session (Live)
+                                        </span>
+                                        <span className="text-[10px] text-slate-400 font-mono">{formatDateLabel(globalLatestDate)}</span>
+                                    </button>
+
+                                    <div className="my-1 border-t border-slate-800/80" />
+
+                                    {isLoadingHistory && selectableDates.length === 0 ? (
+                                        <div className="py-4 text-center text-xs text-slate-500">Loading historical dates...</div>
+                                    ) : filteredDates.length === 0 ? (
+                                        <div className="py-4 text-center text-xs text-slate-500">No dates match search</div>
+                                    ) : (
+                                        filteredDates.map((dStr) => {
+                                            const isSelected = selectedDate === dStr;
+                                            return (
+                                                <button
+                                                    key={dStr}
+                                                    onClick={() => {
+                                                        if (dStr === selectableDates[0]) {
+                                                            setSelectedDate("latest");
+                                                        } else {
+                                                            setSelectedDate(dStr);
+                                                        }
+                                                        setIsDateDropdownOpen(false);
+                                                    }}
+                                                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded text-xs transition-colors ${
+                                                        isSelected
+                                                            ? "bg-amber-500/20 text-amber-200 font-semibold border border-amber-500/40"
+                                                            : "text-slate-300 hover:bg-slate-800/60"
+                                                    }`}
+                                                >
+                                                    <span className="font-medium">{formatDateLabel(dStr)}</span>
+                                                    <span className="text-[10px] text-slate-500 font-mono">{dStr}</span>
+                                                </button>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="relative flex-1 max-w-xs min-w-[200px]">
@@ -782,7 +1483,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                         </div>
                     )}
 
-                    {viewMode !== "breadth" && (
+                    {(viewMode === "returns" || viewMode === "combined") && (
                         <label className="flex items-center gap-2 text-xs text-slate-400 cursor-pointer text-nowrap select-none hover:text-slate-300 transition-colors">
                             <input
                                 type="checkbox"
@@ -882,18 +1583,40 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 </div>
             </div>
             
+            {/* Historical Replay Banner */}
+            {selectedDate !== "latest" && (
+                <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 rounded-lg bg-amber-950/40 border border-amber-500/40 text-amber-200 text-xs shadow-md">
+                    <div className="flex items-center gap-2.5">
+                        <span className="relative flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                        </span>
+                        <span>
+                            <strong className="text-amber-100 font-semibold">Historical Replay Active:</strong> Replaying complete market breadth and performance metrics as of trading session <strong className="text-amber-300 font-bold font-mono">{formatDateLabel(selectedDate)}</strong> ({selectedDate}).
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setSelectedDate("latest")}
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/50 font-medium transition-all shadow-sm hover:bg-amber-500/40 cursor-pointer"
+                    >
+                        <RotateCcw size={12} />
+                        Reset to Latest (Live)
+                    </button>
+                </div>
+            )}
+            
             <div 
                 ref={tableRef} 
                 className="bg-[#111118] border border-[#1e1e2e] rounded-lg overflow-hidden flex flex-col transition-all duration-300 min-h-[500px] w-full" 
-                style={{ height: Math.max(Math.min(displayData.length * (viewMode === "returns" ? 36 : 42) + 80, 820), 500) }}
+                style={{ height: Math.max(Math.min(activeData.length * (viewMode === "returns" ? 36 : viewMode === "forecaster" ? 44 : 42) + 80, 840), 500) }}
             >
                 <AgGridReact
                     ref={gridRef}
                     theme={myTheme}
-                    rowData={displayData}
+                    rowData={activeData}
                     columnDefs={columnDefs}
                     defaultColDef={defaultColDef}
-                    rowHeight={viewMode === "returns" ? 36 : 42}
+                    rowHeight={viewMode === "returns" ? 36 : viewMode === "forecaster" ? 44 : 42}
                     suppressCellFocus={true}
                     animateRows={false}
                     domLayout="normal"

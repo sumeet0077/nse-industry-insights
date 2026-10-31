@@ -801,6 +801,92 @@ validate("Breadth & Timeframe Gainers Engine (lib/data.ts)", (errors, warnings) 
     console.log(`  ✓ All ${matchedConfigs}/${configCount} themes computed valid breadth and timeframe gainer metrics with 100% integrity.`);
 });
 
+// 11. Validate Daily Breadth History (data/history/*.parquet and *.json)
+validate("Daily Breadth History (data/history/*.parquet and *.json)", (errors, warnings) => {
+    const parquetPath = path.join(DATA_DIR, "history", "master_daily_breadth_history.parquet");
+    const jsonPath = path.join(DATA_DIR, "history", "daily_breadth_history_1y.json");
+    const publicJsonPath = path.join(process.cwd(), "public", "data", "history", "daily_breadth_history_1y.json");
+
+    if (!fs.existsSync(parquetPath)) {
+        errors.push(`Missing master historical parquet: ${parquetPath}`);
+    } else {
+        const stats = fs.statSync(parquetPath);
+        if (stats.size < 1_000_000) {
+            errors.push(`Historical parquet file unusually small: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+        } else {
+            console.log(`  ✓ Historical parquet exists: ${(stats.size / 1024 / 1024).toFixed(2)} MB`);
+        }
+    }
+
+    if (!fs.existsSync(jsonPath)) {
+        errors.push(`Missing 1Y historical JSON: ${jsonPath}`);
+        return;
+    }
+
+    const jsonStats = fs.statSync(jsonPath);
+    if (jsonStats.size < 500_000) {
+        errors.push(`1Y historical JSON file unusually small: ${(jsonStats.size / 1024).toFixed(1)} KB`);
+        return;
+    }
+
+    let payload: any;
+    try {
+        payload = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
+    } catch (e: any) {
+        errors.push(`Failed to parse 1Y historical JSON: ${e.message}`);
+        return;
+    }
+
+    if (!payload.dates || !Array.isArray(payload.dates) || payload.dates.length < 200) {
+        errors.push(`1Y historical JSON dates array missing or has fewer than 200 sessions (found ${payload?.dates?.length ?? 0})`);
+    }
+
+    if (!payload.sessions || typeof payload.sessions !== "object") {
+        errors.push("1Y historical JSON sessions dictionary missing or invalid");
+        return;
+    }
+
+    const sessionKeys = Object.keys(payload.sessions);
+    if (sessionKeys.length < 200) {
+        errors.push(`1Y historical JSON has fewer than 200 sessions (found ${sessionKeys.length})`);
+    }
+
+    const latestDate = payload.dates[0];
+    const oldestDate = payload.dates[payload.dates.length - 1];
+    const latestRows = payload.sessions[latestDate];
+    if (!latestRows || !Array.isArray(latestRows)) {
+        errors.push(`Latest session ${latestDate} rows missing in 1Y historical JSON`);
+    } else {
+        if (latestRows.length < 90) {
+            warnings.push(`Latest session ${latestDate} has ${latestRows.length} themes (< 90 expected)`);
+        }
+        const firstRow = latestRows[0];
+        if (!Array.isArray(firstRow) || firstRow.length < 29) {
+            errors.push(`Latest session ${latestDate} first row has invalid column length (${firstRow?.length ?? 0} < 29)`);
+        } else {
+            // columns: ['theme', 'r1d', 'r1w', 'r1m', 'r3m', 'r6m', 'rytd', 'r1y', 'r3y', 'r5y', 'rs5d', 'rs10d', 'rs20d', 'rs50d', 'rs', 'tot', 'a200', 'b200', 'p200', 'g1d', 'g1w', 'g1m', 'g3m', 'g6m', 'gytd', 'g1y', 'velo', 'odds', 'regime']
+            const [theme, , , , , , , , , , , , , , , , , , p200, , , , , , , , , odds] = firstRow;
+            if (typeof theme !== "string" || theme.length === 0) {
+                errors.push(`Invalid theme title in historical row: ${theme}`);
+            }
+            if (p200 !== null && (p200 < 0 || p200 > 100)) {
+                errors.push(`p200 out of bounds [0, 100]: ${p200}`);
+            }
+            if (odds !== null && (odds < 0 || odds > 100)) {
+                errors.push(`expansion odds out of bounds [0, 100]: ${odds}`);
+            }
+        }
+    }
+
+    if (!fs.existsSync(publicJsonPath)) {
+        errors.push(`Public accessible historical JSON path not found: ${publicJsonPath}`);
+    } else {
+        console.log(`  ✓ Public accessible historical JSON verified: ${publicJsonPath}`);
+    }
+
+    console.log(`  ✓ 1Y Historical JSON verified: ${sessionKeys.length} trading sessions (${oldestDate} to ${latestDate}), ${latestRows?.length ?? 0} themes per session.`);
+});
+
 // Print Summary
 console.log("\n==================================================");
 console.log("📊 Verification Results");

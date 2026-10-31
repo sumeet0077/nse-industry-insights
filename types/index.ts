@@ -29,6 +29,10 @@ export interface PerformanceRow {
     "RS Rating"?: number | null;
     "IBD RS Rating"?: number | null;
     rs_raw_score?: number | null;
+    breadth_velocity?: number | null;
+    expansion_odds?: number | null;
+    regime?: string | null;
+    forward_guidance?: string | null;
 }
 
 export interface ConstituentPerformance {
@@ -124,3 +128,27 @@ export interface RRGDataPoint {
 }
 
 export type SubscriptionTier = "free" | "pro";
+
+export interface DailyBreadthHistory1Y {
+    dates: string[];
+    columns: string[];
+    sessions: Record<string, (string | number | null)[][]>;
+}
+
+export type RegimeType =
+    | "pullback_thrust"
+    | "bear_bounce"
+    | "early_thrust"
+    | "sustained_bull"
+    | "rollover_alert"
+    | "capitulation"
+    | "accumulation"
+    | "neutral";
+
+export interface RegimeConfig {
+    code: RegimeType;
+    name: string;
+    badge: string;
+    guidance: string;
+    color: string;
+}

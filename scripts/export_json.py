@@ -1877,7 +1877,7 @@ def ensure_public_symlinks(output_dir: Path):
     if not public_data.exists():
         public_data.mkdir(parents=True, exist_ok=True)
 
-    for sub in ["breadth", "stock_rrg", "constituent_performance", "market_status"]:
+    for sub in ["breadth", "stock_rrg", "constituent_performance", "market_status", "history"]:
         link_in_public = public_data / sub
         target = f"../../data/{sub}"
         needs_link = False
@@ -1984,6 +1984,14 @@ def main():
         subprocess.run([sys.executable, str(script_path), "--output", str(output_dir), "--source", str(source_dir)], check=True)
     except Exception as e:
         print(f"  ERR Stock RRG export: {e}")
+
+    print("\nExporting Master Daily Breadth History & Forecaster...")
+    try:
+        import subprocess
+        history_script = Path(__file__).parent / "export_daily_breadth_history.py"
+        subprocess.run([sys.executable, str(history_script), "--output", str(output_dir)], check=True)
+    except Exception as e:
+        print(f"  ERR Daily Breadth History export: {e}")
 
     print("\nGenerating manifest...")
     generate_manifest(output_dir)

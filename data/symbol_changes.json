@@ -6394,5 +6394,11 @@
     "old_symbol": "HAWKINSCOOK",
     "new_symbol": "HAWKINCOOK",
     "effective_date": "2024-01-01"
+  },
+  {
+    "company": "ICICI Prudential Life Insurance Company Limited",
+    "old_symbol": "ICICIPRULI",
+    "new_symbol": "ICICILIFE",
+    "effective_date": "2026-10-23"
   }
 ]

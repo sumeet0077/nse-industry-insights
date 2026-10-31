@@ -14,6 +14,7 @@ import type {
     TimeframeGainersStat,
     ThemeBreadthSummaryMetrics,
     AllThemesBreadthMap,
+    DailyBreadthHistory1Y,
 } from "@/types";
 import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
 import { resolveDataKey } from "./utils";
@@ -154,6 +155,15 @@ export function getConstituentPerformance(): ConstituentPerformanceMap {
             "constituent_performance/constituent_performance_latest.json"
         ) ?? {}
     );
+}
+
+export function getDailyBreadthHistory1Y(): DailyBreadthHistory1Y | null {
+    return readJson<DailyBreadthHistory1Y>("history/daily_breadth_history_1y.json");
+}
+
+export function getAvailableHistoricalDates(): string[] {
+    const hist = getDailyBreadthHistory1Y();
+    return hist?.dates ?? [];
 }
 
 /**

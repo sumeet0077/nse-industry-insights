@@ -69,16 +69,16 @@ function getBreadthHeatmapStyle(params: CellClassParams): { [key: string]: strin
     if (v >= 50) {
         const intensity = (v - 50) / 50; // 0 to 1
         return {
-            backgroundColor: `rgba(16, 185, 129, ${0.05 + intensity * 0.18})`,
-            color: v >= 70 ? "#6ee7b7" : "#34d399",
-            fontWeight: "600",
+            backgroundColor: `rgba(34, 197, 94, ${0.1 + intensity * 0.35})`,
+            color: "#4ade80",
+            fontWeight: "500",
         };
     } else {
         const intensity = (50 - v) / 50; // 0 to 1
         return {
-            backgroundColor: `rgba(239, 68, 68, ${0.05 + intensity * 0.18})`,
-            color: v <= 30 ? "#fca5a5" : "#f87171",
-            fontWeight: "600",
+            backgroundColor: `rgba(239, 68, 68, ${0.1 + intensity * 0.35})`,
+            color: "#f87171",
+            fontWeight: "500",
         };
     }
 }
@@ -402,18 +402,18 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             cols.push({
                 headerName: "Total",
                 field: "breadth_totalStocks",
-                width: 80,
-                minWidth: 70,
+                width: 75,
+                minWidth: 65,
                 sortable: true,
                 suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
                     return (
                         <div className="flex items-center justify-center h-full">
-                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 font-mono text-[11px] text-slate-300 font-semibold">
+                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 font-medium antialiased">
                                 {params.value}
                             </span>
                         </div>
@@ -435,12 +435,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 headerTooltip: "% and count of constituents trading above their 200-day Simple Moving Average",
                 cellRenderer: (params: any) => {
                     const b: ThemeBreadthSummaryMetrics | null = params.data?.breadth;
-                    if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500">—</span>;
                     const tooltip = `${params.data["Theme/Index"]}\nAbove 200 SMA: ${b.above200Sma} / ${b.totalStocks} (${b.pctAbove200Sma.toFixed(1)}%)\nBelow 200 SMA: ${b.below200Sma} / ${b.totalStocks}`;
                     return (
-                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
-                            <span className="font-bold text-xs">{b.pctAbove200Sma.toFixed(1)}%</span>
-                            <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
+                            <span className="text-[13px] font-medium tracking-tight">{b.pctAbove200Sma.toFixed(1)}%</span>
+                            <span className="text-[11px] text-slate-300/80 font-normal mt-1">
                                 {b.above200Sma}/{b.totalStocks}
                             </span>
                         </div>
@@ -463,13 +463,13 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     headerTooltip: `% and count of constituents with positive returns (>0%) over ${tf} (unseasoned IPOs excluded from denominator)`,
                     cellRenderer: (params: any) => {
                         const stat = params.data?.breadth?.timeframes?.[tf];
-                        if (!stat || stat.total === 0) return <span className="text-gray-500 font-mono">—</span>;
+                        if (!stat || stat.total === 0) return <span className="text-gray-500">—</span>;
                         const themeName = params.data["Theme/Index"];
                         const tooltip = `${themeName} — ${tf} Breadth\n────────────────────────\nActive Constituents: ${stat.total}\nGainers (>0%): ${stat.gained} / ${stat.total} (${stat.pct.toFixed(1)}%)\nDecliners (<0%): ${stat.declined} / ${stat.total}\nFlat (0%): ${stat.flat}${stat.unlisted > 0 ? `\nRecent IPOs (<${tf}): ${stat.unlisted} (Excluded from denominator)` : ""}`;
                         return (
-                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
-                                <span className="font-bold text-xs">{stat.pct.toFixed(1)}%</span>
-                                <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
+                                <span className="text-[13px] font-medium tracking-tight">{stat.pct.toFixed(1)}%</span>
+                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
                                     {stat.gained}/{stat.total}
                                 </span>
                             </div>
@@ -491,18 +491,18 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             cols.push({
                 headerName: "Total",
                 field: "breadth_totalStocks",
-                width: 80,
-                minWidth: 70,
+                width: 75,
+                minWidth: 65,
                 sortable: true,
                 suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
                     return (
                         <div className="flex items-center justify-center h-full">
-                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 font-mono text-[11px] text-slate-300 font-semibold">
+                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 font-medium antialiased">
                                 {params.value}
                             </span>
                         </div>
@@ -524,11 +524,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 headerTooltip: "% and count of constituents trading above their 200-day Simple Moving Average",
                 cellRenderer: (params: any) => {
                     const b: ThemeBreadthSummaryMetrics | null = params.data?.breadth;
-                    if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    if (!b || b.pctAbove200Sma === undefined) return <span className="text-gray-500">—</span>;
                     return (
-                        <div className="flex flex-col items-center justify-center h-full text-center leading-tight font-mono py-0.5">
-                            <span className="font-bold text-xs">{b.pctAbove200Sma.toFixed(1)}%</span>
-                            <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                        <div className="flex flex-col items-center justify-center h-full text-center leading-none py-0.5 antialiased">
+                            <span className="text-[13px] font-medium tracking-tight">{b.pctAbove200Sma.toFixed(1)}%</span>
+                            <span className="text-[11px] text-slate-300/80 font-normal mt-1">
                                 {b.above200Sma}/{b.totalStocks}
                             </span>
                         </div>
@@ -553,16 +553,16 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     cellRenderer: (params: any) => {
                         const ret = params.value != null && params.value !== "" ? Number(params.value) : null;
                         const stat = params.data?.breadth?.timeframes?.[tf];
-                        if (ret === null) return <span className="text-gray-500 font-mono">—</span>;
+                        if (ret === null) return <span className="text-gray-500">—</span>;
                         const formattedRet = formatMetricReturn(ret);
                         const tooltip = stat 
                             ? `${params.data["Theme/Index"]} — ${tf}\nReturn: ${formattedRet}\nGainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)\nDecliners: ${stat.declined}${stat.unlisted > 0 ? `\nRecent IPOs: ${stat.unlisted}` : ""}` 
                             : `Return: ${formattedRet}`;
                         return (
-                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-tight font-mono text-center" title={tooltip}>
-                                <span className="font-bold text-xs">{formattedRet}</span>
+                            <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
+                                <span className="text-[13px] font-medium tracking-tight">{formattedRet}</span>
                                 {stat && stat.total > 0 && (
-                                    <span className="text-[10px] text-slate-400 font-medium tracking-tight mt-0.5">
+                                    <span className="text-[11px] text-slate-300/80 font-normal mt-1">
                                         {stat.gained}/{stat.total}
                                     </span>
                                 )}

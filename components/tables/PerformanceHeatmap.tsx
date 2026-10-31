@@ -4,16 +4,20 @@ import { AgGridReact } from "ag-grid-react";
 import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import type { ColDef, ValueFormatterParams, CellClassParams, IRowNode, SelectionChangedEvent } from "ag-grid-community";
 import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-community";
-import { PerformanceRow, MarketStatus, AllThemesBreadthMap, ThemeBreadthSummaryMetrics, DailyBreadthHistory1Y } from "@/types";
+import { PerformanceRow, MarketStatus, AllThemesBreadthMap, ThemeBreadthSummaryMetrics, DailyBreadthHistory1Y, SwingHorizon, ConstituentPerformanceMap } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
 import { formatMetricReturn } from "@/lib/metrics";
 import { makeTradingViewUrl, resolveDataKey } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers, Zap, Calendar, RotateCcw } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers, Zap, Calendar, RotateCcw, Clock, Sparkles } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { GAINER_TIMEFRAMES, GainerTimeframe } from "@/lib/metrics";
+import { classifySwingTiming, getEmpiricalStats, getSwingTimingStats, formatNoiseAndStop, SWING_TIMING_CONFIGS, REGIME_CONFIGS } from "@/lib/swingTiming";
+export { REGIME_CONFIGS };
+import { SectorSwingCandidatesDrawer } from "@/components/drawers/SectorSwingCandidatesDrawer";
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -135,88 +139,7 @@ export function computeExpansionOdds(b1w: number, b1m: number, b200sma: number):
     return Number((p * 100).toFixed(1));
 }
 
-export const REGIME_CONFIGS: Record<string, {
-    code: string;
-    badge: string;
-    name: string;
-    guidance: string;
-    bgClass: string;
-    textClass: string;
-    borderClass: string;
-}> = {
-    pullback_thrust: {
-        code: "pullback_thrust",
-        badge: "🚀 Pullback Thrust",
-        name: "Bull Pullback Thrust",
-        guidance: "High conviction (61% 20D win rate, 1.88 PF, 70% breadth expansion)",
-        bgClass: "bg-emerald-950/80",
-        textClass: "text-emerald-300",
-        borderClass: "border-emerald-600/80 shadow-sm shadow-emerald-500/20",
-    },
-    bear_bounce: {
-        code: "bear_bounce",
-        badge: "⚠️ Bear Bounce Thrust",
-        name: "Bear Bounce Thrust",
-        guidance: "High expansion (65%), near-term supply digestion (48%-50% 10D win rate)",
-        bgClass: "bg-amber-950/80",
-        textClass: "text-amber-300",
-        borderClass: "border-amber-600/80 shadow-sm shadow-amber-500/20",
-    },
-    early_thrust: {
-        code: "early_thrust",
-        badge: "🚀 Early Thrust",
-        name: "Early Breadth Thrust",
-        guidance: "Rapid thrust into oversold base (65%-70% expansion odds)",
-        bgClass: "bg-cyan-950/80",
-        textClass: "text-cyan-300",
-        borderClass: "border-cyan-600/80 shadow-sm shadow-cyan-500/20",
-    },
-    sustained_bull: {
-        code: "sustained_bull",
-        badge: "🔥 Sustained Bull",
-        name: "Sustained Bull Trend",
-        guidance: "Max price alpha (67.5% win rate, +2.67% med return, 3.15 PF at T+20)",
-        bgClass: "bg-emerald-900/60",
-        textClass: "text-emerald-200",
-        borderClass: "border-emerald-500/60",
-    },
-    rollover_alert: {
-        code: "rollover_alert",
-        badge: "⚠️ Rollover Alert",
-        name: "Breadth Rollover Alert",
-        guidance: "Internal decay; high risk of pullback in next 5-10 sessions",
-        bgClass: "bg-orange-950/80",
-        textClass: "text-orange-300",
-        borderClass: "border-orange-600/80",
-    },
-    capitulation: {
-        code: "capitulation",
-        badge: "🩸 Capitulation Slump",
-        name: "Capitulation Slump",
-        guidance: "Deep oversold base; wait for 1W thrust before entering",
-        bgClass: "bg-rose-950/80",
-        textClass: "text-rose-300",
-        borderClass: "border-rose-600/80",
-    },
-    accumulation: {
-        code: "accumulation",
-        badge: "🌱 Accumulation",
-        name: "Oversold Accumulation",
-        guidance: "Bottom-fishing reversal taking root; monitor for 1W thrust",
-        bgClass: "bg-lime-950/70",
-        textClass: "text-lime-300",
-        borderClass: "border-lime-600/70",
-    },
-    neutral: {
-        code: "neutral",
-        badge: "⚖️ Neutral / Mixed",
-        name: "Neutral / Mixed",
-        guidance: "Balanced participation; rotational churn",
-        bgClass: "bg-slate-900/80",
-        textClass: "text-slate-400",
-        borderClass: "border-slate-700/60",
-    },
-};
+
 
 export function classifyRegimeTS(b1w: number, b1m: number, b200sma: number) {
     if (b1w >= 70 && b1m <= 35) {
@@ -348,6 +271,34 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
     const [showCagr, setShowCagr] = useLocalStorage("ph_showCagr", false);
     const [searchQuery, setSearchQuery] = useState("");
     const [displayedCount, setDisplayedCount] = useState<number>(data.length);
+
+    // Swing Trading Forecaster & Candidate Drawer State
+    const [swingHorizon, setSwingHorizon] = useLocalStorage<SwingHorizon>("ph_swingHorizon", "5D");
+    const [drawerSector, setDrawerSector] = useState<string | null>(null);
+    const [drawerRowData, setDrawerRowData] = useState<any | null>(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+    const [constituentPerfMap, setConstituentPerfMap] = useState<ConstituentPerformanceMap | null>(null);
+
+    // Prefetch constituent performance when in forecaster mode for instant drawer opening
+    useEffect(() => {
+        let isMounted = true;
+        if (viewMode === "forecaster" && !constituentPerfMap) {
+            fetch("/data/constituent_performance/constituent_performance_latest.json")
+                .then((res) => (res.ok ? res.json() : null))
+                .then((data: ConstituentPerformanceMap | null) => {
+                    if (isMounted && data) {
+                        setConstituentPerfMap(data);
+                    }
+                })
+                .catch((err) => {
+                    console.warn("Could not prefetch constituent performance:", err);
+                });
+        }
+        return () => {
+            isMounted = false;
+        };
+    }, [viewMode, constituentPerfMap]);
+
 
     // Time-Travel / Historical Replay State
     const [selectedDate, setSelectedDate] = useState<string>("latest");
@@ -649,7 +600,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
         else if (config.category === "industries") path = `/industries/${config.id}`;
 
         return (
-            <a href={path} className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+            <a
+                href={path}
+                onClick={(e) => e.stopPropagation()}
+                className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+            >
                 {params.value}
             </a>
         );
@@ -924,15 +879,216 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             return cols;
         }
 
-        // 4. FORECASTER MODE (Predictive Momentum & Thrust Scanner)
+        // 4. FORECASTER MODE (Predictive Momentum & Swing Trading Command Center)
         if (viewMode === "forecaster") {
             const cols = [...baseCols];
 
-            // 1W Breadth
+            // 1. Next-Day Swing Timing Action Badge
+            cols.push({
+                headerName: "Swing Action (T+1)",
+                colId: "swing_timing",
+                width: 205,
+                minWidth: 185,
+                sortable: true,
+                valueGetter: (params) => {
+                    const r = params.data;
+                    const w1 = Number(r?.breadth_1W_pct ?? 0);
+                    const d1 = Number(r?.breadth_1D_pct ?? 0);
+                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
+                    const m1 = Number(r?.breadth_1M_pct ?? 0);
+                    return classifySwingTiming(w1, d1, p200, m1).badge;
+                },
+                headerTooltip: "Actionable swing trade timing signal for Day T+1 entry (Dip Entry, Trend Buy, Extended Wait, or Bear Trap)",
+                cellRenderer: (params: any) => {
+                    const r = params.data;
+                    const w1 = Number(r?.breadth_1W_pct ?? 0);
+                    const d1 = Number(r?.breadth_1D_pct ?? 0);
+                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
+                    const m1 = Number(r?.breadth_1M_pct ?? 0);
+                    const timing = classifySwingTiming(w1, d1, p200, m1);
+                    return (
+                        <div className="flex items-center h-full" title={timing.action}>
+                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${timing.bgClass} ${timing.textClass} ${timing.borderClass}`}>
+                                {timing.badge}
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 2. One-Click Swing Candidates Drawer Button
+            cols.push({
+                headerName: "Top Picks",
+                colId: "candidates_btn",
+                width: 125,
+                minWidth: 115,
+                sortable: false,
+                filter: false,
+                suppressHeaderMenuButton: true,
+                headerTooltip: "View top constituent swing candidate stocks ranked by IBD RS Rating",
+                cellRenderer: (params: any) => {
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDrawerSector(params.data["Theme/Index"]);
+                                    setDrawerRowData(params.data);
+                                    setIsDrawerOpen(true);
+                                }}
+                                className="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                                title="Open Slide-over Drawer with Top Swing Candidate Stocks"
+                            >
+                                <Sparkles size={11} className="text-blue-400" />
+                                Top Picks
+                            </button>
+                        </div>
+                    );
+                },
+            });
+
+            // 3. Regime Setup
+            cols.push({
+                headerName: "Regime Setup",
+                field: "regime",
+                width: 195,
+                minWidth: 175,
+                sortable: true,
+                filter: "agTextColumnFilter",
+                headerTooltip: "Two-Stage Macro Regime Classification (Bull Pullback Thrust, Bear Bounce, Sustained Bull, etc.)",
+                cellRenderer: (params: { value: string | null; data: any }) => {
+                    const code = params.value || "neutral";
+                    const config = REGIME_CONFIGS[code] || REGIME_CONFIGS.neutral;
+                    return (
+                        <div className="flex items-center h-full" title={config.guidance}>
+                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${config.bgClass} ${config.textClass} ${config.borderClass}`}>
+                                {config.badge}
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 4. Dynamic Win Rate based on selected horizon
+            cols.push({
+                headerName: `${swingHorizon} Win Rate`,
+                colId: "horizon_win_rate",
+                width: 125,
+                minWidth: 115,
+                sortable: true,
+                valueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.winRate;
+                },
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: `Empirical 12-Year Win Rate % for Day T+1 Next-Day entry held for ${swingHorizon}`,
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    const v = Number(params.value);
+                    let color = "text-slate-300 font-semibold";
+                    if (v >= 58) color = "text-emerald-400 font-bold";
+                    else if (v >= 54) color = "text-cyan-300 font-semibold";
+                    else if (v < 50) color = "text-red-400 font-bold";
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className={`font-mono text-xs ${color}`}>
+                                {v.toFixed(1)}%
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 5. Dynamic Expected Return based on selected horizon
+            cols.push({
+                headerName: `${swingHorizon} Exp Ret`,
+                colId: "horizon_med_return",
+                width: 125,
+                minWidth: 115,
+                sortable: true,
+                valueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.medReturn;
+                },
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: `Empirical Median Price Return % for Day T+1 Next-Day entry held for ${swingHorizon}`,
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    const v = Number(params.value);
+                    const color = v > 0 ? "text-emerald-400 font-bold" : v < 0 ? "text-red-400 font-bold" : "text-slate-400";
+                    const sign = v > 0 ? "+" : "";
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className={`font-mono text-xs ${color}`}>
+                                {sign}{v.toFixed(2)}%
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 6. Dynamic Profit Factor based on selected horizon
+            cols.push({
+                headerName: `${swingHorizon} PF`,
+                colId: "horizon_pf",
+                width: 105,
+                minWidth: 95,
+                sortable: true,
+                valueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.profitFactor;
+                },
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                headerTooltip: `Empirical Profit Factor (Gross Gains / Gross Losses) for Day T+1 Next-Day entry held for ${swingHorizon}`,
+                cellRenderer: (params: { value: number | null }) => {
+                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
+                    const v = Number(params.value);
+                    let badge = "text-slate-300 bg-slate-800/80 border-slate-700";
+                    if (v >= 1.8) badge = "text-amber-300 bg-amber-950/80 border-amber-600/80 font-bold";
+                    else if (v >= 1.4) badge = "text-cyan-300 bg-cyan-950/80 border-cyan-700/80";
+                    else if (v < 1.0) badge = "text-red-400 bg-red-950/40 border-red-900/50";
+                    return (
+                        <div className="flex items-center justify-center h-full">
+                            <span className={`px-2 py-0.5 rounded text-[11px] font-mono border ${badge}`}>
+                                {v.toFixed(2)}
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 7. Stop-Loss & MAE Guidance
+            cols.push({
+                headerName: "Stop & Noise",
+                colId: "horizon_risk_stop",
+                width: 175,
+                minWidth: 160,
+                sortable: false,
+                headerTooltip: `Empirical Drawdown Noise (MedMAE) & Suggested Stop-Loss for Day T+1 entry held for ${swingHorizon}`,
+                cellRenderer: (params: any) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return (
+                        <div className="flex items-center justify-center h-full text-center" title={`Median Drawdown: ${stats.medMae.toFixed(2)}% | Suggested Stop-Loss: ${stats.suggestedStop.toFixed(1)}%`}>
+                            <span className="px-2 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300 antialiased">
+                                Stop: <strong className="text-amber-400 font-semibold">{stats.suggestedStop.toFixed(1)}%</strong> <span className="text-slate-500">({stats.medMae.toFixed(1)}%)</span>
+                            </span>
+                        </div>
+                    );
+                },
+            });
+
+            // 8. 1W Breadth
             cols.push({
                 headerName: "1W Breadth",
                 field: "breadth_1W_pct",
-                width: 125,
+                width: 120,
                 minWidth: 110,
                 sortable: true,
                 cellStyle: getBreadthHeatmapStyle,
@@ -957,11 +1113,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // 1M Breadth
+            // 9. 1M Breadth
             cols.push({
                 headerName: "1M Breadth",
                 field: "breadth_1M_pct",
-                width: 125,
+                width: 120,
                 minWidth: 110,
                 sortable: true,
                 cellStyle: getBreadthHeatmapStyle,
@@ -986,11 +1142,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // Velocity (1W - 1M)
+            // 10. Velocity (1W - 1M)
             cols.push({
                 headerName: "Velocity (1W-1M)",
                 field: "breadth_velocity",
-                width: 145,
+                width: 140,
                 minWidth: 130,
                 sortable: true,
                 sort: "desc",
@@ -1021,34 +1177,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // Regime Setup
-            cols.push({
-                headerName: "Regime Setup",
-                field: "regime",
-                width: 195,
-                minWidth: 175,
-                sortable: true,
-                filter: "agTextColumnFilter",
-                headerTooltip: "Two-Stage Regime Classification (Bull Pullback Thrust, Bear Bounce, Sustained Bull, etc.)",
-                cellRenderer: (params: { value: string | null; data: any }) => {
-                    const code = params.value || "neutral";
-                    const config = REGIME_CONFIGS[code] || REGIME_CONFIGS.neutral;
-                    return (
-                        <div className="flex items-center h-full" title={config.guidance}>
-                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${config.bgClass} ${config.textClass} ${config.borderClass}`}>
-                                {config.badge}
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 10D Breadth Expansion Odds
+            // 11. 10D Breadth Expansion Odds
             cols.push({
                 headerName: "10D Expansion Odds",
                 field: "expansion_odds",
-                width: 165,
-                minWidth: 150,
+                width: 160,
+                minWidth: 145,
                 sortable: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
@@ -1082,26 +1216,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // Forward Price Expectation (Guidance)
-            cols.push({
-                headerName: "Forward Expectation (12Y Empirical)",
-                field: "forward_guidance",
-                width: 320,
-                minWidth: 260,
-                sortable: false,
-                headerTooltip: "Empirical forward price and breadth expectation based on 12-year backtest data",
-                cellRenderer: (params: { value: string | null; data: any }) => {
-                    const guidance = params.value || params.data?.forward_guidance || "";
-                    if (!guidance) return <span className="text-gray-500">—</span>;
-                    return (
-                        <div className="flex items-center h-full text-xs text-slate-300 truncate font-medium antialiased" title={guidance}>
-                            {guidance}
-                        </div>
-                    );
-                },
-            });
-
-            // > 200 SMA
+            // 12. > 200 SMA
             cols.push({
                 headerName: "> 200 SMA",
                 field: "breadth_pctAbove200Sma",
@@ -1131,7 +1246,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // Total Stocks
+            // 13. Total Stocks
             cols.push({
                 headerName: "Total",
                 field: "breadth_totalStocks",
@@ -1154,14 +1269,14 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
             });
 
-            // RS Rating
+            // 14. RS Rating
             cols.push(rsRatingCol);
 
             return cols;
         }
 
         return baseCols;
-    }, [viewMode, visibleColumns, rsRatingCol, themeRenderer]);
+    }, [viewMode, visibleColumns, rsRatingCol, themeRenderer, swingHorizon]);
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -1307,7 +1422,58 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                         </button>
                     </div>
 
+                    {/* Swing Horizon Switcher (Forecaster Mode) */}
+                    {viewMode === "forecaster" && (
+                        <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 shadow-sm">
+                            <span className="text-[11px] text-slate-400 font-medium px-2 flex items-center gap-1">
+                                <Clock size={11} className="text-amber-400" />
+                                Horizon:
+                            </span>
+                            <button
+                                onClick={() => setSwingHorizon("2D")}
+                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                    swingHorizon === "2D"
+                                        ? "bg-amber-500 text-slate-950 shadow-sm"
+                                        : "text-slate-400 hover:text-slate-200"
+                                }`}
+                                title="Next-Day Entry held for 2 Days (T+1 to T+3)"
+                            >
+                                2 Days
+                            </button>
+                            <button
+                                onClick={() => setSwingHorizon("5D")}
+                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                    swingHorizon === "5D"
+                                        ? "bg-amber-500 text-slate-950 shadow-sm"
+                                        : "text-slate-400 hover:text-slate-200"
+                                }`}
+                                title="Next-Day Entry held for 5 Days / 1 Week (T+1 to T+6)"
+                            >
+                                5 Days (1W)
+                            </button>
+                            <button
+                                onClick={() => setSwingHorizon("10D")}
+                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                    swingHorizon === "10D"
+                                        ? "bg-amber-500 text-slate-950 shadow-sm"
+                                        : "text-slate-400 hover:text-slate-200"
+                                }`}
+                                title="Next-Day Entry held for 10 Days / 2 Weeks (T+1 to T+11)"
+                            >
+                                10 Days (2W)
+                            </button>
+                        </div>
+                    )}
+
+                    {viewMode === "forecaster" && (
+                        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <span>EOD Data: Signals for <strong className="text-white">Next-Day (T+1)</strong> Entry</span>
+                        </div>
+                    )}
+
                     {/* Session Date Selector (Time-Travel / Replay) */}
+
                     <div className="relative" ref={dateDropdownRef}>
                         <button
                             onClick={() => setIsDateDropdownOpen(!isDateDropdownOpen)}
@@ -1651,6 +1817,18 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                             if (selectedThemes.has(node.data["Theme/Index"])) node.setSelected(true);
                         });
                     }}
+                    onRowClicked={(event) => {
+                        if (viewMode === "forecaster" && event.data) {
+                            // Do not trigger drawer if user clicked checkbox, link, or button
+                            const target = event.event?.target as HTMLElement | null;
+                            if (target?.closest(".ag-selection-checkbox, .ag-checkbox-input, a, button, input")) {
+                                return;
+                            }
+                            setDrawerSector(event.data["Theme/Index"]);
+                            setDrawerRowData(event.data);
+                            setIsDrawerOpen(true);
+                        }
+                    }}
                     onSortChanged={() => {
                         if (gridRef.current?.api) {
                             const state = gridRef.current.api.getColumnState();
@@ -1662,6 +1840,18 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     }}
                 />
             </div>
+
+            {/* Top Swing Candidates Slide-Over Drawer */}
+            <SectorSwingCandidatesDrawer
+                isOpen={isDrawerOpen}
+                onClose={() => setIsDrawerOpen(false)}
+                sectorTitle={drawerSector}
+                sectorRowData={drawerRowData}
+                activeHorizon={swingHorizon}
+                onHorizonChange={(h) => setSwingHorizon(h)}
+                marketStatus={marketStatus}
+                constituentPerformanceMap={constituentPerfMap}
+            />
         </div>
     );
 }

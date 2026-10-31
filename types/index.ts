@@ -152,3 +152,32 @@ export interface RegimeConfig {
     guidance: string;
     color: string;
 }
+
+export type SwingHorizon = "2D" | "5D" | "10D";
+
+export type SwingTimingCode =
+    | "prime_dip"
+    | "trend_buy"
+    | "extended_wait"
+    | "avoid_bear_trap"
+    | "neutral";
+
+export interface SwingTimingConfig {
+    code: SwingTimingCode;
+    badge: string;
+    description: string;
+    action: string;
+    bgClass: string;
+    textClass: string;
+    borderClass: string;
+}
+
+export interface EmpiricalHorizonStats {
+    winRate: number;
+    medReturn: number;
+    profitFactor: number;
+    medMae: number;
+    suggestedStop: number;
+    sampleSize: number;
+}
+

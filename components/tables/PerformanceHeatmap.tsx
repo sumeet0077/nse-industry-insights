@@ -7,17 +7,34 @@ import { AllCommunityModule, ModuleRegistry, themeQuartz } from "ag-grid-communi
 import { PerformanceRow, MarketStatus, AllThemesBreadthMap, ThemeBreadthSummaryMetrics, DailyBreadthHistory1Y, SwingHorizon, ConstituentPerformanceMap } from "@/types";
 import { ALL_CONFIGS, METRIC_CONFIG } from "@/lib/config";
 import { formatMetricReturn } from "@/lib/metrics";
-import { makeTradingViewUrl, resolveDataKey } from "@/lib/utils";
+import { makeTradingViewUrl, resolveDataKey, resolveMarketStatusEntry } from "@/lib/utils";
 import { CategoryFilter, getCategoryForTitle } from "@/components/common/CategoryFilter";
-import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers, Zap, Calendar, RotateCcw, Clock, Sparkles } from "lucide-react";
+import { Columns, ChevronDown, AlertCircle, Search, X, CheckSquare, ExternalLink, BarChart2, TrendingUp, Layers, Zap, Calendar, RotateCcw, Clock, Sparkles, BookOpen, Info, Waves, Flame } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { GAINER_TIMEFRAMES, GainerTimeframe } from "@/lib/metrics";
-import { classifySwingTiming, getEmpiricalStats, getSwingTimingStats, formatNoiseAndStop, SWING_TIMING_CONFIGS, REGIME_CONFIGS, getSwingTimingLabel, getRegimeLabel, stripLeadingEmoji } from "@/lib/swingTiming";
+import {
+    classifySwingTiming,
+    getEmpiricalStats,
+    getSwingTimingStats,
+    formatNoiseAndStop,
+    SWING_TIMING_CONFIGS,
+    REGIME_CONFIGS,
+    getSwingTimingLabel,
+    getRegimeLabel,
+    stripLeadingEmoji,
+    UNIFIED_WAVE_CONCEPTS,
+    getUnifiedWaveSignal,
+    getUnifiedWaveLabel,
+    ConstituentLeader,
+    getTopConstituentLeaders,
+} from "@/lib/swingTiming";
+import { UnifiedWaveConcept } from "@/types";
 export { REGIME_CONFIGS };
 import { SectorSwingCandidatesDrawer } from "@/components/drawers/SectorSwingCandidatesDrawer";
-
+import { WaveConceptGuideDrawer } from "@/components/drawers/WaveConceptGuideDrawer";
+import { ThemeWaveContext } from "@/lib/data";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -29,6 +46,8 @@ interface PerformanceHeatmapProps {
     marketStatus?: MarketStatus;
     breadthMetrics?: AllThemesBreadthMap;
     availableDates?: string[];
+    waveContext?: Record<string, ThemeWaveContext>;
+    topLeadersMap?: Record<string, ConstituentLeader[]>;
 }
 
 const myTheme = themeQuartz.withParams({
@@ -229,6 +248,14 @@ function unpackHistoricalSession(rows: (string | number | null)[][], showCagr: b
             timeframes,
         };
 
+        const unifiedWave = getUnifiedWaveSignal({
+            b1w: g1w ?? 0,
+            b1d: g1d ?? 0,
+            b200: p200,
+            b1m: g1m ?? 0,
+            regime: regimeCode,
+        });
+
         return {
             "Theme/Index": theme,
             "1 Day": r1d,
@@ -262,11 +289,22 @@ function unpackHistoricalSession(rows: (string | number | null)[][], showCagr: b
             expansion_odds: odds,
             regime: regimeCode,
             forward_guidance: regConfig.guidance,
+            unified_wave: unifiedWave,
+            wave_code: unifiedWave.code,
+            wave_badge: unifiedWave.badge,
         };
     });
 }
 
-export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, breadthMetrics, availableDates }: PerformanceHeatmapProps) {
+export function PerformanceHeatmap({
+    data,
+    globalLatestDate,
+    marketStatus,
+    breadthMetrics,
+    availableDates,
+    waveContext,
+    topLeadersMap,
+}: PerformanceHeatmapProps) {
     const [viewMode, setViewMode] = useLocalStorage<HeatmapViewMode>("ph_viewMode", "returns");
     const [showCagr, setShowCagr] = useLocalStorage("ph_showCagr", false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -278,6 +316,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
     const [drawerRowData, setDrawerRowData] = useState<any | null>(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const [constituentPerfMap, setConstituentPerfMap] = useState<ConstituentPerformanceMap | null>(null);
+
+    // Concept & Logic Guide Pop-out Drawer & Forecaster Toolbar Filter State
+    const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
+    const [activeGuideConcept, setActiveGuideConcept] = useState<string | null>(null);
+    const [forecasterFilterTab, setForecasterFilterTab] = useState<"all" | "waves_dips" | "bull_trends">("all");
 
     // Prefetch constituent performance when in forecaster mode for instant drawer opening
     useEffect(() => {
@@ -527,9 +570,28 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 augmented.forward_guidance = REGIME_CONFIGS.neutral.guidance;
             }
 
+            const waveCtx = waveContext?.[title];
+            const rrgQuadrant = waveCtx?.rrgQuadrant;
+            const headingNE = waveCtx?.headingNE;
+            const breakouts10d = waveCtx?.breakouts10d ?? 0;
+
+            const unifiedWave = getUnifiedWaveSignal({
+                b1w: g1w ?? 0,
+                b1d: augmented["breadth_1D_pct"] ?? 0,
+                b200: p200,
+                b1m: g1m ?? 0,
+                regime: augmented.regime,
+                rrgQuadrant,
+                rrgHeadingNE: headingNE,
+                breakouts10d,
+            });
+            augmented.unified_wave = unifiedWave;
+            augmented.wave_code = unifiedWave.code;
+            augmented.wave_badge = unifiedWave.badge;
+
             return augmented;
         });
-    }, [data, showCagr, breadthMetrics]);
+    }, [data, showCagr, breadthMetrics, waveContext]);
 
     const activeData = useMemo(() => {
         if (selectedDate !== "latest" && historyData?.sessions?.[selectedDate]) {
@@ -561,7 +623,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
         }
         if (viewMode === "forecaster") {
             api.applyColumnState({
-                state: [{ colId: "breadth_velocity", sort: "desc" }],
+                state: [{ colId: "edge_and_odds", sort: "desc" }],
                 defaultState: { sort: null },
             });
         }
@@ -935,483 +997,330 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             return cols;
         }
 
-        // 4. FORECASTER MODE (Predictive Momentum & Swing Trading Command Center)
+        // 4. FORECASTER MODE (First-Principles Clean Decision Surface: 5 Core Decision Columns)
         if (viewMode === "forecaster") {
-            const cols = [...baseCols];
+            const cols: ColDef[] = [
+                baseCols[0], // Pinned Checkbox selection for Watchlist / TradingView batch export
+                // 1. Theme / Sector Column
+                {
+                    headerName: "Theme / Sector",
+                    field: "Theme/Index",
+                    pinned: "left",
+                    width: 240,
+                    minWidth: 200,
+                    sortable: true,
+                    filter: "agTextColumnFilter",
+                    filterParams: textFilterParams,
+                    filterValueGetter: (params) => params.data?.["Theme/Index"] ?? "",
+                    cellRenderer: (params: any) => {
+                        const title = params.value;
+                        if (!title) return null;
+                        const total = params.data?.breadth_totalStocks ?? params.data?.breadth?.totalStocks;
+                        const config = ALL_CONFIGS.find((c) => c.title === title);
+                        let path = "";
+                        if (config) {
+                            if (config.category === "broad-market") path = `/broad-market/${config.id}`;
+                            else if (config.category === "sectors") path = `/sectors/${config.id}`;
+                            else if (config.category === "industries") path = `/industries/${config.id}`;
+                        }
+                        return (
+                            <div className="flex items-center justify-between w-full pr-2">
+                                {path ? (
+                                    <a
+                                        href={path}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="text-blue-400 hover:text-blue-300 font-semibold text-xs truncate transition-colors"
+                                        title={title}
+                                    >
+                                        {title}
+                                    </a>
+                                ) : (
+                                    <span className="text-slate-200 font-semibold text-xs truncate">{title}</span>
+                                )}
+                                {typeof total === "number" && total > 0 && (
+                                    <span
+                                        className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-400 flex-shrink-0 ml-1.5"
+                                        title={`${total} constituent stocks tracked`}
+                                    >
+                                        • {total}
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    },
+                },
 
-            // 1. Next-Day Swing Timing Action Badge
-            cols.push({
-                headerName: "Swing Action (T+1)",
-                colId: "swing_timing",
-                width: 205,
-                minWidth: 185,
-                sortable: true,
-                filter: "agTextColumnFilter",
-                filterParams: textFilterParams,
-                valueGetter: (params) => {
-                    const r = params.data;
-                    const w1 = Number(r?.breadth_1W_pct ?? 0);
-                    const d1 = Number(r?.breadth_1D_pct ?? 0);
-                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
-                    const m1 = Number(r?.breadth_1M_pct ?? 0);
-                    return getSwingTimingLabel(classifySwingTiming(w1, d1, p200, m1));
+                // 2. Unified Wave Signal (T+1) Column
+                {
+                    headerName: "Unified Wave Signal (T+1)",
+                    colId: "unified_wave_signal",
+                    width: 250,
+                    minWidth: 220,
+                    sortable: true,
+                    filter: "agTextColumnFilter",
+                    filterParams: textFilterParams,
+                    valueGetter: (params) => {
+                        const wave = params.data?.unified_wave;
+                        if (wave) return getUnifiedWaveLabel(wave);
+                        const w1 = Number(params.data?.breadth_1W_pct ?? 0);
+                        const d1 = Number(params.data?.breadth_1D_pct ?? 0);
+                        const p200 = Number(params.data?.breadth_pctAbove200Sma ?? 0);
+                        const m1 = Number(params.data?.breadth_1M_pct ?? 0);
+                        return getUnifiedWaveLabel(
+                            getUnifiedWaveSignal({ b1w: w1, b1d: d1, b200: p200, b1m: m1, regime: params.data?.regime })
+                        );
+                    },
+                    filterValueGetter: (params) => {
+                        const wave = params.data?.unified_wave;
+                        if (wave) return getUnifiedWaveLabel(wave);
+                        const w1 = Number(params.data?.breadth_1W_pct ?? 0);
+                        const d1 = Number(params.data?.breadth_1D_pct ?? 0);
+                        const p200 = Number(params.data?.breadth_pctAbove200Sma ?? 0);
+                        const m1 = Number(params.data?.breadth_1M_pct ?? 0);
+                        return getUnifiedWaveLabel(
+                            getUnifiedWaveSignal({ b1w: w1, b1d: d1, b200: p200, b1m: m1, regime: params.data?.regime })
+                        );
+                    },
+                    headerTooltip:
+                        "Definitive synthesized signal combining RRG trajectory, Breadth expansion, 52W Highs, and Swing Timing for Day T+1. Click badge or (i) to open Concept Guide.",
+                    cellRenderer: (params: any) => {
+                        const wave: UnifiedWaveConcept =
+                            params.data?.unified_wave ||
+                            getUnifiedWaveSignal({
+                                b1w: Number(params.data?.breadth_1W_pct ?? 0),
+                                b1d: Number(params.data?.breadth_1D_pct ?? 0),
+                                b200: Number(params.data?.breadth_pctAbove200Sma ?? 0),
+                                b1m: Number(params.data?.breadth_1M_pct ?? 0),
+                                regime: params.data?.regime,
+                            });
+                        return (
+                            <div className="flex items-center gap-1.5 h-full">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveGuideConcept(wave.code);
+                                        setIsGuideOpen(true);
+                                    }}
+                                    className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 transition-all hover:scale-[1.02] cursor-pointer ${wave.bgClass} ${wave.textClass} ${wave.borderClass}`}
+                                    title={`${wave.name}: ${wave.shortAction} (Click to open Concept Guide)`}
+                                >
+                                    <span>{wave.badge}</span>
+                                    <Info size={11} className="opacity-70 hover:opacity-100 transition-opacity" />
+                                </button>
+                            </div>
+                        );
+                    },
                 },
-                filterValueGetter: (params) => {
-                    const r = params.data;
-                    const w1 = Number(r?.breadth_1W_pct ?? 0);
-                    const d1 = Number(r?.breadth_1D_pct ?? 0);
-                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
-                    const m1 = Number(r?.breadth_1M_pct ?? 0);
-                    return getSwingTimingLabel(classifySwingTiming(w1, d1, p200, m1));
-                },
-                headerTooltip: "Actionable swing trade timing signal for Day T+1 entry (Dip Entry, Trend Buy, Extended Wait, or Bear Trap)",
-                cellRenderer: (params: any) => {
-                    const r = params.data;
-                    const w1 = Number(r?.breadth_1W_pct ?? 0);
-                    const d1 = Number(r?.breadth_1D_pct ?? 0);
-                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
-                    const m1 = Number(r?.breadth_1M_pct ?? 0);
-                    const timing = classifySwingTiming(w1, d1, p200, m1);
-                    return (
-                        <div className="flex items-center h-full" title={timing.action}>
-                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${timing.bgClass} ${timing.textClass} ${timing.borderClass}`}>
-                                {timing.badge}
-                            </span>
-                        </div>
-                    );
-                },
-            });
 
-            // 2. One-Click Swing Candidates Drawer Button
-            cols.push({
-                headerName: "Top Picks",
-                colId: "candidates_btn",
-                width: 125,
-                minWidth: 115,
-                sortable: false,
-                filter: false,
-                suppressHeaderMenuButton: true,
-                suppressHeaderFilterButton: true,
-                headerTooltip: "View top constituent swing candidate stocks ranked by IBD RS Rating",
-                cellRenderer: (params: any) => {
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDrawerSector(params.data["Theme/Index"]);
-                                    setDrawerRowData(params.data);
-                                    setIsDrawerOpen(true);
-                                }}
-                                className="px-2.5 py-1 rounded bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
-                                title="Open Slide-over Drawer with Top Swing Candidate Stocks"
+                // 3. Top Swing Leaders (Next Day) Column
+                {
+                    headerName: "Top Swing Leaders (Next Day)",
+                    colId: "top_swing_leaders",
+                    width: 270,
+                    minWidth: 230,
+                    sortable: false,
+                    filter: false,
+                    suppressHeaderMenuButton: true,
+                    suppressHeaderFilterButton: true,
+                    headerTooltip:
+                        "Top 2 constituent swing candidate stocks with gold stars for 52W High breakouts. Click chip to open TradingView chart in new tab.",
+                    cellRenderer: (params: any) => {
+                        const theme = params.data?.["Theme/Index"];
+                        const wave = params.data?.unified_wave;
+                        const p200 = params.data?.breadth_pctAbove200Sma;
+                        if (wave?.code === "avoid_bear_trap" || (p200 != null && p200 < 35)) {
+                            return (
+                                <div className="flex items-center h-full text-slate-500 text-xs italic">
+                                    <span>— (Structural Downtrend)</span>
+                                </div>
+                            );
+                        }
+
+                        let leaders: ConstituentLeader[] | undefined = topLeadersMap?.[theme];
+                        if ((!leaders || leaders.length === 0) && constituentPerfMap && marketStatus) {
+                            const entry = resolveMarketStatusEntry(marketStatus, theme);
+                            const tickers = entry
+                                ? [...(entry.above || []), ...(entry.below || []), ...(entry.new_stock || [])]
+                                : [];
+                            leaders = getTopConstituentLeaders(tickers, constituentPerfMap, 2);
+                        }
+
+                        if (!leaders || leaders.length === 0) {
+                            return (
+                                <div className="flex items-center h-full text-slate-600 text-xs font-mono">
+                                    <span>—</span>
+                                </div>
+                            );
+                        }
+
+                        return (
+                            <div className="flex items-center gap-1.5 h-full">
+                                {leaders.map((leader: ConstituentLeader) => {
+                                    const tvUrl = makeTradingViewUrl(leader.ticker);
+                                    return (
+                                        <a
+                                            key={leader.ticker}
+                                            href={tvUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="px-2 py-0.5 rounded bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-blue-500/60 text-slate-200 hover:text-blue-300 text-xs font-semibold flex items-center gap-1 transition-all shadow-sm group cursor-pointer"
+                                            title={`${leader.label} (RS: ${leader.rsRating}${
+                                                leader.is52wHigh ? " • 52W High Breakout" : ""
+                                            }) — Click to open TradingView chart`}
+                                        >
+                                            {leader.is52wHigh && (
+                                                <span className="text-amber-400 font-bold" title="52-Week High Breakout">
+                                                    ⭐
+                                                </span>
+                                            )}
+                                            <span className="font-mono text-[11px] tracking-tight">{leader.label}</span>
+                                            {leader.rsRating > 0 && (
+                                                <span className="text-[10px] font-mono text-slate-400 bg-slate-800/80 px-1 rounded ml-0.5">
+                                                    {leader.rsRating}
+                                                </span>
+                                            )}
+                                        </a>
+                                    );
+                                })}
+                            </div>
+                        );
+                    },
+                },
+
+                // 4. Edge & Odds Column
+                {
+                    headerName: "Edge & Odds",
+                    colId: "edge_and_odds",
+                    width: 140,
+                    minWidth: 125,
+                    sortable: true,
+                    filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
+                    valueGetter: (params) => {
+                        const reg = params.data?.regime || "neutral";
+                        const stats = getEmpiricalStats(reg, swingHorizon);
+                        const wave = params.data?.unified_wave;
+                        if (wave?.edgePct) return wave.edgePct;
+                        return Math.round(stats.winRate);
+                    },
+                    filterValueGetter: (params) => {
+                        const reg = params.data?.regime || "neutral";
+                        const stats = getEmpiricalStats(reg, swingHorizon);
+                        const wave = params.data?.unified_wave;
+                        if (wave?.edgePct) return wave.edgePct;
+                        return Math.round(stats.winRate);
+                    },
+                    headerTooltip: `Empirical 12-Year Edge & Statistical Odds for ${swingHorizon} swing horizon`,
+                    cellRenderer: (params: any) => {
+                        const reg = params.data?.regime || "neutral";
+                        const stats = getEmpiricalStats(reg, swingHorizon);
+                        const wave = params.data?.unified_wave;
+                        const edgePct = wave?.edgePct ?? Math.round(stats.winRate);
+                        const edgeLabel = wave?.edgeLabel ?? `${edgePct}% Edge`;
+
+                        let pillColor = "bg-slate-900 border-slate-700 text-slate-300";
+                        if (edgePct >= 70) {
+                            pillColor =
+                                "bg-emerald-950/80 border-emerald-600/80 text-emerald-300 font-bold shadow-sm shadow-emerald-500/20";
+                        } else if (edgePct >= 60) {
+                            pillColor = "bg-cyan-950/80 border-cyan-600/80 text-cyan-300 font-semibold";
+                        } else if (edgePct < 50) {
+                            pillColor = "bg-red-950/60 border-red-800/70 text-red-400 font-semibold";
+                        }
+
+                        const tooltip =
+                            wave?.empiricalEdge && swingHorizon === "5D"
+                                ? `12-Yr Win Rate: ${wave.empiricalEdge.winRate} | Profit Factor: ${wave.empiricalEdge.profitFactor.toFixed(
+                                      2
+                                  )} | Drawdown Noise: ${wave.empiricalEdge.medMae}${
+                                      wave.empiricalEdge.sampleSize
+                                          ? ` | Sample: ${wave.empiricalEdge.sampleSize.toLocaleString()}`
+                                          : ""
+                                  }`
+                                : `12-Yr Win Rate: ${stats.winRate.toFixed(1)}% | Profit Factor: ${stats.profitFactor.toFixed(
+                                      2
+                                  )} | Exp Return: ${stats.medReturn > 0 ? "+" : ""}${stats.medReturn.toFixed(
+                                      2
+                                  )}% | Sample: ${stats.sampleSize.toLocaleString()}`;
+
+                        return (
+                            <div className="flex items-center justify-center h-full" title={tooltip}>
+                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono border ${pillColor}`}>
+                                    {edgeLabel}
+                                </span>
+                            </div>
+                        );
+                    },
+                },
+
+                // 5. Suggested Stop Column
+                {
+                    headerName: "Suggested Stop",
+                    colId: "suggested_stop",
+                    width: 175,
+                    minWidth: 160,
+                    sortable: true,
+                    filter: "agNumberColumnFilter",
+                    filterParams: numberFilterParams,
+                    valueGetter: (params) => {
+                        const wave = params.data?.unified_wave;
+                        const p200 = params.data?.breadth_pctAbove200Sma;
+                        if (wave?.code === "avoid_bear_trap" || (p200 != null && p200 < 35)) {
+                            return null;
+                        }
+                        const reg = params.data?.regime || "neutral";
+                        return getEmpiricalStats(reg, swingHorizon).suggestedStop;
+                    },
+                    filterValueGetter: (params) => {
+                        const wave = params.data?.unified_wave;
+                        const p200 = params.data?.breadth_pctAbove200Sma;
+                        if (wave?.code === "avoid_bear_trap" || (p200 != null && p200 < 35)) {
+                            return null;
+                        }
+                        const reg = params.data?.regime || "neutral";
+                        return getEmpiricalStats(reg, swingHorizon).suggestedStop;
+                    },
+                    headerTooltip: `Suggested Stop-Loss budget & Normal Drawdown Noise (MedMAE) for ${swingHorizon} swing horizon`,
+                    cellRenderer: (params: any) => {
+                        const reg = params.data?.regime || "neutral";
+                        const stats = getEmpiricalStats(reg, swingHorizon);
+                        const wave = params.data?.unified_wave;
+                        const p200 = params.data?.breadth_pctAbove200Sma;
+                        if (wave?.code === "avoid_bear_trap" || (p200 != null && p200 < 35)) {
+                            return (
+                                <div className="flex items-center justify-center h-full text-slate-500 font-mono text-xs">
+                                    <span>—</span>
+                                </div>
+                            );
+                        }
+
+                        const stopText =
+                            swingHorizon === "5D" && wave?.suggestedStop
+                                ? wave.suggestedStop
+                                : `${stats.suggestedStop.toFixed(1)}% (${stats.medMae.toFixed(1)}% noise)`;
+                        const cleanStop = stopText.startsWith("Stop: ") ? stopText.slice(6) : stopText;
+
+                        return (
+                            <div
+                                className="flex items-center justify-center h-full text-center"
+                                title={`Normal Noise Drawdown: ${stats.medMae.toFixed(
+                                    1
+                                )}% | Suggested Stop: ${stats.suggestedStop.toFixed(1)}%`}
                             >
-                                <Sparkles size={11} className="text-blue-400" />
-                                Top Picks
-                            </button>
-                        </div>
-                    );
-                },
-            });
-
-            // 3. Regime Setup
-            cols.push({
-                headerName: "Regime Setup",
-                field: "regime",
-                width: 195,
-                minWidth: 175,
-                sortable: true,
-                filter: "agTextColumnFilter",
-                filterParams: textFilterParams,
-                valueGetter: (params) => {
-                    return getRegimeLabel(params.data?.regime || "neutral");
-                },
-                filterValueGetter: (params) => {
-                    return getRegimeLabel(params.data?.regime || "neutral");
-                },
-                headerTooltip: "Two-Stage Macro Regime Classification (Bull Pullback Thrust, Bear Bounce, Sustained Bull, etc.)",
-                cellRenderer: (params: { value: string | null; data: any }) => {
-                    const code = params.data?.regime || params.value || "neutral";
-                    const config = REGIME_CONFIGS[code] || REGIME_CONFIGS.neutral;
-                    return (
-                        <div className="flex items-center h-full" title={config.guidance}>
-                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex items-center gap-1.5 ${config.bgClass} ${config.textClass} ${config.borderClass}`}>
-                                {config.badge}
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 4. Dynamic Win Rate based on selected horizon
-            cols.push({
-                headerName: `${swingHorizon} Win Rate`,
-                colId: "horizon_win_rate",
-                width: 125,
-                minWidth: 115,
-                sortable: true,
-                valueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.winRate;
-                },
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.winRate;
-                },
-                headerTooltip: `Empirical 12-Year Win Rate % for Day T+1 Next-Day entry held for ${swingHorizon}`,
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    const v = Number(params.value);
-                    let color = "text-slate-300 font-semibold";
-                    if (v >= 58) color = "text-emerald-400 font-bold";
-                    else if (v >= 54) color = "text-cyan-300 font-semibold";
-                    else if (v < 50) color = "text-red-400 font-bold";
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <span className={`font-mono text-xs ${color}`}>
-                                {v.toFixed(1)}%
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 5. Dynamic Expected Return based on selected horizon
-            cols.push({
-                headerName: `${swingHorizon} Exp Ret`,
-                colId: "horizon_med_return",
-                width: 125,
-                minWidth: 115,
-                sortable: true,
-                valueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.medReturn;
-                },
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.medReturn;
-                },
-                headerTooltip: `Empirical Median Price Return % for Day T+1 Next-Day entry held for ${swingHorizon}`,
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    const v = Number(params.value);
-                    const color = v > 0 ? "text-emerald-400 font-bold" : v < 0 ? "text-red-400 font-bold" : "text-slate-400";
-                    const sign = v > 0 ? "+" : "";
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <span className={`font-mono text-xs ${color}`}>
-                                {sign}{v.toFixed(2)}%
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 6. Dynamic Profit Factor based on selected horizon
-            cols.push({
-                headerName: `${swingHorizon} PF`,
-                colId: "horizon_pf",
-                width: 105,
-                minWidth: 95,
-                sortable: true,
-                valueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.profitFactor;
-                },
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return stats.profitFactor;
-                },
-                headerTooltip: `Empirical Profit Factor (Gross Gains / Gross Losses) for Day T+1 Next-Day entry held for ${swingHorizon}`,
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    const v = Number(params.value);
-                    let badge = "text-slate-300 bg-slate-800/80 border-slate-700";
-                    if (v >= 1.8) badge = "text-amber-300 bg-amber-950/80 border-amber-600/80 font-bold";
-                    else if (v >= 1.4) badge = "text-cyan-300 bg-cyan-950/80 border-cyan-700/80";
-                    else if (v < 1.0) badge = "text-red-400 bg-red-950/40 border-red-900/50";
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <span className={`px-2 py-0.5 rounded text-[11px] font-mono border ${badge}`}>
-                                {v.toFixed(2)}
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 7. Stop-Loss & MAE Guidance
-            cols.push({
-                headerName: "Stop & Noise",
-                colId: "horizon_risk_stop",
-                width: 175,
-                minWidth: 160,
-                sortable: true,
-                valueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    return getEmpiricalStats(reg, swingHorizon).suggestedStop;
-                },
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const reg = params.data?.regime || "neutral";
-                    return getEmpiricalStats(reg, swingHorizon).suggestedStop;
-                },
-                headerTooltip: `Empirical Drawdown Noise (MedMAE) & Suggested Stop-Loss for Day T+1 entry held for ${swingHorizon}`,
-                cellRenderer: (params: any) => {
-                    const reg = params.data?.regime || "neutral";
-                    const stats = getEmpiricalStats(reg, swingHorizon);
-                    return (
-                        <div className="flex items-center justify-center h-full text-center" title={`Median Drawdown: ${stats.medMae.toFixed(2)}% | Suggested Stop-Loss: ${stats.suggestedStop.toFixed(1)}%`}>
-                            <span className="px-2.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300 antialiased">
-                                Stop: <strong className="text-amber-400 font-semibold">{stats.suggestedStop.toFixed(1)}%</strong> <span className="text-slate-500">({stats.medMae.toFixed(1)}%)</span>
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 8. 1W Breadth
-            cols.push({
-                headerName: "1W Breadth",
-                field: "breadth_1W_pct",
-                width: 120,
-                minWidth: 110,
-                sortable: true,
-                cellStyle: getBreadthHeatmapStyle,
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.breadth_1W_pct ?? params.data?.breadth?.timeframes?.["1W"]?.pct;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "1-Week Participation: % and count of constituents with positive 1-week return",
-                cellRenderer: (params: any) => {
-                    const v = params.value;
-                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
-                    const stat = params.data?.breadth?.timeframes?.["1W"];
-                    const tooltip = stat ? `1W Gainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)` : `${v}%`;
-                    return (
-                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
-                            <span className="text-[13px] font-semibold tracking-tight">{Number(v).toFixed(1)}%</span>
-                            {stat && stat.total > 0 && (
-                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
-                                    {stat.gained}/{stat.total}
+                                <span className="px-2.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300">
+                                    Stop: <strong className="text-amber-400 font-semibold">{cleanStop}</strong>
                                 </span>
-                            )}
-                        </div>
-                    );
-                },
-            });
-
-            // 9. 1M Breadth
-            cols.push({
-                headerName: "1M Breadth",
-                field: "breadth_1M_pct",
-                width: 120,
-                minWidth: 110,
-                sortable: true,
-                cellStyle: getBreadthHeatmapStyle,
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.breadth_1M_pct ?? params.data?.breadth?.timeframes?.["1M"]?.pct;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "1-Month Participation: % and count of constituents with positive 1-month return",
-                cellRenderer: (params: any) => {
-                    const v = params.value;
-                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
-                    const stat = params.data?.breadth?.timeframes?.["1M"];
-                    const tooltip = stat ? `1M Gainers: ${stat.gained}/${stat.total} (${stat.pct.toFixed(1)}%)` : `${v}%`;
-                    return (
-                        <div className="flex flex-col items-center justify-center h-full py-0.5 leading-none text-center antialiased" title={tooltip}>
-                            <span className="text-[13px] font-semibold tracking-tight">{Number(v).toFixed(1)}%</span>
-                            {stat && stat.total > 0 && (
-                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
-                                    {stat.gained}/{stat.total}
-                                </span>
-                            )}
-                        </div>
-                    );
-                },
-            });
-
-            // 10. Velocity (1W - 1M)
-            cols.push({
-                headerName: "Velocity (1W-1M)",
-                field: "breadth_velocity",
-                width: 140,
-                minWidth: 130,
-                sortable: true,
-                sort: "desc",
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.breadth_velocity;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "Breadth Velocity = 1W Gainers % minus 1M Gainers % (Fast vs Intermediate participation acceleration)",
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    const v = Number(params.value);
-                    const sign = v > 0 ? "+" : "";
-                    let pillClass = "bg-slate-800/80 text-slate-300 border-slate-700";
-                    if (v >= 40) {
-                        pillClass = "bg-emerald-950/90 text-emerald-300 border-emerald-600 shadow-sm shadow-emerald-500/20";
-                    } else if (v >= 15) {
-                        pillClass = "bg-emerald-900/40 text-emerald-400 border-emerald-700/60";
-                    } else if (v <= -40) {
-                        pillClass = "bg-red-950/90 text-red-300 border-red-600 shadow-sm shadow-red-500/20";
-                    } else if (v <= -15) {
-                        pillClass = "bg-red-900/40 text-red-400 border-red-700/60";
-                    }
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <span className={`px-2 py-0.5 rounded text-xs font-bold font-mono border ${pillClass}`}>
-                                {sign}{v.toFixed(1)}%
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 11. 10D Breadth Expansion Odds
-            cols.push({
-                headerName: "10D Expansion Odds",
-                field: "expansion_odds",
-                width: 160,
-                minWidth: 145,
-                sortable: true,
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.expansion_odds;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "Calibrated empirical probability (Model 1) of 1M Breadth expanding by >= +15% over next 10 trading sessions",
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
-                    const odds = Number(params.value);
-                    let barColor = "bg-slate-600";
-                    let textColor = "text-slate-300";
-                    if (odds >= 75) {
-                        barColor = "bg-emerald-500";
-                        textColor = "text-emerald-300 font-bold";
-                    } else if (odds >= 60) {
-                        barColor = "bg-cyan-500";
-                        textColor = "text-cyan-300 font-semibold";
-                    } else if (odds <= 30) {
-                        barColor = "bg-red-500";
-                        textColor = "text-red-400";
-                    }
-                    return (
-                        <div className="flex flex-col justify-center h-full w-full gap-1">
-                            <div className="flex justify-between items-center text-xs">
-                                <span className={`font-mono ${textColor}`}>{odds.toFixed(1)}%</span>
-                                <span className="text-[10px] text-slate-500 font-medium">Model 1</span>
                             </div>
-                            <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                                <div className={`h-full ${barColor} rounded-full transition-all duration-300`} style={{ width: `${Math.min(Math.max(odds, 0), 100)}%` }} />
-                            </div>
-                        </div>
-                    );
+                        );
+                    },
                 },
-            });
-
-            // 12. > 200 SMA
-            cols.push({
-                headerName: "> 200 SMA",
-                field: "breadth_pctAbove200Sma",
-                width: 115,
-                minWidth: 100,
-                sortable: true,
-                suppressHeaderMenuButton: true,
-                cellStyle: getBreadthHeatmapStyle,
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.breadth_pctAbove200Sma ?? params.data?.breadth?.pctAbove200Sma;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "% of constituents trading above their 200-day Simple Moving Average",
-                cellRenderer: (params: any) => {
-                    const v = params.value;
-                    if (v === null || v === undefined) return <span className="text-gray-500">—</span>;
-                    const a = params.data?.breadth_above200Sma;
-                    const tot = params.data?.breadth_totalStocks;
-                    return (
-                        <div className="flex flex-col items-center justify-center h-full text-center leading-none py-0.5 antialiased">
-                            <span className="text-[13px] font-medium tracking-tight">{Number(v).toFixed(1)}%</span>
-                            {a !== undefined && tot !== undefined && (
-                                <span className="text-[11px] text-slate-300/80 font-normal mt-1">
-                                    {a}/{tot}
-                                </span>
-                            )}
-                        </div>
-                    );
-                },
-            });
-
-            // 13. Total Stocks
-            cols.push({
-                headerName: "Total",
-                field: "breadth_totalStocks",
-                width: 75,
-                minWidth: 65,
-                sortable: true,
-                suppressHeaderMenuButton: true,
-                filter: "agNumberColumnFilter",
-                filterParams: numberFilterParams,
-                filterValueGetter: (params) => {
-                    const v = params.data?.breadth_totalStocks ?? params.data?.breadth?.totalStocks;
-                    if (v === null || v === undefined || v === "") return null;
-                    const num = Number(v);
-                    return isNaN(num) ? null : num;
-                },
-                headerTooltip: "Total number of constituent stocks tracked in this theme",
-                cellRenderer: (params: { value: number | null }) => {
-                    if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
-                    return (
-                        <div className="flex items-center justify-center h-full">
-                            <span className="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200 font-medium antialiased">
-                                {params.value}
-                            </span>
-                        </div>
-                    );
-                },
-            });
-
-            // 14. RS Rating
-            cols.push(rsRatingCol);
-
+            ];
             return cols;
         }
 
         return baseCols;
-    }, [viewMode, visibleColumns, rsRatingCol, themeRenderer, swingHorizon]);
+    }, [viewMode, visibleColumns, rsRatingCol, themeRenderer, swingHorizon, topLeadersMap, constituentPerfMap, marketStatus]);
 
     const defaultColDef = useMemo<ColDef>(
         () => ({
@@ -1429,8 +1338,15 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
     };
 
     const isExternalFilterPresent = useCallback(() => {
-        return searchQuery !== "" || showSelectedOnly || !showBroadMarket || !showSectors || !showIndustries;
-    }, [searchQuery, showSelectedOnly, showBroadMarket, showSectors, showIndustries]);
+        return (
+            searchQuery !== "" ||
+            showSelectedOnly ||
+            !showBroadMarket ||
+            !showSectors ||
+            !showIndustries ||
+            (viewMode === "forecaster" && forecasterFilterTab !== "all")
+        );
+    }, [searchQuery, showSelectedOnly, showBroadMarket, showSectors, showIndustries, viewMode, forecasterFilterTab]);
 
     const doesExternalFilterPass = useCallback((node: IRowNode) => {
         const rowData = node.data;
@@ -1447,19 +1363,37 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
             return false;
         }
 
+        // Forecaster tab filter
+        if (viewMode === "forecaster" && forecasterFilterTab !== "all") {
+            const wave =
+                rowData?.unified_wave ||
+                getUnifiedWaveSignal({
+                    b1w: Number(rowData?.breadth_1W_pct ?? 0),
+                    b1d: Number(rowData?.breadth_1D_pct ?? 0),
+                    b200: Number(rowData?.breadth_pctAbove200Sma ?? 0),
+                    b1m: Number(rowData?.breadth_1M_pct ?? 0),
+                    regime: rowData?.regime,
+                });
+            if (forecasterFilterTab === "waves_dips") {
+                if (wave?.category !== "waves_dips") return false;
+            } else if (forecasterFilterTab === "bull_trends") {
+                if (wave?.code !== "sustained_bull" && wave?.category !== "trend_continuation") return false;
+            }
+        }
+
         if (searchQuery !== "") {
             if (!title.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return false;
             }
         }
         return true;
-    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries]);
+    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries, viewMode, forecasterFilterTab]);
 
     useEffect(() => {
         if (gridRef.current?.api) {
             gridRef.current.api.onFilterChanged();
         }
-    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries]);
+    }, [searchQuery, showSelectedOnly, selectedThemes, showBroadMarket, showSectors, showIndustries, viewMode, forecasterFilterTab]);
 
     const clearFilters = () => {
         setSearchQuery("");
@@ -1467,6 +1401,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
         setShowBroadMarket(true);
         setShowSectors(true);
         setShowIndustries(true);
+        setForecasterFilterTab("all");
         if (gridRef.current?.api) {
             gridRef.current.api.setFilterModel(null);
         }
@@ -1557,54 +1492,106 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                         </button>
                     </div>
 
-                    {/* Swing Horizon Switcher (Forecaster Mode) */}
+                    {/* Swing Trading Forecaster Toolbar (Concept Guide, Horizon & Filter Pills) */}
                     {viewMode === "forecaster" && (
-                        <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 shadow-sm">
-                            <span className="text-[11px] text-slate-400 font-medium px-2 flex items-center gap-1">
-                                <Clock size={11} className="text-amber-400" />
-                                Horizon:
-                            </span>
+                        <>
+                            {/* Concept & Logic Guide Pop-out Trigger */}
                             <button
-                                onClick={() => setSwingHorizon("2D")}
-                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
-                                    swingHorizon === "2D"
-                                        ? "bg-amber-500 text-slate-950 shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                                title="Next-Day Entry held for 2 Days (T+1 to T+3)"
+                                onClick={() => {
+                                    setActiveGuideConcept(null);
+                                    setIsGuideOpen(true);
+                                }}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                                title="Open Concept & Logic Guide explaining wave tags, formulas, institutional logic, and 12-year empirical edge"
                             >
-                                2 Days
+                                <BookOpen size={13} className="text-blue-400" />
+                                <span>📖 Concept & Logic Guide</span>
                             </button>
-                            <button
-                                onClick={() => setSwingHorizon("5D")}
-                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
-                                    swingHorizon === "5D"
-                                        ? "bg-amber-500 text-slate-950 shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                                title="Next-Day Entry held for 5 Days / 1 Week (T+1 to T+6)"
-                            >
-                                5 Days (1W)
-                            </button>
-                            <button
-                                onClick={() => setSwingHorizon("10D")}
-                                className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
-                                    swingHorizon === "10D"
-                                        ? "bg-amber-500 text-slate-950 shadow-sm"
-                                        : "text-slate-400 hover:text-slate-200"
-                                }`}
-                                title="Next-Day Entry held for 10 Days / 2 Weeks (T+1 to T+11)"
-                            >
-                                10 Days (2W)
-                            </button>
-                        </div>
-                    )}
 
-                    {viewMode === "forecaster" && (
-                        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            <span>EOD Data: Signals for <strong className="text-white">Next-Day (T+1)</strong> Entry</span>
-                        </div>
+                            {/* Minimal Horizon Switcher */}
+                            <div className="flex items-center bg-slate-900 border border-slate-700/80 rounded-lg p-0.5 shadow-sm">
+                                <span className="text-[11px] text-slate-400 font-medium px-2 flex items-center gap-1">
+                                    <Clock size={11} className="text-amber-400" />
+                                    Horizon:
+                                </span>
+                                <button
+                                    onClick={() => setSwingHorizon("2D")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                        swingHorizon === "2D"
+                                            ? "bg-amber-500 text-slate-950 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-200"
+                                    }`}
+                                    title="Next-Day Entry held for 2 Days (T+1 to T+3)"
+                                >
+                                    2D Quick
+                                </button>
+                                <button
+                                    onClick={() => setSwingHorizon("5D")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                        swingHorizon === "5D"
+                                            ? "bg-amber-500 text-slate-950 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-200"
+                                    }`}
+                                    title="Next-Day Entry held for 5 Days / 1 Week (T+1 to T+6)"
+                                >
+                                    5D Swing (1W)
+                                </button>
+                                <button
+                                    onClick={() => setSwingHorizon("10D")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-semibold ${
+                                        swingHorizon === "10D"
+                                            ? "bg-amber-500 text-slate-950 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-200"
+                                    }`}
+                                    title="Next-Day Entry held for 10 Days / 2 Weeks (T+1 to T+11)"
+                                >
+                                    10D Position (2W)
+                                </button>
+                            </div>
+
+                            {/* One-click Filter Pills */}
+                            <div className="flex items-center bg-slate-900/90 border border-slate-700/80 rounded-lg p-0.5 shadow-sm">
+                                <button
+                                    onClick={() => setForecasterFilterTab("all")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-medium ${
+                                        forecasterFilterTab === "all"
+                                            ? "bg-slate-700 text-white font-semibold shadow-sm"
+                                            : "text-slate-400 hover:text-slate-200"
+                                    }`}
+                                >
+                                    All (96)
+                                </button>
+                                <button
+                                    onClick={() => setForecasterFilterTab("waves_dips")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-medium flex items-center gap-1 ${
+                                        forecasterFilterTab === "waves_dips"
+                                            ? "bg-emerald-600 text-white font-semibold shadow-sm"
+                                            : "text-emerald-400/90 hover:text-emerald-300"
+                                    }`}
+                                    title="Filter for Apex Waves, Springboard Waves, and Prime Dips"
+                                >
+                                    <Waves size={11} />
+                                    <span>🌊 Waves & Dips Only</span>
+                                </button>
+                                <button
+                                    onClick={() => setForecasterFilterTab("bull_trends")}
+                                    className={`px-2.5 py-1 text-xs rounded-md transition-all font-medium flex items-center gap-1 ${
+                                        forecasterFilterTab === "bull_trends"
+                                            ? "bg-cyan-600 text-white font-semibold shadow-sm"
+                                            : "text-cyan-400/90 hover:text-cyan-300"
+                                    }`}
+                                    title="Filter for Sustained Bull Trends"
+                                >
+                                    <Flame size={11} />
+                                    <span>🔥 Bull Trends</span>
+                                </button>
+                            </div>
+
+                            <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                <span>EOD Data: Signals for <strong className="text-white">Next-Day (T+1)</strong> Entry</span>
+                            </div>
+                        </>
                     )}
 
                     {/* Session Date Selector (Time-Travel / Replay) */}
@@ -1986,6 +1973,16 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 onHorizonChange={(h) => setSwingHorizon(h)}
                 marketStatus={marketStatus}
                 constituentPerformanceMap={constituentPerfMap}
+            />
+
+            {/* Wave Concept & Logic Guide Slide-Over Drawer */}
+            <WaveConceptGuideDrawer
+                isOpen={isGuideOpen}
+                onClose={() => {
+                    setIsGuideOpen(false);
+                    setActiveGuideConcept(null);
+                }}
+                initialConceptId={activeGuideConcept}
             />
         </div>
     );

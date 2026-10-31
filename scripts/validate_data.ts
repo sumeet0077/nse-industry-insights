@@ -896,19 +896,19 @@ validate("Table Column Filter Configurations", (errors) => {
     }
     const heatmapCode = fs.readFileSync(heatmapPath, "utf-8");
 
-    if (!heatmapCode.includes('headerName: "Swing Action (T+1)"') || !heatmapCode.includes('filter: "agTextColumnFilter"')) {
-        errors.push("Swing Action (T+1) must use agTextColumnFilter");
+    if (!heatmapCode.includes('headerName: "Unified Wave Signal (T+1)"') || !heatmapCode.includes('filter: "agTextColumnFilter"')) {
+        errors.push("Unified Wave Signal (T+1) must use agTextColumnFilter");
     }
-    if (!heatmapCode.includes('headerName: "Regime Setup"') || !heatmapCode.includes('filter: "agTextColumnFilter"')) {
-        errors.push("Regime Setup must use agTextColumnFilter");
+    if (!heatmapCode.includes('headerName: "Top Swing Leaders (Next Day)"') || !heatmapCode.includes('filter: false') || !heatmapCode.includes('suppressHeaderFilterButton: true')) {
+        errors.push("Top Swing Leaders (Next Day) must have filter: false and suppressHeaderFilterButton: true");
     }
-    if (!heatmapCode.includes('headerName: "Top Picks"') || !heatmapCode.includes('filter: false') || !heatmapCode.includes('suppressHeaderFilterButton: true')) {
-        errors.push("Top Picks must have filter: false and suppressHeaderFilterButton: true");
+    if (!heatmapCode.includes('headerName: "Edge & Odds"') || !heatmapCode.includes('filter: "agNumberColumnFilter"')) {
+        errors.push("Edge & Odds must use agNumberColumnFilter");
     }
-    if (!heatmapCode.includes('headerName: "Stop & Noise"') || !heatmapCode.includes('filter: "agNumberColumnFilter"')) {
-        errors.push("Stop & Noise must use agNumberColumnFilter");
+    if (!heatmapCode.includes('headerName: "Suggested Stop"') || !heatmapCode.includes('filter: "agNumberColumnFilter"')) {
+        errors.push("Suggested Stop must use agNumberColumnFilter");
     }
-    console.log("  ✓ Table column filter audit passed (String, Numeric, and Action column rules verified).");
+    console.log("  ✓ Table column filter audit passed (Unified Wave Signal, Top Leaders, Edge & Odds, and Suggested Stop column rules verified).");
 });
 
 // Print Summary

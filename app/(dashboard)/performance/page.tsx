@@ -1,6 +1,14 @@
 // app/(dashboard)/performance/page.tsx
 import type { Metadata } from "next";
-import { getPerformanceSummary, getLatestDataDate, getMarketStatus, getAllThemesBreadthMetrics, getAvailableHistoricalDates } from "@/lib/data";
+import {
+    getPerformanceSummary,
+    getLatestDataDate,
+    getMarketStatus,
+    getAllThemesBreadthMetrics,
+    getAvailableHistoricalDates,
+    getThemeWaveContext,
+    getThemeTopLeaders,
+} from "@/lib/data";
 import { PerformanceHeatmap } from "@/components/tables/PerformanceHeatmap";
 
 export const metadata: Metadata = {
@@ -14,6 +22,8 @@ export default async function PerformancePage() {
     const marketStatus = getMarketStatus();
     const breadthMetrics = getAllThemesBreadthMetrics();
     const availableDates = getAvailableHistoricalDates();
+    const waveContext = getThemeWaveContext();
+    const topLeadersMap = getThemeTopLeaders();
 
     // Format the date nicely: "2026-03-04" -> "04 Mar 2026"
     let formattedDate = "";
@@ -55,6 +65,8 @@ export default async function PerformancePage() {
                     marketStatus={marketStatus}
                     breadthMetrics={breadthMetrics}
                     availableDates={availableDates}
+                    waveContext={waveContext}
+                    topLeadersMap={topLeadersMap}
                 />
             )}
         </div>

@@ -181,3 +181,43 @@ export interface EmpiricalHorizonStats {
     sampleSize: number;
 }
 
+export type UnifiedWaveCode =
+    | "apex_wave"
+    | "springboard_wave"
+    | "sustained_bull"
+    | "prime_dip"
+    | "extended_wait"
+    | "avoid_bear_trap"
+    | "neutral";
+
+export type UnifiedWaveCategory =
+    | "waves_dips"
+    | "trend_continuation"
+    | "traps_caution"
+    | "neutral";
+
+export interface UnifiedWaveConcept {
+    code: UnifiedWaveCode;
+    badge: string;
+    name: string;
+    category: UnifiedWaveCategory;
+    shortAction: string;
+    institutionalMeaning: string;
+    mathFormula: string;
+    nextDayAction: string;
+    empiricalEdge: {
+        winRate: string;
+        profitFactor: number;
+        medMae: string;
+        horizon: string;
+        sampleSize?: number;
+    };
+    suggestedStop: string;
+    edgeLabel: string;
+    edgePct: number;
+    bgClass: string;
+    textClass: string;
+    borderClass: string;
+    badgePillClass: string;
+}
+

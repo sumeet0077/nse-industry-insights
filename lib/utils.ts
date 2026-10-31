@@ -4,6 +4,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { DATA_KEY_ALIASES } from "./config";
+import type { MarketStatus, MarketStatusEntry } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -108,5 +109,34 @@ export function getTickerLabel(ticker: string): string {
 export function resolveDataKey(title: string): string {
     const lower = title.toLowerCase();
     return DATA_KEY_ALIASES[lower] || lower;
+}
+
+/**
+ * Robust market status entry resolver handling uppercase, 'NIFTY ' prefix,
+ * and '&' vs 'AND' naming variations across datasets.
+ */
+export function resolveMarketStatusEntry(
+    marketStatus: MarketStatus | null | undefined,
+    themeTitle: string
+): MarketStatusEntry | undefined {
+    if (!marketStatus || !themeTitle) return undefined;
+    let entry = marketStatus[themeTitle] || marketStatus[themeTitle.toUpperCase()];
+    if (!entry && themeTitle.startsWith("Nifty ")) {
+        entry = marketStatus["NIFTY " + themeTitle.slice(6).toUpperCase()];
+    }
+    if (!entry) {
+        const normalized = themeTitle.replace(/&/g, "AND").toUpperCase();
+        entry = marketStatus[normalized];
+    }
+    if (!entry) {
+        const norm = themeTitle.replace(/&/g, "and").toLowerCase();
+        for (const [k, v] of Object.entries(marketStatus)) {
+            if (k.replace(/&/g, "and").toLowerCase() === norm) {
+                entry = v;
+                break;
+            }
+        }
+    }
+    return entry;
 }
 

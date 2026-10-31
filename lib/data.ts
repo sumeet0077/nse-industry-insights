@@ -17,7 +17,8 @@ import type {
     DailyBreadthHistory1Y,
 } from "@/types";
 import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
-import { resolveDataKey } from "./utils";
+import { resolveDataKey, resolveMarketStatusEntry } from "./utils";
+import { ConstituentLeader, getTopConstituentLeaders } from "./swingTiming";
 
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -381,6 +382,94 @@ export function getThemeBreadthMetrics(
         if (key.toLowerCase() === resolvedTitle) return metrics[key];
     }
     return null;
+}
+
+export interface ThemeWaveContext {
+    rrgQuadrant: "Leading" | "Improving" | "Weakening" | "Lagging";
+    headingNE: boolean;
+    breakouts10d: number;
+}
+
+/**
+ * Precomputes RRG quadrant, trajectory heading, and 10-day 52W high breakout count
+ * for every theme across the universe for instant Next-Day wave classification.
+ */
+export function getThemeWaveContext(): Record<string, ThemeWaveContext> {
+    const rrg = getRRGData("D");
+    const m52w = getMarket52WHistory();
+    const marketStatus = getMarketStatus();
+    const constituents = getConstituentPerformance();
+
+    const rrgMap: Record<string, RRGDataPoint[]> = {};
+    for (const pt of rrg) {
+        if (!rrgMap[pt.Ticker]) rrgMap[pt.Ticker] = [];
+        rrgMap[pt.Ticker].push(pt);
+    }
+
+    const last10Highs = new Set<string>();
+    if (m52w && m52w.dates && m52w.daily_lists) {
+        const last10Dates = m52w.dates.slice(-10);
+        for (const d of last10Dates) {
+            const list = m52w.daily_lists[d];
+            if (list?.highs) {
+                for (const h of list.highs) last10Highs.add(h);
+            }
+        }
+    }
+
+    const configs = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
+    const contextMap: Record<string, ThemeWaveContext> = {};
+
+    for (const c of configs) {
+        const points = rrgMap[c.dataFile] || rrgMap[c.id] || [];
+        let rrgQuadrant: "Leading" | "Improving" | "Weakening" | "Lagging" = "Lagging";
+        let headingNE = false;
+        if (points.length >= 2) {
+            const latest = points[points.length - 1];
+            const prev = points[points.length - 2];
+            if (latest.RS_Ratio >= 100 && latest.RS_Momentum >= 100) rrgQuadrant = "Leading";
+            else if (latest.RS_Ratio < 100 && latest.RS_Momentum >= 100) rrgQuadrant = "Improving";
+            else if (latest.RS_Ratio >= 100 && latest.RS_Momentum < 100) rrgQuadrant = "Weakening";
+            else rrgQuadrant = "Lagging";
+
+            headingNE = latest.RS_Ratio >= prev.RS_Ratio && latest.RS_Momentum >= prev.RS_Momentum;
+        }
+
+        const entry = resolveMarketStatusEntry(marketStatus, c.title);
+        const tickers = entry ? [...(entry.above || []), ...(entry.below || []), ...(entry.new_stock || [])] : [];
+
+        let breakouts10d = 0;
+        for (const t of tickers) {
+            const raw = t.replace(".NS", "");
+            if (last10Highs.has(raw) || last10Highs.has(`${raw}.NS`)) {
+                breakouts10d++;
+            } else if (constituents[t]?.price_52w_high || constituents[`${t}.NS`]?.price_52w_high) {
+                breakouts10d++;
+            }
+        }
+
+        contextMap[c.title] = { rrgQuadrant, headingNE, breakouts10d };
+    }
+
+    return contextMap;
+}
+
+/**
+ * Pre-extracts and ranks top 2 constituent swing candidate stocks per theme.
+ */
+export function getThemeTopLeaders(): Record<string, ConstituentLeader[]> {
+    const marketStatus = getMarketStatus();
+    const constituents = getConstituentPerformance();
+    const configs = [...BROAD_MARKET, ...SECTORS, ...INDUSTRIES];
+    const leadersMap: Record<string, ConstituentLeader[]> = {};
+
+    for (const c of configs) {
+        const entry = resolveMarketStatusEntry(marketStatus, c.title);
+        const tickers = entry ? [...(entry.above || []), ...(entry.below || []), ...(entry.new_stock || [])] : [];
+        leadersMap[c.title] = getTopConstituentLeaders(tickers, constituents, 2);
+    }
+
+    return leadersMap;
 }
 
 

@@ -14,7 +14,7 @@ import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { CopyWatchlistButton } from "@/components/common/CopyWatchlistButton";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { GAINER_TIMEFRAMES, GainerTimeframe } from "@/lib/metrics";
-import { classifySwingTiming, getEmpiricalStats, getSwingTimingStats, formatNoiseAndStop, SWING_TIMING_CONFIGS, REGIME_CONFIGS } from "@/lib/swingTiming";
+import { classifySwingTiming, getEmpiricalStats, getSwingTimingStats, formatNoiseAndStop, SWING_TIMING_CONFIGS, REGIME_CONFIGS, getSwingTimingLabel, getRegimeLabel, stripLeadingEmoji } from "@/lib/swingTiming";
 export { REGIME_CONFIGS };
 import { SectorSwingCandidatesDrawer } from "@/components/drawers/SectorSwingCandidatesDrawer";
 
@@ -589,6 +589,17 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
         closeOnApply: true,
     };
 
+    const textFilterParams = {
+        filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
+        defaultOption: "contains",
+        buttons: ["apply", "reset"],
+        closeOnApply: true,
+        textFormatter: (from: string) => {
+            if (!from) return "";
+            return stripLeadingEmoji(from).toLowerCase().trim();
+        },
+    };
+
     const themeRenderer = useCallback((params: { value: string }) => {
         if (!params.value) return null;
         const config = ALL_CONFIGS.find((c) => c.title === params.value);
@@ -632,6 +643,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
         sortable: true,
         filter: "agNumberColumnFilter",
         filterParams: numberFilterParams,
+        filterValueGetter: (params) => {
+            const val = params.data?.["RS Rating"] ?? params.data?.["IBD RS Rating"];
+            if (val === null || val === undefined || val === "") return null;
+            const num = Number(val);
+            return isNaN(num) ? null : num;
+        },
         headerTooltip: "Relative Strength Rating (1-99) weighted across 4 quarters (40% Q1, 20% Q2, 20% Q3, 20% Q4) vs all sectors & themes"
     }), []);
 
@@ -646,6 +663,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 width: 48,
                 maxWidth: 48,
                 suppressHeaderMenuButton: true,
+                suppressHeaderFilterButton: true,
                 resizable: false,
                 sortable: false,
                 filter: false,
@@ -658,12 +676,8 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 width: 200,
                 minWidth: 160,
                 filter: "agTextColumnFilter",
-                filterParams: {
-                    filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
-                    defaultOption: "contains",
-                    buttons: ["apply", "reset"],
-                    closeOnApply: true,
-                },
+                filterParams: textFilterParams,
+                filterValueGetter: (params) => params.data?.["Theme/Index"] ?? "",
                 cellRenderer: themeRenderer,
             },
         ];
@@ -689,6 +703,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                         sortable: true,
                         filter: "agNumberColumnFilter",
                         filterParams: numberFilterParams,
+                        filterValueGetter: (params) => {
+                            const val = params.data?.[col];
+                            if (val === null || val === undefined || val === "") return null;
+                            const num = Number(val);
+                            return isNaN(num) ? null : num;
+                        },
                         headerTooltip: col === "RS (5D)" ? "Relative Strength against Nifty 50 over 5 Trading Days" : col === "RS (10D)" ? "Relative Strength against Nifty 50 over 10 Trading Days" : col === "RS (20D)" ? "Relative Strength against Nifty 50 over 20 Trading Days" : col === "RS (50D)" ? "Relative Strength against Nifty 50 over 50 Trading Days" : undefined
                     });
                 }
@@ -710,6 +730,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const val = params.data?.breadth_totalStocks ?? params.data?.breadth?.totalStocks;
+                    if (val === null || val === undefined || val === "") return null;
+                    const num = Number(val);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
@@ -734,6 +760,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const val = params.data?.breadth_pctAbove200Sma ?? params.data?.breadth?.pctAbove200Sma;
+                    if (val === null || val === undefined || val === "") return null;
+                    const num = Number(val);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "% and count of constituents trading above their 200-day Simple Moving Average",
                 cellRenderer: (params: any) => {
                     const b: ThemeBreadthSummaryMetrics | null = params.data?.breadth;
@@ -762,6 +794,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     cellStyle: getBreadthHeatmapStyle,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
+                    filterValueGetter: (params) => {
+                        const val = params.data?.[`breadth_${tf}_pct`] ?? params.data?.breadth?.timeframes?.[tf]?.pct;
+                        if (val === null || val === undefined || val === "") return null;
+                        const num = Number(val);
+                        return isNaN(num) ? null : num;
+                    },
                     headerTooltip: `% and count of constituents with positive returns (>0%) over ${tf} (unseasoned IPOs excluded from denominator)`,
                     cellRenderer: (params: any) => {
                         const stat = params.data?.breadth?.timeframes?.[tf];
@@ -799,6 +837,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const val = params.data?.breadth_totalStocks ?? params.data?.breadth?.totalStocks;
+                    if (val === null || val === undefined || val === "") return null;
+                    const num = Number(val);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;
@@ -823,6 +867,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const val = params.data?.breadth_pctAbove200Sma ?? params.data?.breadth?.pctAbove200Sma;
+                    if (val === null || val === undefined || val === "") return null;
+                    const num = Number(val);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "% and count of constituents trading above their 200-day Simple Moving Average",
                 cellRenderer: (params: any) => {
                     const b: ThemeBreadthSummaryMetrics | null = params.data?.breadth;
@@ -851,6 +901,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                     cellStyle: getHeatmapStyle,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
+                    filterValueGetter: (params) => {
+                        const val = params.data?.[metricCol];
+                        if (val === null || val === undefined || val === "") return null;
+                        const num = Number(val);
+                        return isNaN(num) ? null : num;
+                    },
                     headerTooltip: `${metricCol} Equal-Weighted return and constituent gainers ratio`,
                     cellRenderer: (params: any) => {
                         const ret = params.value != null && params.value !== "" ? Number(params.value) : null;
@@ -890,13 +946,23 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 width: 205,
                 minWidth: 185,
                 sortable: true,
+                filter: "agTextColumnFilter",
+                filterParams: textFilterParams,
                 valueGetter: (params) => {
                     const r = params.data;
                     const w1 = Number(r?.breadth_1W_pct ?? 0);
                     const d1 = Number(r?.breadth_1D_pct ?? 0);
                     const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
                     const m1 = Number(r?.breadth_1M_pct ?? 0);
-                    return classifySwingTiming(w1, d1, p200, m1).badge;
+                    return getSwingTimingLabel(classifySwingTiming(w1, d1, p200, m1));
+                },
+                filterValueGetter: (params) => {
+                    const r = params.data;
+                    const w1 = Number(r?.breadth_1W_pct ?? 0);
+                    const d1 = Number(r?.breadth_1D_pct ?? 0);
+                    const p200 = Number(r?.breadth_pctAbove200Sma ?? 0);
+                    const m1 = Number(r?.breadth_1M_pct ?? 0);
+                    return getSwingTimingLabel(classifySwingTiming(w1, d1, p200, m1));
                 },
                 headerTooltip: "Actionable swing trade timing signal for Day T+1 entry (Dip Entry, Trend Buy, Extended Wait, or Bear Trap)",
                 cellRenderer: (params: any) => {
@@ -925,6 +991,7 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 sortable: false,
                 filter: false,
                 suppressHeaderMenuButton: true,
+                suppressHeaderFilterButton: true,
                 headerTooltip: "View top constituent swing candidate stocks ranked by IBD RS Rating",
                 cellRenderer: (params: any) => {
                     return (
@@ -955,9 +1022,16 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 minWidth: 175,
                 sortable: true,
                 filter: "agTextColumnFilter",
+                filterParams: textFilterParams,
+                valueGetter: (params) => {
+                    return getRegimeLabel(params.data?.regime || "neutral");
+                },
+                filterValueGetter: (params) => {
+                    return getRegimeLabel(params.data?.regime || "neutral");
+                },
                 headerTooltip: "Two-Stage Macro Regime Classification (Bull Pullback Thrust, Bear Bounce, Sustained Bull, etc.)",
                 cellRenderer: (params: { value: string | null; data: any }) => {
-                    const code = params.value || "neutral";
+                    const code = params.data?.regime || params.value || "neutral";
                     const config = REGIME_CONFIGS[code] || REGIME_CONFIGS.neutral;
                     return (
                         <div className="flex items-center h-full" title={config.guidance}>
@@ -983,6 +1057,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.winRate;
+                },
                 headerTooltip: `Empirical 12-Year Win Rate % for Day T+1 Next-Day entry held for ${swingHorizon}`,
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
@@ -1015,6 +1094,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.medReturn;
+                },
                 headerTooltip: `Empirical Median Price Return % for Day T+1 Next-Day entry held for ${swingHorizon}`,
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
@@ -1045,6 +1129,11 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 },
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    const stats = getEmpiricalStats(reg, swingHorizon);
+                    return stats.profitFactor;
+                },
                 headerTooltip: `Empirical Profit Factor (Gross Gains / Gross Losses) for Day T+1 Next-Day entry held for ${swingHorizon}`,
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
@@ -1069,14 +1158,24 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 colId: "horizon_risk_stop",
                 width: 175,
                 minWidth: 160,
-                sortable: false,
+                sortable: true,
+                valueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    return getEmpiricalStats(reg, swingHorizon).suggestedStop;
+                },
+                filter: "agNumberColumnFilter",
+                filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const reg = params.data?.regime || "neutral";
+                    return getEmpiricalStats(reg, swingHorizon).suggestedStop;
+                },
                 headerTooltip: `Empirical Drawdown Noise (MedMAE) & Suggested Stop-Loss for Day T+1 entry held for ${swingHorizon}`,
                 cellRenderer: (params: any) => {
                     const reg = params.data?.regime || "neutral";
                     const stats = getEmpiricalStats(reg, swingHorizon);
                     return (
                         <div className="flex items-center justify-center h-full text-center" title={`Median Drawdown: ${stats.medMae.toFixed(2)}% | Suggested Stop-Loss: ${stats.suggestedStop.toFixed(1)}%`}>
-                            <span className="px-2 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300 antialiased">
+                            <span className="px-2.5 py-0.5 rounded bg-slate-900/90 border border-slate-800 text-[11px] font-mono text-slate-300 antialiased">
                                 Stop: <strong className="text-amber-400 font-semibold">{stats.suggestedStop.toFixed(1)}%</strong> <span className="text-slate-500">({stats.medMae.toFixed(1)}%)</span>
                             </span>
                         </div>
@@ -1094,6 +1193,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.breadth_1W_pct ?? params.data?.breadth?.timeframes?.["1W"]?.pct;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "1-Week Participation: % and count of constituents with positive 1-week return",
                 cellRenderer: (params: any) => {
                     const v = params.value;
@@ -1123,6 +1228,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.breadth_1M_pct ?? params.data?.breadth?.timeframes?.["1M"]?.pct;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "1-Month Participation: % and count of constituents with positive 1-month return",
                 cellRenderer: (params: any) => {
                     const v = params.value;
@@ -1152,6 +1263,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 sort: "desc",
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.breadth_velocity;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "Breadth Velocity = 1W Gainers % minus 1M Gainers % (Fast vs Intermediate participation acceleration)",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
@@ -1186,6 +1303,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 sortable: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.expansion_odds;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "Calibrated empirical probability (Model 1) of 1M Breadth expanding by >= +15% over next 10 trading sessions",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500 font-mono">—</span>;
@@ -1227,6 +1350,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 cellStyle: getBreadthHeatmapStyle,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.breadth_pctAbove200Sma ?? params.data?.breadth?.pctAbove200Sma;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "% of constituents trading above their 200-day Simple Moving Average",
                 cellRenderer: (params: any) => {
                     const v = params.value;
@@ -1256,6 +1385,12 @@ export function PerformanceHeatmap({ data, globalLatestDate, marketStatus, bread
                 suppressHeaderMenuButton: true,
                 filter: "agNumberColumnFilter",
                 filterParams: numberFilterParams,
+                filterValueGetter: (params) => {
+                    const v = params.data?.breadth_totalStocks ?? params.data?.breadth?.totalStocks;
+                    if (v === null || v === undefined || v === "") return null;
+                    const num = Number(v);
+                    return isNaN(num) ? null : num;
+                },
                 headerTooltip: "Total number of constituent stocks tracked in this theme",
                 cellRenderer: (params: { value: number | null }) => {
                     if (params.value === null || params.value === undefined) return <span className="text-gray-500">—</span>;

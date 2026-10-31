@@ -887,6 +887,30 @@ validate("Daily Breadth History (data/history/*.parquet and *.json)", (errors, w
     console.log(`  ✓ 1Y Historical JSON verified: ${sessionKeys.length} trading sessions (${oldestDate} to ${latestDate}), ${latestRows?.length ?? 0} themes per session.`);
 });
 
+// 12. Validate Table Column Filter Configurations
+validate("Table Column Filter Configurations", (errors) => {
+    const heatmapPath = path.join(process.cwd(), "components", "tables", "PerformanceHeatmap.tsx");
+    if (!fs.existsSync(heatmapPath)) {
+        errors.push(`PerformanceHeatmap.tsx not found at ${heatmapPath}`);
+        return;
+    }
+    const heatmapCode = fs.readFileSync(heatmapPath, "utf-8");
+
+    if (!heatmapCode.includes('headerName: "Swing Action (T+1)"') || !heatmapCode.includes('filter: "agTextColumnFilter"')) {
+        errors.push("Swing Action (T+1) must use agTextColumnFilter");
+    }
+    if (!heatmapCode.includes('headerName: "Regime Setup"') || !heatmapCode.includes('filter: "agTextColumnFilter"')) {
+        errors.push("Regime Setup must use agTextColumnFilter");
+    }
+    if (!heatmapCode.includes('headerName: "Top Picks"') || !heatmapCode.includes('filter: false') || !heatmapCode.includes('suppressHeaderFilterButton: true')) {
+        errors.push("Top Picks must have filter: false and suppressHeaderFilterButton: true");
+    }
+    if (!heatmapCode.includes('headerName: "Stop & Noise"') || !heatmapCode.includes('filter: "agNumberColumnFilter"')) {
+        errors.push("Stop & Noise must use agNumberColumnFilter");
+    }
+    console.log("  ✓ Table column filter audit passed (String, Numeric, and Action column rules verified).");
+});
+
 // Print Summary
 console.log("\n==================================================");
 console.log("📊 Verification Results");

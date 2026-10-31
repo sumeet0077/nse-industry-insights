@@ -148,6 +148,17 @@ const numberFilterParams = {
     closeOnApply: true,
 };
 
+const textFilterParams = {
+    filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
+    defaultOption: "contains",
+    buttons: ["apply", "reset"],
+    closeOnApply: true,
+    textFormatter: (from: string) => {
+        if (!from) return "";
+        return from.replace(/\.(NS|BO)$/i, "").toLowerCase().trim();
+    },
+};
+
     const columnDefs = useMemo<ColDef[]>(() => {
         const cols: ColDef[] = [
             {
@@ -159,6 +170,7 @@ const numberFilterParams = {
                 width: 48,
                 maxWidth: 48,
                 suppressHeaderMenuButton: true,
+                suppressHeaderFilterButton: true,
                 resizable: false,
                 sortable: false,
                 filter: false,
@@ -171,12 +183,8 @@ const numberFilterParams = {
                 width: 180,
                 minWidth: 160,
                 filter: "agTextColumnFilter",
-                filterParams: {
-                    filterOptions: ["contains", "startsWith", "endsWith", "equals", "notEqual"],
-                    defaultOption: "contains",
-                    buttons: ["apply", "reset"],
-                    closeOnApply: true,
-                },
+                filterParams: textFilterParams,
+                filterValueGetter: (params) => getTickerLabel(params.data?.ticker ?? ""),
                 cellRenderer: (params: { value: string; data: Record<string, unknown> }) => {
                     if (!params.value) return null;
                     const url = makeTradingViewUrl(params.value);
@@ -235,6 +243,12 @@ const numberFilterParams = {
                     sortable: true,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
+                    filterValueGetter: (params) => {
+                        const val = params.data?.ibd_rs_rating;
+                        if (val === null || val === undefined || val === "") return null;
+                        const num = Number(val);
+                        return isNaN(num) ? null : num;
+                    },
                 });
             } else {
                 const isCagrCol = mappedField === "3Y" || mappedField === "5Y" || col === "3 Years" || col === "5 Years";
@@ -250,6 +264,9 @@ const numberFilterParams = {
                     sortable: true,
                     filter: "agNumberColumnFilter",
                     filterParams: numberFilterParams,
+                    filterValueGetter: (params) => {
+                        return getMetricValue(params.data as Record<string, unknown>, mappedField);
+                    },
                 });
             }
         }

@@ -281,3 +281,25 @@ export function getSwingTimingStats(
 export function formatNoiseAndStop(stats: EmpiricalHorizonStats): string {
     return `MAE: ${stats.medMae.toFixed(1)}% | Stop: ${stats.suggestedStop.toFixed(1)}%`;
 }
+
+/**
+ * Strips leading emojis and variation selectors from a badge or string.
+ */
+export function stripLeadingEmoji(text: string): string {
+    return text.replace(/^[\p{Extended_Pictographic}\uFE0E\uFE0F\s]+/u, "").trim();
+}
+
+/**
+ * Returns the human-readable clean string label for a swing timing configuration.
+ */
+export function getSwingTimingLabel(timing: SwingTimingConfig): string {
+    return stripLeadingEmoji(timing.badge);
+}
+
+/**
+ * Returns the human-readable clean string label for a macro regime code.
+ */
+export function getRegimeLabel(regimeCode: string): string {
+    const config = REGIME_CONFIGS[regimeCode] || REGIME_CONFIGS.neutral;
+    return stripLeadingEmoji(config.badge);
+}

@@ -4496,7 +4496,19 @@ export function Recurrence52WScanner({
                                             {/* Time Symmetry */}
                                             {visibleColumns.time_symmetry !== false && (
                                                 <td style={{ width: `${colWidths.time_symmetry}px`, minWidth: `${colWidths.time_symmetry}px` }} className="p-3 text-center whitespace-nowrap font-sans">
-                                                    {item.base_symmetry_ratio != null ? (
+                                                    {item.time_symmetry_status === "runaway_trend" ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setActiveGuideConcept("time_symmetry");
+                                                                setIsGuideOpen(true);
+                                                            }}
+                                                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all hover:scale-105"
+                                                            title="Runaway Momentum: Direct Stage-2 advance without multi-week consolidation base. Click for Concept Guide."
+                                                        >
+                                                            <span>🚀 Momentum</span>
+                                                        </button>
+                                                    ) : item.base_symmetry_ratio != null ? (
                                                         <button
                                                             type="button"
                                                             onClick={() => {
@@ -4508,15 +4520,18 @@ export function Recurrence52WScanner({
                                                                     ? "bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/20"
                                                                     : item.time_symmetry_status === "v_shape_trap"
                                                                     ? "bg-rose-500/25 text-rose-300 border-rose-500/40 animate-pulse font-bold"
+                                                                    : item.time_symmetry_status === "forming"
+                                                                    ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 font-mono"
                                                                     : item.time_symmetry_status === "protracted"
                                                                     ? "bg-slate-800/80 text-slate-300 border-slate-700 font-mono"
                                                                     : "bg-gray-800/60 text-gray-400 border-gray-700 font-mono"
                                                             }`}
-                                                            title={`Time Symmetry: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Breakout Pivot=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%. Click for Concept Guide.`}
+                                                            title={`Time Symmetry: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Breakout=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%.${item.breakout_date ? ' Breakout: ' + item.breakout_date : ''}${item.pct_above_pivot != null ? ' (' + (item.pct_above_pivot >= 0 ? '+' : '') + item.pct_above_pivot + '% from pivot)' : ''}. Click for Concept Guide.`}
                                                         >
                                                             <span>
                                                                 {item.time_symmetry_status === "symmetrical" && "🟢"}
                                                                 {item.time_symmetry_status === "v_shape_trap" && "⚠️ V-Trap"}
+                                                                {item.time_symmetry_status === "forming" && "⏳"}
                                                                 {item.time_symmetry_status === "protracted" && "⏱️"}
                                                                 {item.time_symmetry_status === "neutral" && "⚖️"}
                                                             </span>

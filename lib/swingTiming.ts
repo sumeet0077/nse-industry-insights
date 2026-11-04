@@ -345,7 +345,7 @@ export const UNIFIED_WAVE_CONCEPTS: Record<UnifiedWaveCode, UnifiedWaveConcept> 
         institutionalMeaning:
             "Market auctions operate across Price (Y) and Time (X). Sustainable breakouts require horizontal supply absorption. When the demand phase (right side) matches the supply phase (left side), trapped overhead bagholders fatigue, leading to higher breakout continuation rates. V-shape rushes fail because trapped overhead sellers dump immediately at breakeven.",
         mathFormula:
-            "Base Symmetry Ratio = T_right (Trough to Pivot sessions) / T_left (Peak to Trough sessions). Symmetrical: 0.65 <= Ratio <= 1.35. V-Shape Trap: Ratio < 0.40.",
+            "Base Symmetry Ratio = T_right (Trough to Breakout sessions) / T_left (Peak to Trough sessions). Symmetrical: 0.65 <= Ratio <= 1.35. V-Shape Trap: Ratio < 0.40. Protracted: Ratio > 1.80. Runaway Momentum: Direct Stage-2 advance without multi-week base.",
         nextDayAction:
             "Buy breakouts from symmetrical bases (0.65x - 1.35x). For V-shape traps (< 0.40x), wait for a handle consolidation or retest of 20 EMA before entering.",
         empiricalEdge: {

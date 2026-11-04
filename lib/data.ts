@@ -132,10 +132,12 @@ export interface Stock52WItem {
 
     // Time Symmetry & Phase 1 Microstructure Extensions
     base_symmetry_ratio?: number | null;
-    time_symmetry_status?: 'symmetrical' | 'v_shape_trap' | 'protracted' | 'neutral' | null;
+    time_symmetry_status?: 'symmetrical' | 'v_shape_trap' | 'protracted' | 'runaway_trend' | 'forming' | 'neutral' | null;
     t_left_sessions?: number | null;
     t_right_sessions?: number | null;
     base_depth_pct?: number | null;
+    breakout_date?: string | null;
+    pct_above_pivot?: number | null;
     closing_range?: number | null;
     is_pocket_pivot?: boolean;
     alpha_score?: number | null;

@@ -1369,7 +1369,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             {sym_join}
             {daily_ca_join}
             WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
-              AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 180 DAY)
+              AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 250 DAY)
             ORDER BY symbol, trade_date ASC
             """
             daily_df = con.execute(q_daily).pl()
@@ -1448,15 +1448,20 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     pl.col("down_volume").shift(1).rolling_max(window_size=10, min_samples=1).over("symbol").alias("max_down_vol_10d")
                 )
 
-                # Pocket pivot: today close >= open or close >= prev_close, volume > max_down_vol_10d, close near ema_10 / ema_20 (within 5%)
+                # Pocket pivot (Morales & Kacher): today close >= open or close >= prev_close,
+                # volume > max down volume of prior 10 sessions (or 1.25x SMA20 if zero down days),
+                # and price hugging support (within 5% above or 2% below EMA 10 or EMA 20)
                 daily_df = daily_df.with_columns(
                     (
                         ((pl.col("close") >= pl.col("open")) | (pl.col("close") >= pl.col("prev_close"))) &
-                        (pl.col("volume") > pl.col("max_down_vol_10d")) &
-                        (pl.col("max_down_vol_10d") > 0) &
                         (
-                            ((pl.col("close") >= pl.col("ema_10")) & ((pl.col("close") - pl.col("ema_10")) / pl.col("ema_10") <= 0.05)) |
-                            ((pl.col("close") >= pl.col("ema_20")) & ((pl.col("close") - pl.col("ema_20")) / pl.col("ema_20") <= 0.05))
+                            pl.when(pl.col("max_down_vol_10d") > 0)
+                            .then(pl.col("volume") > pl.col("max_down_vol_10d"))
+                            .otherwise(pl.col("volume") > (pl.col("vol_sma20") * 1.25))
+                        ) &
+                        (
+                            ((pl.col("close") >= pl.col("ema_10") * 0.98) & ((pl.col("close") - pl.col("ema_10")) / pl.col("ema_10") <= 0.05)) |
+                            ((pl.col("close") >= pl.col("ema_20") * 0.98) & ((pl.col("close") - pl.col("ema_20")) / pl.col("ema_20") <= 0.05))
                         )
                     ).alias("is_pocket_pivot")
                 )
@@ -1474,63 +1479,92 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         except Exception as e:
             print(f"  Notice: Microstructure parquet extraction failed: {e}")
 
-    def compute_base_time_symmetry(bars):
-        if not bars or len(bars) < 15:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral"}
-        highs = [b["high"] for b in bars if b.get("high") is not None]
-        lows = [b["low"] for b in bars if b.get("low") is not None]
-        N = len(highs)
-        if N < 15:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral"}
+    def compute_base_time_symmetry(bars, eval_date_str=None):
+        if not bars or len(bars) < 20:
+            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral", "breakout_date": None, "pct_above_pivot": None}
 
-        # Pivot C: highest high in recent 10 sessions
-        recent_win = min(10, N)
-        max_recent = max(highs[-recent_win:])
-        c_idx = (N - recent_win) + highs[-recent_win:].index(max_recent)
+        date_to_idx = {b["trade_date"]: i for i, b in enumerate(bars)}
+        eval_idx = date_to_idx.get(eval_date_str, len(bars) - 1) if eval_date_str else len(bars) - 1
 
-        # Trough B: lowest low in 45 sessions before c_idx
-        lookback_trough = min(45, c_idx)
-        if lookback_trough < 3:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral"}
-        sub_l = lows[c_idx - lookback_trough : c_idx]
-        min_l = min(sub_l)
-        trough_idx = (c_idx - lookback_trough) + sub_l.index(min_l)
+        active_bars = bars[:eval_idx + 1]
+        N = len(active_bars)
+        if N < 20:
+            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral", "breakout_date": None, "pct_above_pivot": None}
 
-        t_right = c_idx - trough_idx
-        if t_right <= 0:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral"}
+        best_base = None
 
-        # Peak A: highest high in 45 sessions before trough_idx
-        lookback_peak = min(45, trough_idx)
-        if lookback_peak < 2:
-            return {"t_left": None, "t_right": t_right, "ratio": None, "depth": None, "status": "neutral"}
-        sub_h = highs[trough_idx - lookback_peak : trough_idx]
-        max_h = max(sub_h)
-        peak_idx = (trough_idx - lookback_peak) + sub_h.index(max_h)
+        # Search backwards for a governing Left Rim Peak A in [N - 4 down to max(0, N - 120)]
+        # A valid base must have held price below Peak A for at least 10 sessions before breakout
+        for cand_idx in range(N - 4, max(0, N - 120), -1):
+            cand_high = active_bars[cand_idx].get("high")
+            if cand_high is None or cand_high <= 0:
+                continue
 
-        t_left = trough_idx - peak_idx
-        if t_left <= 0:
-            t_left = 1
+            # Swing peak check: high >= neighboring bars
+            if cand_idx >= 2:
+                prev1 = active_bars[cand_idx - 1].get("high") or 0
+                prev2 = active_bars[cand_idx - 2].get("high") or 0
+                if cand_high < prev1 or cand_high < prev2:
+                    continue
 
-        ratio = round(t_right / t_left, 2)
-        depth = round(((max_h - min_l) / max_h) * 100.0, 1) if max_h > 0 else 0.0
+            # First bar after cand_idx crossing Peak A
+            bo_idx = None
+            for j in range(cand_idx + 1, N):
+                h_j = active_bars[j].get("high") or 0
+                c_j = active_bars[j].get("close") or 0
+                if h_j >= cand_high * 0.995 or c_j >= cand_high * 0.995:
+                    bo_idx = j
+                    break
 
-        if ratio < 0.40:
-            status = "v_shape_trap"
-        elif 0.65 <= ratio <= 1.35:
-            status = "symmetrical"
-        elif ratio > 1.80:
-            status = "protracted"
-        else:
-            status = "neutral"
+            base_duration = (bo_idx - cand_idx) if bo_idx is not None else (N - 1 - cand_idx)
+            if base_duration >= 10:
+                end_t = bo_idx if bo_idx is not None else N
+                lows_slice = [active_bars[k].get("low") for k in range(cand_idx + 1, end_t) if active_bars[k].get("low") is not None]
+                if lows_slice:
+                    min_l = min(lows_slice)
+                    # Find last occurrence of min_l within 1.0% (shakeout / double bottom)
+                    cand_troughs = [cand_idx + 1 + idx for idx, l in enumerate(lows_slice) if l <= min_l * 1.01]
+                    trough_idx = cand_troughs[-1]
+                    trough_low = active_bars[trough_idx].get("low")
 
-        return {
-            "t_left": t_left,
-            "t_right": t_right,
-            "ratio": ratio,
-            "depth": depth,
-            "status": status,
-        }
+                    t_left = trough_idx - cand_idx
+                    t_right = (bo_idx - trough_idx) if bo_idx is not None else (N - 1 - trough_idx)
+                    depth = round(((cand_high - trough_low) / cand_high) * 100.0, 1)
+
+                    if depth >= 4.0 and t_left >= 3 and t_right >= 2:
+                        current_close = active_bars[-1].get("close") or cand_high
+                        pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
+                        ratio = round(t_right / max(1, t_left), 2)
+
+                        if bo_idx is not None:
+                            if ratio < 0.40:
+                                status = "v_shape_trap"
+                            elif 0.65 <= ratio <= 1.35:
+                                status = "symmetrical"
+                            elif ratio > 1.80:
+                                status = "protracted"
+                            else:
+                                status = "neutral"
+                        else:
+                            status = "forming"
+
+                        bo_date = active_bars[bo_idx].get("trade_date") if bo_idx is not None else None
+
+                        best_base = {
+                            "status": status,
+                            "ratio": ratio,
+                            "depth": depth,
+                            "t_left": t_left,
+                            "t_right": t_right,
+                            "breakout_date": bo_date,
+                            "pct_above_pivot": pct_ext,
+                        }
+                        break
+
+        if best_base is None:
+            return {"status": "runaway_trend", "ratio": None, "depth": None, "t_left": None, "t_right": None, "breakout_date": None, "pct_above_pivot": None}
+
+        return best_base
 
     def enrich_items(items, is_high=True):
         theme_waves = theme_waves_high if is_high else theme_waves_low
@@ -1842,90 +1876,107 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["setup_label"] = None
                 item["setup_bar_desc"] = None
 
-            # Time Symmetry calculation
-            sym_bars = symbol_bars_map.get(clean, [])
-            sym_res = compute_base_time_symmetry(sym_bars)
-            item["t_left_sessions"] = sym_res["t_left"]
-            item["t_right_sessions"] = sym_res["t_right"]
-            item["base_symmetry_ratio"] = sym_res["ratio"]
-            item["time_symmetry_status"] = sym_res["status"]
-            item["base_depth_pct"] = sym_res["depth"]
+            if is_high:
+                # Time Symmetry calculation
+                # If stock peaked > 10 sessions ago, evaluate base anchored to last_hit_date (the 52W high event)
+                eval_date = last_hit if r_days > 10 else latest_date
+                sym_bars = symbol_bars_map.get(clean, [])
+                sym_res = compute_base_time_symmetry(sym_bars, eval_date)
+                item["t_left_sessions"] = sym_res["t_left"]
+                item["t_right_sessions"] = sym_res["t_right"]
+                item["base_symmetry_ratio"] = sym_res["ratio"]
+                item["time_symmetry_status"] = sym_res["status"]
+                item["base_depth_pct"] = sym_res["depth"]
+                item["breakout_date"] = sym_res.get("breakout_date")
+                item["pct_above_pivot"] = sym_res.get("pct_above_pivot")
 
-            # Quant Alpha Composite Score (0-100)
-            s_trend = 0
-            c20 = item.get("count_20d") or 0
-            stk = item.get("streak") or 0
-            p5d = item.get("pct_5d") or 0.0
-            p1d = item.get("pct_1d") or 0.0
+                # Quant Alpha Composite Score (0-100)
+                s_trend = 0
+                c20 = item.get("count_20d") or 0
+                stk = item.get("streak") or 0
+                p5d = item.get("pct_5d") or 0.0
+                p1d = item.get("pct_1d") or 0.0
 
-            if c20 >= 10: s_trend += 12
-            elif c20 >= 5: s_trend += 9
-            elif c20 >= 2: s_trend += 6
-            else: s_trend += 3
+                if c20 >= 10: s_trend += 12
+                elif c20 >= 5: s_trend += 9
+                elif c20 >= 2: s_trend += 6
+                else: s_trend += 3
 
-            if stk >= 5: s_trend += 8
-            elif stk >= 2: s_trend += 5
-            elif stk == 1: s_trend += 3
+                if stk >= 5: s_trend += 8
+                elif stk >= 2: s_trend += 5
+                elif stk == 1: s_trend += 3
 
-            if p5d >= 5.0: s_trend += 6
-            elif p5d >= 2.0: s_trend += 4
-            elif p5d > 0.0: s_trend += 2
+                if p5d >= 5.0: s_trend += 6
+                elif p5d >= 2.0: s_trend += 4
+                elif p5d > 0.0: s_trend += 2
 
-            if p1d > 0: s_trend += 4
-            elif p1d == 0: s_trend += 2
+                if p1d > 0: s_trend += 4
+                elif p1d == 0: s_trend += 2
 
-            s_vol = 0
-            if item.get("is_pocket_pivot"): s_vol += 7
-            cr_val = item.get("closing_range")
-            if cr_val is not None:
-                if cr_val >= 75.0: s_vol += 8
-                elif cr_val >= 50.0: s_vol += 5
-                elif cr_val >= 25.0: s_vol += 2
+                s_vol = 0
+                if item.get("is_pocket_pivot"): s_vol += 7
+                cr_val = item.get("closing_range")
+                if cr_val is not None:
+                    if cr_val >= 75.0: s_vol += 8
+                    elif cr_val >= 50.0: s_vol += 5
+                    elif cr_val >= 25.0: s_vol += 2
 
-            dp_val = item.get("deliv_pct")
-            if dp_val is not None:
-                if dp_val >= 50.0: s_vol += 6
-                elif dp_val >= 35.0: s_vol += 4
-                elif dp_val >= 20.0: s_vol += 2
+                dp_val = item.get("deliv_pct")
+                if dp_val is not None:
+                    if dp_val >= 50.0: s_vol += 6
+                    elif dp_val >= 35.0: s_vol += 4
+                    elif dp_val >= 20.0: s_vol += 2
 
-            vs_val = item.get("vol_surge")
-            if vs_val is not None:
-                if vs_val >= 1.5: s_vol += 4
-                elif vs_val >= 1.0: s_vol += 2
+                vs_val = item.get("vol_surge")
+                if vs_val is not None:
+                    if vs_val >= 1.5: s_vol += 4
+                    elif vs_val >= 1.0: s_vol += 2
 
-            s_wave = 0
-            sw_val = item.get("sector_wave_count") or 0
-            if sw_val >= 4: s_wave += 20
-            elif sw_val >= 2: s_wave += 15
-            elif sw_val >= 1: s_wave += 10
+                s_wave = 0
+                sw_val = item.get("sector_wave_count") or 0
+                if sw_val >= 4: s_wave += 20
+                elif sw_val >= 2: s_wave += 15
+                elif sw_val >= 1: s_wave += 10
 
-            s_base = 0
-            sym_st = item.get("time_symmetry_status")
-            if sym_st == "symmetrical": s_base += 15
-            elif sym_st == "neutral": s_base += 10
-            elif sym_st == "protracted": s_base += 5
-            elif sym_st == "v_shape_trap": s_base += 0
+                s_base = 0
+                sym_st = item.get("time_symmetry_status")
+                if sym_st == "symmetrical": s_base += 15
+                elif sym_st in ("runaway_trend", "neutral", "forming"): s_base += 10
+                elif sym_st == "protracted": s_base += 5
+                elif sym_st == "v_shape_trap": s_base += 0
 
-            s_micro = 0
-            cpr_p = item.get("cpr_pos")
-            if cpr_p == "above": s_micro += 5
-            elif cpr_p == "inside": s_micro += 2
+                s_micro = 0
+                cpr_p = item.get("cpr_pos")
+                if cpr_p == "above": s_micro += 5
+                elif cpr_p == "inside": s_micro += 2
 
-            my_l = item.get("multi_year_level")
-            if my_l == "ATH": s_micro += 5
-            elif my_l in ("5Y", "3Y", "2Y"): s_micro += 3
-            else: s_micro += 1
+                my_l = item.get("multi_year_level")
+                if my_l == "ATH": s_micro += 5
+                elif my_l in ("5Y", "3Y", "2Y"): s_micro += 3
+                else: s_micro += 1
 
-            alpha_total = min(100, max(0, s_trend + s_vol + s_wave + s_base + s_micro))
-            item["alpha_score"] = alpha_total
-            if alpha_total >= 70:
-                item["alpha_tier"] = "tier1"
-            elif alpha_total >= 55:
-                item["alpha_tier"] = "tier2"
-            elif alpha_total >= 40:
-                item["alpha_tier"] = "tier3"
+                alpha_total = min(100, max(0, s_trend + s_vol + s_wave + s_base + s_micro))
+                item["alpha_score"] = alpha_total
+                if alpha_total >= 70:
+                    item["alpha_tier"] = "tier1"
+                elif alpha_total >= 55:
+                    item["alpha_tier"] = "tier2"
+                elif alpha_total >= 40:
+                    item["alpha_tier"] = "tier3"
+                else:
+                    item["alpha_tier"] = "tier4"
             else:
-                item["alpha_tier"] = "tier4"
+                # 52-Week Low items: nullify bullish alpha and base symmetry metrics
+                item["t_left_sessions"] = None
+                item["t_right_sessions"] = None
+                item["base_symmetry_ratio"] = None
+                item["time_symmetry_status"] = None
+                item["base_depth_pct"] = None
+                item["breakout_date"] = None
+                item["pct_above_pivot"] = None
+                item["alpha_score"] = None
+                item["alpha_tier"] = None
+                item["is_pocket_pivot"] = False
 
         if is_high:
             items.sort(key=lambda x: (-x["count_20d"], -x["streak"], -x["count_60d"], -x["pct_1d"]))

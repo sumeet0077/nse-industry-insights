@@ -1630,6 +1630,23 @@
       "category": "broad-market"
     }
   ],
+  "BAGMANE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midsmallcap400",
+      "title": "Nifty MidSmallcap 400",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
   "BAJAJ-AUTO": [
     {
       "id": "market_breadth_nifty50",
@@ -2315,6 +2332,23 @@
       "id": "breadth_theme_pharma_cdmo_and_api",
       "title": "Pharma CDMO & API",
       "category": "industries"
+    }
+  ],
+  "BIRET": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midsmallcap400",
+      "title": "Nifty MidSmallcap 400",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
     }
   ],
   "BLS": [
@@ -4447,6 +4481,23 @@
       "id": "breadth_theme_paper",
       "title": "Paper",
       "category": "industries"
+    }
+  ],
+  "EMBASSY": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midcap",
+      "title": "Nifty Midcap 150",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midsmallcap400",
+      "title": "Nifty MidSmallcap 400",
+      "category": "broad-market"
     }
   ],
   "EMCURE": [
@@ -11352,6 +11403,13 @@
     {
       "id": "breadth_theme_carbon_and_graphite",
       "title": "Carbon and Graphite",
+      "category": "industries"
+    }
+  ],
+  "PCJEWELLER": [
+    {
+      "id": "breadth_theme_jewellery_and_gold",
+      "title": "Jewellery & Gold",
       "category": "industries"
     }
   ],

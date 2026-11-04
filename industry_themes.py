@@ -116,7 +116,7 @@ INDUSTRY_THEMES = {
         "ASIANPAINT.NS", "BERGEPAINT.NS", "INDIGOPNTS.NS", "KAMOPAINTS.NS", "KANSAINER.NS", "SHALPAINTS.NS", "SIRCA.NS"
     ],
     "Jewellery & Gold": [
-        "GOLDIAM.NS", "KALYANKJIL.NS", "PNGJL.NS", "SENCO.NS", "SKYGOLD.NS", "THANGAMAYL.NS", "TITAN.NS"
+        "GOLDIAM.NS", "KALYANKJIL.NS", "PCJEWELLER.NS", "PNGJL.NS", "SENCO.NS", "SKYGOLD.NS", "THANGAMAYL.NS", "TITAN.NS"
     ],
     "Silver": [
         "HINDZINC.NS", "VEDL.NS"
@@ -455,7 +455,7 @@ THEME_METADATA = {
         "id": "breadth_theme_jewellery_and_gold",
         "description": "Jewellery & Gold Retailers",
         "dataFile": "breadth_theme_jewellery_and_gold",
-        "stock_count": 7,
+        "stock_count": 8,
     },
     "Silver": {
         "id": "breadth_theme_silver",

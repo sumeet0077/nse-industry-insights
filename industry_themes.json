@@ -1151,10 +1151,11 @@
     "title": "Jewellery & Gold",
     "description": "Jewellery & Gold Retailers",
     "dataFile": "breadth_theme_jewellery_and_gold",
-    "stock_count": 7,
+    "stock_count": 8,
     "constituents": [
       "GOLDIAM.NS",
       "KALYANKJIL.NS",
+      "PCJEWELLER.NS",
       "PNGJL.NS",
       "SENCO.NS",
       "SKYGOLD.NS",
@@ -1164,6 +1165,7 @@
     "clean_symbols": [
       "GOLDIAM",
       "KALYANKJIL",
+      "PCJEWELLER",
       "PNGJL",
       "SENCO",
       "SKYGOLD",

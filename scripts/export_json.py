@@ -1568,15 +1568,20 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             if depth < 4.0 or t_left < 2 or t_right < 2:
                 continue
 
-            # Check if breakout failed drastically (> 15% below breakout pivot)
-            min_after_bo = min(
-                [
-                    active_bars[k].get("close") or 999999
-                    for k in range(bo_idx, N)
-                ]
-            )
-            if min_after_bo < cand_high * 0.85:
+            # Active breakout holding condition:
+            # 1. Price must be holding near or above breakout level (not broken down > 3% below pivot)
+            if current_close < cand_high * 0.97:
                 continue
+
+            # 2. If a higher swing peak formed after breakout and then corrected > 8%, that higher peak supersedes this base!
+            subsequent_highs = [active_bars[k].get("high") or 0 for k in range(bo_idx, N)]
+            max_sub_h = max(subsequent_highs) if subsequent_highs else cand_high
+            if max_sub_h > cand_high * 1.02:
+                max_sub_idx = bo_idx + subsequent_highs.index(max_sub_h)
+                if max_sub_idx < N - 1:
+                    min_after_peak = min([active_bars[k].get("low") or 999999 for k in range(max_sub_idx, N)])
+                    if (max_sub_h - min_after_peak) / max_sub_h >= 0.08:
+                        continue # Superseded by new peak-trough cycle!
 
             ratio = round(t_right / max(1, t_left), 2)
             if ratio < 0.40:

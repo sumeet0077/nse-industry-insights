@@ -4598,7 +4598,11 @@ export function Recurrence52WScanner({
                                                                     ? "bg-slate-800/80 text-slate-300 border-slate-700 font-mono"
                                                                     : "bg-gray-800/60 text-gray-400 border-gray-700 font-mono"
                                                             }`}
-                                                            title={`Time Symmetry: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Breakout=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%.${item.breakout_date ? ' Breakout: ' + item.breakout_date : ''}${item.pct_above_pivot != null ? ' (' + (item.pct_above_pivot >= 0 ? '+' : '') + item.pct_above_pivot + '% from pivot)' : ''}. Click for Concept Guide.`}
+                                                            title={
+                                                                item.time_symmetry_status === "forming"
+                                                                    ? `Forming Base: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Current=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%. Consolidating (${item.pct_above_pivot != null ? (item.pct_above_pivot >= 0 ? '+' : '') + item.pct_above_pivot + '% from pivot' : ''}). Click for Concept Guide.`
+                                                                    : `Time Symmetry: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Breakout=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%.${item.breakout_date ? ' Breakout: ' + item.breakout_date : ''}${item.pct_above_pivot != null ? ' (' + (item.pct_above_pivot >= 0 ? '+' : '') + item.pct_above_pivot + '% from pivot)' : ''}. Click for Concept Guide.`
+                                                            }
                                                         >
                                                             <span>
                                                                 {item.time_symmetry_status === "symmetrical" && "🟢"}

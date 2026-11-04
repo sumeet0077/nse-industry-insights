@@ -1479,7 +1479,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         except Exception as e:
             print(f"  Notice: Microstructure parquet extraction failed: {e}")
 
-    def compute_base_time_symmetry(bars, eval_date_str=None):
+    def compute_base_time_symmetry(bars, eval_date_str=None, streak=0):
         if not bars or len(bars) < 15:
             return {
                 "t_left": None,
@@ -1584,7 +1584,18 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                         continue # Superseded by new peak-trough cycle!
 
             ratio = round(t_right / max(1, t_left), 2)
-            if ratio < 0.40:
+            pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
+
+            # Early Runaway Promotion Gate:
+            # In CANSLIM / Minervini swing trading methodology, the actionable breakout buy zone
+            # is 0% to +5% (with max chase ceiling at +7% to +8%).
+            # Once a stock is >= +8.0% above its breakout pivot (or >= +6.0% with active streak >= 3d),
+            # it has escaped the buy zone and entered an extended Stage-2 Runaway Momentum advance.
+            # It is classified as 'runaway_trend' so traders do not mistakenly chase it as an actionable
+            # base breakout, while fully retaining its base origin telemetry (ratio, depth, t_left, t_right, breakout_date).
+            if pct_ext >= 8.0 or (streak >= 3 and pct_ext >= 6.0):
+                status = "runaway_trend"
+            elif ratio < 0.40:
                 status = "v_shape_trap"
             elif 0.65 <= ratio <= 1.35:
                 status = "symmetrical"
@@ -1593,7 +1604,6 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             else:
                 status = "neutral"
 
-            pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
             active_breakouts.append(
                 {
                     "status": status,
@@ -2003,7 +2013,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 # Time Symmetry calculation evaluated at latest session (freezing T_right at bo_idx for completed breakouts)
                 eval_date = latest_date
                 sym_bars = symbol_bars_map.get(clean, [])
-                sym_res = compute_base_time_symmetry(sym_bars, eval_date)
+                sym_res = compute_base_time_symmetry(sym_bars, eval_date, streak=item.get("streak", 0))
                 item["t_left_sessions"] = sym_res["t_left"]
                 item["t_right_sessions"] = sym_res["t_right"]
                 item["base_symmetry_ratio"] = sym_res["ratio"]
@@ -2063,7 +2073,14 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 s_base = 0
                 sym_st = item.get("time_symmetry_status")
                 if sym_st == "symmetrical": s_base += 15
-                elif sym_st in ("runaway_trend", "neutral", "forming"): s_base += 10
+                elif sym_st == "runaway_trend":
+                    # If runaway momentum originated from an escaped symmetrical base, reward the proven winner!
+                    ratio = item.get("base_symmetry_ratio")
+                    if ratio is not None and 0.65 <= ratio <= 1.35:
+                        s_base += 15
+                    else:
+                        s_base += 10
+                elif sym_st in ("neutral", "forming"): s_base += 10
                 elif sym_st == "protracted": s_base += 5
                 elif sym_st == "v_shape_trap": s_base += 0
 

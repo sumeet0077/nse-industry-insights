@@ -4576,9 +4576,17 @@ export function Recurrence52WScanner({
                                                                 setIsGuideOpen(true);
                                                             }}
                                                             className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all hover:scale-105"
-                                                            title="Runaway Momentum: Direct Stage-2 advance without multi-week consolidation base. Click for Concept Guide."
+                                                            title={
+                                                                item.pct_above_pivot != null && item.breakout_date
+                                                                    ? `Runaway Momentum: +${item.pct_above_pivot.toFixed(1)}% above ${item.breakout_date} pivot${item.base_symmetry_ratio != null ? ` (escaped ${item.base_symmetry_ratio.toFixed(2)}x base)` : ""}. Extended Stage-2 advance. Click for Concept Guide.`
+                                                                    : "Runaway Momentum: Direct Stage-2 advance without multi-week consolidation base. Click for Concept Guide."
+                                                            }
                                                         >
-                                                            <span>🚀 Momentum</span>
+                                                            <span>
+                                                                {item.pct_above_pivot != null && item.pct_above_pivot > 0
+                                                                    ? `🚀 +${item.pct_above_pivot.toFixed(1)}%`
+                                                                    : "🚀 Momentum"}
+                                                            </span>
                                                         </button>
                                                     ) : item.base_symmetry_ratio != null ? (
                                                         <button

@@ -1480,22 +1480,42 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             print(f"  Notice: Microstructure parquet extraction failed: {e}")
 
     def compute_base_time_symmetry(bars, eval_date_str=None):
-        if not bars or len(bars) < 20:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral", "breakout_date": None, "pct_above_pivot": None}
+        if not bars or len(bars) < 15:
+            return {
+                "t_left": None,
+                "t_right": None,
+                "ratio": None,
+                "depth": None,
+                "status": "neutral",
+                "breakout_date": None,
+                "pct_above_pivot": None,
+            }
 
-        date_to_idx = {b["trade_date"]: i for i, b in enumerate(bars)}
-        eval_idx = date_to_idx.get(eval_date_str, len(bars) - 1) if eval_date_str else len(bars) - 1
+        date_to_idx = {str(b["trade_date"])[:10]: i for i, b in enumerate(bars)}
+        eval_idx = date_to_idx.get(str(eval_date_str)[:10], len(bars) - 1) if eval_date_str else len(bars) - 1
 
         active_bars = bars[:eval_idx + 1]
         N = len(active_bars)
-        if N < 20:
-            return {"t_left": None, "t_right": None, "ratio": None, "depth": None, "status": "neutral", "breakout_date": None, "pct_above_pivot": None}
+        if N < 15:
+            return {
+                "t_left": None,
+                "t_right": None,
+                "ratio": None,
+                "depth": None,
+                "status": "neutral",
+                "breakout_date": None,
+                "pct_above_pivot": None,
+            }
 
-        best_base = None
+        current_close = active_bars[-1].get("close") or 0
 
-        # Search backwards for a governing Left Rim Peak A in [N - 4 down to max(0, N - 120)]
-        # A valid base must have held price below Peak A for at least 10 sessions before breakout
-        for cand_idx in range(N - 4, max(0, N - 120), -1):
+        # =========================================================================
+        # TIER 1: ACTIVE COMPLETED BREAKOUT (Within last 20 trading sessions)
+        # Search backwards from N - 4 down to max(0, N - 90) for Peak A whose
+        # breakout occurred recently (0 <= N - 1 - bo_idx <= 20)
+        # =========================================================================
+        active_breakouts = []
+        for cand_idx in range(N - 4, max(0, N - 90), -1):
             cand_high = active_bars[cand_idx].get("high")
             if cand_high is None or cand_high <= 0:
                 continue
@@ -1507,64 +1527,162 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 if cand_high < prev1 or cand_high < prev2:
                     continue
 
-            # First bar after cand_idx crossing Peak A
+            # Find first decisive breakout bar crossing Peak A
             bo_idx = None
             for j in range(cand_idx + 1, N):
                 h_j = active_bars[j].get("high") or 0
                 c_j = active_bars[j].get("close") or 0
-                if h_j >= cand_high * 0.995 or c_j >= cand_high * 0.995:
+                if c_j >= cand_high * 0.995 or h_j >= cand_high * 1.008:
                     bo_idx = j
                     break
 
-            base_duration = (bo_idx - cand_idx) if bo_idx is not None else (N - 1 - cand_idx)
-            if base_duration >= 10:
-                end_t = bo_idx if bo_idx is not None else N
-                lows_slice = [active_bars[k].get("low") for k in range(cand_idx + 1, end_t) if active_bars[k].get("low") is not None]
-                if lows_slice:
-                    min_l = min(lows_slice)
-                    # Find last occurrence of min_l within 1.0% (shakeout / double bottom)
-                    cand_troughs = [cand_idx + 1 + idx for idx, l in enumerate(lows_slice) if l <= min_l * 1.01]
-                    trough_idx = cand_troughs[-1]
-                    trough_low = active_bars[trough_idx].get("low")
+            # Anti-Staleness Gate: breakout must have occurred within the last 20 sessions (~1 month)
+            if bo_idx is None or (N - 1 - bo_idx) > 20:
+                continue
 
-                    t_left = trough_idx - cand_idx
-                    t_right = (bo_idx - trough_idx) if bo_idx is not None else (N - 1 - trough_idx)
-                    depth = round(((cand_high - trough_low) / cand_high) * 100.0, 1)
+            base_duration = bo_idx - cand_idx
+            if base_duration < 8:
+                continue
 
-                    if depth >= 4.0 and t_left >= 3 and t_right >= 2:
-                        current_close = active_bars[-1].get("close") or cand_high
-                        pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
-                        ratio = round(t_right / max(1, t_left), 2)
+            lows_slice = [
+                active_bars[k].get("low")
+                for k in range(cand_idx + 1, bo_idx)
+                if active_bars[k].get("low") is not None
+            ]
+            if not lows_slice:
+                continue
 
-                        if bo_idx is not None:
-                            if ratio < 0.40:
-                                status = "v_shape_trap"
-                            elif 0.65 <= ratio <= 1.35:
-                                status = "symmetrical"
-                            elif ratio > 1.80:
-                                status = "protracted"
-                            else:
-                                status = "neutral"
-                        else:
-                            status = "forming"
+            min_l = min(lows_slice)
+            cand_troughs = [
+                cand_idx + 1 + idx
+                for idx, l in enumerate(lows_slice)
+                if l <= min_l * 1.01
+            ]
+            trough_idx = cand_troughs[-1]
+            trough_low = active_bars[trough_idx].get("low")
 
-                        bo_date = active_bars[bo_idx].get("trade_date") if bo_idx is not None else None
+            t_left = trough_idx - cand_idx
+            t_right = bo_idx - trough_idx
+            depth = round(((cand_high - trough_low) / cand_high) * 100.0, 1)
 
-                        best_base = {
-                            "status": status,
-                            "ratio": ratio,
-                            "depth": depth,
-                            "t_left": t_left,
-                            "t_right": t_right,
-                            "breakout_date": bo_date,
-                            "pct_above_pivot": pct_ext,
-                        }
-                        break
+            if depth < 4.0 or t_left < 2 or t_right < 2:
+                continue
 
-        if best_base is None:
-            return {"status": "runaway_trend", "ratio": None, "depth": None, "t_left": None, "t_right": None, "breakout_date": None, "pct_above_pivot": None}
+            # Check if breakout failed drastically (> 15% below breakout pivot)
+            min_after_bo = min(
+                [
+                    active_bars[k].get("close") or 999999
+                    for k in range(bo_idx, N)
+                ]
+            )
+            if min_after_bo < cand_high * 0.85:
+                continue
 
-        return best_base
+            ratio = round(t_right / max(1, t_left), 2)
+            if ratio < 0.40:
+                status = "v_shape_trap"
+            elif 0.65 <= ratio <= 1.35:
+                status = "symmetrical"
+            elif ratio > 1.80:
+                status = "protracted"
+            else:
+                status = "neutral"
+
+            pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
+            active_breakouts.append(
+                {
+                    "status": status,
+                    "ratio": ratio,
+                    "depth": depth,
+                    "t_left": t_left,
+                    "t_right": t_right,
+                    "breakout_date": str(active_bars[bo_idx].get("trade_date"))[:10],
+                    "pct_above_pivot": pct_ext,
+                    "bo_idx": bo_idx,
+                }
+            )
+
+        if active_breakouts:
+            return max(active_breakouts, key=lambda b: b["bo_idx"])
+
+        # =========================================================================
+        # TIER 2: ACTIVE FORMING BASE (Consolidating below resistance, no breakout)
+        # Search backwards for a governing peak that has held for >= 8 sessions
+        # =========================================================================
+        for cand_idx in range(N - 4, max(0, N - 60), -1):
+            cand_high = active_bars[cand_idx].get("high")
+            if cand_high is None or cand_high <= 0:
+                continue
+
+            if cand_idx >= 2:
+                prev1 = active_bars[cand_idx - 1].get("high") or 0
+                prev2 = active_bars[cand_idx - 2].get("high") or 0
+                if cand_high < prev1 or cand_high < prev2:
+                    continue
+
+            broken_out = False
+            for j in range(cand_idx + 1, N):
+                h_j = active_bars[j].get("high") or 0
+                c_j = active_bars[j].get("close") or 0
+                if c_j >= cand_high * 1.01 or h_j >= cand_high * 1.02:
+                    broken_out = True
+                    break
+            if broken_out:
+                continue
+
+            base_duration = N - 1 - cand_idx
+            if base_duration < 8:
+                continue
+
+            lows_slice = [
+                active_bars[k].get("low")
+                for k in range(cand_idx + 1, N)
+                if active_bars[k].get("low") is not None
+            ]
+            if not lows_slice:
+                continue
+
+            min_l = min(lows_slice)
+            cand_troughs = [
+                cand_idx + 1 + idx
+                for idx, l in enumerate(lows_slice)
+                if l <= min_l * 1.01
+            ]
+            trough_idx = cand_troughs[-1]
+            trough_low = active_bars[trough_idx].get("low")
+
+            t_left = trough_idx - cand_idx
+            t_right = N - 1 - trough_idx
+            depth = round(((cand_high - trough_low) / cand_high) * 100.0, 1)
+
+            if depth < 4.0 or t_left < 2 or t_right < 1:
+                continue
+
+            pct_ext = round(((current_close - cand_high) / cand_high) * 100.0, 1)
+            ratio = round(t_right / max(1, t_left), 2)
+
+            return {
+                "status": "forming",
+                "ratio": ratio,
+                "depth": depth,
+                "t_left": t_left,
+                "t_right": t_right,
+                "breakout_date": None,
+                "pct_above_pivot": pct_ext,
+            }
+
+        # =========================================================================
+        # TIER 3: RUNAWAY TREND (Stage-2 momentum without recent multi-week base)
+        # =========================================================================
+        return {
+            "status": "runaway_trend",
+            "ratio": None,
+            "depth": None,
+            "t_left": None,
+            "t_right": None,
+            "breakout_date": None,
+            "pct_above_pivot": None,
+        }
 
     def enrich_items(items, is_high=True):
         theme_waves = theme_waves_high if is_high else theme_waves_low
@@ -1877,9 +1995,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 item["setup_bar_desc"] = None
 
             if is_high:
-                # Time Symmetry calculation
-                # If stock peaked > 10 sessions ago, evaluate base anchored to last_hit_date (the 52W high event)
-                eval_date = last_hit if r_days > 10 else latest_date
+                # Time Symmetry calculation evaluated at latest session (freezing T_right at bo_idx for completed breakouts)
+                eval_date = latest_date
                 sym_bars = symbol_bars_map.get(clean, [])
                 sym_res = compute_base_time_symmetry(sym_bars, eval_date)
                 item["t_left_sessions"] = sym_res["t_left"]

@@ -857,6 +857,9 @@ export function Recurrence52WScanner({
             if (preset === "v_shape_trap") {
                 return item.time_symmetry_status === "v_shape_trap";
             }
+            if (preset === "runaway_momentum") {
+                return item.time_symmetry_status === "runaway_trend";
+            }
             if (preset === "pocket_pivot") {
                 return Boolean(item.is_pocket_pivot);
             }
@@ -1441,6 +1444,10 @@ export function Recurrence52WScanner({
         return candidatePool.filter((i) => i.time_symmetry_status === "v_shape_trap").length;
     }, [candidatePool]);
 
+    const runawayMomentumCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "runaway_trend").length;
+    }, [candidatePool]);
+
     const pocketPivotCount = useMemo(() => {
         return candidatePool.filter((i) => Boolean(i.is_pocket_pivot)).length;
     }, [candidatePool]);
@@ -1927,6 +1934,21 @@ export function Recurrence52WScanner({
                                 <span>⚠️ V-Trap</span>
                                 <span className="text-[10px] px-1 py-0.2 rounded bg-rose-500/20 text-rose-300 font-mono">
                                     {vShapeTrapCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("runaway_momentum")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("runaway_momentum")
+                                        ? "bg-purple-500/25 text-purple-300 border border-purple-500/50 shadow-sm shadow-purple-500/20"
+                                        : "text-purple-400/90 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-800/40"
+                                }`}
+                                title="Runaway Momentum: Direct Stage-2 advance without multi-week consolidation base (high momentum continuation)"
+                            >
+                                <span>🚀 Runaway Momentum</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
+                                    {runawayMomentumCount}
                                 </span>
                             </button>
                             <div className="h-4 w-px bg-gray-800 hidden sm:block" />

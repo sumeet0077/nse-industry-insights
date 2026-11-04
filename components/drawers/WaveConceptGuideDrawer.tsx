@@ -29,7 +29,7 @@ interface WaveConceptGuideDrawerProps {
     initialConceptId?: string | null;
 }
 
-type GuideFilterTab = "all" | "waves_dips" | "trend_continuation" | "traps_caution";
+type GuideFilterTab = "all" | "waves_dips" | "trend_continuation" | "traps_caution" | "microstructure" | "alpha_ranking";
 
 export function WaveConceptGuideDrawer({
     isOpen,
@@ -91,8 +91,11 @@ export function WaveConceptGuideDrawer({
         }
     }, [isOpen, initialConceptId]);
 
-    // Filter concepts: strictly the 6 core decision tags (excluding neutral from the primary cards)
+    // Core decision and microstructure concepts
     const CORE_CONCEPT_KEYS: UnifiedWaveCode[] = [
+        "alpha_score",
+        "time_symmetry",
+        "pocket_pivot",
         "apex_wave",
         "springboard_wave",
         "sustained_bull",
@@ -179,7 +182,29 @@ export function WaveConceptGuideDrawer({
                                     : "bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-slate-800"
                             }`}
                         >
-                            All (6)
+                            All (9)
+                        </button>
+                        <button
+                            onClick={() => setSelectedTab("alpha_ranking")}
+                            className={`flex items-center gap-1 px-3 py-1 text-xs rounded-lg font-medium transition-all ${
+                                selectedTab === "alpha_ranking"
+                                    ? "bg-amber-600 text-white shadow-sm font-semibold"
+                                    : "bg-slate-900/80 text-amber-400/90 hover:text-amber-300 hover:bg-slate-800/60 border border-slate-800"
+                            }`}
+                        >
+                            <Sparkles size={12} />
+                            Alpha Score (1)
+                        </button>
+                        <button
+                            onClick={() => setSelectedTab("microstructure")}
+                            className={`flex items-center gap-1 px-3 py-1 text-xs rounded-lg font-medium transition-all ${
+                                selectedTab === "microstructure"
+                                    ? "bg-teal-600 text-white shadow-sm font-semibold"
+                                    : "bg-slate-900/80 text-teal-400/90 hover:text-teal-300 hover:bg-slate-800/60 border border-slate-800"
+                            }`}
+                        >
+                            <Clock size={12} />
+                            Time Symmetry & Pivots (2)
                         </button>
                         <button
                             onClick={() => setSelectedTab("waves_dips")}
@@ -207,8 +232,8 @@ export function WaveConceptGuideDrawer({
                             onClick={() => setSelectedTab("traps_caution")}
                             className={`flex items-center gap-1 px-3 py-1 text-xs rounded-lg font-medium transition-all ${
                                 selectedTab === "traps_caution"
-                                    ? "bg-amber-600 text-white shadow-sm font-semibold"
-                                    : "bg-slate-900/80 text-amber-400/90 hover:text-amber-300 hover:bg-slate-800/60 border border-slate-800"
+                                    ? "bg-rose-600 text-white shadow-sm font-semibold"
+                                    : "bg-slate-900/80 text-rose-400/90 hover:text-rose-300 hover:bg-slate-800/60 border border-slate-800"
                             }`}
                         >
                             <AlertOctagon size={12} />

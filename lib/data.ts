@@ -129,6 +129,17 @@ export interface Stock52WItem {
     setup_bar_desc?: string | null;
     multi_year_level?: 'ATH' | '5Y' | '3Y' | '2Y' | null;
     base_gap_days?: number | null;
+
+    // Time Symmetry & Phase 1 Microstructure Extensions
+    base_symmetry_ratio?: number | null;
+    time_symmetry_status?: 'symmetrical' | 'v_shape_trap' | 'protracted' | 'neutral' | null;
+    t_left_sessions?: number | null;
+    t_right_sessions?: number | null;
+    base_depth_pct?: number | null;
+    closing_range?: number | null;
+    is_pocket_pivot?: boolean;
+    alpha_score?: number | null;
+    alpha_tier?: 'tier1' | 'tier2' | 'tier3' | 'tier4' | null;
 }
 
 export interface Market52WHistory {

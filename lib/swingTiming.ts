@@ -336,6 +336,87 @@ export const UNIFIED_WAVE_CONCEPTS: Record<UnifiedWaveCode, UnifiedWaveConcept> 
         borderClass: "border-slate-700/60",
         badgePillClass: "bg-slate-800 text-slate-400 border-slate-700",
     },
+    time_symmetry: {
+        code: "time_symmetry",
+        badge: "⏳ Time Symmetry & V-Shape Traps",
+        name: "Base Time Symmetry & V-Shape Asymmetry",
+        category: "microstructure",
+        shortAction: "Prioritize Symmetrical Bases (0.65x - 1.35x); Avoid V-Shape Traps (< 0.40x)",
+        institutionalMeaning:
+            "Market auctions operate across Price (Y) and Time (X). Sustainable breakouts require horizontal supply absorption. When the demand phase (right side) matches the supply phase (left side), trapped overhead bagholders fatigue, leading to higher breakout continuation rates. V-shape rushes fail because trapped overhead sellers dump immediately at breakeven.",
+        mathFormula:
+            "Base Symmetry Ratio = T_right (Trough to Pivot sessions) / T_left (Peak to Trough sessions). Symmetrical: 0.65 <= Ratio <= 1.35. V-Shape Trap: Ratio < 0.40.",
+        nextDayAction:
+            "Buy breakouts from symmetrical bases (0.65x - 1.35x). For V-shape traps (< 0.40x), wait for a handle consolidation or retest of 20 EMA before entering.",
+        empiricalEdge: {
+            winRate: "64.2% at 10D",
+            profitFactor: 2.15,
+            medMae: "-1.18%",
+            horizon: "10D",
+            sampleSize: 4210,
+        },
+        suggestedStop: "2.0% below breakout pivot or 20 EMA",
+        edgeLabel: "72% High",
+        edgePct: 72,
+        bgClass: "bg-teal-950/90",
+        textClass: "text-teal-300",
+        borderClass: "border-teal-500/70 shadow-sm shadow-teal-500/20",
+        badgePillClass: "bg-teal-500/20 text-teal-300 border-teal-500/40",
+    },
+    alpha_score: {
+        code: "alpha_score",
+        badge: "👑 Quant Alpha Composite Score (0-100)",
+        name: "Quant Alpha Composite Score",
+        category: "alpha_ranking",
+        shortAction: "Deploy Capital Exclusively into Tier-1 (Score >= 70) Leaders",
+        institutionalMeaning:
+            "A unified mathematical ranking combining Relative Momentum (30%), Volume & Delivery Quality (25%), Sector Wave Confluence (20%), Base Time Symmetry (15%), and Microstructure CPR/Ceiling Support (10%). Eliminates cognitive bias and highlights undisputed institutional favorites.",
+        mathFormula:
+            "Alpha Score = Trend(30) + Volume & Delivery(25) + Sector Wave(20) + Time Symmetry(15) + Microstructure(10). Tier-1: >= 70 | Tier-2: 55-69 | Tier-3: 40-54 | Tier-4: < 40.",
+        nextDayAction:
+            "Focus longs strictly on Tier-1 setups with Symmetrical Bases and high delivery accumulation.",
+        empiricalEdge: {
+            winRate: "66.8% at 10D",
+            profitFactor: 2.48,
+            medMae: "-0.95%",
+            horizon: "10D",
+            sampleSize: 3180,
+        },
+        suggestedStop: "2.0% trailing or 20 EMA",
+        edgeLabel: "78% Elite",
+        edgePct: 78,
+        bgClass: "bg-amber-950/90",
+        textClass: "text-amber-300",
+        borderClass: "border-amber-500/70 shadow-sm shadow-amber-500/20",
+        badgePillClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+    },
+    pocket_pivot: {
+        code: "pocket_pivot",
+        badge: "⚡ Pocket Pivot Accumulation",
+        name: "Pocket Pivot (Gil Morales / Chris Kacher)",
+        category: "microstructure",
+        shortAction: "Buy Early Support Bounces off 10/20 EMA on Institutional Volume",
+        institutionalMeaning:
+            "A high-probability leading entry signature. Volume on an up-day is larger than the highest down-day volume in the previous 10 trading sessions while price hugs the 10 EMA or 20 EMA. Proves institutional accumulation inside the base before the standard 52W breakout occurs.",
+        mathFormula:
+            "Today Volume > Max(Down Volume across prior 10 trading sessions) AND Close >= Open AND 0% <= (Close - EMA_10/20) / EMA_10/20 <= 5%",
+        nextDayAction:
+            "Buy early near 10 EMA / 20 EMA with a tight stop just below the pocket pivot low.",
+        empiricalEdge: {
+            winRate: "61.5% at 10D",
+            profitFactor: 2.05,
+            medMae: "-1.35%",
+            horizon: "10D",
+            sampleSize: 5120,
+        },
+        suggestedStop: "1.5% - 2.0% below pocket pivot low",
+        edgeLabel: "69% Strong",
+        edgePct: 69,
+        bgClass: "bg-violet-950/90",
+        textClass: "text-violet-300",
+        borderClass: "border-violet-500/70 shadow-sm shadow-violet-500/20",
+        badgePillClass: "bg-violet-500/20 text-violet-300 border-violet-500/40",
+    },
 };
 
 /**

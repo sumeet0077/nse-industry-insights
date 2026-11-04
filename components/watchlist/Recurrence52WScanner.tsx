@@ -34,9 +34,12 @@ import {
     Rocket,
     AlertTriangle,
     Columns,
+    Calculator,
+    Clock,
 } from "lucide-react";
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { WaveConceptGuideDrawer } from "@/components/drawers/WaveConceptGuideDrawer";
 
 interface Recurrence52WScannerProps {
     historyData: Market52WHistory;
@@ -54,6 +57,10 @@ export type Direction = "high" | "low";
 export type Lookback = 5 | 10 | 20 | 60;
 export type PresetFilter = 
     | "all" 
+    | "alpha_tier1"
+    | "time_symmetry"
+    | "v_shape_trap"
+    | "pocket_pivot"
     | "fresh_base"
     | "multi_year"
     | "vcp_flag"
@@ -74,6 +81,10 @@ export type PresetFilter =
     | "rs_lead";
 
 export const SETUP_PRESET_KEYS = new Set<string>([
+    "alpha_tier1",
+    "time_symmetry",
+    "v_shape_trap",
+    "pocket_pivot",
     "fresh_base",
     "multi_year",
     "vcp_flag",
@@ -91,6 +102,8 @@ export const SETUP_PRESET_KEYS = new Set<string>([
 export type TradabilityPreset = "tradeable" | "fno_liquid" | "all" | "custom";
 export type CircuitFilterOption = "exclude_low" | "ge_10" | "fno_20" | "fno" | "all";
 export type SortField = 
+    | "alpha_score"
+    | "time_symmetry"
     | "frequency" 
     | "streak" 
     | "rs_rating" 
@@ -106,6 +119,7 @@ export type SortField =
     | "cpr_width"
     | "vol_surge"
     | "deliv_pct"
+    | "closing_range"
     | "wave";
 export type SortOrder = "asc" | "desc";
 
@@ -179,6 +193,8 @@ export interface ScannerColumnConfig {
 }
 
 export const SCANNER_COLUMNS: ScannerColumnConfig[] = [
+    { key: "alpha_score", label: "Alpha Score" },
+    { key: "time_symmetry", label: "Time Symmetry" },
     { key: "band", label: "Price Band" },
     { key: "candle", label: "Candle & Signal" },
     { key: "ema_ext", label: "20 EMA" },
@@ -198,6 +214,8 @@ export const SCANNER_COLUMNS: ScannerColumnConfig[] = [
 ];
 
 export const defaultVisibleColumns: Record<string, boolean> = {
+    alpha_score: true,
+    time_symmetry: true,
     band: true,
     candle: true,
     ema_ext: true,
@@ -217,6 +235,8 @@ export const defaultVisibleColumns: Record<string, boolean> = {
 };
 
 export const CONFLUENCE_VISIBLE_COLUMNS: Record<string, boolean> = {
+    alpha_score: true,
+    time_symmetry: true,
     band: false,
     candle: true,
     ema_ext: true,
@@ -237,6 +257,8 @@ export const CONFLUENCE_VISIBLE_COLUMNS: Record<string, boolean> = {
 
 export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
     symbol: 144,
+    alpha_score: 110,
+    time_symmetry: 145,
     band: 90,
     candle: 210,
     ema_ext: 120,
@@ -257,6 +279,8 @@ export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
 
 export const MIN_COLUMN_WIDTHS: Record<string, number> = {
     symbol: 110,
+    alpha_score: 85,
+    time_symmetry: 105,
     band: 65,
     candle: 130,
     ema_ext: 80,
@@ -389,6 +413,16 @@ export function Recurrence52WScanner({
     const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
     const [saveListName, setSaveListName] = useState<string>("");
+
+    // Guide Drawer & Position Sizing Modal State
+    const [isGuideOpen, setIsGuideOpen] = useState<boolean>(false);
+    const [activeGuideConcept, setActiveGuideConcept] = useState<string | null>(null);
+    const [sizingItem, setSizingItem] = useState<Stock52WItem | null>(null);
+    const [sizingCapital, setSizingCapital] = useLocalStorage<number>("r52w_sizing_capital", 1000000);
+    const [sizingRiskPct, setSizingRiskPct] = useLocalStorage<number>("r52w_sizing_risk_pct", 1.0);
+    const [customStopPrice, setCustomStopPrice] = useState<number | null>(null);
+    const [sizingCopyFeedback, setSizingCopyFeedback] = useState<boolean>(false);
+
     const [columnFilters, setColumnFilters] = useState<ColumnFilters>(defaultColumnFilters);
     const [activeFilterPopover, setActiveFilterPopover] = useState<string | null>(null);
     const [themeFilterSearch, setThemeFilterSearch] = useState<string>("");
@@ -814,6 +848,18 @@ export function Recurrence52WScanner({
 
     const matchesSinglePreset = useCallback(
         (preset: string, item: Stock52WItem, countInWindow: number): boolean => {
+            if (preset === "alpha_tier1") {
+                return Boolean(item.alpha_score != null && item.alpha_score >= 70);
+            }
+            if (preset === "time_symmetry") {
+                return item.time_symmetry_status === "symmetrical";
+            }
+            if (preset === "v_shape_trap") {
+                return item.time_symmetry_status === "v_shape_trap";
+            }
+            if (preset === "pocket_pivot") {
+                return Boolean(item.is_pocket_pivot);
+            }
             if (preset === "fresh_base") {
                 if (item.recency_days !== 0 || item.streak !== 1) return false;
                 const vsOk = item.vol_surge != null && item.vol_surge >= 1.5;
@@ -1140,7 +1186,16 @@ export function Recurrence52WScanner({
             let valA = 0;
             let valB = 0;
 
-            if (sortField === "frequency") {
+            if (sortField === "alpha_score") {
+                valA = a.alpha_score ?? -1;
+                valB = b.alpha_score ?? -1;
+            } else if (sortField === "time_symmetry") {
+                valA = a.base_symmetry_ratio ?? -1;
+                valB = b.base_symmetry_ratio ?? -1;
+            } else if (sortField === "closing_range") {
+                valA = a.closing_range ?? -1;
+                valB = b.closing_range ?? -1;
+            } else if (sortField === "frequency") {
                 valA =
                     lookback === 5
                         ? a.count_5d
@@ -1373,6 +1428,22 @@ export function Recurrence52WScanner({
             return (i.count_60d ?? 0) > 0;
         });
     }, [rawItems, excludeCircuitLocked, minTurnover, minPrice, seriesFilter, circuitFilter]);
+
+    const alphaTier1Count = useMemo(() => {
+        return candidatePool.filter((i) => i.alpha_score != null && i.alpha_score >= 70).length;
+    }, [candidatePool]);
+
+    const timeSymmetryCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "symmetrical").length;
+    }, [candidatePool]);
+
+    const vShapeTrapCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "v_shape_trap").length;
+    }, [candidatePool]);
+
+    const pocketPivotCount = useMemo(() => {
+        return candidatePool.filter((i) => Boolean(i.is_pocket_pivot)).length;
+    }, [candidatePool]);
 
     const freshBaseCount = useMemo(() => {
         return candidatePool.filter((i) => {
@@ -1796,6 +1867,68 @@ export function Recurrence52WScanner({
 
                     {direction === "high" ? (
                         <>
+                            <div className="h-4 w-px bg-gray-800 hidden sm:block" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">Alpha & Symmetry</span>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("alpha_tier1")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("alpha_tier1")
+                                        ? "bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-sm shadow-amber-500/20"
+                                        : "text-amber-400/90 bg-amber-950/20 hover:bg-amber-950/40 border border-amber-800/40"
+                                }`}
+                                title="Quant Alpha Score >= 70: Elite composite institutional quality"
+                            >
+                                <span>👑 Alpha Tier-1</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">
+                                    {alphaTier1Count}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("time_symmetry")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("time_symmetry")
+                                        ? "bg-teal-500/25 text-teal-300 border border-teal-500/50 shadow-sm shadow-teal-500/20"
+                                        : "text-teal-400/90 bg-teal-950/20 hover:bg-teal-950/40 border border-teal-800/40"
+                                }`}
+                                title="Symmetrical Base: Ratio between 0.65x and 1.35x showing orderly supply absorption"
+                            >
+                                <span>⏳ Symmetrical Base</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-teal-500/20 text-teal-300 font-mono">
+                                    {timeSymmetryCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("pocket_pivot")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("pocket_pivot")
+                                        ? "bg-violet-500/25 text-violet-300 border border-violet-500/50 shadow-sm shadow-violet-500/20"
+                                        : "text-violet-400/90 bg-violet-950/20 hover:bg-violet-950/40 border border-violet-800/40"
+                                }`}
+                                title="Pocket Pivot: Volume > highest down-volume session of prior 10 days while hugging 10/20 EMA"
+                            >
+                                <span>⚡ Pocket Pivot</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-violet-500/20 text-violet-300 font-mono">
+                                    {pocketPivotCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("v_shape_trap")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("v_shape_trap")
+                                        ? "bg-rose-500/25 text-rose-300 border border-rose-500/50 shadow-sm"
+                                        : "text-rose-400/90 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40"
+                                }`}
+                                title="V-Shape Asymmetry Trap: Ratio < 0.40x. Fast un-digested rebound with trapped overhead supply"
+                            >
+                                <span>⚠️ V-Trap</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-rose-500/20 text-rose-300 font-mono">
+                                    {vShapeTrapCount}
+                                </span>
+                            </button>
                             <div className="h-4 w-px bg-gray-800 hidden sm:block" />
                             <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Breakouts</span>
                             <button
@@ -2408,6 +2541,8 @@ export function Recurrence52WScanner({
                     <colgroup>
                         <col style={{ width: "40px", minWidth: "40px" }} />
                         <col style={{ width: `${colWidths.symbol}px`, minWidth: `${colWidths.symbol}px` }} />
+                        {visibleColumns.alpha_score !== false && <col style={{ width: `${colWidths.alpha_score}px`, minWidth: `${colWidths.alpha_score}px` }} />}
+                        {visibleColumns.time_symmetry !== false && <col style={{ width: `${colWidths.time_symmetry}px`, minWidth: `${colWidths.time_symmetry}px` }} />}
                         {visibleColumns.band !== false && <col style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} />}
                         {visibleColumns.candle !== false && <col style={{ width: `${colWidths.candle}px`, minWidth: `${colWidths.candle}px` }} />}
                         {visibleColumns.ema_ext !== false && <col style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} />}
@@ -2505,6 +2640,44 @@ export function Recurrence52WScanner({
                                         title="Drag to resize column"
                                     />
                                 </th>
+                                {/* Alpha Score */}
+                                {visibleColumns.alpha_score !== false && (
+                                    <th style={{ width: `${colWidths.alpha_score}px`, minWidth: `${colWidths.alpha_score}px` }} className="p-2.5 relative text-center bg-[#0d0d14]">
+                                        <div
+                                            className="flex items-center justify-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("alpha_score")}
+                                            title="Sort by Quant Alpha Composite Score (0-100)"
+                                        >
+                                            <span className="text-amber-400 font-bold">Alpha</span>
+                                            {getSortIcon("alpha_score")}
+                                        </div>
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("alpha_score", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
+                                    </th>
+                                )}
+                                {/* Time Symmetry */}
+                                {visibleColumns.time_symmetry !== false && (
+                                    <th style={{ width: `${colWidths.time_symmetry}px`, minWidth: `${colWidths.time_symmetry}px` }} className="p-2.5 relative text-center bg-[#0d0d14]">
+                                        <div
+                                            className="flex items-center justify-center gap-1 cursor-pointer hover:text-white transition-colors"
+                                            onClick={() => handleSort("time_symmetry")}
+                                            title="Sort by Base Time Symmetry Ratio (T_right / T_left)"
+                                        >
+                                            <span className="text-teal-400 font-bold">Symmetry</span>
+                                            {getSortIcon("time_symmetry")}
+                                        </div>
+                                        <div
+                                            onMouseDown={(e) => handleResizeMouseDown("time_symmetry", e)}
+                                            onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
+                                            className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/70 active:bg-blue-600 transition-colors z-20"
+                                            title="Drag to resize column"
+                                        />
+                                    </th>
+                                )}
                                 {/* Band */}
                                 {visibleColumns.band !== false && (
                                     <th style={{ width: `${colWidths.band}px`, minWidth: `${colWidths.band}px` }} className={`p-2.5 relative text-center bg-[#0d0d14] ${activeFilterPopover === "band" ? "z-50" : ""}`}>
@@ -4262,8 +4435,98 @@ export function Recurrence52WScanner({
                                                             Fresh
                                                         </span>
                                                     )}
+                                                    {item.is_pocket_pivot && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveGuideConcept("pocket_pivot");
+                                                                setIsGuideOpen(true);
+                                                            }}
+                                                            className="text-[9px] font-sans px-1.5 py-0.2 rounded bg-violet-500/25 text-violet-300 border border-violet-500/40 hover:scale-105 transition-all font-bold"
+                                                            title="Pocket Pivot: Institutional accumulation signature at 10/20 EMA. Click for guide."
+                                                        >
+                                                            ⚡ PP
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSizingItem(item);
+                                                        }}
+                                                        className="text-gray-500 hover:text-amber-400 p-0.5 rounded hover:bg-gray-800 transition-colors"
+                                                        title="Position Sizing & Risk Calculator"
+                                                    >
+                                                        <Calculator className="w-3 h-3" />
+                                                    </button>
                                                 </div>
                                             </td>
+
+                                            {/* Alpha Score */}
+                                            {visibleColumns.alpha_score !== false && (
+                                                <td style={{ width: `${colWidths.alpha_score}px`, minWidth: `${colWidths.alpha_score}px` }} className="p-3 text-center whitespace-nowrap">
+                                                    {item.alpha_score != null ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setActiveGuideConcept("alpha_score");
+                                                                setIsGuideOpen(true);
+                                                            }}
+                                                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border transition-all hover:scale-105 ${
+                                                                item.alpha_score >= 70
+                                                                    ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-sm shadow-amber-500/20"
+                                                                    : item.alpha_score >= 55
+                                                                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                                                                    : item.alpha_score >= 40
+                                                                    ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
+                                                                    : "bg-slate-800/60 text-slate-400 border-slate-700/50"
+                                                            }`}
+                                                            title={`Quant Alpha Score: ${item.alpha_score}/100 (${item.alpha_tier?.toUpperCase() || 'TIER'}). Click for Concept Guide.`}
+                                                        >
+                                                            <span>{item.alpha_score >= 70 ? "👑" : item.alpha_score >= 55 ? "🟢" : "🟡"}</span>
+                                                            <span className="font-mono">{item.alpha_score}</span>
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-600">—</span>
+                                                    )}
+                                                </td>
+                                            )}
+
+                                            {/* Time Symmetry */}
+                                            {visibleColumns.time_symmetry !== false && (
+                                                <td style={{ width: `${colWidths.time_symmetry}px`, minWidth: `${colWidths.time_symmetry}px` }} className="p-3 text-center whitespace-nowrap font-sans">
+                                                    {item.base_symmetry_ratio != null ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setActiveGuideConcept("time_symmetry");
+                                                                setIsGuideOpen(true);
+                                                            }}
+                                                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold border transition-all hover:scale-105 ${
+                                                                item.time_symmetry_status === "symmetrical"
+                                                                    ? "bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/20"
+                                                                    : item.time_symmetry_status === "v_shape_trap"
+                                                                    ? "bg-rose-500/25 text-rose-300 border-rose-500/40 animate-pulse font-bold"
+                                                                    : item.time_symmetry_status === "protracted"
+                                                                    ? "bg-slate-800/80 text-slate-300 border-slate-700 font-mono"
+                                                                    : "bg-gray-800/60 text-gray-400 border-gray-700 font-mono"
+                                                            }`}
+                                                            title={`Time Symmetry: Left Rim to Trough=${item.t_left_sessions} sessions, Trough to Breakout Pivot=${item.t_right_sessions} sessions, Base Depth=-${item.base_depth_pct}%. Click for Concept Guide.`}
+                                                        >
+                                                            <span>
+                                                                {item.time_symmetry_status === "symmetrical" && "🟢"}
+                                                                {item.time_symmetry_status === "v_shape_trap" && "⚠️ V-Trap"}
+                                                                {item.time_symmetry_status === "protracted" && "⏱️"}
+                                                                {item.time_symmetry_status === "neutral" && "⚖️"}
+                                                            </span>
+                                                            <span className="font-mono">{item.base_symmetry_ratio.toFixed(2)}x</span>
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-600 text-[10px]">—</span>
+                                                    )}
+                                                </td>
+                                            )}
 
                                             {/* Band */}
                                             {visibleColumns.band !== false && (
@@ -4880,6 +5143,235 @@ export function Recurrence52WScanner({
                     </div>
                 </div>
             )}
+
+            {/* Position Sizing & Technical Risk Calculator Modal */}
+            {sizingItem && (() => {
+                const entry = sizingItem.close || 100;
+                const defaultStop = sizingItem.ema_20 && sizingItem.ema_20 < entry 
+                    ? sizingItem.ema_20 
+                    : (sizingItem.today_low && sizingItem.today_low < entry 
+                        ? sizingItem.today_low 
+                        : Math.round(entry * 0.96 * 100) / 100);
+                const effectiveStop = customStopPrice ?? defaultStop;
+                const riskCapital = (sizingCapital || 1000000) * ((sizingRiskPct || 1.0) / 100);
+                const riskPerShare = Math.max(0.1, entry - effectiveStop);
+                const stopDistPct = entry > 0 ? ((entry - effectiveStop) / entry) * 100 : 0;
+                const shares = effectiveStop < entry ? Math.floor(riskCapital / riskPerShare) : 0;
+                const positionVal = shares * entry;
+                const exposurePct = (sizingCapital || 1000000) > 0 ? (positionVal / (sizingCapital || 1000000)) * 100 : 0;
+                const target1 = entry + 2 * riskPerShare;
+                const target2 = entry + 3 * riskPerShare;
+
+                const handleCopyPlan = () => {
+                    const text = `🎯 TRADE PLAN: ${sizingItem.clean_symbol}
+Entry Price: ₹${entry.toFixed(2)}
+Stop Loss: ₹${effectiveStop.toFixed(2)} (-${stopDistPct.toFixed(1)}%)
+Quantity: ${shares.toLocaleString("en-IN")} shares
+Position Value: ₹${Math.round(positionVal).toLocaleString("en-IN")} (${exposurePct.toFixed(1)}% of capital)
+Capital at Risk: ₹${Math.round(riskCapital).toLocaleString("en-IN")} (${sizingRiskPct}%)
+Target 1 (2R): ₹${target1.toFixed(2)} (+${(stopDistPct * 2).toFixed(1)}%)
+Target 2 (3R): ₹${target2.toFixed(2)} (+${(stopDistPct * 3).toFixed(1)}%)`;
+                    copyToClipboard(text).then((ok) => {
+                        if (ok) {
+                            setSizingCopyFeedback(true);
+                            setTimeout(() => setSizingCopyFeedback(false), 2000);
+                        }
+                    });
+                };
+
+                return (
+                    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+                        <div className="bg-[#12121c] border border-gray-700/80 rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-5 text-gray-200">
+                            <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-2 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400">
+                                        <Calculator className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-bold text-white flex items-center gap-2 font-mono">
+                                            {sizingItem.clean_symbol}
+                                            <span className="text-xs px-2 py-0.5 rounded font-sans font-semibold bg-gray-800 text-gray-300 border border-gray-700">
+                                                ₹{entry.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                                            </span>
+                                            {sizingItem.alpha_score != null && (
+                                                <span className="text-xs px-2 py-0.5 rounded font-sans font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                                    👑 {sizingItem.alpha_score} Alpha
+                                                </span>
+                                            )}
+                                        </h3>
+                                        <p className="text-[11px] text-gray-400 font-sans">
+                                            Institutional Position Sizing & Structural Risk Calculator
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setSizingItem(null);
+                                        setCustomStopPrice(null);
+                                    }}
+                                    className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            {/* Inputs: Capital & Risk % */}
+                            <div className="grid grid-cols-2 gap-3 text-xs">
+                                <div>
+                                    <label className="block text-gray-400 mb-1 font-medium font-sans">Account Capital (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={sizingCapital}
+                                        onChange={(e) => setSizingCapital(Math.max(1000, Number(e.target.value) || 0))}
+                                        className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 font-mono focus:outline-none focus:border-amber-500"
+                                        step="50000"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-gray-400 mb-1 font-medium font-sans">Max Risk per Trade (%)</label>
+                                    <input
+                                        type="number"
+                                        value={sizingRiskPct}
+                                        onChange={(e) => setSizingRiskPct(Math.max(0.1, Number(e.target.value) || 0.5))}
+                                        className="w-full bg-[#0d0d14] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 font-mono focus:outline-none focus:border-amber-500"
+                                        step="0.25"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Stop Loss Selector */}
+                            <div className="space-y-2">
+                                <label className="block text-xs text-gray-400 font-medium font-sans">Technical Stop Loss Anchor</label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {sizingItem.ema_20 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setCustomStopPrice(sizingItem.ema_20!)}
+                                            className={`p-2 rounded-lg text-left text-xs border transition-all ${
+                                                effectiveStop === sizingItem.ema_20
+                                                    ? "bg-emerald-500/20 border-emerald-500 text-emerald-300 font-semibold"
+                                                    : "bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700"
+                                            }`}
+                                        >
+                                            <div className="text-[10px] uppercase font-sans text-gray-400">20 EMA</div>
+                                            <div className="font-mono text-xs">₹{sizingItem.ema_20.toFixed(2)}</div>
+                                        </button>
+                                    )}
+                                    {sizingItem.cpr_bot && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setCustomStopPrice(sizingItem.cpr_bot!)}
+                                            className={`p-2 rounded-lg text-left text-xs border transition-all ${
+                                                effectiveStop === sizingItem.cpr_bot
+                                                    ? "bg-cyan-500/20 border-cyan-500 text-cyan-300 font-semibold"
+                                                    : "bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700"
+                                            }`}
+                                        >
+                                            <div className="text-[10px] uppercase font-sans text-gray-400">CPR BC</div>
+                                            <div className="font-mono text-xs">₹{sizingItem.cpr_bot.toFixed(2)}</div>
+                                        </button>
+                                    )}
+                                    {sizingItem.today_low && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setCustomStopPrice(sizingItem.today_low!)}
+                                            className={`p-2 rounded-lg text-left text-xs border transition-all ${
+                                                effectiveStop === sizingItem.today_low
+                                                    ? "bg-amber-500/20 border-amber-500 text-amber-300 font-semibold"
+                                                    : "bg-gray-900 border-gray-800 text-gray-400 hover:border-gray-700"
+                                            }`}
+                                        >
+                                            <div className="text-[10px] uppercase font-sans text-gray-400">Day Low</div>
+                                            <div className="font-mono text-xs">₹{sizingItem.today_low.toFixed(2)}</div>
+                                        </button>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-2 pt-1">
+                                    <span className="text-xs text-gray-400 font-sans">Custom Stop Price:</span>
+                                    <input
+                                        type="number"
+                                        value={effectiveStop}
+                                        onChange={(e) => setCustomStopPrice(Number(e.target.value) || 0)}
+                                        className="w-32 bg-[#0d0d14] border border-gray-700 rounded px-2.5 py-1 text-xs text-rose-300 font-mono focus:outline-none focus:border-rose-500"
+                                        step="0.5"
+                                    />
+                                    <span className="text-xs text-rose-400 font-mono">(-{stopDistPct.toFixed(1)}%)</span>
+                                </div>
+                            </div>
+
+                            {/* Output Cards */}
+                            <div className="p-4 rounded-xl bg-[#09090f] border border-gray-800 space-y-3 font-mono text-xs">
+                                <div className="grid grid-cols-2 gap-3 pb-3 border-b border-gray-800/80">
+                                    <div>
+                                        <span className="text-[10px] font-sans text-gray-400 uppercase tracking-wider block">Quantity to Buy</span>
+                                        <span className="text-xl font-bold text-emerald-400">{shares.toLocaleString("en-IN")}</span>
+                                        <span className="text-[10px] text-gray-500 font-sans ml-1">shares</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-sans text-gray-400 uppercase tracking-wider block">Total Position Size</span>
+                                        <span className="text-xl font-bold text-white">₹{Math.round(positionVal).toLocaleString("en-IN")}</span>
+                                        <span className="text-[10px] text-cyan-400 font-sans ml-1">({exposurePct.toFixed(1)}% portfolio)</span>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 pt-1 text-[11px]">
+                                    <div>
+                                        <span className="text-[10px] font-sans text-gray-400 block">Risk Capital (1R)</span>
+                                        <span className="text-rose-400 font-semibold">₹{Math.round(riskCapital).toLocaleString("en-IN")}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-sans text-gray-400 block">Target 1 (2R)</span>
+                                        <span className="text-emerald-400 font-semibold">₹{target1.toFixed(2)} (+{(stopDistPct * 2).toFixed(1)}%)</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-[10px] font-sans text-gray-400 block">Target 2 (3R)</span>
+                                        <span className="text-cyan-400 font-semibold">₹{target2.toFixed(2)} (+{(stopDistPct * 3).toFixed(1)}%)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center justify-between pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => copyToClipboard(`NSE:${sizingItem.clean_symbol}`)}
+                                    className="px-3 py-1.5 rounded-lg text-xs font-mono text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-800 transition-colors"
+                                    title="Copy TradingView ticker"
+                                >
+                                    Copy NSE:{sizingItem.clean_symbol}
+                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSizingItem(null);
+                                            setCustomStopPrice(null);
+                                        }}
+                                        className="px-3 py-1.5 rounded-lg text-xs text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+                                    >
+                                        Close
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleCopyPlan}
+                                        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-black shadow-md shadow-amber-500/20 transition-all font-sans"
+                                    >
+                                        {sizingCopyFeedback ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                                        {sizingCopyFeedback ? "Copied Plan!" : "Copy Trade Plan"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
+
+            {/* Concept Guide Drawer */}
+            <WaveConceptGuideDrawer
+                isOpen={isGuideOpen}
+                onClose={() => setIsGuideOpen(false)}
+                initialConceptId={activeGuideConcept}
+            />
         </div>
     );
 }

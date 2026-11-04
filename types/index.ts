@@ -188,13 +188,18 @@ export type UnifiedWaveCode =
     | "prime_dip"
     | "extended_wait"
     | "avoid_bear_trap"
-    | "neutral";
+    | "neutral"
+    | "time_symmetry"
+    | "alpha_score"
+    | "pocket_pivot";
 
 export type UnifiedWaveCategory =
     | "waves_dips"
     | "trend_continuation"
     | "traps_caution"
-    | "neutral";
+    | "neutral"
+    | "microstructure"
+    | "alpha_ranking";
 
 export interface UnifiedWaveConcept {
     code: UnifiedWaveCode;

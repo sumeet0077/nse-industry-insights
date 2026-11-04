@@ -59,6 +59,9 @@ export type PresetFilter =
     | "all" 
     | "alpha_tier1"
     | "time_symmetry"
+    | "protracted"
+    | "forming"
+    | "runaway_momentum"
     | "v_shape_trap"
     | "pocket_pivot"
     | "fresh_base"
@@ -83,6 +86,9 @@ export type PresetFilter =
 export const SETUP_PRESET_KEYS = new Set<string>([
     "alpha_tier1",
     "time_symmetry",
+    "protracted",
+    "forming",
+    "runaway_momentum",
     "v_shape_trap",
     "pocket_pivot",
     "fresh_base",
@@ -854,11 +860,17 @@ export function Recurrence52WScanner({
             if (preset === "time_symmetry") {
                 return item.time_symmetry_status === "symmetrical";
             }
-            if (preset === "v_shape_trap") {
-                return item.time_symmetry_status === "v_shape_trap";
+            if (preset === "protracted") {
+                return item.time_symmetry_status === "protracted";
+            }
+            if (preset === "forming") {
+                return item.time_symmetry_status === "forming";
             }
             if (preset === "runaway_momentum") {
                 return item.time_symmetry_status === "runaway_trend";
+            }
+            if (preset === "v_shape_trap") {
+                return item.time_symmetry_status === "v_shape_trap";
             }
             if (preset === "pocket_pivot") {
                 return Boolean(item.is_pocket_pivot);
@@ -1440,12 +1452,20 @@ export function Recurrence52WScanner({
         return candidatePool.filter((i) => i.time_symmetry_status === "symmetrical").length;
     }, [candidatePool]);
 
-    const vShapeTrapCount = useMemo(() => {
-        return candidatePool.filter((i) => i.time_symmetry_status === "v_shape_trap").length;
+    const protractedCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "protracted").length;
+    }, [candidatePool]);
+
+    const formingCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "forming").length;
     }, [candidatePool]);
 
     const runawayMomentumCount = useMemo(() => {
         return candidatePool.filter((i) => i.time_symmetry_status === "runaway_trend").length;
+    }, [candidatePool]);
+
+    const vShapeTrapCount = useMemo(() => {
+        return candidatePool.filter((i) => i.time_symmetry_status === "v_shape_trap").length;
     }, [candidatePool]);
 
     const pocketPivotCount = useMemo(() => {
@@ -1923,17 +1943,32 @@ export function Recurrence52WScanner({
                             </button>
                             <button
                                 type="button"
-                                onClick={() => togglePreset("v_shape_trap")}
+                                onClick={() => togglePreset("protracted")}
                                 className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                                    selectedPresets.has("v_shape_trap")
-                                        ? "bg-rose-500/25 text-rose-300 border border-rose-500/50 shadow-sm"
-                                        : "text-rose-400/90 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40"
+                                    selectedPresets.has("protracted")
+                                        ? "bg-indigo-500/25 text-indigo-300 border border-indigo-500/50 shadow-sm shadow-indigo-500/20"
+                                        : "text-indigo-400/90 bg-indigo-950/20 hover:bg-indigo-950/40 border border-indigo-800/40"
                                 }`}
-                                title="V-Shape Asymmetry Trap: Ratio < 0.40x. Fast un-digested rebound with trapped overhead supply"
+                                title="Protracted Base: Ratio > 1.80x. Digestion took significantly longer on right side, showing extended consolidation"
                             >
-                                <span>⚠️ V-Trap</span>
-                                <span className="text-[10px] px-1 py-0.2 rounded bg-rose-500/20 text-rose-300 font-mono">
-                                    {vShapeTrapCount}
+                                <span>⏱️ Protracted Base</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-500/20 text-indigo-300 font-mono">
+                                    {protractedCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("forming")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("forming")
+                                        ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20"
+                                        : "text-cyan-400/90 bg-cyan-950/20 hover:bg-cyan-950/40 border border-cyan-800/40"
+                                }`}
+                                title="Forming Base: Base is still consolidating below the Left Rim resistance (pre-breakout setup)"
+                            >
+                                <span>📐 Forming Base</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                                    {formingCount}
                                 </span>
                             </button>
                             <button
@@ -1949,6 +1984,21 @@ export function Recurrence52WScanner({
                                 <span>🚀 Runaway Momentum</span>
                                 <span className="text-[10px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
                                     {runawayMomentumCount}
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => togglePreset("v_shape_trap")}
+                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                                    selectedPresets.has("v_shape_trap")
+                                        ? "bg-rose-500/25 text-rose-300 border border-rose-500/50 shadow-sm"
+                                        : "text-rose-400/90 bg-rose-950/20 hover:bg-rose-950/40 border border-rose-800/40"
+                                }`}
+                                title="V-Shape Asymmetry Trap: Ratio < 0.40x. Fast un-digested rebound with trapped overhead supply"
+                            >
+                                <span>⚠️ V-Trap</span>
+                                <span className="text-[10px] px-1 py-0.2 rounded bg-rose-500/20 text-rose-300 font-mono">
+                                    {vShapeTrapCount}
                                 </span>
                             </button>
                             <div className="h-4 w-px bg-gray-800 hidden sm:block" />

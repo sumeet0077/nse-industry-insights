@@ -614,6 +614,25 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
                 errors.push(`Invariant 8 Failure: Invalid ema_20 (${item.ema_20}) on ${item.symbol}`);
             }
         }
+        if (item.ema_stretch) {
+            const s = item.ema_stretch;
+            if (!s.daily || !s.weekly || !s.monthly) {
+                errors.push(`Invariant 8 Failure: Missing timeframe grids in ema_stretch on ${item.symbol}`);
+            } else {
+                for (const tf of ["daily", "weekly", "monthly"] as const) {
+                    const grid = s[tf];
+                    for (const p of ["ema_10", "ema_20", "ema_50"] as const) {
+                        const cell = grid?.[p];
+                        if (!cell || typeof cell.stretch_atr !== "number" || isNaN(cell.stretch_atr)) {
+                            errors.push(`Invariant 8 Failure: Invalid cell ${tf}.${p} in ema_stretch on ${item.symbol}`);
+                        }
+                        if (cell?.percentile !== null && cell?.percentile !== undefined && (cell.percentile < 1 || cell.percentile > 100)) {
+                            errors.push(`Invariant 8 Failure: Percentile out of bounds (${cell.percentile}) in ${tf}.${p} on ${item.symbol}`);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     if (data.metadata?.sector_waves) {
@@ -622,7 +641,7 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, price band enrichment, and microstructure confluence.");
+    console.log("  ✓ All Section 8 Invariants passed: Mutual exclusion, zero ETF leakage, split sanity, frequency monotonicity, price band enrichment, microstructure confluence, and EMA stretch telemetry.");
 });
 
 // 9. Corporate Action Price Adjustment & RS Rating Integrity
@@ -909,6 +928,46 @@ validate("Table Column Filter Configurations", (errors) => {
         errors.push("Suggested Stop must use agNumberColumnFilter");
     }
     console.log("  ✓ Table column filter audit passed (Unified Wave Signal, Top Leaders, Edge & Odds, and Suggested Stop column rules verified).");
+});
+
+// 12. Validate EMA Stretch Universe (data/market_status/ema_stretch_universe.json)
+validate("EMA Stretch Universe (data/market_status/ema_stretch_universe.json)", (errors, warnings) => {
+    const universePath = path.join(DATA_DIR, "market_status", "ema_stretch_universe.json");
+    const publicPath = path.join(process.cwd(), "public", "data", "market_status", "ema_stretch_universe.json");
+
+    if (!fs.existsSync(universePath)) {
+        errors.push("Missing file: data/market_status/ema_stretch_universe.json");
+        return;
+    }
+    if (!fs.existsSync(publicPath)) {
+        errors.push("Missing symlinked file: public/data/market_status/ema_stretch_universe.json");
+    }
+
+    const raw = fs.readFileSync(universePath, "utf-8");
+    const data = JSON.parse(raw);
+
+    if (!data.metadata || !Array.isArray(data.items)) {
+        errors.push("Invalid schema: ema_stretch_universe.json missing metadata or items array");
+        return;
+    }
+
+    if (data.items.length < 500) {
+        errors.push(`EMA Stretch Universe has suspiciously few stocks (${data.items.length} < 500)`);
+    }
+
+    // Validate sample of items
+    for (const item of data.items.slice(0, 100)) {
+        if (!item.symbol || !item.clean_symbol || item.close == null) {
+            errors.push(`Invalid stock item in EMA Stretch Universe: ${JSON.stringify(item)}`);
+            break;
+        }
+        if (!item.ema_stretch || !item.ema_stretch.daily || !item.ema_stretch.weekly || !item.ema_stretch.monthly) {
+            errors.push(`Stock ${item.clean_symbol} missing 9-cell stretch matrix in EMA Stretch Universe`);
+            break;
+        }
+    }
+
+    console.log(`  ✓ EMA Stretch Universe loaded: ${data.items.length} stocks for session ${data.metadata.latest_session}`);
 });
 
 // Print Summary

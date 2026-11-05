@@ -815,6 +815,419 @@ def export_stock_search_index(output_dir: Path):
     print(f"  OK   stock_search_index.json ({len(sorted_index)} tickers)")
 
 
+def compute_and_export_ema_stretch_universe(
+    output_dir: Path,
+    chosen_pq: Path,
+    high_items: list,
+    low_items: list,
+    latest_date: str,
+    cpr_lookup: dict,
+    sym_to_themes: dict,
+    terminal_map: dict,
+    sec_bands: dict,
+    is_etf_or_re,
+):
+    """
+    Computes 9-Cell Multi-Timeframe EMA Stretch Matrix (Daily, Weekly, Monthly x EMA 10, 20, 50)
+    normalized by Wilder's ATR-14 with directional percentiles (+Pxx / -Pxx),
+    kinetic vectors (velocity, exhaustion hook), landing zones, and SBS/tail metrics.
+    Enriches high_items and low_items, and exports data/market_status/ema_stretch_universe.json.
+    """
+    if not chosen_pq:
+        print("  Notice: Master parquet not found, skipping EMA Stretch Matrix calculation.")
+        return
+
+    print("  Calculating Multi-Timeframe EMA Stretch Matrix & Kinetic Universe...")
+    try:
+        import duckdb
+        import polars as pl
+        from datetime import datetime
+
+        con = duckdb.connect()
+        pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
+
+        has_sym_map = False
+        if terminal_map:
+            try:
+                con.execute("CREATE OR REPLACE TEMP TABLE stretch_sym_map (old_symbol VARCHAR, new_symbol VARCHAR)")
+                con.executemany("INSERT INTO stretch_sym_map VALUES (?, ?)", list(terminal_map.items()))
+                has_sym_map = True
+            except Exception:
+                pass
+
+        sym_expr = "COALESCE(m.new_symbol, TRIM(b.symbol))" if has_sym_map else "TRIM(b.symbol)"
+        sym_join = "LEFT JOIN stretch_sym_map m ON TRIM(b.symbol) = m.old_symbol" if has_sym_map else ""
+
+        ca_join = ""
+        ca_factor_expr = "1.0"
+        try:
+            from corporate_actions_util import register_corporate_actions_duckdb
+            register_corporate_actions_duckdb(con)
+            ca_join = """
+            LEFT JOIN corporate_action_intervals cai
+              ON TRIM(b.symbol) = cai.symbol
+             AND CAST(b.trade_date AS DATE) >= cai.start_date
+             AND CAST(b.trade_date AS DATE) <= cai.end_date
+            """
+            ca_factor_expr = "COALESCE(cai.adj_factor, 1.0)"
+        except Exception:
+            pass
+
+        # 1. Daily Query (450 days warmup for 252 rolling bars)
+        q_d = f"""
+        SELECT 
+            {sym_expr} as symbol,
+            STRFTIME(CAST(b.trade_date AS DATE), '%Y-%m-%d') as trade_date,
+            b.open * {ca_factor_expr} as open,
+            b.high * {ca_factor_expr} as high,
+            b.low * {ca_factor_expr} as low,
+            b.close * {ca_factor_expr} as close,
+            b.volume,
+            b.series
+        FROM read_parquet('{pq_pattern}', union_by_name=true) b
+        {sym_join}
+        {ca_join}
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+          AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 450 DAY)
+        ORDER BY symbol, trade_date ASC
+        """
+        d_df = con.execute(q_d).pl()
+
+        # 2. Weekly Query (1200 days warmup for 104 rolling weekly bars)
+        q_w = f"""
+        SELECT 
+            {sym_expr} as symbol,
+            DATE_TRUNC('week', CAST(b.trade_date AS DATE)) as period_start,
+            ARG_MIN(b.open * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as open,
+            MAX(b.high * {ca_factor_expr}) as high,
+            MIN(b.low * {ca_factor_expr}) as low,
+            ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as close
+        FROM read_parquet('{pq_pattern}', union_by_name=true) b
+        {sym_join}
+        {ca_join}
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+          AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 1200 DAY)
+        GROUP BY {sym_expr}, DATE_TRUNC('week', CAST(b.trade_date AS DATE))
+        ORDER BY symbol, period_start ASC
+        """
+        w_df = con.execute(q_w).pl()
+
+        # 3. Monthly Query (1500 days warmup for 36 rolling monthly bars)
+        q_m = f"""
+        SELECT 
+            {sym_expr} as symbol,
+            DATE_TRUNC('month', CAST(b.trade_date AS DATE)) as period_start,
+            ARG_MIN(b.open * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as open,
+            MAX(b.high * {ca_factor_expr}) as high,
+            MIN(b.low * {ca_factor_expr}) as low,
+            ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as close
+        FROM read_parquet('{pq_pattern}', union_by_name=true) b
+        {sym_join}
+        {ca_join}
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+          AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 1500 DAY)
+        GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
+        ORDER BY symbol, period_start ASC
+        """
+        m_df = con.execute(q_m).pl()
+
+        con.close()
+
+        def compute_timeframe_metrics(df, is_daily=False):
+            date_col = "trade_date" if "trade_date" in df.columns else "period_start"
+            df = df.unique(subset=["symbol", date_col], keep="last")
+            df = df.sort(["symbol", date_col])
+            df = df.with_columns(
+                pl.col("close").shift(1).over("symbol").alias("prev_close"),
+                pl.col("close").ewm_mean(span=10, adjust=False).over("symbol").alias("ema_10"),
+                pl.col("close").ewm_mean(span=20, adjust=False).over("symbol").alias("ema_20"),
+                pl.col("close").ewm_mean(span=50, adjust=False).over("symbol").alias("ema_50"),
+            )
+            df = df.with_columns(
+                pl.max_horizontal(
+                    pl.col("high") - pl.col("low"),
+                    (pl.col("high") - pl.col("prev_close")).abs(),
+                    (pl.col("low") - pl.col("prev_close")).abs()
+                ).alias("tr")
+            )
+            df = df.with_columns(
+                pl.col("tr").ewm_mean(alpha=1.0 / 14.0, adjust=False).over("symbol").alias("atr_14")
+            )
+            df = df.with_columns(
+                ((pl.col("close") - pl.col("ema_10")) / pl.col("atr_14")).alias("s_10"),
+                ((pl.col("close") - pl.col("ema_20")) / pl.col("atr_14")).alias("s_20"),
+                ((pl.col("close") - pl.col("ema_50")) / pl.col("atr_14")).alias("s_50"),
+            )
+            if is_daily:
+                df = df.with_columns(
+                    pl.col("close").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("bb_mid"),
+                    pl.col("close").rolling_std(window_size=20, min_samples=1).over("symbol").alias("bb_std"),
+                    pl.col("s_20").diff().over("symbol").alias("ds_20")
+                )
+                df = df.with_columns(
+                    (pl.col("bb_mid") + 2.0 * pl.col("bb_std")).alias("bb_upper"),
+                    (pl.col("bb_mid") - 2.0 * pl.col("bb_std")).alias("bb_lower"),
+                    (pl.col("ema_20") + 1.5 * pl.col("atr_14")).alias("kc_upper"),
+                    (pl.col("ema_20") - 1.5 * pl.col("atr_14")).alias("kc_lower"),
+                    pl.col("ds_20").ewm_mean(span=3, adjust=False).over("symbol").alias("velocity")
+                )
+                df = df.with_columns(
+                    ((pl.col("bb_upper") < pl.col("kc_upper")) & (pl.col("bb_lower") > pl.col("kc_lower"))).cast(pl.Int32).alias("is_squeeze_bar")
+                )
+            return df
+
+        d_df = compute_timeframe_metrics(d_df, is_daily=True)
+        w_df = compute_timeframe_metrics(w_df, is_daily=False)
+        m_df = compute_timeframe_metrics(m_df, is_daily=False)
+
+        def build_cell(curr_val, hist_vals, min_bars=20):
+            if curr_val is None or np.isnan(curr_val) or np.isinf(curr_val) or len(hist_vals) < min_bars:
+                val_abs = round(float(abs(curr_val)), 1) if (curr_val is not None and not np.isnan(curr_val) and not np.isinf(curr_val)) else 0.0
+                val_str = f"{int(val_abs)}" if val_abs.is_integer() else f"{val_abs:.1f}"
+                is_ab = bool(curr_val >= 0) if (curr_val is not None and not np.isnan(curr_val) and not np.isinf(curr_val)) else False
+                return {
+                    "stretch_atr": val_abs,
+                    "percentile": None,
+                    "percentile_str": "IPO",
+                    "is_above": is_ab,
+                    "formatted": f"{val_str} ATR{' *' if is_ab else ''}  IPO",
+                    "color_tier": "ipo"
+                }
+            is_above = bool(curr_val >= 0)
+            val_abs = round(float(abs(curr_val)), 1)
+            val_str = f"{int(val_abs)}" if val_abs.is_integer() else f"{val_abs:.1f}"
+
+            if is_above:
+                pos_hist = [v for v in hist_vals if v is not None and not np.isnan(v) and not np.isinf(v) and v >= 0]
+                if len(pos_hist) < 5:
+                    pct = 50
+                else:
+                    pct = int(np.round(np.mean([v <= curr_val for v in pos_hist]) * 100))
+                pct = max(1, min(100, pct))
+                p_str = f"+P{pct}"
+                formatted = f"{val_str} ATR *  {p_str}"
+                tier = "extreme_pos" if pct >= 95 else ("pos" if pct >= 50 else "neutral")
+            else:
+                neg_hist = [abs(v) for v in hist_vals if v is not None and not np.isnan(v) and not np.isinf(v) and v < 0]
+                if len(neg_hist) < 5:
+                    pct = 50
+                else:
+                    pct = int(np.round(np.mean([v <= val_abs for v in neg_hist]) * 100))
+                pct = max(1, min(100, pct))
+                p_str = f"-P{pct}"
+                formatted = f"{val_str} ATR  {p_str}"
+                tier = "extreme_neg" if pct >= 70 else "neg"
+
+            return {
+                "stretch_atr": val_abs,
+                "percentile": pct,
+                "percentile_str": p_str,
+                "is_above": is_above,
+                "formatted": formatted,
+                "color_tier": tier
+            }
+
+        # Partition by symbol
+        d_parts = d_df.partition_by("symbol", as_dict=True)
+        w_parts = w_df.partition_by("symbol", as_dict=True)
+        m_parts = m_df.partition_by("symbol", as_dict=True)
+
+        def extract_cells_for_tf(parts, lookback=252):
+            tf_data = {}
+            for (sym,), sub in parts.items():
+                if len(sub) < 1:
+                    continue
+                latest_row = sub[-1]
+                hist = sub[-lookback:]
+                cells = {}
+                for p in [10, 20, 50]:
+                    c_val = latest_row[f"s_{p}"][0]
+                    c_hist = hist[f"s_{p}"].to_list()
+                    cells[f"ema_{p}"] = build_cell(c_val, c_hist, min_bars=20)
+                tf_data[sym] = (cells, latest_row, sub)
+            return tf_data
+
+        daily_map = extract_cells_for_tf(d_parts, lookback=252)
+        weekly_map = extract_cells_for_tf(w_parts, lookback=104)
+        monthly_map = extract_cells_for_tf(m_parts, lookback=36)
+
+        dt_obj = datetime.strptime(latest_date, "%Y-%m-%d")
+        prior_yr = dt_obj.year if dt_obj.month > 1 else dt_obj.year - 1
+        prior_mo = dt_obj.month - 1 if dt_obj.month > 1 else 12
+
+        matrix_lookup = {}
+        universe_items = []
+
+        all_syms = set(daily_map.keys()) | set(weekly_map.keys())
+
+        for sym in sorted(all_syms):
+            clean = sym.replace(".NS", "").strip().upper()
+            d_entry = daily_map.get(sym)
+            w_entry = weekly_map.get(sym)
+            m_entry = monthly_map.get(sym)
+
+            if not d_entry:
+                continue
+
+            d_cells, d_latest, d_sub = d_entry
+            w_cells = w_entry[0] if w_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
+            m_cells = m_entry[0] if m_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
+
+            # Kinetic Vector
+            raw_v = d_latest["velocity"][0]
+            velocity = round(float(raw_v), 2) if (raw_v is not None and not np.isnan(raw_v)) else 0.0
+            d20_cell = d_cells["ema_20"]
+            is_exhaustion_hook = bool(
+                d20_cell["is_above"] and (d20_cell["percentile"] or 0) >= 90 and velocity < 0
+            )
+
+            if is_exhaustion_hook:
+                kinetic_status = "exhaustion_hook"
+                kinetic_badge = "⚡ Exhaustion Hook"
+            elif d20_cell["is_above"] and velocity > 0.2:
+                kinetic_status = "thrust"
+                kinetic_badge = "🚀 Momentum Thrust"
+            elif d20_cell["is_above"] and (d20_cell["percentile"] or 0) >= 90 and velocity >= 0:
+                kinetic_status = "saturation"
+                kinetic_badge = "⚠️ Peak Saturation"
+            else:
+                kinetic_status = "normal"
+                kinetic_badge = "Normal Drift"
+
+            # Landing Zones
+            ema10_val = d_latest["ema_10"][0]
+            ema20_val = d_latest["ema_20"][0]
+            landing_ema_10 = round(float(ema10_val), 2) if (ema10_val is not None and not np.isnan(ema10_val)) else None
+            landing_ema_20 = round(float(ema20_val), 2) if (ema20_val is not None and not np.isnan(ema20_val)) else None
+
+            # CPR Top
+            cpr_top = None
+            cpr_tuple = cpr_lookup.get((clean, prior_yr, prior_mo)) or cpr_lookup.get((sym, prior_yr, prior_mo))
+            if cpr_tuple:
+                mh, ml, mc = cpr_tuple
+                if mh is not None and ml is not None and mc is not None:
+                    pivot = (mh + ml + mc) / 3.0
+                    bc = (mh + ml) / 2.0
+                    tc = 2.0 * pivot - bc
+                    top_val = max(tc, bc)
+                    if not np.isnan(top_val):
+                        cpr_top = round(float(top_val), 2)
+
+            # Decay Mode & Half-Life
+            if d20_cell["is_above"]:
+                half_life_days = 6.2
+                decay_mode = "Time Consolidation"
+            else:
+                half_life_days = 2.5
+                decay_mode = "Price Flush"
+
+            # SBS & HMSR
+            sqz_list = [v for v in d_sub["is_squeeze_bar"][-30:].to_list() if v is not None and not np.isnan(v)]
+            sqz_count = sum(sqz_list)
+            sbs = round(float(sqz_count / max(1.0, d20_cell["stretch_atr"])), 2)
+            is_sqz = bool(sqz_list[-1] == 1 if sqz_list else False)
+
+            s20_hist = [v for v in d_sub["s_20"][-252:].to_list() if v is not None and not np.isnan(v)]
+            max_s = max(s20_hist, default=1.0)
+            hmsr = round(float(d20_cell["stretch_atr"] / max(0.1, max_s)), 2) if (max_s and not np.isnan(max_s)) else None
+
+            pos_hist = [v for v in s20_hist if v >= 0]
+            if len(pos_hist) >= 5 and d20_cell["is_above"]:
+                mu_pos = np.mean(pos_hist)
+                std_pos = np.std(pos_hist)
+                if std_pos > 0.001 and not np.isnan(std_pos):
+                    z_val = (d20_cell["stretch_atr"] - mu_pos) / std_pos
+                    z_tail = round(float(z_val), 2) if not np.isnan(z_val) else None
+                else:
+                    z_tail = None
+            else:
+                z_tail = None
+
+            matrix = {
+                "daily": d_cells,
+                "weekly": w_cells,
+                "monthly": m_cells,
+                "velocity": velocity,
+                "is_exhaustion_hook": is_exhaustion_hook,
+                "kinetic_status": kinetic_status,
+                "kinetic_badge": kinetic_badge,
+                "landing_ema_10": landing_ema_10,
+                "landing_ema_20": landing_ema_20,
+                "landing_cpr_top": cpr_top,
+                "half_life_days": half_life_days,
+                "decay_mode": decay_mode,
+                "sbs_score": sbs,
+                "is_squeeze": is_sqz,
+                "hmsr": hmsr,
+                "z_score": z_tail,
+            }
+            matrix_lookup[clean] = matrix
+
+            # Universe candidate selection
+            is_trade_today = (d_latest["trade_date"][0] == latest_date)
+            series_val = d_latest["series"][0] if "series" in d_latest.columns else "EQ"
+            is_valid_series = series_val in ("EQ", "BE", "BZ", "SM", "RR")
+
+            if is_trade_today and is_valid_series and not is_etf_or_re(clean):
+                c_close = float(d_latest["close"][0] or 0.0)
+                if np.isnan(c_close) or c_close <= 0:
+                    continue
+                p_close = float(d_latest["prev_close"][0] or c_close)
+                pct_1d = round(((c_close - p_close) / p_close) * 100.0, 2) if (p_close > 0 and not np.isnan(p_close)) else 0.0
+                if np.isnan(pct_1d):
+                    pct_1d = 0.0
+                vol = int(d_latest["volume"][0] or 0)
+                turnover_cr = round((vol * c_close) / 10000000.0, 2)
+                if np.isnan(turnover_cr):
+                    turnover_cr = 0.0
+                th_list = sym_to_themes.get(clean, [])
+                sector_val = th_list[0] if th_list else None
+
+                universe_items.append({
+                    "symbol": f"{clean}.NS",
+                    "clean_symbol": clean,
+                    "close": round(c_close, 2),
+                    "pct_1d": pct_1d,
+                    "volume": vol,
+                    "turnover_cr": turnover_cr,
+                    "themes": th_list,
+                    "sector": sector_val,
+                    "ema_stretch": matrix,
+                })
+
+        # Enrich 52W items in-place
+        for item in high_items + low_items:
+            clean_s = item.get("clean_symbol")
+            if clean_s in matrix_lookup:
+                item["ema_stretch"] = matrix_lookup[clean_s]
+            else:
+                item["ema_stretch"] = None
+
+        # Sort universe items by turnover descending
+        universe_items.sort(key=lambda x: -x["turnover_cr"])
+
+        universe_payload = {
+            "metadata": {
+                "latest_session": latest_date,
+                "total_stocks": len(universe_items),
+            },
+            "items": universe_items,
+        }
+
+        universe_out = output_dir / "market_status" / "ema_stretch_universe.json"
+        universe_out.parent.mkdir(parents=True, exist_ok=True)
+        with open(universe_out, "w") as f:
+            json.dump(universe_payload, f, separators=(',', ':'))
+
+        print(f"  OK   ema_stretch_universe.json ({len(universe_items)} stocks with 9-cell stretch matrices)")
+        print(f"  OK   Enriched {len(high_items)} highs and {len(low_items)} lows with EMA stretch telemetry")
+
+    except Exception as e:
+        import traceback
+        print(f"  ERR  EMA Stretch Matrix universe calculation failed: {e}")
+        traceback.print_exc()
+
+
 def export_52w_high_low_history(output_dir: Path, source_dir: Path):
     """
     Exports rolling 60-day 52-Week High and Low recurrence, streak, and timeline data.
@@ -1270,6 +1683,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             sym_to_themes.setdefault(c, []).append(theme_name)
 
     # 4.2 Parquet microstructure calculation (Monthly CPR, 20 EMA, Volume & Delivery, Candle Anatomy)
+    chosen_pq = chosen_parquet if 'chosen_parquet' in locals() and chosen_parquet else None
     if not chosen_pq:
         for p in parquet_paths:
             if p and (p.is_file() or (p.is_dir() and list(p.glob("**/*.parquet")))):
@@ -2226,6 +2640,20 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             raise ValueError(f"Section 8 Invariant 7 Violation: Invalid base_gap_days ({item.get('base_gap_days')}) on {item['symbol']}")
 
     print("  ✅ Section 8 Audit Harness: 100% PASSED")
+
+    # 6. Compute & Export EMA Stretch Universe and enrich 52W items
+    compute_and_export_ema_stretch_universe(
+        output_dir=output_dir,
+        chosen_pq=chosen_pq,
+        high_items=high_items,
+        low_items=low_items,
+        latest_date=latest_date,
+        cpr_lookup=cpr_lookup,
+        sym_to_themes=sym_to_themes,
+        terminal_map=terminal_map,
+        sec_bands=sec_bands,
+        is_etf_or_re=is_etf_or_re,
+    )
 
     final_payload = {
         "metadata": {

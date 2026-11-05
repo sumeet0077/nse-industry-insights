@@ -40,6 +40,7 @@ import {
 import { CaptureScreenshot } from "@/components/common/CaptureScreenshot";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { WaveConceptGuideDrawer } from "@/components/drawers/WaveConceptGuideDrawer";
+import { EmaStretchMatrixModal } from "@/components/modals/EmaStretchMatrixModal";
 
 interface Recurrence52WScannerProps {
     historyData: Market52WHistory;
@@ -428,6 +429,7 @@ export function Recurrence52WScanner({
     const [sizingRiskPct, setSizingRiskPct] = useLocalStorage<number>("r52w_sizing_risk_pct", 1.0);
     const [customStopPrice, setCustomStopPrice] = useState<number | null>(null);
     const [sizingCopyFeedback, setSizingCopyFeedback] = useState<boolean>(false);
+    const [stretchModalItem, setStretchModalItem] = useState<Stock52WItem | null>(null);
 
     const [columnFilters, setColumnFilters] = useState<ColumnFilters>(defaultColumnFilters);
     const [activeFilterPopover, setActiveFilterPopover] = useState<string | null>(null);
@@ -4786,30 +4788,42 @@ export function Recurrence52WScanner({
                                         {/* 2. 20 EMA Ext */}
                                         {visibleColumns.ema_ext !== false && (
                                             <td style={{ width: `${colWidths.ema_ext}px`, minWidth: `${colWidths.ema_ext}px` }} className="p-3 text-right whitespace-nowrap">
-                                                {item.ema_20_ext != null ? (
-                                                    <div className="inline-flex items-center gap-1 group/ema relative">
+                                                {item.ema_20_ext != null || item.ema_stretch != null ? (
+                                                    <div
+                                                        className="inline-flex items-center gap-1 group/ema relative cursor-pointer"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setStretchModalItem(item);
+                                                        }}
+                                                        title="Click to view 9-Cell EMA Stretch Matrix HUD"
+                                                    >
                                                         <span
-                                                            className={`font-semibold px-1.5 py-0.5 rounded text-[11px] font-mono border ${
-                                                                item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0
+                                                            className={`font-semibold px-1.5 py-0.5 rounded text-[11px] font-mono border hover:ring-1 hover:ring-pink-500/60 transition-all ${
+                                                                item.ema_stretch?.daily?.ema_20?.color_tier === "extreme_pos" || (item.ema_stretch?.daily?.ema_20?.is_above && (item.ema_stretch?.daily?.ema_20?.percentile ?? 0) >= 95)
+                                                                    ? "bg-[#670038] text-[#fce7f3] border-[#8a144e]"
+                                                                    : item.ema_20_ext != null && item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0
                                                                     ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                                                                    : item.ema_20_ext >= 0 && item.ema_20_ext < 2.0
+                                                                    : item.ema_20_ext != null && item.ema_20_ext >= 0 && item.ema_20_ext < 2.0
                                                                     ? "bg-cyan-500/15 text-cyan-300 border-cyan-500/30"
-                                                                    : item.ema_20_ext > 12.0
+                                                                    : item.ema_20_ext != null && item.ema_20_ext > 12.0
                                                                     ? "bg-rose-500/20 text-rose-300 border-rose-500/40"
-                                                                    : item.ema_20_ext < 0
+                                                                    : item.ema_20_ext != null && item.ema_20_ext < 0
                                                                     ? "bg-gray-800 text-gray-400 border-gray-700"
                                                                     : "bg-amber-500/15 text-amber-300 border-amber-500/30"
                                                             }`}
                                                         >
-                                                            {item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(1)}%` : `${item.ema_20_ext.toFixed(1)}%`}
-                                                            {item.ema_20_ext > 12.0 && " ⚠️"}
+                                                            {item.ema_20_ext != null
+                                                                ? (item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(1)}%` : `${item.ema_20_ext.toFixed(1)}%`)
+                                                                : (item.ema_stretch?.daily?.ema_20?.stretch_atr != null ? `${item.ema_stretch.daily.ema_20.stretch_atr} ATR` : "⚡ HUD")
+                                                            }
+                                                            {item.ema_stretch?.is_exhaustion_hook ? " ⚡" : (item.ema_20_ext != null && item.ema_20_ext > 12.0 && " ⚠️")}
                                                         </span>
 
                                                         {/* Hover Tooltip */}
                                                         <div className={`absolute right-0 ${tooltipDropClass} hidden group-hover/ema:block w-64 bg-[#161622] border border-gray-700 rounded-lg shadow-2xl p-3 z-50 text-[11px] font-sans text-gray-200 text-left pointer-events-none`}>
                                                             <div className="font-semibold text-xs border-b border-gray-800 pb-1.5 mb-2 text-gray-100 flex items-center justify-between">
                                                                 <span>20-Day EMA Anatomy</span>
-                                                                <span className="text-[10px] font-mono text-cyan-400">59D Warmup</span>
+                                                                <span className="text-[10px] font-mono text-cyan-400">⚡ Click HUD</span>
                                                             </div>
                                                             <div className="space-y-1.5 font-mono text-[10px]">
                                                                 <div className="flex justify-between items-center gap-2">
@@ -4818,16 +4832,33 @@ export function Recurrence52WScanner({
                                                                 </div>
                                                                 <div className="flex justify-between items-center gap-2">
                                                                     <span className="text-gray-400 shrink-0 font-sans">Extension:</span>
-                                                                    <span className="text-gray-200 font-semibold whitespace-nowrap text-right">{item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(2)}%` : `${item.ema_20_ext.toFixed(2)}%`}</span>
+                                                                    <span className="text-gray-200 font-semibold whitespace-nowrap text-right">
+                                                                        {item.ema_20_ext != null
+                                                                            ? (item.ema_20_ext > 0 ? `+${item.ema_20_ext.toFixed(2)}%` : `${item.ema_20_ext.toFixed(2)}%`)
+                                                                            : "—"}
+                                                                    </span>
                                                                 </div>
+                                                                {item.ema_stretch?.daily?.ema_20 && (
+                                                                    <div className="flex justify-between items-center gap-2 pt-1 border-t border-gray-800/60">
+                                                                        <span className="text-gray-400 shrink-0 font-sans">ATR Stretch:</span>
+                                                                        <span className="text-[#fbcfe8] font-bold whitespace-nowrap text-right">
+                                                                            {item.ema_stretch.daily.ema_20.formatted}
+                                                                        </span>
+                                                                    </div>
+                                                                )}
                                                                 <div className="text-[10px] font-sans text-gray-300 pt-1.5 border-t border-gray-800/60 leading-relaxed">
-                                                                    {item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0
-                                                                        ? "✅ Sweet Spot: +1.46% median 20D follow-through"
-                                                                        : item.ema_20_ext > 12.0
-                                                                        ? "⚠️ Climax Trap: Overextended, high drawdown risk"
-                                                                        : item.ema_20_ext < 0
-                                                                        ? "🔻 Below 20 EMA: Trend exhaustion / breakdown"
-                                                                        : "📊 Moderate extension"}
+                                                                    {item.ema_20_ext != null
+                                                                        ? (item.ema_20_ext >= 2.0 && item.ema_20_ext <= 6.0
+                                                                            ? "✅ Sweet Spot: +1.46% median 20D follow-through"
+                                                                            : item.ema_20_ext > 12.0
+                                                                            ? "⚠️ Climax Trap: Overextended, high drawdown risk"
+                                                                            : item.ema_20_ext < 0
+                                                                            ? "🔻 Below 20 EMA: Trend exhaustion / breakdown"
+                                                                            : "📊 Moderate extension")
+                                                                        : "⚡ Multi-timeframe ATR stretch HUD available"}
+                                                                </div>
+                                                                <div className="text-[9px] font-sans text-pink-400 pt-1 text-center border-t border-gray-800/40">
+                                                                    Click to open TradingView 9-Cell Matrix HUD ⚡
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -5297,6 +5328,14 @@ Target 2 (3R): ₹${target2.toFixed(2)} (+${(stopDistPct * 3).toFixed(1)}%)`;
                                                     👑 {sizingItem.alpha_score} Alpha
                                                 </span>
                                             )}
+                                            {((sizingItem.ema_stretch?.daily?.ema_20?.is_above && (sizingItem.ema_stretch.daily.ema_20.percentile ?? 0) >= 95) || (sizingItem.ema_20_ext != null && sizingItem.ema_20_ext >= 12.0)) && (
+                                                <span
+                                                    className="text-xs px-2 py-0.5 rounded font-sans font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1 animate-pulse"
+                                                    title={sizingItem.ema_stretch?.daily?.ema_20 ? `Stretch: ${sizingItem.ema_stretch.daily.ema_20.formatted}` : `Extension: +${sizingItem.ema_20_ext?.toFixed(1)}%`}
+                                                >
+                                                    ⚠️ {sizingItem.ema_stretch?.daily?.ema_20 ? `${sizingItem.ema_stretch.daily.ema_20.percentile_str} Overextended` : "≥+P95 Overextended"}
+                                                </span>
+                                            )}
                                         </h3>
                                         <p className="text-[11px] text-gray-400 font-sans">
                                             Institutional Position Sizing & Structural Risk Calculator
@@ -5399,6 +5438,17 @@ Target 2 (3R): ₹${target2.toFixed(2)} (+${(stopDistPct * 3).toFixed(1)}%)`;
                                 </div>
                             </div>
 
+                            {/* Overextended Warning Banner */}
+                            {((sizingItem.ema_stretch?.daily?.ema_20?.is_above && (sizingItem.ema_stretch.daily.ema_20.percentile ?? 0) >= 95) || (sizingItem.ema_20_ext != null && sizingItem.ema_20_ext >= 12.0)) && (
+                                <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] font-sans text-amber-300/90 leading-relaxed">
+                                    ⚠️ <strong>Overextended Stretch Warning:</strong> Current stretch is{" "}
+                                    <span className="font-bold font-mono text-amber-200">
+                                        {sizingItem.ema_stretch?.daily?.ema_20 ? sizingItem.ema_stretch.daily.ema_20.formatted : `+${sizingItem.ema_20_ext?.toFixed(1)}%`}
+                                    </span>
+                                    . Recommended capital exposure reduced or trailing stop tightened to protect against mean-reversion shock.
+                                </div>
+                            )}
+
                             {/* Output Cards */}
                             <div className="p-4 rounded-xl bg-[#09090f] border border-gray-800 space-y-3 font-mono text-xs">
                                 <div className="grid grid-cols-2 gap-3 pb-3 border-b border-gray-800/80">
@@ -5471,6 +5521,21 @@ Target 2 (3R): ₹${target2.toFixed(2)} (+${(stopDistPct * 3).toFixed(1)}%)`;
                 onClose={() => setIsGuideOpen(false)}
                 initialConceptId={activeGuideConcept}
             />
+
+            {/* TradingView 9-Cell EMA Stretch Matrix Popover Modal */}
+            {stretchModalItem && (
+                <EmaStretchMatrixModal
+                    isOpen={Boolean(stretchModalItem)}
+                    onClose={() => setStretchModalItem(null)}
+                    symbol={stretchModalItem.symbol}
+                    cleanSymbol={stretchModalItem.clean_symbol}
+                    companyName={stockSearchIndex[stretchModalItem.clean_symbol]?.[0]?.title}
+                    currentPrice={stretchModalItem.close}
+                    pct1d={stretchModalItem.pct_1d}
+                    sector={stretchModalItem.sector_wave_theme}
+                    matrix={stretchModalItem.ema_stretch || null}
+                />
+            )}
         </div>
     );
 }

@@ -15,6 +15,8 @@ import type {
     ThemeBreadthSummaryMetrics,
     AllThemesBreadthMap,
     DailyBreadthHistory1Y,
+    EMAStretchMatrix,
+    EMAStretchUniverseData,
 } from "@/types";
 import { BROAD_MARKET, INDUSTRIES, SECTORS } from "@/lib/config";
 import { resolveDataKey, resolveMarketStatusEntry } from "./utils";
@@ -142,6 +144,9 @@ export interface Stock52WItem {
     is_pocket_pivot?: boolean;
     alpha_score?: number | null;
     alpha_tier?: 'tier1' | 'tier2' | 'tier3' | 'tier4' | null;
+
+    // EMA Stretch Matrix
+    ema_stretch?: EMAStretchMatrix | null;
 }
 
 export interface Market52WHistory {
@@ -161,6 +166,10 @@ export interface Market52WHistory {
 
 export function getMarket52WHistory(): Market52WHistory | null {
     return readJson<Market52WHistory>("market_status/market_52w_history.json");
+}
+
+export function getEMAStretchUniverse(): EMAStretchUniverseData | null {
+    return readJson<EMAStretchUniverseData>("market_status/ema_stretch_universe.json");
 }
 
 export function getConstituentPerformance(): ConstituentPerformanceMap {

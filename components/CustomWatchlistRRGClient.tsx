@@ -22,6 +22,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import type { StockRRGPayload, StockSearchIndex, Market52WHistory, Stock52WItem } from "@/lib/data";
 import { Recurrence52WScanner } from "@/components/watchlist/Recurrence52WScanner";
 import { WatchlistOverlapMatrix } from "@/components/watchlist/WatchlistOverlapMatrix";
+import { EmaStretchMatrixScanner } from "@/components/watchlist/EmaStretchMatrixScanner";
 import {
     BookmarkCheck,
     Plus,
@@ -64,7 +65,7 @@ function toTVSymbol(ticker: string): string {
     return `NSE:${clean.replace(/[&\-\s]/g, "_")}`;
 }
 
-export type ViewMode = "rrg" | "table" | "split" | "recurrence" | "overlap";
+export type ViewMode = "rrg" | "table" | "split" | "recurrence" | "overlap" | "stretch";
 
 function isTradeableStock(item: Stock52WItem): boolean {
     if (item.is_circuit_locked) return false;
@@ -842,6 +843,17 @@ export function CustomWatchlistRRGClient({
                         <span>🔀</span>
                         <span>Overlap Matrix</span>
                     </button>
+                    <button
+                        onClick={() => setViewMode("stretch")}
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                            viewMode === "stretch"
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "text-slate-400 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                        <span>⚡</span>
+                        <span>EMA Stretch Matrix</span>
+                    </button>
                 </div>
 
                 {/* CAGR Toggle when Constituents Table is visible */}
@@ -859,7 +871,7 @@ export function CustomWatchlistRRGClient({
             </div>
 
             {/* Watchlist Bar & Stock Picker */}
-            {viewMode !== "recurrence" && viewMode !== "overlap" && (
+            {viewMode !== "recurrence" && viewMode !== "overlap" && viewMode !== "stretch" && (
                 <div className="bg-[#111118] p-4 rounded-xl border border-[#1e1e2e] space-y-4">
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                     {/* 2-Tier Navigation */}
@@ -2637,6 +2649,40 @@ export function CustomWatchlistRRGClient({
                         setSelectedFolder(folder || "52W Scans");
                         setActiveId(id);
                     }}
+                />
+            )}
+
+            {/* EMA Stretch Matrix Hub Screener View */}
+            {viewMode === "stretch" && (
+                <EmaStretchMatrixScanner
+                    historyData={initial52WHistory}
+                    stockSearchIndex={stockSearchIndex}
+                    constituentPerformanceMap={constituentPerformanceMap}
+                    onOpenInRRG={(tickers, suggestedName) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(suggestedName || "Stretch Scan", tickers, "Stretch Scans");
+                        setActiveId(id);
+                        setSelectedFolder("Stretch Scans");
+                        setViewMode("rrg");
+                    }}
+                    onOpenInTable={(tickers, suggestedName) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(suggestedName || "Stretch Scan", tickers, "Stretch Scans");
+                        setActiveId(id);
+                        setSelectedFolder("Stretch Scans");
+                        setViewMode("table");
+                    }}
+                    onSaveAsWatchlist={(name, tickers, folder) => {
+                        if (!tickers || tickers.length === 0) return;
+                        const id = createWatchlist(name, tickers, folder || "Stretch Scans");
+                        setSelectedFolder(folder || "Stretch Scans");
+                        setActiveId(id);
+                    }}
+                    onAddTickerToActiveWatchlist={(ticker) => {
+                        addTicker(ticker);
+                    }}
+                    activeWatchlistTickers={activeWatchlist.tickers}
+                    activeWatchlistName={activeWatchlist.name}
                 />
             )}
         </div>

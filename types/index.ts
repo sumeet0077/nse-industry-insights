@@ -226,3 +226,69 @@ export interface UnifiedWaveConcept {
     badgePillClass: string;
 }
 
+export type EMAStretchColorTier = "extreme_pos" | "pos" | "extreme_neg" | "neg" | "neutral" | "ipo";
+
+export interface EMAStretchCell {
+    stretch_atr: number;
+    percentile: number | null;
+    percentile_str: string;
+    is_above: boolean;
+    formatted: string;
+    color_tier: EMAStretchColorTier;
+}
+
+export interface EMAStretchMatrix {
+    daily: {
+        ema_10: EMAStretchCell;
+        ema_20: EMAStretchCell;
+        ema_50: EMAStretchCell;
+    };
+    weekly: {
+        ema_10: EMAStretchCell;
+        ema_20: EMAStretchCell;
+        ema_50: EMAStretchCell;
+    };
+    monthly: {
+        ema_10: EMAStretchCell;
+        ema_20: EMAStretchCell;
+        ema_50: EMAStretchCell;
+    };
+    // Kinetic Vector
+    velocity: number;
+    is_exhaustion_hook: boolean;
+    kinetic_status: "exhaustion_hook" | "thrust" | "saturation" | "normal";
+    kinetic_badge: string;
+    // Mean-Reversion Landing Zones
+    landing_ema_10: number | null;
+    landing_ema_20: number | null;
+    landing_cpr_top: number | null;
+    // Decay / Half-Life
+    half_life_days: number;
+    decay_mode: "Time Consolidation" | "Price Flush";
+    // Quantitative Enhancements
+    sbs_score?: number | null;
+    is_squeeze?: boolean;
+    hmsr?: number | null;
+    z_score?: number | null;
+}
+
+export interface EMAStretchUniverseItem {
+    symbol: string;
+    clean_symbol: string;
+    name?: string;
+    close: number;
+    pct_1d: number;
+    volume: number;
+    turnover_cr: number;
+    themes?: string[];
+    sector?: string;
+    ema_stretch: EMAStretchMatrix;
+}
+
+export interface EMAStretchUniverseData {
+    metadata: {
+        latest_session: string;
+        total_stocks: number;
+    };
+    items: EMAStretchUniverseItem[];
+}

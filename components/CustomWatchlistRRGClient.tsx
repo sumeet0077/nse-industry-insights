@@ -53,15 +53,15 @@ interface CustomWatchlistRRGClientProps {
     initialConstituentPerformance?: ConstituentPerformanceMap | null;
 }
 
-import { cleanTicker, normalizeTickerSymbol, parseBulkTickers } from "@/lib/utils";
-export { cleanTicker, normalizeTickerSymbol, parseBulkTickers };
+import { cleanTicker, normalizeTickerSymbol, parseBulkTickers, resolveActiveSymbol } from "@/lib/utils";
+export { cleanTicker, normalizeTickerSymbol, parseBulkTickers, resolveActiveSymbol };
 
 // Module-level cache for constituent performance metrics to avoid refetching on remounts
 let cachedConstituents: ConstituentPerformanceMap | null = null;
 const cachedRRGMap: Record<string, StockRRGPayload> = {};
 
 function toTVSymbol(ticker: string): string {
-    const clean = cleanTicker(ticker);
+    const clean = resolveActiveSymbol(cleanTicker(ticker));
     return `NSE:${clean.replace(/[&\-\s]/g, "_")}`;
 }
 
@@ -329,14 +329,23 @@ export function CustomWatchlistRRGClient({
         return activeWatchlist.tickers.map((ticker) => {
             const clean = cleanTicker(ticker).toUpperCase();
             if (!clean) return { ticker };
-            const key = `${clean}.NS`;
+            const active = resolveActiveSymbol(clean);
+            const activeKey = `${active}.NS`;
+            const cleanKey = `${clean}.NS`;
             const baseData =
-                constituentPerformanceMap[key] ||
+                constituentPerformanceMap[cleanKey] ||
+                constituentPerformanceMap[activeKey] ||
                 constituentPerformanceMap[clean] ||
+                constituentPerformanceMap[active] ||
                 constituentPerformanceMap[ticker] ||
                 {};
             const { ticker: _t, ...rest } = baseData as Record<string, any>;
-            const row: ConstituentRow = { ticker: key, ...rest };
+            const row: ConstituentRow = {
+                ticker: cleanKey,
+                activeTicker: activeKey,
+                wasRenamed: clean !== active,
+                ...rest,
+            };
             if (showCagr) {
                 if (typeof row["3Y"] === "number" && row["3Y"] !== null) {
                     row["3Y"] = calculateCAGR(row["3Y"] as number, 3);
@@ -365,20 +374,33 @@ export function CustomWatchlistRRGClient({
         if (!activeBenchmarkPayload || !activeBenchmarkPayload.skipped) return [];
         const rawSkipped = activeBenchmarkPayload.skipped[timeframe] || [];
         if (rawSkipped.length === 0 || activeWatchlist.tickers.length === 0) return [];
-        const activeCleanSet = new Set(activeWatchlist.tickers.map((t) => cleanTicker(t).toUpperCase()));
-        return rawSkipped.filter((s) => activeCleanSet.has(cleanTicker(s).toUpperCase()));
+        const activeCleanSet = new Set(
+            activeWatchlist.tickers.flatMap((t) => {
+                const c = cleanTicker(t).toUpperCase();
+                return [c, resolveActiveSymbol(c)];
+            })
+        );
+        return rawSkipped.filter((s) => {
+            const c = cleanTicker(s).toUpperCase();
+            return activeCleanSet.has(c) || activeCleanSet.has(resolveActiveSymbol(c));
+        });
     }, [activeBenchmarkPayload, timeframe, activeWatchlist.tickers]);
 
     // Filter RRG points to include ONLY stocks present in the active watchlist
     const watchlistRawData = useMemo(() => {
         if (activeWatchlist.tickers.length === 0) return [];
-        const activeSet = new Set(activeWatchlist.tickers.map((t) => t.toUpperCase()));
-        const cleanSet = new Set(activeWatchlist.tickers.map((t) => cleanTicker(t).toUpperCase()));
+        const activeCleanSet = new Set(
+            activeWatchlist.tickers.flatMap((t) => {
+                const c = cleanTicker(t).toUpperCase();
+                return [c, resolveActiveSymbol(c), t.toUpperCase()];
+            })
+        );
 
         return benchmarkRawData.filter((pt) => {
             const ptUpper = pt.Ticker.toUpperCase();
             const ptClean = cleanTicker(pt.Ticker).toUpperCase();
-            return activeSet.has(ptUpper) || cleanSet.has(ptClean);
+            const ptResolved = resolveActiveSymbol(ptClean);
+            return activeCleanSet.has(ptUpper) || activeCleanSet.has(ptClean) || activeCleanSet.has(ptResolved);
         });
     }, [benchmarkRawData, activeWatchlist.tickers]);
 
@@ -443,6 +465,10 @@ export function CustomWatchlistRRGClient({
             if (!map[pt.Ticker] || pt.Date > map[pt.Ticker].Date) {
                 map[pt.Ticker] = pt;
             }
+            const clean = cleanTicker(pt.Ticker).toUpperCase();
+            if (!map[clean] || pt.Date > map[clean].Date) {
+                map[clean] = pt;
+            }
         }
         return map;
     }, [watchlistRawData]);
@@ -451,14 +477,22 @@ export function CustomWatchlistRRGClient({
     const noTrajectoryStocks: string[] = useMemo(() => {
         if (!activeBenchmarkPayload || activeWatchlist.tickers.length === 0) return [];
         const activeTickersWithRRG = new Set(
-            Object.keys(latestPoints).map((t) => cleanTicker(t).toUpperCase())
+            Object.keys(latestPoints).flatMap((t) => {
+                const c = cleanTicker(t).toUpperCase();
+                return [c, resolveActiveSymbol(c)];
+            })
         );
         const activeSkipped = new Set(
-            skippedStocks.map((t) => cleanTicker(t).toUpperCase())
+            skippedStocks.flatMap((t) => {
+                const c = cleanTicker(t).toUpperCase();
+                return [c, resolveActiveSymbol(c)];
+            })
         );
         return activeWatchlist.tickers.filter((ticker) => {
             const clean = cleanTicker(ticker).toUpperCase();
-            return !activeTickersWithRRG.has(clean) && !activeSkipped.has(clean);
+            const resolved = resolveActiveSymbol(clean);
+            return !activeTickersWithRRG.has(clean) && !activeTickersWithRRG.has(resolved) && 
+                   !activeSkipped.has(clean) && !activeSkipped.has(resolved);
         });
     }, [activeBenchmarkPayload, activeWatchlist.tickers, latestPoints, skippedStocks]);
 
@@ -469,14 +503,30 @@ export function CustomWatchlistRRGClient({
             if (last) {
                 const ratio = last.RS_Ratio;
                 const mom = last.RS_Momentum;
-                if (ratio >= 100 && mom >= 100) map[ticker] = "Leading";
-                else if (ratio >= 100 && mom < 100) map[ticker] = "Weakening";
-                else if (ratio < 100 && mom < 100) map[ticker] = "Lagging";
-                else map[ticker] = "Improving";
+                let quad: QuadrantType;
+                if (ratio >= 100 && mom >= 100) quad = "Leading";
+                else if (ratio >= 100 && mom < 100) quad = "Weakening";
+                else if (ratio < 100 && mom < 100) quad = "Lagging";
+                else quad = "Improving";
+
+                map[ticker] = quad;
+                map[cleanTicker(ticker).toUpperCase()] = quad;
+            }
+        }
+        // Also map active watchlist tickers whose terminal symbol is in latestPoints
+        for (const ticker of activeWatchlist.tickers) {
+            const clean = cleanTicker(ticker).toUpperCase();
+            const active = resolveActiveSymbol(clean);
+            if (!map[ticker]) {
+                const resolvedQuad = map[active] || map[`${active}.NS`] || map[clean];
+                if (resolvedQuad) {
+                    map[ticker] = resolvedQuad;
+                    map[clean] = resolvedQuad;
+                }
             }
         }
         return map;
-    }, [latestPoints]);
+    }, [latestPoints, activeWatchlist.tickers]);
 
     // Group data by ticker for trend scanner
     const groupedByTicker = useMemo(() => {
@@ -606,14 +656,21 @@ export function CustomWatchlistRRGClient({
         if (!selectedTickers || selectedTickers.length === 0) return [];
 
         const quadSet = new Set(selectedQuadrants);
-        const tickerSet = new Set(selectedTickers);
+        const tickerCleanSet = new Set(
+            selectedTickers.flatMap((t) => {
+                const c = cleanTicker(t).toUpperCase();
+                return [c, resolveActiveSymbol(c), t.toUpperCase()];
+            })
+        );
 
         return watchlistRawData.filter((pt) => {
             if (!pt || !pt.Ticker) return false;
-            const quad = tickerQuadrants[pt.Ticker];
+            const ptClean = cleanTicker(pt.Ticker).toUpperCase();
+            const ptResolved = resolveActiveSymbol(ptClean);
+            const quad = tickerQuadrants[pt.Ticker] || tickerQuadrants[ptClean] || tickerQuadrants[ptResolved];
             if (!quad || !quadSet.has(quad)) return false;
-            if (!tickerSet.has(pt.Ticker)) return false;
-            if (activeTopNSet && !activeTopNSet.has(pt.Ticker)) return false;
+            if (!tickerCleanSet.has(pt.Ticker.toUpperCase()) && !tickerCleanSet.has(ptClean) && !tickerCleanSet.has(ptResolved)) return false;
+            if (activeTopNSet && !activeTopNSet.has(pt.Ticker) && !activeTopNSet.has(ptClean) && !activeTopNSet.has(ptResolved)) return false;
             return true;
         });
     }, [watchlistRawData, tickerQuadrants, selectedQuadrants, selectedTickers, activeTopNSet]);
@@ -1235,9 +1292,10 @@ export function CustomWatchlistRRGClient({
                                     <div className="absolute top-full left-0 right-0 mt-1 bg-[#181824] border border-slate-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-64 overflow-y-auto divide-y divide-slate-800/60">
                                         {searchResults.map((t) => {
                                             const clean = cleanTicker(t);
-                                            const themeEntries = stockSearchIndex[t] || stockSearchIndex[clean];
+                                            const active = resolveActiveSymbol(clean);
+                                            const themeEntries = stockSearchIndex[t] || stockSearchIndex[clean] || stockSearchIndex[active];
                                             const themeTitle = themeEntries && themeEntries.length > 0 ? themeEntries[0].title : null;
-                                            const perf = constituentPerformanceMap?.[t] || constituentPerformanceMap?.[`${clean}.NS`];
+                                            const perf = constituentPerformanceMap?.[t] || constituentPerformanceMap?.[`${clean}.NS`] || constituentPerformanceMap?.[`${active}.NS`] || constituentPerformanceMap?.[active];
                                             const rsRating = perf?.ibd_rs_rating;
                                             const isLead = Boolean(perf?.rs_lead_breakout);
                                             return (

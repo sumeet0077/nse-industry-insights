@@ -5,6 +5,9 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { DATA_KEY_ALIASES } from "./config";
 import type { MarketStatus, MarketStatusEntry } from "@/types";
+import { resolveActiveSymbol, resolveActiveTicker, SYMBOL_TERMINAL_MAP, getHistoricalAliases } from "./symbolChanges";
+
+export { resolveActiveSymbol, resolveActiveTicker, SYMBOL_TERMINAL_MAP, getHistoricalAliases };
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -45,7 +48,12 @@ export function parseBulkTickers(rawText: string, currentTickers: string[] = [])
         .map((s) => cleanTicker(s).toUpperCase())
         .filter((s) => s.length > 0);
 
-    const currentCleanSet = new Set(currentTickers.map((t) => cleanTicker(t).toUpperCase()));
+    const currentCleanSet = new Set(
+        currentTickers.flatMap((t) => {
+            const c = cleanTicker(t).toUpperCase();
+            return [c, resolveActiveSymbol(c)];
+        })
+    );
     const seen = new Set<string>();
     const allParsed: string[] = [];
     const newTickers: string[] = [];
@@ -54,10 +62,12 @@ export function parseBulkTickers(rawText: string, currentTickers: string[] = [])
     for (const token of tokens) {
         if (/^[A-Z0-9\-&_]+$/.test(token)) {
             const formatted = `${token}.NS`;
-            if (!seen.has(token)) {
+            const resolvedToken = resolveActiveSymbol(token);
+            if (!seen.has(token) && !seen.has(resolvedToken)) {
                 seen.add(token);
+                seen.add(resolvedToken);
                 allParsed.push(formatted);
-                if (currentCleanSet.has(token)) {
+                if (currentCleanSet.has(token) || currentCleanSet.has(resolvedToken)) {
                     existingTickers.push(formatted);
                 } else {
                     newTickers.push(formatted);
@@ -88,6 +98,7 @@ export const TRADINGVIEW_SYMBOL_ALIASES: Record<string, string> = {
 
 export function makeTradingViewSymbol(ticker: string): string {
     let clean = cleanTicker(ticker).toUpperCase();
+    clean = resolveActiveSymbol(clean);
     clean = TRADINGVIEW_SYMBOL_ALIASES[clean] || clean;
     const tvSymbol = clean.replace(/-/g, "_").replace(/&/g, "_");
     const exchange = ticker.includes(".BO") ? "BSE" : "NSE";

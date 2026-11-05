@@ -693,6 +693,23 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             if "ibd_rs_rating" not in r:
                 r["ibd_rs_rating"] = None
 
+        # Index legacy/historical symbols via terminal symbol map so querying old or new symbol resolves
+        try:
+            from symbol_change_util import get_terminal_symbol_map
+            term_map = get_terminal_symbol_map()
+            aliased_count = 0
+            for old_sym, new_sym in term_map.items():
+                new_key = f"{new_sym}.NS"
+                old_key = f"{old_sym}.NS"
+                if new_key in result and old_key not in result:
+                    result[old_key] = result[new_key]
+                    aliased_count += 1
+                if new_sym in result and old_sym not in result:
+                    result[old_sym] = result[new_sym]
+            print(f"    (Aliased {aliased_count} legacy symbols in constituent performance for seamless resolution)")
+        except Exception as e:
+            print(f"    (Notice: symbol change aliasing skipped in export_constituent_performance: {e})")
+
         with open(out_file, "w") as f:
             json.dump(result, f, indent=2)
 

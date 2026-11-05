@@ -193,11 +193,21 @@ const textFilterParams = {
                     const listingDays = typeof params.data?.listing_days === "number" ? params.data.listing_days : null;
                     const ipoBadge = getIpoBadgeStyle(listingDays, isIpo);
                     const isLead = Boolean(params.data?.rs_lead_breakout);
+                    const wasRenamed = Boolean(params.data?.wasRenamed);
+                    const activeTicker = params.data?.activeTicker ? getTickerLabel(String(params.data.activeTicker)) : null;
                     return (
                         <div className="flex items-center gap-1.5 font-sans">
                             <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline font-medium">
                                 {label}
                             </a>
+                            {wasRenamed && activeTicker && (
+                                <span 
+                                    className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 shrink-0" 
+                                    title={`Renamed on NSE to ${activeTicker}`}
+                                >
+                                    → {activeTicker}
+                                </span>
+                            )}
                             {ipoBadge && (
                                 <span 
                                     className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold border ${ipoBadge.badgeBg} ${ipoBadge.badgeText} ${ipoBadge.badgeBorder}`} 

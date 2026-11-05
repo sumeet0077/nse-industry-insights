@@ -970,6 +970,61 @@ validate("EMA Stretch Universe (data/market_status/ema_stretch_universe.json)", 
     console.log(`  ✓ EMA Stretch Universe loaded: ${data.items.length} stocks for session ${data.metadata.latest_session}`);
 });
 
+// 14. Validate Historical Symbol Change Resolution & Data Aliasing
+validate("Historical Symbol Change & Ticker Aliasing Gate", (errors, warnings) => {
+    const perfPath = path.join(DATA_DIR, "constituent_performance", "constituent_performance_latest.json");
+    if (!fs.existsSync(perfPath)) {
+        errors.push("Missing constituent_performance_latest.json for symbol aliasing validation");
+        return;
+    }
+    const perfData: Record<string, any> = JSON.parse(fs.readFileSync(perfPath, "utf-8"));
+
+    // Check lib/symbolChanges imports
+    const { SYMBOL_TERMINAL_MAP, resolveActiveSymbol, resolveActiveTicker } = require("../lib/symbolChanges");
+
+    const terminalCount = Object.keys(SYMBOL_TERMINAL_MAP || {}).length;
+    if (terminalCount < 1000) {
+        errors.push(`SYMBOL_TERMINAL_MAP contains suspiciously few symbols (${terminalCount} < 1000)`);
+    }
+
+    // Benchmark historical test pairs (former_symbol -> active_symbol)
+    const testPairs = [
+        { oldSym: "AMARAJABAT", activeSym: "ARE&M" },
+        { oldSym: "CADILAHC", activeSym: "ZYDUSLIFE" },
+        { oldSym: "WELSPUNIND", activeSym: "WELSPUNLIV" },
+        { oldSym: "SANGINITA", activeSym: "AGASTYAEN" },
+        { oldSym: "NOVARTIND", activeSym: "EVONILE" },
+    ];
+
+    for (const { oldSym, activeSym } of testPairs) {
+        const resolved = resolveActiveSymbol(oldSym);
+        if (resolved !== activeSym) {
+            errors.push(`Symbol resolution mismatch: resolveActiveSymbol('${oldSym}') returned '${resolved}', expected '${activeSym}'`);
+        }
+
+        const resolvedTickerNS = resolveActiveTicker(`${oldSym}.NS`);
+        if (resolvedTickerNS !== `${activeSym}.NS`) {
+            errors.push(`Ticker resolution mismatch: resolveActiveTicker('${oldSym}.NS') returned '${resolvedTickerNS}', expected '${activeSym}.NS'`);
+        }
+
+        // Verify that constituent performance provides valid data under both former and active symbol
+        const oldKey = `${oldSym}.NS`;
+        const newKey = `${activeSym}.NS`;
+
+        if (perfData[newKey]) {
+            if (!perfData[oldKey]) {
+                errors.push(`Legacy symbol alias missing in constituent_performance: '${oldKey}' should be aliased to '${newKey}'`);
+            } else {
+                if (perfData[oldKey]["1D"] !== perfData[newKey]["1D"]) {
+                    errors.push(`Performance data discrepancy between '${oldKey}' and '${newKey}'`);
+                }
+            }
+        }
+    }
+
+    console.log(`  ✓ Verified ${terminalCount} terminal symbol mappings and historical benchmark resolution invariants.`);
+});
+
 // Print Summary
 console.log("\n==================================================");
 console.log("📊 Verification Results");

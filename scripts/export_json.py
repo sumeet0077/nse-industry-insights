@@ -2741,6 +2741,15 @@ def main():
     print(f"Output : {output_dir.resolve()}")
     print(f"{'='*50}\n")
 
+    # 0. Sync official NSE corporate action symbol changes & update registry
+    try:
+        from sync_symbol_changes import sync_symbol_changes
+        added, total = sync_symbol_changes()
+        if added > 0:
+            print(f"  [Symbol Registry] Synced {added} new official NSE symbol changes. Total: {total}\n")
+    except Exception as e:
+        print(f"  (Notice: online symbol sync skipped: {e})\n")
+
     print("Exporting breadth CSV files...")
     export_all_breadth_files(output_dir, source_dir)
 

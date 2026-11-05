@@ -58,14 +58,12 @@
   },
   "Nifty Next 50": {
     "above": [
-      "ABB.NS",
       "ADANIENSOL.NS",
       "ADANIGREEN.NS",
       "ADANIPOWER.NS",
       "BAJAJHLDNG.NS",
       "BOSCHLTD.NS",
       "BPCL.NS",
-      "CGPOWER.NS",
       "CHOLAFIN.NS",
       "DIVISLAB.NS",
       "DLF.NS",
@@ -89,10 +87,12 @@
       "ZYDUSLIFE.NS"
     ],
     "below": [
+      "ABB.NS",
       "AMBUJACEM.NS",
       "BANKBARODA.NS",
       "BRITANNIA.NS",
       "CANBK.NS",
+      "CGPOWER.NS",
       "CUMMINSIND.NS",
       "DMART.NS",
       "ENRIN.NS",
@@ -117,7 +117,6 @@
   "Nifty 500": {
     "above": [
       "360ONE.NS",
-      "ABB.NS",
       "ABBOTINDIA.NS",
       "ABCAPITAL.NS",
       "ABDL.NS",
@@ -163,6 +162,7 @@
       "BPCL.NS",
       "BRIGADE.NS",
       "BSE.NS",
+      "BSOFT.NS",
       "CAPLIPOINT.NS",
       "CARBORUNIV.NS",
       "CARTRADE.NS",
@@ -170,7 +170,6 @@
       "CDSL.NS",
       "CEMPRO.NS",
       "CGCL.NS",
-      "CGPOWER.NS",
       "CHENNPETRO.NS",
       "CHOICEIN.NS",
       "CHOLAFIN.NS",
@@ -358,6 +357,7 @@
       "AADHARHFC.NS",
       "AARTIIND.NS",
       "AAVAS.NS",
+      "ABB.NS",
       "ABREL.NS",
       "ABSLAMC.NS",
       "ACC.NS",
@@ -390,11 +390,9 @@
       "BHARATCOAL.NS",
       "BHARATFORG.NS",
       "BIOCON.NS",
-      "BIRET.NS",
       "BLS.NS",
       "BLUESTARCO.NS",
       "BRITANNIA.NS",
-      "BSOFT.NS",
       "CAMS.NS",
       "CANBK.NS",
       "CANFINHOME.NS",
@@ -403,6 +401,7 @@
       "CEATLTD.NS",
       "CENTRALBK.NS",
       "CESC.NS",
+      "CGPOWER.NS",
       "CHAMBLFERT.NS",
       "CHOLAHLDNG.NS",
       "CIEINDIA.NS",
@@ -428,7 +427,6 @@
       "ELECON.NS",
       "ELGIEQUIP.NS",
       "EMAMILTD.NS",
-      "EMBASSY.NS",
       "EMMVEE.NS",
       "ENDURANCE.NS",
       "ENRIN.NS",
@@ -612,7 +610,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "CMPDI.NS",
       "HEGAM.NS",
       "ICICILIFE.NS",
@@ -715,7 +712,6 @@
       "COROMANDEL.NS",
       "DABUR.NS",
       "DALBHARAT.NS",
-      "EMBASSY.NS",
       "ENDURANCE.NS",
       "ESCORTS.NS",
       "EXIDEIND.NS",
@@ -814,6 +810,7 @@
       "BHARTIHEXA.NS",
       "BHEL.NS",
       "BRIGADE.NS",
+      "BSOFT.NS",
       "CAPLIPOINT.NS",
       "CARBORUNIV.NS",
       "CARTRADE.NS",
@@ -997,10 +994,8 @@
       "BHARATCOAL.NS",
       "BHARATFORG.NS",
       "BIOCON.NS",
-      "BIRET.NS",
       "BLS.NS",
       "BLUESTARCO.NS",
-      "BSOFT.NS",
       "CAMS.NS",
       "CANFINHOME.NS",
       "CANHLIFE.NS",
@@ -1030,7 +1025,6 @@
       "ELECON.NS",
       "ELGIEQUIP.NS",
       "EMAMILTD.NS",
-      "EMBASSY.NS",
       "EMMVEE.NS",
       "ENDURANCE.NS",
       "ESCORTS.NS",
@@ -1179,7 +1173,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "CMPDI.NS",
       "HEGAM.NS",
       "ICICILIFE.NS",
@@ -1207,6 +1200,7 @@
       "BELRISE.NS",
       "BEML.NS",
       "BRIGADE.NS",
+      "BSOFT.NS",
       "CAPLIPOINT.NS",
       "CARBORUNIV.NS",
       "CARTRADE.NS",
@@ -1323,9 +1317,7 @@
       "BANDHANBNK.NS",
       "BATAINDIA.NS",
       "BHARATCOAL.NS",
-      "BIRET.NS",
       "BLS.NS",
-      "BSOFT.NS",
       "CAMS.NS",
       "CANFINHOME.NS",
       "CANHLIFE.NS",
@@ -1438,7 +1430,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "CMPDI.NS",
       "HEGAM.NS",
       "VEDPOWER.NS",
@@ -1747,7 +1738,6 @@
   },
   "NIFTY ENERGY": {
     "above": [
-      "ABB.NS",
       "ADANIENSOL.NS",
       "ADANIGREEN.NS",
       "ADANIPOWER.NS",
@@ -1755,7 +1745,6 @@
       "BHEL.NS",
       "BPCL.NS",
       "CASTROLIND.NS",
-      "CGPOWER.NS",
       "GAIL.NS",
       "GVT&D.NS",
       "HINDPETRO.NS",
@@ -1767,8 +1756,10 @@
       "TDPOWERSYS.NS"
     ],
     "below": [
+      "ABB.NS",
       "ATGL.NS",
       "CESC.NS",
+      "CGPOWER.NS",
       "COALINDIA.NS",
       "ENRIN.NS",
       "IGL.NS",
@@ -1801,7 +1792,6 @@
       "ASHOKLEY.NS",
       "BHARTIARTL.NS",
       "BPCL.NS",
-      "CGPOWER.NS",
       "DLF.NS",
       "GAIL.NS",
       "GRASIM.NS",
@@ -1816,6 +1806,7 @@
     ],
     "below": [
       "BHARATFORG.NS",
+      "CGPOWER.NS",
       "CUMMINSIND.NS",
       "FORTIS.NS",
       "INDUSTOWER.NS",
@@ -1953,8 +1944,6 @@
     "above": [
       "LT.NS",
       "BHEL.NS",
-      "ABB.NS",
-      "CGPOWER.NS",
       "JYOTICNC.NS",
       "PTCIL.NS",
       "APARINDS.NS",
@@ -1964,7 +1953,9 @@
       "TDPOWERSYS.NS"
     ],
     "below": [
+      "ABB.NS",
       "SIEMENS.NS",
+      "CGPOWER.NS",
       "THERMAX.NS",
       "CUMMINSIND.NS",
       "ELGIEQUIP.NS",
@@ -2644,7 +2635,6 @@
   },
   "Power T&D": {
     "above": [
-      "CGPOWER.NS",
       "SCHNEIDER.NS",
       "QPOWER.NS",
       "GVT&D.NS",
@@ -2657,6 +2647,7 @@
     "below": [
       "POWERGRID.NS",
       "SIEMENS.NS",
+      "CGPOWER.NS",
       "POWERINDIA.NS",
       "KEC.NS",
       "TRANSRAILL.NS",
@@ -2770,7 +2761,6 @@
   },
   "Semiconductors & EMS": {
     "above": [
-      "CGPOWER.NS",
       "DIXON.NS",
       "AVALON.NS",
       "SYRMA.NS",
@@ -2781,6 +2771,7 @@
     ],
     "below": [
       "BEL.NS",
+      "CGPOWER.NS",
       "KAYNES.NS",
       "MOSCHIP.NS",
       "TATAELXSI.NS",
@@ -2842,7 +2833,6 @@
   "Sugar": {
     "above": [
       "BALRAMCHIN.NS",
-      "TRIVENI.NS",
       "DALMIASUG.NS",
       "DHAMPURSUG.NS",
       "DBOL.NS",
@@ -2853,6 +2843,7 @@
     ],
     "below": [
       "EIDPARRY.NS",
+      "TRIVENI.NS",
       "RENUKA.NS",
       "UGARSUGAR.NS"
     ],

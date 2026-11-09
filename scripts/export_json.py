@@ -574,7 +574,11 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                     # Strictly compares latest session close against the immediately preceding session close (including Muhurat trading)
                     if len(ser) >= 2:
                         prev_p = float(ser.iloc[-2])
-                        c_row["1D"] = round(((curr_price - prev_p) / prev_p) * 100, 2) if prev_p > 0 else None
+                        if prev_p > 0 and pd.notna(prev_p):
+                            ret_1d = round(((curr_price - prev_p) / prev_p) * 100, 2)
+                            c_row["1D"] = 0.0 if ret_1d == 0 else ret_1d
+                        else:
+                            c_row["1D"] = None
                     else:
                         c_row["1D"] = None
                 elif p_name == "YTD":

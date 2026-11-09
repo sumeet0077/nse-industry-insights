@@ -570,6 +570,8 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             }
             for p_name, days in periods.items():
                 if p_name == "1D":
+                    # Official NSE 1D return: (CLOSE_PRICE - PREV_CLOSE) / PREV_CLOSE * 100
+                    # Strictly compares latest session close against the immediately preceding session close (including Muhurat trading)
                     if len(ser) >= 2:
                         prev_p = float(ser.iloc[-2])
                         c_row["1D"] = round(((curr_price - prev_p) / prev_p) * 100, 2) if prev_p > 0 else None

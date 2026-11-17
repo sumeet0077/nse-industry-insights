@@ -200,7 +200,6 @@
       "ELECON.NS",
       "ELGIEQUIP.NS",
       "EMAMILTD.NS",
-      "EMBASSY.NS",
       "EMCURE.NS",
       "ENGINERSIN.NS",
       "ETERNAL.NS",
@@ -399,7 +398,6 @@
       "BHARATCOAL.NS",
       "BHARATFORG.NS",
       "BIOCON.NS",
-      "BIRET.NS",
       "BLS.NS",
       "BLUESTARCO.NS",
       "BPCL.NS",
@@ -613,7 +611,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "HEGAM.NS",
       "ICICILIFE.NS",
       "VAML.NS",
@@ -640,7 +637,6 @@
       "BHEL.NS",
       "COFORGE.NS",
       "DIXON.NS",
-      "EMBASSY.NS",
       "EXIDEIND.NS",
       "FEDERALBNK.NS",
       "FLUOROCHEM.NS",
@@ -842,7 +838,6 @@
       "ELECON.NS",
       "ELGIEQUIP.NS",
       "EMAMILTD.NS",
-      "EMBASSY.NS",
       "EMCURE.NS",
       "ENGINERSIN.NS",
       "EXIDEIND.NS",
@@ -1000,7 +995,6 @@
       "BHARATCOAL.NS",
       "BHARATFORG.NS",
       "BIOCON.NS",
-      "BIRET.NS",
       "BLS.NS",
       "BLUESTARCO.NS",
       "BSOFT.NS",
@@ -1180,7 +1174,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "HEGAM.NS",
       "ICICILIFE.NS",
       "VEDPOWER.NS",
@@ -1325,7 +1318,6 @@
       "BANDHANBNK.NS",
       "BATAINDIA.NS",
       "BHARATCOAL.NS",
-      "BIRET.NS",
       "BLS.NS",
       "BSOFT.NS",
       "CANFINHOME.NS",
@@ -1439,7 +1431,6 @@
       "ZYDUSWELL.NS"
     ],
     "new_stock": [
-      "BAGMANE.NS",
       "HEGAM.NS",
       "VEDPOWER.NS",
       "VISL.NS",

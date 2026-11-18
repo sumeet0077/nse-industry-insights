@@ -621,7 +621,8 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
             } else {
                 for (const tf of ["daily", "weekly", "monthly"] as const) {
                     const grid = s[tf];
-                    for (const p of ["ema_10", "ema_20", "ema_50"] as const) {
+                    const fastKey = grid?.ema_8 ? "ema_8" : "ema_10";
+                    for (const p of [fastKey, "ema_20", "ema_50"] as const) {
                         const cell = grid?.[p];
                         if (!cell || typeof cell.stretch_atr !== "number" || isNaN(cell.stretch_atr)) {
                             errors.push(`Invariant 8 Failure: Invalid cell ${tf}.${p} in ema_stretch on ${item.symbol}`);

@@ -434,11 +434,10 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                              WHEN 'SM' THEN 3 
                              WHEN 'ST' THEN 4 
                              WHEN 'SZ' THEN 5 
-                             WHEN 'RR' THEN 6 
                              ELSE 99 END
                     ) as rn
                 FROM read_parquet('{pq_glob}', union_by_name=true) b
-                WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'ST', 'SZ', 'RR')
+                WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'ST', 'SZ')
                   AND b.year >= {_min_year}
             )
             SELECT symbol, trade_date, close FROM ranked WHERE rn = 1 ORDER BY trade_date ASC
@@ -987,7 +986,7 @@ def compute_and_export_ema_stretch_universe(
         FROM read_parquet('{pq_pattern}', union_by_name=true) b
         {sym_join}
         {ca_join}
-        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
           AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 450 DAY)
         ORDER BY symbol, trade_date ASC
         """
@@ -1005,7 +1004,7 @@ def compute_and_export_ema_stretch_universe(
         FROM read_parquet('{pq_pattern}', union_by_name=true) b
         {sym_join}
         {ca_join}
-        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
           AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 1500 DAY)
         GROUP BY {sym_expr}, DATE_TRUNC('week', CAST(b.trade_date AS DATE))
         ORDER BY symbol, period_start ASC
@@ -1024,7 +1023,7 @@ def compute_and_export_ema_stretch_universe(
         FROM read_parquet('{pq_pattern}', union_by_name=true) b
         {sym_join}
         {ca_join}
-        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
         GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
         ORDER BY symbol, period_start ASC
         """
@@ -1038,7 +1037,8 @@ def compute_and_export_ema_stretch_universe(
             df = df.sort(["symbol", date_col])
             df = df.with_columns(
                 pl.col("close").shift(1).over("symbol").alias("prev_close"),
-                pl.col("close").ewm_mean(span=10, adjust=False).over("symbol").alias("ema_10"),
+                pl.col("close").ewm_mean(span=8, adjust=False).over("symbol").alias("ema_8"),
+                pl.col("close").ewm_mean(span=8, adjust=False).over("symbol").alias("ema_10"),
                 pl.col("close").ewm_mean(span=20, adjust=False).over("symbol").alias("ema_20"),
                 pl.col("close").ewm_mean(span=50, adjust=False).over("symbol").alias("ema_50"),
             )
@@ -1055,7 +1055,8 @@ def compute_and_export_ema_stretch_universe(
             # Safe division guarded against atr_14 <= 0
             safe_atr = pl.when(pl.col("atr_14") > 0).then(pl.col("atr_14")).otherwise(pl.lit(None))
             df = df.with_columns(
-                ((pl.col("close") - pl.col("ema_10")) / safe_atr).alias("s_10"),
+                ((pl.col("close") - pl.col("ema_8")) / safe_atr).alias("s_8"),
+                ((pl.col("close") - pl.col("ema_8")) / safe_atr).alias("s_10"),
                 ((pl.col("close") - pl.col("ema_20")) / safe_atr).alias("s_20"),
                 ((pl.col("close") - pl.col("ema_50")) / safe_atr).alias("s_50"),
             )
@@ -1081,7 +1082,7 @@ def compute_and_export_ema_stretch_universe(
         w_df = compute_timeframe_metrics(w_df, is_daily=False)
         m_df = compute_timeframe_metrics(m_df, is_daily=False)
 
-        def build_cell(curr_val, hist_vals, min_bars=20):
+        def build_cell(curr_val, hist_vals, min_bars=20, ema_val=None):
             if curr_val is None or np.isnan(curr_val) or np.isinf(curr_val) or len(hist_vals) < min_bars:
                 val_abs = round(float(abs(curr_val)), 1) if (curr_val is not None and not np.isnan(curr_val) and not np.isinf(curr_val)) else 0.0
                 val_str = f"{int(val_abs)}" if val_abs.is_integer() else f"{val_abs:.1f}"
@@ -1092,7 +1093,8 @@ def compute_and_export_ema_stretch_universe(
                     "percentile_str": "IPO",
                     "is_above": is_ab,
                     "formatted": f"{val_str} ATR{' *' if is_ab else ''}  IPO",
-                    "color_tier": "ipo"
+                    "color_tier": "ipo",
+                    "ema_val": ema_val
                 }
             is_above = bool(curr_val >= 0)
             val_abs = round(float(abs(curr_val)), 1)
@@ -1125,7 +1127,8 @@ def compute_and_export_ema_stretch_universe(
                 "percentile_str": p_str,
                 "is_above": is_above,
                 "formatted": formatted,
-                "color_tier": tier
+                "color_tier": tier,
+                "ema_val": ema_val
             }
 
         # Partition by symbol
@@ -1141,10 +1144,13 @@ def compute_and_export_ema_stretch_universe(
                 latest_row = sub[-1]
                 hist = sub[-lookback:]
                 cells = {}
-                for p in [10, 20, 50]:
+                for p in [8, 20, 50]:
                     c_val = latest_row[f"s_{p}"][0]
                     c_hist = hist[f"s_{p}"].to_list()
-                    cells[f"ema_{p}"] = build_cell(c_val, c_hist, min_bars=20)
+                    ema_raw = latest_row[f"ema_{p}"][0]
+                    ema_val = round(float(ema_raw), 2) if (ema_raw is not None and not np.isnan(ema_raw)) else None
+                    cells[f"ema_{p}"] = build_cell(c_val, c_hist, min_bars=20, ema_val=ema_val)
+                cells["ema_10"] = cells["ema_8"]
                 tf_data[sym] = (cells, latest_row, sub)
             return tf_data
 
@@ -1171,15 +1177,17 @@ def compute_and_export_ema_stretch_universe(
                 continue
 
             d_cells, d_latest, d_sub = d_entry
-            w_cells = w_entry[0] if w_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
-            m_cells = m_entry[0] if m_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
+            fallback_cells = {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [8, 20, 50]}
+            fallback_cells["ema_10"] = fallback_cells["ema_8"]
+            w_cells = w_entry[0] if w_entry else fallback_cells.copy()
+            m_cells = m_entry[0] if m_entry else fallback_cells.copy()
 
             # Timeframe Monotonicity Invariant:
             # If a security does not possess minimum active trading history on the weekly timeframe (< 20 weeks / ~5 months),
             # it cannot possess mature multi-year monthly percentiles. This prevents relisted companies following multi-year
             # bankruptcy/insolvency halts (e.g. DSKULKARNI) from interpolating pre-halt monthly percentiles across an 8-year gap.
             if w_cells.get("ema_20", {}).get("percentile_str") == "IPO":
-                for p in [10, 20, 50]:
+                for p in [8, 10, 20, 50]:
                     if m_cells.get(f"ema_{p}"):
                         m_cells[f"ema_{p}"]["percentile"] = None
                         m_cells[f"ema_{p}"]["percentile_str"] = "IPO"
@@ -1211,13 +1219,17 @@ def compute_and_export_ema_stretch_universe(
                 kinetic_badge = "Normal Drift"
 
             # Landing Zones
-            ema10_val = d_latest["ema_10"][0]
+            ema8_val = d_latest["ema_8"][0]
             ema20_val = d_latest["ema_20"][0]
-            landing_ema_10 = round(float(ema10_val), 2) if (ema10_val is not None and not np.isnan(ema10_val)) else None
+            ema50_val = d_latest["ema_50"][0]
+            landing_ema_8 = round(float(ema8_val), 2) if (ema8_val is not None and not np.isnan(ema8_val)) else None
+            landing_ema_10 = landing_ema_8
             landing_ema_20 = round(float(ema20_val), 2) if (ema20_val is not None and not np.isnan(ema20_val)) else None
+            landing_ema_50 = round(float(ema50_val), 2) if (ema50_val is not None and not np.isnan(ema50_val)) else None
 
-            # CPR Top
+            # CPR Pivot & Top
             cpr_top = None
+            cpr_pivot = None
             cpr_tuple = cpr_lookup.get((clean, prior_yr, prior_mo)) or cpr_lookup.get((sym, prior_yr, prior_mo))
             if cpr_tuple:
                 mh, ml, mc = cpr_tuple
@@ -1228,6 +1240,8 @@ def compute_and_export_ema_stretch_universe(
                     top_val = max(tc, bc)
                     if not np.isnan(top_val):
                         cpr_top = round(float(top_val), 2)
+                    if not np.isnan(pivot):
+                        cpr_pivot = round(float(pivot), 2)
 
             # Decay Mode & Half-Life
             if d20_cell["is_above"]:
@@ -1267,8 +1281,11 @@ def compute_and_export_ema_stretch_universe(
                 "is_exhaustion_hook": is_exhaustion_hook,
                 "kinetic_status": kinetic_status,
                 "kinetic_badge": kinetic_badge,
+                "landing_ema_8": landing_ema_8,
                 "landing_ema_10": landing_ema_10,
                 "landing_ema_20": landing_ema_20,
+                "landing_ema_50": landing_ema_50,
+                "landing_cpr_pivot": cpr_pivot,
                 "landing_cpr_top": cpr_top,
                 "half_life_days": half_life_days,
                 "decay_mode": decay_mode,
@@ -1282,7 +1299,7 @@ def compute_and_export_ema_stretch_universe(
             # Universe candidate selection
             is_trade_today = (d_latest["trade_date"][0] == latest_date)
             series_val = d_latest["series"][0] if "series" in d_latest.columns else "EQ"
-            is_valid_series = series_val in ("EQ", "BE", "BZ", "SM", "RR")
+            is_valid_series = series_val in ("EQ", "BE", "BZ", "SM")
 
             if is_trade_today and is_valid_series and not is_etf_or_re(clean):
                 c_close = float(d_latest["close"][0] or 0.0)
@@ -1514,7 +1531,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     close as raw_close,
                     volume
                 FROM read_parquet('{parquet_pattern}', union_by_name=true)
-                WHERE series IN ('EQ', 'BE', 'BZ', 'RR')
+                WHERE series IN ('EQ', 'BE', 'BZ', 'SM')
                   {warmup_filter}
             ),
             adjusted AS (
@@ -1877,7 +1894,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             FROM read_parquet('{pq_pattern}', union_by_name=true) b
             {sym_join}
             {cpr_ca_join}
-            WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
+            WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
               AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 120 DAY)
             GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
             """
@@ -1908,7 +1925,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             FROM read_parquet('{pq_pattern}', union_by_name=true) b
             {sym_join}
             {daily_ca_join}
-            WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
+            WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
               AND b.trade_date >= (CAST('{min_date}' AS DATE) - INTERVAL 250 DAY)
             ORDER BY symbol, trade_date ASC
             """
@@ -1925,7 +1942,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 FROM read_parquet('{pq_pattern}', union_by_name=true) b
                 {sym_join}
                 {ca_join}
-                WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
+                WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM')
                 GROUP BY {sym_expr}, CAST(b.trade_date AS DATE)
             ),
             ranked AS (
@@ -1957,7 +1974,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 daily_df = daily_df.unique(subset=["symbol", "trade_date"], keep="last")
                 daily_df = daily_df.sort(["symbol", "trade_date"])
                 daily_df = daily_df.with_columns(
-                    pl.col("close").ewm_mean(span=10, adjust=False).over("symbol").alias("ema_10"),
+                    pl.col("close").ewm_mean(span=8, adjust=False).over("symbol").alias("ema_8"),
+                    pl.col("close").ewm_mean(span=8, adjust=False).over("symbol").alias("ema_10"),
                     pl.col("close").ewm_mean(span=20, adjust=False).over("symbol").alias("ema_20"),
                     pl.col("volume").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("vol_sma20"),
                     pl.col("deliv_qty").rolling_mean(window_size=20, min_samples=1).over("symbol").alias("deliv_qty_sma20"),
@@ -1976,7 +1994,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
 
                 # Pocket pivot (Morales & Kacher): today close >= open or close >= prev_close,
                 # volume > max down volume of prior 10 sessions (or 1.25x SMA20 if zero down days),
-                # and price hugging support (within 5% above or 2% below EMA 10 or EMA 20)
+                # and price hugging support (within 5% above or 2% below EMA 8 or EMA 20)
                 daily_df = daily_df.with_columns(
                     (
                         ((pl.col("close") >= pl.col("open")) | (pl.col("close") >= pl.col("prev_close"))) &
@@ -1986,7 +2004,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                             .otherwise(pl.col("volume") > (pl.col("vol_sma20") * 1.25))
                         ) &
                         (
-                            ((pl.col("close") >= pl.col("ema_10") * 0.98) & ((pl.col("close") - pl.col("ema_10")) / pl.col("ema_10") <= 0.05)) |
+                            ((pl.col("close") >= pl.col("ema_8") * 0.98) & ((pl.col("close") - pl.col("ema_8")) / pl.col("ema_8") <= 0.05)) |
                             ((pl.col("close") >= pl.col("ema_20") * 0.98) & ((pl.col("close") - pl.col("ema_20")) / pl.col("ema_20") <= 0.05))
                         )
                     ).alias("is_pocket_pivot")

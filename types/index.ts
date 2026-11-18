@@ -228,6 +228,10 @@ export interface UnifiedWaveConcept {
 
 export type EMAStretchColorTier = "extreme_pos" | "pos" | "extreme_neg" | "neg" | "neutral" | "ipo";
 
+export type SupportAnchorTarget = "ema_8" | "ema_20" | "ema_50" | "cpr_pivot" | "any";
+export type SupportTimeframeTarget = "daily" | "weekly";
+export type TrendRegimeOption = "any" | "bull" | "bear";
+
 export interface EMAStretchCell {
     stretch_atr: number;
     percentile: number | null;
@@ -235,21 +239,25 @@ export interface EMAStretchCell {
     is_above: boolean;
     formatted: string;
     color_tier: EMAStretchColorTier;
+    ema_val?: number | null;
 }
 
 export interface EMAStretchMatrix {
     daily: {
-        ema_10: EMAStretchCell;
+        ema_8: EMAStretchCell;
+        ema_10?: EMAStretchCell;
         ema_20: EMAStretchCell;
         ema_50: EMAStretchCell;
     };
     weekly: {
-        ema_10: EMAStretchCell;
+        ema_8: EMAStretchCell;
+        ema_10?: EMAStretchCell;
         ema_20: EMAStretchCell;
         ema_50: EMAStretchCell;
     };
     monthly: {
-        ema_10: EMAStretchCell;
+        ema_8: EMAStretchCell;
+        ema_10?: EMAStretchCell;
         ema_20: EMAStretchCell;
         ema_50: EMAStretchCell;
     };
@@ -259,9 +267,12 @@ export interface EMAStretchMatrix {
     kinetic_status: "exhaustion_hook" | "thrust" | "saturation" | "normal";
     kinetic_badge: string;
     // Mean-Reversion Landing Zones
-    landing_ema_10: number | null;
+    landing_ema_8: number | null;
+    landing_ema_10?: number | null;
     landing_ema_20: number | null;
-    landing_cpr_top: number | null;
+    landing_ema_50: number | null;
+    landing_cpr_pivot: number | null;
+    landing_cpr_top?: number | null;
     // Decay / Half-Life
     half_life_days: number;
     decay_mode: "Time Consolidation" | "Price Flush";

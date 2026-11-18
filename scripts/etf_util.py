@@ -195,9 +195,13 @@ def sync_etfs_from_nse(file_path=None, url=NSE_ETF_URL, daily_file=None) -> list
 
     return new_etfs
 
+EXCLUDED_TRUSTS_GILTS = {
+    "EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT"
+}
+
 def is_etf_or_re(symbol: str, etf_set=None, whitelist=None) -> bool:
     """
-    Evaluates whether a symbol is an ETF or Rights Entitlement (-RE).
+    Evaluates whether a symbol is an ETF, Rights Entitlement (-RE), REIT, InvIT, or GILT.
     Strict Whitelist-Precedence: Returns False if symbol is in the protected registry.
     """
     if not symbol:
@@ -208,8 +212,16 @@ def is_etf_or_re(symbol: str, etf_set=None, whitelist=None) -> bool:
     if sym in wl:
         return False
 
+    # Explicit REITs, InvITs, and GILTs exclusion
+    if sym in EXCLUDED_TRUSTS_GILTS:
+        return True
+
     # Rights Entitlements check (-RE, -RE1, -RE2, etc.)
     if "-RE" in sym or re.search(r"-RE\d*$", sym):
+        return True
+
+    # Regex check for REIT, INVIT, GILT patterns (protected equities checked first)
+    if re.search(r"(REIT|INVIT|GILT)", sym):
         return True
 
     etfs = etf_set if etf_set is not None else load_etf_symbols()
@@ -226,7 +238,7 @@ def is_etf_or_re(symbol: str, etf_set=None, whitelist=None) -> bool:
 
 def filter_etfs_polars(df: pl.DataFrame, symbol_col: str = "Symbol", file_path=None) -> pl.DataFrame:
     """
-    Filters out ETFs and Rights Entitlements (-RE) from a Polars DataFrame.
+    Filters out ETFs, Rights Entitlements (-RE), REITs, InvITs, and GILTs from a Polars DataFrame.
     Guarantees that protected whitelisted corporate equities are retained.
     """
     if symbol_col not in df.columns:
@@ -237,10 +249,14 @@ def filter_etfs_polars(df: pl.DataFrame, symbol_col: str = "Symbol", file_path=N
 
     before_count = len(df)
 
-    # Exclude conditions: NOT whitelisted AND (is -RE OR is in ETF set OR matches ETF naming pattern)
+    # Exclude conditions: NOT whitelisted AND (is -RE OR is in ETF set OR matches ETF naming pattern OR REIT/INVIT/GILT)
     is_whitelisted = pl.col(symbol_col).is_in(list(whitelist))
     is_re = pl.col(symbol_col).str.contains(r"-RE")
     is_known_etf = pl.col(symbol_col).is_in(list(etfs))
+    is_trust_or_gilt = (
+        pl.col(symbol_col).is_in(list(EXCLUDED_TRUSTS_GILTS)) |
+        pl.col(symbol_col).str.contains(r"(?i)(REIT|INVIT|GILT)")
+    )
     is_pattern_etf = (
         pl.col(symbol_col).str.ends_with("BEES") |
         pl.col(symbol_col).str.ends_with("ETF") |
@@ -255,13 +271,13 @@ def filter_etfs_polars(df: pl.DataFrame, symbol_col: str = "Symbol", file_path=N
         pl.col(symbol_col).is_in(["BHARAT22", "CPSEETF"])
     )
 
-    exclude_condition = (~is_whitelisted) & (is_re | is_known_etf | is_pattern_etf)
+    exclude_condition = (~is_whitelisted) & (is_re | is_known_etf | is_pattern_etf | is_trust_or_gilt)
     filtered_df = df.filter(~exclude_condition)
 
     after_count = len(filtered_df)
     excluded_count = before_count - after_count
     if excluded_count > 0:
-        print(f"Filtered out ETFs & -REs: {before_count} -> {after_count} rows ({excluded_count} excluded)")
+        print(f"Filtered out ETFs, REITs & -REs: {before_count} -> {after_count} rows ({excluded_count} excluded)")
 
     return filtered_df
 
@@ -287,7 +303,9 @@ def get_etf_exclusion_sql_clause(symbol_col="symbol", table_name="excluded_etfs"
     2. Exclusion of known ETFs in excluded_etfs.
     3. Exclusion of Rights Entitlements (-RE, -RE1, etc.).
     4. Exclusion of ETF naming patterns (BEES, ETF, IETF, GETF, BETF, IWIN, SETF, NETF, BBETF, EBBETF, BHARAT22, CPSEETF).
+    5. Exclusion of REIT, INVIT, and GILT patterns.
     """
+    excluded_trusts_tuple = "('" + "', '".join(sorted(list(EXCLUDED_TRUSTS_GILTS))) + "')"
     return f"""(
         TRIM({symbol_col}) IN (SELECT symbol FROM {whitelist_table})
         OR (
@@ -304,5 +322,9 @@ def get_etf_exclusion_sql_clause(symbol_col="symbol", table_name="excluded_etfs"
             AND TRIM({symbol_col}) NOT LIKE 'BBETF%'
             AND TRIM({symbol_col}) NOT LIKE 'EBBETF%'
             AND TRIM({symbol_col}) NOT IN ('BHARAT22', 'CPSEETF')
+            AND TRIM({symbol_col}) NOT LIKE '%REIT%'
+            AND TRIM({symbol_col}) NOT LIKE '%INVIT%'
+            AND TRIM({symbol_col}) NOT LIKE '%GILT%'
+            AND TRIM({symbol_col}) NOT IN {excluded_trusts_tuple}
         )
     )"""

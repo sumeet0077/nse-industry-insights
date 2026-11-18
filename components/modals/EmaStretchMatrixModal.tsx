@@ -1,7 +1,8 @@
 // components/modals/EmaStretchMatrixModal.tsx
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { EMAStretchMatrix, EMAStretchCell } from "@/types";
 import { X, ExternalLink, Zap, Compass, Activity, ArrowUpRight, ArrowDownRight, ShieldAlert, Sparkles, Target } from "lucide-react";
 import { makeTradingViewUrl } from "@/lib/utils";
@@ -161,6 +162,21 @@ export function EmaStretchMatrixModal({
     matrix,
 }: EmaStretchMatrixModalProps) {
     const clean = cleanSymbol || symbol.replace(".NS", "").trim().toUpperCase();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Lock body scroll when modal is open
+    useEffect(() => {
+        if (!isOpen) return;
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = originalOverflow;
+        };
+    }, [isOpen]);
 
     // ESC key closes modal
     useEffect(() => {
@@ -172,7 +188,7 @@ export function EmaStretchMatrixModal({
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isOpen, onClose]);
 
-    if (!isOpen) return null;
+    if (!isOpen || !mounted) return null;
 
     const renderCellValues = (cell: EMAStretchCell | undefined, isLast: boolean = false) => {
         if (!cell) {
@@ -231,7 +247,12 @@ export function EmaStretchMatrixModal({
         return (
             <>
                 <td className={`px-2 py-2 text-center font-mono text-[11px] whitespace-nowrap border-r ${borderClass} ${bgClass} ${textValClass}`}>
-                    {formattedAtr}
+                    <div>{formattedAtr}</div>
+                    {cell.ema_val != null && (
+                        <div className="text-[10px] text-gray-300 font-mono mt-0.5">
+                            ₹{cell.ema_val.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </div>
+                    )}
                 </td>
                 <td className={`px-2 py-2 text-center font-mono text-[11px] whitespace-nowrap ${!isLast ? `border-r ${borderClass}` : ""} ${bgClass} ${textPctClass}`}>
                     {cleanPct}
@@ -240,7 +261,7 @@ export function EmaStretchMatrixModal({
         );
     };
 
-    return (
+    const modalContent = (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-200"
             onClick={onClose}
@@ -337,7 +358,7 @@ export function EmaStretchMatrixModal({
                                         STRETCH
                                     </th>
                                     <th colSpan={2} className="px-3 py-1.5 text-center font-bold border-r border-[#5a1040]">
-                                        EMA10
+                                        EMA8
                                     </th>
                                     <th colSpan={2} className="px-3 py-1.5 text-center font-bold border-r border-[#5a1040]">
                                         EMA20
@@ -361,7 +382,7 @@ export function EmaStretchMatrixModal({
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Daily
                                     </td>
-                                    {renderCellValues(matrix?.daily?.ema_10)}
+                                    {renderCellValues(matrix?.daily?.ema_8 || matrix?.daily?.ema_10)}
                                     {renderCellValues(matrix?.daily?.ema_20)}
                                     {renderCellValues(matrix?.daily?.ema_50, true)}
                                 </tr>
@@ -370,7 +391,7 @@ export function EmaStretchMatrixModal({
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Weekly
                                     </td>
-                                    {renderCellValues(matrix?.weekly?.ema_10)}
+                                    {renderCellValues(matrix?.weekly?.ema_8 || matrix?.weekly?.ema_10)}
                                     {renderCellValues(matrix?.weekly?.ema_20)}
                                     {renderCellValues(matrix?.weekly?.ema_50, true)}
                                 </tr>
@@ -379,7 +400,7 @@ export function EmaStretchMatrixModal({
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Monthly
                                     </td>
-                                    {renderCellValues(matrix?.monthly?.ema_10)}
+                                    {renderCellValues(matrix?.monthly?.ema_8 || matrix?.monthly?.ema_10)}
                                     {renderCellValues(matrix?.monthly?.ema_20)}
                                     {renderCellValues(matrix?.monthly?.ema_50, true)}
                                 </tr>
@@ -477,51 +498,62 @@ export function EmaStretchMatrixModal({
                                 <span className="text-[10px] text-gray-400 font-mono">Support Benchmarks</span>
                             </div>
                             {(() => {
-                                const discEma10 = calcLandingDiscount(matrix?.landing_ema_10, currentPrice);
-                                const discEma20 = calcLandingDiscount(matrix?.landing_ema_20, currentPrice);
-                                const discCprTop = calcLandingDiscount(matrix?.landing_cpr_top, currentPrice);
+                                const landingEma8 = matrix?.landing_ema_8 ?? matrix?.landing_ema_10;
+                                const landingEma20 = matrix?.landing_ema_20;
+                                const landingEma50 = matrix?.landing_ema_50;
+                                const landingCprPivot = matrix?.landing_cpr_pivot ?? matrix?.landing_cpr_top;
+
+                                const discEma8 = calcLandingDiscount(landingEma8, currentPrice);
+                                const discEma20 = calcLandingDiscount(landingEma20, currentPrice);
+                                const discEma50 = calcLandingDiscount(landingEma50, currentPrice);
+                                const discCprPivot = calcLandingDiscount(landingCprPivot, currentPrice);
 
                                 // Find closest support benchmark
-                                let closestSupport: "ema10" | "ema20" | "cpr_top" | null = null;
+                                let closestSupport: "ema8" | "ema20" | "ema50" | "cpr_pivot" | null = null;
                                 if (currentPrice != null && currentPrice > 0) {
                                     let minDiff = Infinity;
-                                    if (matrix?.landing_ema_10 != null) {
-                                        const d = Math.abs(currentPrice - matrix.landing_ema_10);
-                                        if (d < minDiff) { minDiff = d; closestSupport = "ema10"; }
-                                    }
-                                    if (matrix?.landing_ema_20 != null) {
-                                        const d = Math.abs(currentPrice - matrix.landing_ema_20);
-                                        if (d < minDiff) { minDiff = d; closestSupport = "ema20"; }
-                                    }
-                                    if (matrix?.landing_cpr_top != null) {
-                                        const d = Math.abs(currentPrice - matrix.landing_cpr_top);
-                                        if (d < minDiff) { minDiff = d; closestSupport = "cpr_top"; }
+                                    const candidates = [
+                                        { key: "ema8" as const, val: landingEma8 },
+                                        { key: "ema20" as const, val: landingEma20 },
+                                        { key: "ema50" as const, val: landingEma50 },
+                                        { key: "cpr_pivot" as const, val: landingCprPivot },
+                                    ];
+                                    for (const c of candidates) {
+                                        if (c.val != null) {
+                                            const d = Math.abs(currentPrice - c.val);
+                                            if (d < minDiff) {
+                                                minDiff = d;
+                                                closestSupport = c.key;
+                                            }
+                                        }
                                     }
                                 }
 
                                 return (
-                                    <div className="grid grid-cols-3 gap-2 text-center font-mono">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-mono">
+                                        {/* EMA 8 */}
                                         <div className={`p-2 rounded-lg border relative transition-all ${
-                                            closestSupport === "ema10"
+                                            closestSupport === "ema8"
                                                 ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
                                                 : "bg-[#0e0e17] border-gray-800"
                                         }`}>
-                                            {closestSupport === "ema10" && (
+                                            {closestSupport === "ema8" && (
                                                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
                                                     Closest
                                                 </div>
                                             )}
-                                            <div className="text-[10px] text-gray-400 font-sans">EMA 10</div>
+                                            <div className="text-[10px] text-gray-400 font-sans">EMA 8</div>
                                             <div className="text-xs font-bold text-gray-200 mt-0.5">
-                                                {matrix?.landing_ema_10 != null ? `₹${matrix.landing_ema_10.toFixed(2)}` : "—"}
+                                                {landingEma8 != null ? `₹${landingEma8.toFixed(2)}` : "—"}
                                             </div>
-                                            {discEma10 && (
-                                                <div className={`text-[10px] font-mono mt-0.5 ${discEma10.startsWith('-') ? 'text-gray-400' : 'text-amber-400 font-semibold'}`}>
-                                                    {discEma10}
+                                            {discEma8 && (
+                                                <div className={`text-[10px] font-mono mt-0.5 ${discEma8.startsWith('-') ? 'text-gray-400' : 'text-amber-400 font-semibold'}`}>
+                                                    {discEma8}
                                                 </div>
                                             )}
                                         </div>
 
+                                        {/* EMA 20 */}
                                         <div className={`p-2 rounded-lg border relative transition-all ${
                                             closestSupport === "ema20"
                                                 ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
@@ -534,7 +566,7 @@ export function EmaStretchMatrixModal({
                                             )}
                                             <div className="text-[10px] text-gray-400 font-sans">EMA 20</div>
                                             <div className="text-xs font-bold text-cyan-300 mt-0.5">
-                                                {matrix?.landing_ema_20 != null ? `₹${matrix.landing_ema_20.toFixed(2)}` : "—"}
+                                                {landingEma20 != null ? `₹${landingEma20.toFixed(2)}` : "—"}
                                             </div>
                                             {discEma20 && (
                                                 <div className={`text-[10px] font-mono mt-0.5 ${discEma20.startsWith('-') ? 'text-cyan-400' : 'text-amber-400 font-semibold'}`}>
@@ -543,23 +575,46 @@ export function EmaStretchMatrixModal({
                                             )}
                                         </div>
 
+                                        {/* EMA 50 */}
                                         <div className={`p-2 rounded-lg border relative transition-all ${
-                                            closestSupport === "cpr_top"
+                                            closestSupport === "ema50"
                                                 ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
                                                 : "bg-[#0e0e17] border-gray-800"
                                         }`}>
-                                            {closestSupport === "cpr_top" && (
+                                            {closestSupport === "ema50" && (
                                                 <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
                                                     Closest
                                                 </div>
                                             )}
-                                            <div className="text-[10px] text-gray-400 font-sans">CPR Top</div>
-                                            <div className="text-xs font-bold text-emerald-400 mt-0.5">
-                                                {matrix?.landing_cpr_top != null ? `₹${matrix.landing_cpr_top.toFixed(2)}` : "—"}
+                                            <div className="text-[10px] text-gray-400 font-sans">EMA 50</div>
+                                            <div className="text-xs font-bold text-indigo-300 mt-0.5">
+                                                {landingEma50 != null ? `₹${landingEma50.toFixed(2)}` : "—"}
                                             </div>
-                                            {discCprTop && (
-                                                <div className={`text-[10px] font-mono mt-0.5 ${discCprTop.startsWith('-') ? 'text-emerald-400' : 'text-amber-400 font-semibold'}`}>
-                                                    {discCprTop}
+                                            {discEma50 && (
+                                                <div className={`text-[10px] font-mono mt-0.5 ${discEma50.startsWith('-') ? 'text-indigo-400' : 'text-amber-400 font-semibold'}`}>
+                                                    {discEma50}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Monthly Central Pivot (P) */}
+                                        <div className={`p-2 rounded-lg border relative transition-all ${
+                                            closestSupport === "cpr_pivot"
+                                                ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
+                                                : "bg-[#0e0e17] border-gray-800"
+                                        }`}>
+                                            {closestSupport === "cpr_pivot" && (
+                                                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
+                                                    Closest
+                                                </div>
+                                            )}
+                                            <div className="text-[10px] text-gray-400 font-sans">Central Pivot (P)</div>
+                                            <div className="text-xs font-bold text-emerald-400 mt-0.5">
+                                                {landingCprPivot != null ? `₹${landingCprPivot.toFixed(2)}` : "—"}
+                                            </div>
+                                            {discCprPivot && (
+                                                <div className={`text-[10px] font-mono mt-0.5 ${discCprPivot.startsWith('-') ? 'text-emerald-400' : 'text-amber-400 font-semibold'}`}>
+                                                    {discCprPivot}
                                                 </div>
                                             )}
                                         </div>
@@ -567,7 +622,7 @@ export function EmaStretchMatrixModal({
                                 );
                             })()}
                             <p className="text-[10px] font-sans text-gray-400 leading-normal">
-                                Institutional dip-buyers deploy limit orders near EMA 20 & Monthly CPR Top (% indicates distance from CMP).
+                                Institutional dip-buyers deploy limit orders near EMA 8, EMA 20, EMA 50 & Monthly Central Pivot (P) (% indicates distance from CMP).
                             </p>
                         </div>
                     </div>
@@ -591,4 +646,6 @@ export function EmaStretchMatrixModal({
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 }

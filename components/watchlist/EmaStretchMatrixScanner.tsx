@@ -159,9 +159,7 @@ export function resolveSingleAnchor(
             if (m.daily?.ema_20?.ema_val != null && m.daily.ema_20.ema_val > 0) return m.daily.ema_20.ema_val;
         } else if (anchor === "ema_8") {
             if (m.landing_ema_8 != null && m.landing_ema_8 > 0) return m.landing_ema_8;
-            if (m.landing_ema_10 != null && m.landing_ema_10 > 0) return m.landing_ema_10;
             if (m.daily?.ema_8?.ema_val != null && m.daily.ema_8.ema_val > 0) return m.daily.ema_8.ema_val;
-            if (m.daily?.ema_10?.ema_val != null && m.daily.ema_10.ema_val > 0) return m.daily.ema_10.ema_val;
         } else if (anchor === "ema_50") {
             if (m.landing_ema_50 != null && m.landing_ema_50 > 0) return m.landing_ema_50;
             if (m.daily?.ema_50?.ema_val != null && m.daily.ema_50.ema_val > 0) return m.daily.ema_50.ema_val;
@@ -205,7 +203,7 @@ export function resolveSingleAnchor(
                 if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
             }
         } else if (anchor === "ema_8") {
-            const d8 = m.daily?.ema_8 ?? m.daily?.ema_10;
+            const d8 = m.daily?.ema_8;
             if (d8 && d8.percentile_str !== "IPO") {
                 const s8 = d8.is_above ? d8.stretch_atr : -d8.stretch_atr;
                 const calcLevel = close - (s8 * derivedAtr);
@@ -223,7 +221,6 @@ export function resolveSingleAnchor(
             if (m.weekly?.ema_20?.ema_val != null && m.weekly.ema_20.ema_val > 0) return m.weekly.ema_20.ema_val;
         } else if (anchor === "ema_8") {
             if (m.weekly?.ema_8?.ema_val != null && m.weekly.ema_8.ema_val > 0) return m.weekly.ema_8.ema_val;
-            if (m.weekly?.ema_10?.ema_val != null && m.weekly.ema_10.ema_val > 0) return m.weekly.ema_10.ema_val;
         } else if (anchor === "ema_50") {
             if (m.weekly?.ema_50?.ema_val != null && m.weekly.ema_50.ema_val > 0) return m.weekly.ema_50.ema_val;
         } else if (anchor === "cpr_pivot") {
@@ -247,7 +244,7 @@ export function resolveSingleAnchor(
         const wCell = anchor === "ema_50" 
             ? m.weekly?.ema_50 
             : anchor === "ema_8" 
-                ? (m.weekly?.ema_8 ?? m.weekly?.ema_10) 
+                ? m.weekly?.ema_8 
                 : m.weekly?.ema_20;
 
         if (wCell && wCell.percentile_str !== "IPO") {
@@ -260,7 +257,6 @@ export function resolveSingleAnchor(
             if (m.monthly?.ema_20?.ema_val != null && m.monthly.ema_20.ema_val > 0) return m.monthly.ema_20.ema_val;
         } else if (anchor === "ema_8") {
             if (m.monthly?.ema_8?.ema_val != null && m.monthly.ema_8.ema_val > 0) return m.monthly.ema_8.ema_val;
-            if (m.monthly?.ema_10?.ema_val != null && m.monthly.ema_10.ema_val > 0) return m.monthly.ema_10.ema_val;
         } else if (anchor === "ema_50") {
             if (m.monthly?.ema_50?.ema_val != null && m.monthly.ema_50.ema_val > 0) return m.monthly.ema_50.ema_val;
         }
@@ -281,7 +277,7 @@ export function resolveSingleAnchor(
         const mCell = anchor === "ema_50" 
             ? m.monthly?.ema_50 
             : anchor === "ema_8" 
-                ? (m.monthly?.ema_8 ?? m.monthly?.ema_10) 
+                ? m.monthly?.ema_8 
                 : m.monthly?.ema_20;
 
         if (mCell && mCell.percentile_str !== "IPO") {

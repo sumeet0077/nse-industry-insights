@@ -71,7 +71,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-purple-300",
             borderClass: "border-purple-500/40",
             tooltip: "Momentum Thrust: Extreme stretch expanding with positive velocity. Unchecked trend; trail stops tightly.",
-            explanation: `Momentum Thrust: Extreme stretch expanding with positive kinetic acceleration (+${vel.toFixed(2)} ATR/d). Powerful institutional impulse in motion. Action: Ride the trend with tight trailing stops anchored to Daily 10 EMA; do not counter-trend short.`,
+            explanation: `Momentum Thrust: Extreme stretch expanding with positive kinetic acceleration (+${vel.toFixed(2)} ATR/d). Powerful institutional impulse in motion. Action: Ride the trend with tight trailing stops anchored to Daily 8 EMA; do not counter-trend short.`,
         };
     }
 
@@ -191,7 +191,12 @@ export function EmaStretchMatrixModal({
 
     if (!isOpen || !mounted) return null;
 
-    const renderCellValues = (cell: EMAStretchCell | undefined, isLast: boolean = false) => {
+    const renderCellValues = (
+        cell: EMAStretchCell | undefined,
+        isLast: boolean = false,
+        anchorKey?: "ema_8" | "ema_20" | "ema_50",
+        tfKey?: "daily" | "weekly" | "monthly"
+    ) => {
         if (!cell) {
             return (
                 <>
@@ -245,13 +250,19 @@ export function EmaStretchMatrixModal({
         const formattedAtr = `${dirSign}${valStr} ATR`;
         const cleanPct = (cell.percentile_str || "").replace(/\*/g, "").trim();
 
+        // Effective EMA price value (either pre-calculated or dynamically derived)
+        let emaVal = cell.ema_val ?? null;
+        if (emaVal == null && anchorKey && currentPrice != null && currentPrice > 0 && !isIpo) {
+            emaVal = resolveSingleAnchor({ close: currentPrice, ema_stretch: matrix }, anchorKey, tfKey ?? "daily");
+        }
+
         return (
             <>
                 <td className={`px-2 py-2 text-center font-mono text-[11px] whitespace-nowrap border-r ${borderClass} ${bgClass} ${textValClass}`}>
                     <div>{formattedAtr}</div>
-                    {cell.ema_val != null && (
+                    {emaVal != null && (
                         <div className="text-[10px] text-gray-300 font-mono mt-0.5">
-                            ₹{cell.ema_val.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            ₹{emaVal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                     )}
                 </td>
@@ -383,27 +394,27 @@ export function EmaStretchMatrixModal({
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Daily
                                     </td>
-                                    {renderCellValues(matrix?.daily?.ema_8 || matrix?.daily?.ema_10)}
-                                    {renderCellValues(matrix?.daily?.ema_20)}
-                                    {renderCellValues(matrix?.daily?.ema_50, true)}
+                                    {renderCellValues(matrix?.daily?.ema_8 || matrix?.daily?.ema_10, false, "ema_8", "daily")}
+                                    {renderCellValues(matrix?.daily?.ema_20, false, "ema_20", "daily")}
+                                    {renderCellValues(matrix?.daily?.ema_50, true, "ema_50", "daily")}
                                 </tr>
                                 {/* Weekly Row */}
                                 <tr className="border-b border-[#4a0d3b]/60">
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Weekly
                                     </td>
-                                    {renderCellValues(matrix?.weekly?.ema_8 || matrix?.weekly?.ema_10)}
-                                    {renderCellValues(matrix?.weekly?.ema_20)}
-                                    {renderCellValues(matrix?.weekly?.ema_50, true)}
+                                    {renderCellValues(matrix?.weekly?.ema_8 || matrix?.weekly?.ema_10, false, "ema_8", "weekly")}
+                                    {renderCellValues(matrix?.weekly?.ema_20, false, "ema_20", "weekly")}
+                                    {renderCellValues(matrix?.weekly?.ema_50, true, "ema_50", "weekly")}
                                 </tr>
                                 {/* Monthly Row */}
                                 <tr>
                                     <td className="px-3 py-2 bg-[#0d3b66] text-[#e0f2fe] font-semibold text-center border-r border-[#1e3a5f]">
                                         Monthly
                                     </td>
-                                    {renderCellValues(matrix?.monthly?.ema_8 || matrix?.monthly?.ema_10)}
-                                    {renderCellValues(matrix?.monthly?.ema_20)}
-                                    {renderCellValues(matrix?.monthly?.ema_50, true)}
+                                    {renderCellValues(matrix?.monthly?.ema_8 || matrix?.monthly?.ema_10, false, "ema_8", "monthly")}
+                                    {renderCellValues(matrix?.monthly?.ema_20, false, "ema_20", "monthly")}
+                                    {renderCellValues(matrix?.monthly?.ema_50, true, "ema_50", "monthly")}
                                 </tr>
                             </tbody>
                         </table>

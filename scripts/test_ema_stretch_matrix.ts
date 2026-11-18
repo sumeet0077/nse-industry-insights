@@ -378,7 +378,7 @@ if (dskItem) {
 
 // 8. Test Non-Equity Purge (REITs, InvITs, and GILTs)
 console.log("\n8. Testing Non-Equity Purge (REITs, InvITs, and GILTs)...");
-const testBlacklist = ["EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT"];
+const testBlacklist = ["EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT", "SBIGOLD", "SBINIFTY50"];
 for (const sym of testBlacklist) {
     assert(isExcludedNonEquity(sym), `Non-equity blacklist correctly flags ${sym}`);
     assert(EXCLUDED_NON_EQUITY.has(sym), `EXCLUDED_NON_EQUITY set includes ${sym}`);
@@ -673,6 +673,10 @@ assert(derived8 !== null && Math.abs(derived8 - 980) < 0.1, `resolveSingleAnchor
 // Central Pivot fallback to landing_cpr_top
 const derivedCpr = resolveSingleAnchor(fallbackItem, "cpr_pivot", "daily");
 assert(derivedCpr === 980, `resolveSingleAnchor falls back to landing_cpr_top (980) when cpr_pivot is null`);
+
+// Derived Monthly 50 EMA: s50=4.0, dailyATR=20 => monthlyATR = 20 * 4.58 = 91.6 => diff = 4.0 * 91.6 = 366.4 => 50 EMA = 1000 - 366.4 = 633.6
+const derivedMonthly50 = resolveSingleAnchor(fallbackItem, "ema_50", "monthly");
+assert(derivedMonthly50 !== null && derivedMonthly50 > 600 && derivedMonthly50 < 650, `resolveSingleAnchor derives Monthly 50 EMA from monthly ATR (got ${derivedMonthly50})`);
 
 // B. Test Real Universe combinations
 const f50Deep: StretchFilterState = {

@@ -121,7 +121,8 @@ const LOCAL_STORAGE_KEY = "EMA_STRETCH_CUSTOM_PRESETS_V1";
 
 // Explicit non-equity blacklist (REITs, InvITs, and GILTs)
 export const EXCLUDED_NON_EQUITY = new Set([
-    "EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT"
+    "EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT",
+    "SBIGOLD", "SBINIFTY50"
 ]);
 
 export function isExcludedNonEquity(clean: string): boolean {
@@ -146,7 +147,7 @@ export interface AnchorInfo {
 export function resolveSingleAnchor(
     item: { close?: number | null; ema_stretch?: EMAStretchMatrix | null },
     anchor: "ema_8" | "ema_20" | "ema_50" | "cpr_pivot",
-    tf: SupportTimeframeTarget = "daily"
+    tf: SupportTimeframeTarget | "monthly" = "daily"
 ): number | null {
     const m = item.ema_stretch;
     const close = item.close;
@@ -252,6 +253,40 @@ export function resolveSingleAnchor(
         if (wCell && wCell.percentile_str !== "IPO") {
             const s = wCell.is_above ? wCell.stretch_atr : -wCell.stretch_atr;
             const calcLevel = close - (s * weeklyAtr);
+            if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
+        }
+    } else if (tf === "monthly") {
+        if (anchor === "ema_20") {
+            if (m.monthly?.ema_20?.ema_val != null && m.monthly.ema_20.ema_val > 0) return m.monthly.ema_20.ema_val;
+        } else if (anchor === "ema_8") {
+            if (m.monthly?.ema_8?.ema_val != null && m.monthly.ema_8.ema_val > 0) return m.monthly.ema_8.ema_val;
+            if (m.monthly?.ema_10?.ema_val != null && m.monthly.ema_10.ema_val > 0) return m.monthly.ema_10.ema_val;
+        } else if (anchor === "ema_50") {
+            if (m.monthly?.ema_50?.ema_val != null && m.monthly.ema_50.ema_val > 0) return m.monthly.ema_50.ema_val;
+        }
+
+        // --- Resilient Mathematical Derivation for Monthly ---
+        // Monthly ATR ~ sqrt(21) * Daily ATR (~4.58 * Daily ATR):
+        const d20 = m.daily?.ema_20;
+        const landing20 = m.landing_ema_20 ?? m.daily?.ema_20?.ema_val;
+        let dailyAtr = close * 0.02;
+        if (d20 && landing20 && landing20 > 0) {
+            const s20 = d20.is_above ? d20.stretch_atr : -d20.stretch_atr;
+            if (Math.abs(s20) >= 0.05) {
+                dailyAtr = Math.abs(close - landing20) / Math.abs(s20);
+            }
+        }
+        const monthlyAtr = dailyAtr * 4.58;
+
+        const mCell = anchor === "ema_50" 
+            ? m.monthly?.ema_50 
+            : anchor === "ema_8" 
+                ? (m.monthly?.ema_8 ?? m.monthly?.ema_10) 
+                : m.monthly?.ema_20;
+
+        if (mCell && mCell.percentile_str !== "IPO") {
+            const s = mCell.is_above ? mCell.stretch_atr : -mCell.stretch_atr;
+            const calcLevel = close - (s * monthlyAtr);
             if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
         }
     }
@@ -835,9 +870,15 @@ export function EmaStretchMatrixScanner({
         setActiveCustomPresetId(null);
         setCurrentPage(1);
         if (preset !== "all") {
+            let targetAnchor: SupportAnchorTarget = "ema_20";
+            if (preset === "support_50") targetAnchor = "ema_50";
+            else if (preset === "cpr_bounce") targetAnchor = "cpr_pivot";
+            else if (preset === "momentum_8") targetAnchor = "ema_8";
+
             // Reset conflicting micro-sliders while preserving macro universe & liquidity gates
             setFilters((prev) => ({
                 ...prev,
+                targetAnchor,
                 dailyStretchMin: null,
                 dailyStretchMax: null,
                 weeklyPercentileMin: null,
@@ -915,7 +956,7 @@ export function EmaStretchMatrixScanner({
             case "cpr_bounce": {
                 // Monthly or Weekly Bull + Price resting within +/-1.5% of Monthly Central Pivot (P)
                 if (!m20?.is_above && !w20?.is_above) return false;
-                const pivot = m.landing_cpr_pivot ?? m.landing_cpr_top;
+                const pivot = resolveSingleAnchor(item, "cpr_pivot", "daily");
                 if (pivot == null || close <= 0) return false;
                 const distPct = Math.abs(((close - pivot) / pivot) * 100);
                 return distPct <= 1.5;
@@ -2033,8 +2074,8 @@ export function EmaStretchMatrixScanner({
 
                         {/* 6. Landing Zone Proximity */}
                         <div className="space-y-1.5 bg-[#0e0e17] p-3 rounded-lg border border-gray-800">
-                            <label className="font-semibold text-gray-300 block">
-                                Landing Proximity ({filters.targetAnchor === "any" ? "Any Support" : filters.targetAnchor === "cpr_pivot" ? "Central Pivot" : filters.targetAnchor.toUpperCase().replace("_", " ")})
+                            <label className="font-semibold text-gray-300 block truncate" title={`Landing Proximity (${filters.targetAnchor === "any" ? "Any Support" : filters.targetAnchor === "cpr_pivot" ? "Central Pivot" : `${filters.targetTimeframe === "weekly" ? "Weekly " : ""}${filters.targetAnchor.toUpperCase().replace("_", " ")}`})`}>
+                                Landing Proximity ({filters.targetAnchor === "any" ? "Any Support" : filters.targetAnchor === "cpr_pivot" ? "Central Pivot" : `${filters.targetTimeframe === "weekly" ? "Weekly " : ""}${filters.targetAnchor.toUpperCase().replace("_", " ")}`})
                             </label>
                             <select
                                 value={filters.landingProximity}

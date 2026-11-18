@@ -27,7 +27,7 @@ import {
     RefreshCw,
     Activity,
 } from "lucide-react";
-import { EmaStretchMatrixModal } from "@/components/modals/EmaStretchMatrixModal";
+import { EmaStretchMatrixModal, getSetupVerdict, calcLandingDiscount } from "@/components/modals/EmaStretchMatrixModal";
 
 interface EmaStretchMatrixScannerProps {
     historyData?: Market52WHistory | null;
@@ -325,8 +325,9 @@ export function EmaStretchMatrixScanner({
                 title={`${label}: ${cell.formatted}`}
             >
                 <div className="text-[9px] text-gray-400 font-sans">{label}</div>
-                <div className="font-semibold whitespace-nowrap">
-                    {valStr}A{cell.is_above ? "*" : ""}
+                <div className="font-semibold whitespace-nowrap flex items-center justify-center gap-0.5">
+                    <span className="text-[8px]">{cell.is_above ? "▲" : "▼"}</span>
+                    <span>{valStr}A</span>
                 </div>
                 <div className={`text-[9px] font-bold ${isIpo ? "text-amber-400" : ""}`}>{cell.percentile_str}</div>
             </div>
@@ -539,6 +540,9 @@ export function EmaStretchMatrixScanner({
                                         <ArrowUpDown className="w-3 h-3 text-gray-500" />
                                     </div>
                                 </th>
+                                <th className="p-3 text-center">
+                                    <span>Setup Verdict</span>
+                                </th>
                                 <th className="p-3 text-right cursor-pointer hover:text-white" onClick={() => handleSort("pct_1d")}>
                                     <div className="flex items-center justify-end gap-1">
                                         <span>Price / 1D %</span>
@@ -591,6 +595,7 @@ export function EmaStretchMatrixScanner({
                                 const isHook = m?.is_exhaustion_hook;
                                 const isCopied = copiedSymbol === clean;
                                 const isInActiveWatchlist = activeWatchlistTickers.includes(item.symbol) || activeWatchlistTickers.includes(clean);
+                                const verdict = getSetupVerdict(m);
 
                                 return (
                                     <tr
@@ -633,6 +638,16 @@ export function EmaStretchMatrixScanner({
                                                         </div>
                                                     )}
                                                 </div>
+                                            </div>
+                                        </td>
+
+                                        {/* 2. Setup Verdict */}
+                                        <td className="p-3 text-center" onClick={(e) => e.stopPropagation()}>
+                                            <div
+                                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold border whitespace-nowrap ${verdict.bgClass} ${verdict.textClass} ${verdict.borderClass} ${verdict.key === "hook" ? "animate-pulse" : ""}`}
+                                                title={verdict.tooltip}
+                                            >
+                                                <span>{verdict.badge}</span>
                                             </div>
                                         </td>
 
@@ -709,8 +724,19 @@ export function EmaStretchMatrixScanner({
                                         </td>
 
                                         {/* 8. Landing EMA20 */}
-                                        <td className="p-3 text-right font-mono font-semibold text-cyan-300">
-                                            {m?.landing_ema_20 ? `₹${m.landing_ema_20.toFixed(2)}` : "—"}
+                                        <td className="p-3 text-right font-mono font-semibold">
+                                            <div className="text-cyan-300">
+                                                {m?.landing_ema_20 ? `₹${m.landing_ema_20.toFixed(2)}` : "—"}
+                                            </div>
+                                            {(() => {
+                                                const disc = calcLandingDiscount(m?.landing_ema_20, item.close);
+                                                if (!disc) return null;
+                                                return (
+                                                    <div className={`text-[10px] font-sans ${disc.startsWith('-') ? 'text-gray-400' : 'text-amber-400 font-semibold'}`}>
+                                                        {disc}
+                                                    </div>
+                                                );
+                                            })()}
                                         </td>
 
                                         {/* 9. Action / Open HUD */}

@@ -242,12 +242,12 @@ export function EmaStretchMatrixModal({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-200"
             onClick={onClose}
         >
             {/* Modal Card */}
             <div
-                className="bg-[#0e0e17] border border-[#2d1230] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden text-gray-200"
+                className="bg-[#0e0e17] border border-[#2d1230] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden text-gray-200 animate-in fade-in-0 zoom-in-95 duration-200 ease-out"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Modal Header */}

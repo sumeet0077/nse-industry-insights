@@ -327,6 +327,14 @@ assert(deserialized.length === 1, "Preset serializes and parses properly");
 assert(deserialized[0].name === "Institutions Holy Grail", "Preset name preserved");
 assert(deserialized[0].filters.minTurnoverCr === 25, "Preset filters preserved");
 
+// 7. Timeframe Monotonicity Guard Test
+console.log("\n7. Testing Timeframe Monotonicity Invariant...");
+const dskItem = universe.items.find(i => i.clean_symbol === "DSKULKARNI");
+if (dskItem) {
+    const isWeeklyIpo = dskItem.ema_stretch?.weekly?.ema_20?.percentile_str === "IPO" || dskItem.ema_stretch?.weekly?.ema_20?.color_tier === "ipo";
+    assert(isWeeklyIpo, "DSKULKARNI weekly is correctly identified as IPO (< 20 bars in current era)");
+}
+
 console.log("\n==================================================");
 console.log(`Results: ${passedCount}/${testCount} tests passed!`);
 console.log("==================================================\n");

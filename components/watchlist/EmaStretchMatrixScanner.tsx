@@ -797,7 +797,7 @@ export function EmaStretchMatrixScanner({
     };
 
     // Focus Mode Primary Anchor Card (Daily 20, Weekly 20, Monthly 20)
-    const renderFocusAnchorChip = (cell: EMAStretchCell | undefined, label: string) => {
+    const renderFocusAnchorChip = (cell: EMAStretchCell | undefined, label: string, forceIpo: boolean = false) => {
         if (!cell) {
             return (
                 <div className="flex flex-col items-center justify-center px-2 py-1 rounded bg-[#111118] border border-gray-800 text-[10px] text-gray-500 font-mono min-w-[76px]">
@@ -807,7 +807,7 @@ export function EmaStretchMatrixScanner({
             );
         }
 
-        const isIpo = cell.percentile_str === "IPO" || cell.color_tier === "ipo";
+        const isIpo = forceIpo || cell.percentile_str === "IPO" || cell.color_tier === "ipo";
         const isExtremePos = !isIpo && (cell.color_tier === "extreme_pos" || (cell.is_above && (cell.percentile ?? 0) >= 95));
         const isPos = !isIpo && cell.is_above;
         const isExtremeNeg = !isIpo && (cell.color_tier === "extreme_neg" || (!cell.is_above && (cell.percentile ?? 0) >= 70));
@@ -829,7 +829,7 @@ export function EmaStretchMatrixScanner({
         const valAbs = cell.stretch_atr;
         const valStr = Number.isInteger(valAbs) ? `${valAbs}.0` : valAbs.toFixed(1);
         const dirSign = cell.is_above ? "▲ +" : "▼ -";
-        const cleanPct = (cell.percentile_str || (cell.percentile != null ? `${cell.is_above ? "+P" : "-P"}${cell.percentile}` : "")).replace(/\*/g, "").trim();
+        const cleanPct = isIpo ? "IPO" : (cell.percentile_str || (cell.percentile != null ? `${cell.is_above ? "+P" : "-P"}${cell.percentile}` : "")).replace(/\*/g, "").trim();
 
         return (
             <div
@@ -845,54 +845,65 @@ export function EmaStretchMatrixScanner({
         );
     };
 
-    // MTF Confluence Bar [D] [W] [M]
+    // Helper to evaluate timeframe trend status for MTF badge
+    const getTfTrendState = (cell: EMAStretchCell | undefined, label: string, forceIpo: boolean = false) => {
+        if (!cell) {
+            return {
+                style: "bg-gray-800 text-gray-500 border border-gray-700",
+                tooltip: `${label}: No Telemetry`,
+            };
+        }
+        const isIpo = forceIpo || cell.percentile_str === "IPO" || cell.color_tier === "ipo";
+        if (isIpo) {
+            return {
+                style: "bg-gray-800 text-amber-400/90 border border-amber-500/30",
+                tooltip: `${label}: IPO / Young Relisting (< 20 bars)`,
+            };
+        }
+
+        const isAbove = cell.is_above;
+        const stretch = cell.stretch_atr ?? 0;
+        const pct = cell.percentile ?? 50;
+
+        if (isAbove) {
+            // Overextended / Climax
+            if (pct >= 95 || stretch >= 2.5) {
+                return {
+                    style: "bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm",
+                    tooltip: `${label}: Overextended Bull (+${stretch.toFixed(1)} ATR · +P${pct})`,
+                };
+            }
+            // Healthy Bullish (Above 20 EMA)
+            return {
+                style: "bg-emerald-500/20 text-emerald-300 border border-emerald-500/50 shadow-sm",
+                tooltip: `${label}: Bullish Uptrend (+${stretch.toFixed(1)} ATR · +P${pct})`,
+            };
+        } else {
+            // Bearish (Below 20 EMA)
+            return {
+                style: "bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm",
+                tooltip: `${label}: Bearish Downtrend (-${stretch.toFixed(1)} ATR · -P${pct})`,
+            };
+        }
+    };
+
+    // MTF Confluence Bar [D] [W] [M] (Daily · Weekly · Monthly)
     const renderMtfConfluenceBar = (m: EMAStretchMatrix | undefined) => {
         if (!m) return <span className="text-gray-500 font-mono text-[10px]">—</span>;
 
-        const d20 = m.daily?.ema_20;
-        const w20 = m.weekly?.ema_20;
-        const m20 = m.monthly?.ema_20;
-
-        // Daily dot
-        const dAbove = d20?.is_above ?? false;
-        const dStretch = d20?.stretch_atr ?? 0;
-        const dColor = !d20
-            ? "bg-gray-700 text-gray-400"
-            : dAbove && dStretch <= 0.8
-            ? "bg-emerald-500/30 text-emerald-300 border border-emerald-500/60"
-            : dAbove && dStretch >= 2.0
-            ? "bg-[#8a144e]/50 text-rose-200 border border-rose-500/60"
-            : dAbove
-            ? "bg-emerald-600/30 text-emerald-200 border border-emerald-600/40"
-            : "bg-rose-950/50 text-rose-300 border border-rose-800/50";
-
-        // Weekly dot
-        const wAbove = w20?.is_above ?? false;
-        const wPct = w20?.percentile ?? 0;
-        const wColor = !w20
-            ? "bg-gray-700 text-gray-400"
-            : wAbove && wPct >= 70
-            ? "bg-emerald-500/40 text-emerald-200 border border-emerald-400 font-bold"
-            : wAbove
-            ? "bg-emerald-700/30 text-emerald-300 border border-emerald-700/40"
-            : "bg-rose-950/50 text-rose-300 border border-rose-800/50";
-
-        // Monthly dot
-        const mAbove = m20?.is_above ?? false;
-        const mColor = !m20
-            ? "bg-gray-700 text-gray-400"
-            : mAbove
-            ? "bg-blue-600/30 text-blue-200 border border-blue-500/40"
-            : "bg-slate-800 text-slate-400 border border-slate-700";
+        const isWeeklyIpo = m.weekly?.ema_20?.percentile_str === "IPO" || m.weekly?.ema_20?.color_tier === "ipo";
+        const dState = getTfTrendState(m.daily?.ema_20, "Daily (1D)");
+        const wState = getTfTrendState(m.weekly?.ema_20, "Weekly (1W)");
+        const mState = getTfTrendState(m.monthly?.ema_20, "Monthly (1M)", isWeeklyIpo);
 
         return (
             <div
                 className="inline-flex items-center gap-1 font-mono text-[10px]"
-                title={`MTF Alignment: Daily (${dAbove ? "Bull" : "Bear"}), Weekly (${wAbove ? "Bull" : "Bear"}), Monthly (${mAbove ? "Bull" : "Bear"})`}
+                title="MTF Trend Confluence across 20 EMA (Daily · Weekly · Monthly)"
             >
-                <span className={`px-1.5 py-0.5 rounded font-bold ${dColor}`}>D</span>
-                <span className={`px-1.5 py-0.5 rounded font-bold ${wColor}`}>W</span>
-                <span className={`px-1.5 py-0.5 rounded font-bold ${mColor}`}>M</span>
+                <span className={`px-1.5 py-0.5 rounded font-bold transition-transform hover:scale-110 cursor-help ${dState.style}`} title={dState.tooltip}>D</span>
+                <span className={`px-1.5 py-0.5 rounded font-bold transition-transform hover:scale-110 cursor-help ${wState.style}`} title={wState.tooltip}>W</span>
+                <span className={`px-1.5 py-0.5 rounded font-bold transition-transform hover:scale-110 cursor-help ${mState.style}`} title={mState.tooltip}>M</span>
             </div>
         );
     };
@@ -1618,10 +1629,10 @@ export function EmaStretchMatrixScanner({
                     </button>
                 </div>
             ) : (
-                <div className="overflow-x-auto rounded-xl border border-gray-800 bg-[#0e0e17] shadow-xl">
+                <div className="overflow-auto max-h-[72vh] rounded-xl border border-gray-800 bg-[#0e0e17] shadow-xl overscroll-contain relative">
                     <table className="w-full border-collapse text-left text-xs">
-                        <thead>
-                            <tr className="bg-[#151522] border-b border-gray-800 text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
+                        <thead className="sticky top-0 z-20 bg-[#151522] shadow-md border-b border-gray-800">
+                            <tr className="text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
                                 <th className="p-3 cursor-pointer hover:text-white" onClick={() => handleSort("symbol")}>
                                     <div className="flex items-center gap-1">
                                         <span>Symbol</span>
@@ -1647,7 +1658,14 @@ export function EmaStretchMatrixScanner({
                                 {viewMode === "focus" ? (
                                     <>
                                         <th className="p-3 text-center">
-                                            <span>MTF [D][W][M]</span>
+                                            <div className="flex flex-col items-center gap-0.5">
+                                                <span className="text-gray-300 font-semibold" title="Multi-Timeframe Trend Confluence (Price vs 20 EMA across Daily, Weekly, Monthly)">
+                                                    MTF Trend
+                                                </span>
+                                                <span className="text-[9px] text-gray-400 font-mono font-normal tracking-tight">
+                                                    [1D · 1W · 1M]
+                                                </span>
+                                            </div>
                                         </th>
                                         <th className="p-3 text-center cursor-pointer hover:text-white" onClick={() => handleSort("daily_s20")}>
                                             <div className="flex items-center justify-center gap-1">
@@ -1830,7 +1848,11 @@ export function EmaStretchMatrixScanner({
                                                 {/* 8. Monthly 20 EMA */}
                                                 <td className="p-2 text-center">
                                                     <div className="inline-flex justify-center">
-                                                        {renderFocusAnchorChip(m?.monthly?.ema_20, "Monthly 20")}
+                                                        {renderFocusAnchorChip(
+                                                            m?.monthly?.ema_20,
+                                                            "Monthly 20",
+                                                            m?.weekly?.ema_20?.percentile_str === "IPO" || m?.weekly?.ema_20?.color_tier === "ipo"
+                                                        )}
                                                     </div>
                                                 </td>
 

@@ -1174,6 +1174,21 @@ def compute_and_export_ema_stretch_universe(
             w_cells = w_entry[0] if w_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
             m_cells = m_entry[0] if m_entry else {f"ema_{p}": build_cell(None, [], min_bars=20) for p in [10, 20, 50]}
 
+            # Timeframe Monotonicity Invariant:
+            # If a security does not possess minimum active trading history on the weekly timeframe (< 20 weeks / ~5 months),
+            # it cannot possess mature multi-year monthly percentiles. This prevents relisted companies following multi-year
+            # bankruptcy/insolvency halts (e.g. DSKULKARNI) from interpolating pre-halt monthly percentiles across an 8-year gap.
+            if w_cells.get("ema_20", {}).get("percentile_str") == "IPO":
+                for p in [10, 20, 50]:
+                    if m_cells.get(f"ema_{p}"):
+                        m_cells[f"ema_{p}"]["percentile"] = None
+                        m_cells[f"ema_{p}"]["percentile_str"] = "IPO"
+                        m_cells[f"ema_{p}"]["color_tier"] = "ipo"
+                        val_abs = m_cells[f"ema_{p}"]["stretch_atr"]
+                        val_str = f"{int(val_abs)}" if (isinstance(val_abs, (int, float)) and val_abs.is_integer()) else f"{val_abs:.1f}"
+                        is_ab = m_cells[f"ema_{p}"]["is_above"]
+                        m_cells[f"ema_{p}"]["formatted"] = f"{val_str} ATR{' *' if is_ab else ''}  IPO"
+
             # Kinetic Vector
             raw_v = d_latest["velocity"][0]
             velocity = round(float(raw_v), 2) if (raw_v is not None and not np.isnan(raw_v)) else 0.0

@@ -1368,6 +1368,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         try:
             import duckdb
             con_chk = duckdb.connect()
+            con_chk.execute("PRAGMA max_memory = '256MB'")
+            con_chk.execute("PRAGMA threads = 2")
             pq_pattern_chk = f"{p}/**/*.parquet" if p.is_dir() else str(p)
             r_chk = con_chk.execute(f"SELECT STRFTIME(CAST(MAX(trade_date) AS DATE), '%Y-%m-%d') FROM read_parquet('{pq_pattern_chk}', union_by_name=true)").fetchone()
             con_chk.close()
@@ -1834,39 +1836,24 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 WHERE b.series IN ('EQ', 'BE', 'BZ', 'RR')
                 GROUP BY {sym_expr}, CAST(b.trade_date AS DATE)
             ),
-            history AS (
+            ranked AS (
                 SELECT 
                     symbol,
                     d,
                     h_val,
-                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 1000 PRECEDING AND 1 PRECEDING) as max_5y,
-                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 600 PRECEDING AND 1 PRECEDING) as max_3y,
-                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN 400 PRECEDING AND 1 PRECEDING) as max_2y,
-                    MAX(h_val) OVER (PARTITION BY symbol ORDER BY d ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) as max_ath
+                    ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY d DESC) as rn
                 FROM daily_bars
-            ),
-            counts AS (
-                SELECT symbol, COUNT(*) as session_count
-                FROM daily_bars
-                GROUP BY symbol
-            ),
-            ranked AS (
-                SELECT 
-                    h.symbol,
-                    h.d,
-                    c.session_count,
-                    h.h_val as adj_high,
-                    h.max_5y,
-                    h.max_3y,
-                    h.max_2y,
-                    h.max_ath,
-                    ROW_NUMBER() OVER (PARTITION BY h.symbol ORDER BY h.d DESC) as rn
-                FROM history h
-                JOIN counts c ON h.symbol = c.symbol
             )
-            SELECT symbol, session_count, adj_high, max_5y, max_3y, max_2y, max_ath
+            SELECT 
+                symbol,
+                COUNT(*) as session_count,
+                MAX(CASE WHEN rn = 1 THEN h_val END) as adj_high,
+                MAX(CASE WHEN rn BETWEEN 2 AND 1001 THEN h_val END) as max_5y,
+                MAX(CASE WHEN rn BETWEEN 2 AND 601 THEN h_val END) as max_3y,
+                MAX(CASE WHEN rn BETWEEN 2 AND 401 THEN h_val END) as max_2y,
+                MAX(CASE WHEN rn >= 2 THEN h_val END) as max_ath
             FROM ranked
-            WHERE rn = 1
+            GROUP BY symbol
             """
             my_rows = con.execute(q_my).fetchall()
             for sym, cnt, th, m5, m3, m2, ath in my_rows:

@@ -5,6 +5,7 @@ import { getSetupVerdict, calcLandingDiscount } from "../components/modals/EmaSt
 import {
     getEmaDistancePct,
     getEmaAnchorInfo,
+    resolveSingleAnchor,
     isExcludedNonEquity,
     EXCLUDED_NON_EQUITY,
     getTfMicroGlyph,
@@ -619,6 +620,130 @@ const weeklyIpoItem: EMAStretchUniverseItem = {
     ema_stretch: mockIpoMatrix,
 };
 assert(!matchesPowerFilters(weeklyIpoItem, weeklyBearFilter, emptyIdxSets), "matchesPowerFilters rejects IPO from weekly bear filter");
+
+// 12. Testing Resilient Multi-Anchor Derivation & Proximity Combinations
+console.log("\n12. Testing Resilient Multi-Anchor Derivation & Proximity Combinations...");
+
+// A. Test mathematical fallback on item with NULL landing_ema_50 and NULL landing_ema_8
+const fallbackItem: EMAStretchUniverseItem = {
+    symbol: "DERIVED.NS",
+    clean_symbol: "DERIVED",
+    close: 1000,
+    pct_1d: 1.0,
+    volume: 50000,
+    turnover_cr: 5.0,
+    ema_stretch: {
+        daily: {
+            ema_8: { stretch_atr: 1.0, percentile: 60, percentile_str: "+P60", is_above: true, formatted: "1.0 ATR", color_tier: "neutral" },
+            ema_20: { stretch_atr: 2.0, percentile: 70, percentile_str: "+P70", is_above: true, formatted: "2.0 ATR", color_tier: "pos" },
+            ema_50: { stretch_atr: 4.0, percentile: 85, percentile_str: "+P85", is_above: true, formatted: "4.0 ATR", color_tier: "pos" },
+        },
+        weekly: {
+            ema_8: { stretch_atr: 0.8, percentile: 60, percentile_str: "+P60", is_above: true, formatted: "0.8 ATR", color_tier: "pos" },
+            ema_20: { stretch_atr: 1.5, percentile: 75, percentile_str: "+P75", is_above: true, formatted: "1.5 ATR", color_tier: "pos" },
+            ema_50: { stretch_atr: 3.0, percentile: 80, percentile_str: "+P80", is_above: true, formatted: "3.0 ATR", color_tier: "pos" },
+        },
+        monthly: {
+            ema_8: { stretch_atr: 1.0, percentile: 60, percentile_str: "+P60", is_above: true, formatted: "1.0 ATR", color_tier: "pos" },
+            ema_20: { stretch_atr: 2.0, percentile: 80, percentile_str: "+P80", is_above: true, formatted: "2.0 ATR", color_tier: "pos" },
+            ema_50: { stretch_atr: 4.0, percentile: 80, percentile_str: "+P80", is_above: true, formatted: "4.0 ATR", color_tier: "pos" },
+        },
+        velocity: 0.1,
+        is_exhaustion_hook: false,
+        kinetic_status: "normal",
+        kinetic_badge: "Normal",
+        half_life_days: 5,
+        decay_mode: "Time Consolidation",
+        landing_ema_20: 960, // close=1000, landing_20=960 => diff=40 => s20=2.0 => ATR=20
+        landing_ema_8: null, // intentionally null
+        landing_ema_50: null, // intentionally null
+        landing_cpr_pivot: null, // intentionally null
+        landing_cpr_top: 980,
+    },
+};
+
+// Derived Daily 50 EMA: s50=4.0, ATR=20 => diff=80 => 50 EMA = 1000 - 80 = 920
+const derived50 = resolveSingleAnchor(fallbackItem, "ema_50", "daily");
+assert(derived50 !== null && Math.abs(derived50 - 920) < 0.1, `resolveSingleAnchor derives 50 EMA=920 from ATR stretch (got ${derived50})`);
+
+// Derived Daily 8 EMA: s8=1.0, ATR=20 => diff=20 => 8 EMA = 1000 - 20 = 980
+const derived8 = resolveSingleAnchor(fallbackItem, "ema_8", "daily");
+assert(derived8 !== null && Math.abs(derived8 - 980) < 0.1, `resolveSingleAnchor derives 8 EMA=980 from ATR stretch (got ${derived8})`);
+
+// Central Pivot fallback to landing_cpr_top
+const derivedCpr = resolveSingleAnchor(fallbackItem, "cpr_pivot", "daily");
+assert(derivedCpr === 980, `resolveSingleAnchor falls back to landing_cpr_top (980) when cpr_pivot is null`);
+
+// B. Test Real Universe combinations
+const f50Deep: StretchFilterState = {
+    ...DEFAULT_FILTER_STATE,
+    targetAnchor: "ema_50",
+    targetTimeframe: "daily",
+    landingProximity: "deep_pullback",
+};
+const f50AtSupport: StretchFilterState = {
+    ...DEFAULT_FILTER_STATE,
+    targetAnchor: "ema_50",
+    targetTimeframe: "daily",
+    landingProximity: "at_support",
+};
+const f50NearSupport: StretchFilterState = {
+    ...DEFAULT_FILTER_STATE,
+    targetAnchor: "ema_50",
+    targetTimeframe: "daily",
+    landingProximity: "near_support",
+};
+const f50Extended: StretchFilterState = {
+    ...DEFAULT_FILTER_STATE,
+    targetAnchor: "ema_50",
+    targetTimeframe: "daily",
+    landingProximity: "extended",
+};
+
+let count50Deep = 0;
+let count50AtSupport = 0;
+let count50NearSupport = 0;
+let count50Extended = 0;
+
+for (const item of universe.items) {
+    if (matchesPowerFilters(item, f50Deep, emptyIdxSets)) count50Deep++;
+    if (matchesPowerFilters(item, f50AtSupport, emptyIdxSets)) count50AtSupport++;
+    if (matchesPowerFilters(item, f50NearSupport, emptyIdxSets)) count50NearSupport++;
+    if (matchesPowerFilters(item, f50Extended, emptyIdxSets)) count50Extended++;
+}
+
+assert(count50Deep > 500, `Target 50 EMA + Daily + Deep Pullback matches stocks in universe (got ${count50Deep}, expected > 500)`);
+assert(count50AtSupport > 200, `Target 50 EMA + Daily + At Support matches stocks in universe (got ${count50AtSupport}, expected > 200)`);
+assert(count50NearSupport > 250, `Target 50 EMA + Daily + Near Support matches stocks in universe (got ${count50NearSupport}, expected > 250)`);
+assert(count50Extended > 300, `Target 50 EMA + Daily + Extended matches stocks in universe (got ${count50Extended}, expected > 300)`);
+
+// Nifty 500 specific test
+const n500IdxSets: IndexSets = {
+    ...emptyIdxSets,
+    nifty500: n500Set,
+};
+const f50N500Deep: StretchFilterState = {
+    ...f50Deep,
+    indexUniverse: "nifty500",
+};
+let countN500Deep = 0;
+for (const item of universe.items) {
+    if (matchesPowerFilters(item, f50N500Deep, n500IdxSets)) countN500Deep++;
+}
+assert(countN500Deep > 50, `Target 50 EMA + Daily + Deep Pullback in Nifty 500 matches stocks (got ${countN500Deep}, expected > 50)`);
+
+// Weekly 50 EMA Proximity
+const fWeekly50Deep: StretchFilterState = {
+    ...DEFAULT_FILTER_STATE,
+    targetAnchor: "ema_50",
+    targetTimeframe: "weekly",
+    landingProximity: "deep_pullback",
+};
+let countWeekly50Deep = 0;
+for (const item of universe.items) {
+    if (matchesPowerFilters(item, fWeekly50Deep, emptyIdxSets)) countWeekly50Deep++;
+}
+assert(countWeekly50Deep > 200, `Target 50 EMA + Weekly + Deep Pullback matches stocks (got ${countWeekly50Deep}, expected > 200)`);
 
 console.log("\n==================================================");
 console.log(`Results: ${passedCount}/${testCount} tests passed!`);

@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import type { EMAStretchMatrix, EMAStretchCell } from "@/types";
 import { X, ExternalLink, Zap, Compass, Activity, ArrowUpRight, ArrowDownRight, ShieldAlert, Sparkles, Target } from "lucide-react";
 import { makeTradingViewUrl } from "@/lib/utils";
+import { resolveSingleAnchor } from "@/components/watchlist/EmaStretchMatrixScanner";
 
 export interface SetupVerdictInfo {
     key: string;
@@ -498,10 +499,11 @@ export function EmaStretchMatrixModal({
                                 <span className="text-[10px] text-gray-400 font-mono">Support Benchmarks</span>
                             </div>
                             {(() => {
-                                const landingEma8 = matrix?.landing_ema_8 ?? matrix?.landing_ema_10;
-                                const landingEma20 = matrix?.landing_ema_20;
-                                const landingEma50 = matrix?.landing_ema_50;
-                                const landingCprPivot = matrix?.landing_cpr_pivot ?? matrix?.landing_cpr_top;
+                                const targetObj = { close: currentPrice, ema_stretch: matrix };
+                                const landingEma8 = resolveSingleAnchor(targetObj, "ema_8", "daily");
+                                const landingEma20 = resolveSingleAnchor(targetObj, "ema_20", "daily");
+                                const landingEma50 = resolveSingleAnchor(targetObj, "ema_50", "daily");
+                                const landingCprPivot = resolveSingleAnchor(targetObj, "cpr_pivot", "daily");
 
                                 const discEma8 = calcLandingDiscount(landingEma8, currentPrice);
                                 const discEma20 = calcLandingDiscount(landingEma20, currentPrice);

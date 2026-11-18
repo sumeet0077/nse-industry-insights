@@ -137,6 +137,128 @@ export interface AnchorInfo {
     distancePct: number | null;
 }
 
+/**
+ * Resolves the price level for a target support anchor.
+ * Primary: Uses pre-calculated landing levels or cell.ema_val from backend payload.
+ * Resilient Fallback: If payload lacks pre-calculated anchor (e.g. 50 EMA, Weekly EMAs, or Central Pivot),
+ * dynamically derives the price level from the stock's known close, ATR stretch, and anchor ratios.
+ */
+export function resolveSingleAnchor(
+    item: { close?: number | null; ema_stretch?: EMAStretchMatrix | null },
+    anchor: "ema_8" | "ema_20" | "ema_50" | "cpr_pivot",
+    tf: SupportTimeframeTarget = "daily"
+): number | null {
+    const m = item.ema_stretch;
+    const close = item.close;
+    if (!m || close == null || close <= 0) return null;
+
+    if (tf === "daily") {
+        if (anchor === "ema_20") {
+            if (m.landing_ema_20 != null && m.landing_ema_20 > 0) return m.landing_ema_20;
+            if (m.daily?.ema_20?.ema_val != null && m.daily.ema_20.ema_val > 0) return m.daily.ema_20.ema_val;
+        } else if (anchor === "ema_8") {
+            if (m.landing_ema_8 != null && m.landing_ema_8 > 0) return m.landing_ema_8;
+            if (m.landing_ema_10 != null && m.landing_ema_10 > 0) return m.landing_ema_10;
+            if (m.daily?.ema_8?.ema_val != null && m.daily.ema_8.ema_val > 0) return m.daily.ema_8.ema_val;
+            if (m.daily?.ema_10?.ema_val != null && m.daily.ema_10.ema_val > 0) return m.daily.ema_10.ema_val;
+        } else if (anchor === "ema_50") {
+            if (m.landing_ema_50 != null && m.landing_ema_50 > 0) return m.landing_ema_50;
+            if (m.daily?.ema_50?.ema_val != null && m.daily.ema_50.ema_val > 0) return m.daily.ema_50.ema_val;
+        } else if (anchor === "cpr_pivot") {
+            if (m.landing_cpr_pivot != null && m.landing_cpr_pivot > 0) return m.landing_cpr_pivot;
+            if (m.landing_cpr_top != null && m.landing_cpr_top > 0) return m.landing_cpr_top;
+        }
+
+        // --- Resilient Mathematical Derivation for Daily ---
+        // 1. Derive Daily ATR from 20 EMA:
+        const d20 = m.daily?.ema_20;
+        const landing20 = m.landing_ema_20 ?? m.daily?.ema_20?.ema_val;
+        let derivedAtr: number | null = null;
+        if (d20 && landing20 && landing20 > 0) {
+            const s20 = d20.is_above ? d20.stretch_atr : -d20.stretch_atr;
+            if (Math.abs(s20) >= 0.05) {
+                derivedAtr = Math.abs(close - landing20) / Math.abs(s20);
+            }
+        }
+        // 2. Fallback ATR from 8/10 EMA if price is sitting directly on 20 EMA:
+        if (derivedAtr == null) {
+            const d8 = m.daily?.ema_8 ?? m.daily?.ema_10;
+            const landing8 = m.landing_ema_8 ?? m.landing_ema_10 ?? d8?.ema_val;
+            if (d8 && landing8 && landing8 > 0) {
+                const s8 = d8.is_above ? d8.stretch_atr : -d8.stretch_atr;
+                if (Math.abs(s8) >= 0.05) {
+                    derivedAtr = Math.abs(close - landing8) / Math.abs(s8);
+                }
+            }
+        }
+        // 3. Empirical baseline ATR (2% of price) if price sits exactly on all EMAs:
+        if (derivedAtr == null || derivedAtr <= 0) {
+            derivedAtr = close * 0.02;
+        }
+
+        if (anchor === "ema_50") {
+            const d50 = m.daily?.ema_50;
+            if (d50 && d50.percentile_str !== "IPO") {
+                const s50 = d50.is_above ? d50.stretch_atr : -d50.stretch_atr;
+                const calcLevel = close - (s50 * derivedAtr);
+                if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
+            }
+        } else if (anchor === "ema_8") {
+            const d8 = m.daily?.ema_8 ?? m.daily?.ema_10;
+            if (d8 && d8.percentile_str !== "IPO") {
+                const s8 = d8.is_above ? d8.stretch_atr : -d8.stretch_atr;
+                const calcLevel = close - (s8 * derivedAtr);
+                if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
+            }
+        } else if (anchor === "ema_20") {
+            if (d20 && d20.percentile_str !== "IPO") {
+                const s20 = d20.is_above ? d20.stretch_atr : -d20.stretch_atr;
+                const calcLevel = close - (s20 * derivedAtr);
+                if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
+            }
+        }
+    } else if (tf === "weekly") {
+        if (anchor === "ema_20") {
+            if (m.weekly?.ema_20?.ema_val != null && m.weekly.ema_20.ema_val > 0) return m.weekly.ema_20.ema_val;
+        } else if (anchor === "ema_8") {
+            if (m.weekly?.ema_8?.ema_val != null && m.weekly.ema_8.ema_val > 0) return m.weekly.ema_8.ema_val;
+            if (m.weekly?.ema_10?.ema_val != null && m.weekly.ema_10.ema_val > 0) return m.weekly.ema_10.ema_val;
+        } else if (anchor === "ema_50") {
+            if (m.weekly?.ema_50?.ema_val != null && m.weekly.ema_50.ema_val > 0) return m.weekly.ema_50.ema_val;
+        } else if (anchor === "cpr_pivot") {
+            if (m.landing_cpr_pivot != null && m.landing_cpr_pivot > 0) return m.landing_cpr_pivot;
+            if (m.landing_cpr_top != null && m.landing_cpr_top > 0) return m.landing_cpr_top;
+        }
+
+        // --- Resilient Mathematical Derivation for Weekly ---
+        // Weekly ATR ~ sqrt(5) * Daily ATR (~2.236 * Daily ATR):
+        const d20 = m.daily?.ema_20;
+        const landing20 = m.landing_ema_20 ?? m.daily?.ema_20?.ema_val;
+        let dailyAtr = close * 0.02;
+        if (d20 && landing20 && landing20 > 0) {
+            const s20 = d20.is_above ? d20.stretch_atr : -d20.stretch_atr;
+            if (Math.abs(s20) >= 0.05) {
+                dailyAtr = Math.abs(close - landing20) / Math.abs(s20);
+            }
+        }
+        const weeklyAtr = dailyAtr * 2.236;
+
+        const wCell = anchor === "ema_50" 
+            ? m.weekly?.ema_50 
+            : anchor === "ema_8" 
+                ? (m.weekly?.ema_8 ?? m.weekly?.ema_10) 
+                : m.weekly?.ema_20;
+
+        if (wCell && wCell.percentile_str !== "IPO") {
+            const s = wCell.is_above ? wCell.stretch_atr : -wCell.stretch_atr;
+            const calcLevel = close - (s * weeklyAtr);
+            if (calcLevel > 0) return Math.round(calcLevel * 100) / 100;
+        }
+    }
+
+    return null;
+}
+
 export function getEmaAnchorInfo(
     item: EMAStretchUniverseItem,
     targetAnchor: SupportAnchorTarget = "ema_20",
@@ -149,25 +271,22 @@ export function getEmaAnchorInfo(
     }
 
     if (targetAnchor === "any") {
-        const d8 = m.landing_ema_8 ?? m.landing_ema_10 ?? null;
-        const d20 = m.landing_ema_20 ?? null;
-        const d50 = m.landing_ema_50 ?? null;
-        const cpr = m.landing_cpr_pivot ?? m.landing_cpr_top ?? null;
+        const d8 = resolveSingleAnchor(item, "ema_8", targetTf);
+        const d20 = resolveSingleAnchor(item, "ema_20", targetTf);
+        const d50 = resolveSingleAnchor(item, "ema_50", targetTf);
+        const cpr = resolveSingleAnchor(item, "cpr_pivot", targetTf);
 
-        const candidates: { label: string; level: number | null }[] = [
-            { label: "8 EMA", level: d8 },
-            { label: "20 EMA", level: d20 },
-            { label: "50 EMA", level: d50 },
-            { label: "Central Pivot", level: cpr },
-        ];
+        const candidates: { label: string; level: number }[] = [];
+        if (d8 != null && d8 > 0) candidates.push({ label: targetTf === "weekly" ? "Weekly 8 EMA" : "8 EMA", level: d8 });
+        if (d20 != null && d20 > 0) candidates.push({ label: targetTf === "weekly" ? "Weekly 20 EMA" : "20 EMA", level: d20 });
+        if (d50 != null && d50 > 0) candidates.push({ label: targetTf === "weekly" ? "Weekly 50 EMA" : "50 EMA", level: d50 });
+        if (cpr != null && cpr > 0) candidates.push({ label: "Central Pivot", level: cpr });
 
         let best: { label: string; level: number; distPct: number } | null = null;
         for (const c of candidates) {
-            if (c.level != null && c.level > 0) {
-                const dist = ((close - c.level) / c.level) * 100;
-                if (best === null || Math.abs(dist) < Math.abs(best.distPct)) {
-                    best = { label: c.label, level: c.level, distPct: dist };
-                }
+            const dist = ((close - c.level) / c.level) * 100;
+            if (best === null || Math.abs(dist) < Math.abs(best.distPct)) {
+                best = { label: c.label, level: c.level, distPct: dist };
             }
         }
         if (best) {
@@ -176,39 +295,20 @@ export function getEmaAnchorInfo(
         return { label: "Support", level: null, distancePct: null };
     }
 
-    let level: number | null = null;
     let label = "20 EMA";
-
     if (targetTf === "weekly") {
-        if (targetAnchor === "ema_8") {
-            level = m.weekly?.ema_8?.ema_val ?? m.weekly?.ema_10?.ema_val ?? null;
-            label = "Weekly 8 EMA";
-        } else if (targetAnchor === "ema_20") {
-            level = m.weekly?.ema_20?.ema_val ?? null;
-            label = "Weekly 20 EMA";
-        } else if (targetAnchor === "ema_50") {
-            level = m.weekly?.ema_50?.ema_val ?? null;
-            label = "Weekly 50 EMA";
-        } else if (targetAnchor === "cpr_pivot") {
-            level = m.landing_cpr_pivot ?? m.landing_cpr_top ?? null;
-            label = "Central Pivot";
-        }
+        if (targetAnchor === "ema_8") label = "Weekly 8 EMA";
+        else if (targetAnchor === "ema_20") label = "Weekly 20 EMA";
+        else if (targetAnchor === "ema_50") label = "Weekly 50 EMA";
+        else if (targetAnchor === "cpr_pivot") label = "Central Pivot";
     } else {
-        if (targetAnchor === "ema_8") {
-            level = m.landing_ema_8 ?? m.landing_ema_10 ?? null;
-            label = "8 EMA";
-        } else if (targetAnchor === "ema_20") {
-            level = m.landing_ema_20 ?? null;
-            label = "20 EMA";
-        } else if (targetAnchor === "ema_50") {
-            level = m.landing_ema_50 ?? null;
-            label = "50 EMA";
-        } else if (targetAnchor === "cpr_pivot") {
-            level = m.landing_cpr_pivot ?? m.landing_cpr_top ?? null;
-            label = "Central Pivot";
-        }
+        if (targetAnchor === "ema_8") label = "8 EMA";
+        else if (targetAnchor === "ema_20") label = "20 EMA";
+        else if (targetAnchor === "ema_50") label = "50 EMA";
+        else if (targetAnchor === "cpr_pivot") label = "Central Pivot";
     }
 
+    const level = resolveSingleAnchor(item, targetAnchor, targetTf);
     if (level == null || level <= 0) {
         return { label, level: null, distancePct: null };
     }

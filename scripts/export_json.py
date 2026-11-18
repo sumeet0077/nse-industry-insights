@@ -18,8 +18,12 @@ import shutil
 import pandas as pd
 import numpy as np
 from pathlib import Path
-
 from datetime import timedelta
+
+# Ensure scripts directory is in sys.path for local utility imports
+scripts_dir = Path(__file__).resolve().parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
 def export_performance_summary(output_dir: Path, source_dir: Path):
     """Calculate and export the performance summary heatmap data."""
@@ -960,15 +964,24 @@ def compute_and_export_ema_stretch_universe(
         except Exception:
             pass
 
+        # Check for pre-adjusted columns in master parquet
+        pq_cols = set(c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{pq_pattern}', union_by_name=true) LIMIT 1").fetchall())
+        has_adj = "adj_close" in pq_cols
+
+        adj_open_expr = f"COALESCE(b.adj_open, b.open * {ca_factor_expr})" if has_adj else f"b.open * {ca_factor_expr}"
+        adj_high_expr = f"COALESCE(b.adj_high, b.high * {ca_factor_expr})" if has_adj else f"b.high * {ca_factor_expr}"
+        adj_low_expr = f"COALESCE(b.adj_low, b.low * {ca_factor_expr})" if has_adj else f"b.low * {ca_factor_expr}"
+        adj_close_expr = f"COALESCE(b.adj_close, b.close * {ca_factor_expr})" if has_adj else f"b.close * {ca_factor_expr}"
+
         # 1. Daily Query (450 days warmup for 252 rolling bars)
         q_d = f"""
         SELECT 
             {sym_expr} as symbol,
             STRFTIME(CAST(b.trade_date AS DATE), '%Y-%m-%d') as trade_date,
-            b.open * {ca_factor_expr} as open,
-            b.high * {ca_factor_expr} as high,
-            b.low * {ca_factor_expr} as low,
-            b.close * {ca_factor_expr} as close,
+            {adj_open_expr} as open,
+            {adj_high_expr} as high,
+            {adj_low_expr} as low,
+            {adj_close_expr} as close,
             b.volume,
             b.series
         FROM read_parquet('{pq_pattern}', union_by_name=true) b
@@ -980,39 +993,38 @@ def compute_and_export_ema_stretch_universe(
         """
         d_df = con.execute(q_d).pl()
 
-        # 2. Weekly Query (1200 days warmup for 104 rolling weekly bars)
+        # 2. Weekly Query (1500 days warmup for 104 rolling weekly bars)
         q_w = f"""
         SELECT 
             {sym_expr} as symbol,
             DATE_TRUNC('week', CAST(b.trade_date AS DATE)) as period_start,
-            ARG_MIN(b.open * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as open,
-            MAX(b.high * {ca_factor_expr}) as high,
-            MIN(b.low * {ca_factor_expr}) as low,
-            ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as close
-        FROM read_parquet('{pq_pattern}', union_by_name=true) b
-        {sym_join}
-        {ca_join}
-        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
-          AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 1200 DAY)
-        GROUP BY {sym_expr}, DATE_TRUNC('week', CAST(b.trade_date AS DATE))
-        ORDER BY symbol, period_start ASC
-        """
-        w_df = con.execute(q_w).pl()
-
-        # 3. Monthly Query (1500 days warmup for 36 rolling monthly bars)
-        q_m = f"""
-        SELECT 
-            {sym_expr} as symbol,
-            DATE_TRUNC('month', CAST(b.trade_date AS DATE)) as period_start,
-            ARG_MIN(b.open * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as open,
-            MAX(b.high * {ca_factor_expr}) as high,
-            MIN(b.low * {ca_factor_expr}) as low,
-            ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE)) as close
+            ARG_MIN({adj_open_expr}, CAST(b.trade_date AS DATE)) as open,
+            MAX({adj_high_expr}) as high,
+            MIN({adj_low_expr}) as low,
+            ARG_MAX({adj_close_expr}, CAST(b.trade_date AS DATE)) as close
         FROM read_parquet('{pq_pattern}', union_by_name=true) b
         {sym_join}
         {ca_join}
         WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
           AND b.trade_date >= (CAST('{latest_date}' AS DATE) - INTERVAL 1500 DAY)
+        GROUP BY {sym_expr}, DATE_TRUNC('week', CAST(b.trade_date AS DATE))
+        ORDER BY symbol, period_start ASC
+        """
+        w_df = con.execute(q_w).pl()
+
+        # 3. Monthly Query (Full history for complete EMA 50 mathematical convergence)
+        q_m = f"""
+        SELECT 
+            {sym_expr} as symbol,
+            DATE_TRUNC('month', CAST(b.trade_date AS DATE)) as period_start,
+            ARG_MIN({adj_open_expr}, CAST(b.trade_date AS DATE)) as open,
+            MAX({adj_high_expr}) as high,
+            MIN({adj_low_expr}) as low,
+            ARG_MAX({adj_close_expr}, CAST(b.trade_date AS DATE)) as close
+        FROM read_parquet('{pq_pattern}', union_by_name=true) b
+        {sym_join}
+        {ca_join}
+        WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'RR')
         GROUP BY {sym_expr}, DATE_TRUNC('month', CAST(b.trade_date AS DATE))
         ORDER BY symbol, period_start ASC
         """
@@ -1040,10 +1052,12 @@ def compute_and_export_ema_stretch_universe(
             df = df.with_columns(
                 pl.col("tr").ewm_mean(alpha=1.0 / 14.0, adjust=False).over("symbol").alias("atr_14")
             )
+            # Safe division guarded against atr_14 <= 0
+            safe_atr = pl.when(pl.col("atr_14") > 0).then(pl.col("atr_14")).otherwise(pl.lit(None))
             df = df.with_columns(
-                ((pl.col("close") - pl.col("ema_10")) / pl.col("atr_14")).alias("s_10"),
-                ((pl.col("close") - pl.col("ema_20")) / pl.col("atr_14")).alias("s_20"),
-                ((pl.col("close") - pl.col("ema_50")) / pl.col("atr_14")).alias("s_50"),
+                ((pl.col("close") - pl.col("ema_10")) / safe_atr).alias("s_10"),
+                ((pl.col("close") - pl.col("ema_20")) / safe_atr).alias("s_20"),
+                ((pl.col("close") - pl.col("ema_50")) / safe_atr).alias("s_50"),
             )
             if is_daily:
                 df = df.with_columns(
@@ -1479,10 +1493,10 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 SELECT 
                     TRIM(symbol) as symbol,
                     CAST(trade_date AS DATE) as d,
-                    close,
-                    open,
-                    high,
-                    low,
+                    COALESCE(adj_close, close) as base_close,
+                    COALESCE(adj_high, high) as base_high,
+                    COALESCE(adj_low, low) as base_low,
+                    close as raw_close,
                     volume
                 FROM read_parquet('{parquet_pattern}', union_by_name=true)
                 WHERE series IN ('EQ', 'BE', 'BZ', 'RR')
@@ -1492,20 +1506,20 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 SELECT 
                     b.symbol,
                     b.d,
-                    b.close * {adj_factor_expr} as adj_close,
-                    b.high * {adj_factor_expr} as adj_high,
-                    b.low * {adj_factor_expr} as adj_low,
-                    b.close as raw_close,
+                    b.base_close * {adj_factor_expr} as adj_close,
+                    b.base_high * {adj_factor_expr} as adj_high,
+                    b.base_low * {adj_factor_expr} as adj_low,
+                    b.raw_close,
                     b.volume,
                     ROW_NUMBER() OVER (PARTITION BY b.symbol ORDER BY b.d) as session_num,
-                    LAG(b.close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
-                    LAG(b.close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
-                    MAX(b.high * {adj_factor_expr}) OVER (
+                    LAG(b.base_close * {adj_factor_expr}, 1) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_close,
+                    LAG(b.base_close * {adj_factor_expr}, 5) OVER (PARTITION BY b.symbol ORDER BY b.d) as prev_5d_close,
+                    MAX(b.base_high * {adj_factor_expr}) OVER (
                         PARTITION BY b.symbol 
                         ORDER BY b.d 
                         ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
                     ) as high_52w,
-                    MIN(b.low * {adj_factor_expr}) OVER (
+                    MIN(b.base_low * {adj_factor_expr}) OVER (
                         PARTITION BY b.symbol 
                         ORDER BY b.d 
                         ROWS BETWEEN 252 PRECEDING AND 1 PRECEDING
@@ -1833,9 +1847,9 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 print(f"  Notice: Corporate actions DuckDB table: {e}")
 
             # Monthly CPR query (anchored to prior calendar month)
-            cpr_h = f"MAX(b.high * {ca_factor_expr})"
-            cpr_l = f"MIN(b.low * {ca_factor_expr})"
-            cpr_c = f"ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE))"
+            cpr_h = f"MAX(COALESCE(b.adj_high, b.high * {ca_factor_expr}))" if has_adj else f"MAX(b.high * {ca_factor_expr})"
+            cpr_l = f"MIN(COALESCE(b.adj_low, b.low * {ca_factor_expr}))" if has_adj else f"MIN(b.low * {ca_factor_expr})"
+            cpr_c = f"ARG_MAX(COALESCE(b.adj_close, b.close * {ca_factor_expr}), CAST(b.trade_date AS DATE))" if has_adj else f"ARG_MAX(b.close * {ca_factor_expr}, CAST(b.trade_date AS DATE))"
             cpr_ca_join = ca_join
 
             q_cpr = f"""
@@ -1858,10 +1872,10 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     cpr_lookup[(sym, m_start.year, m_start.month)] = (float(mh), float(ml), float(mc))
 
             # Daily warmup query (90-day warmup before selected_dates[0])
-            d_open = f"b.open * {ca_factor_expr} as open"
-            d_high = f"b.high * {ca_factor_expr} as high"
-            d_low = f"b.low * {ca_factor_expr} as low"
-            d_close = f"b.close * {ca_factor_expr} as close"
+            d_open = f"COALESCE(b.adj_open, b.open * {ca_factor_expr}) as open" if has_adj else f"b.open * {ca_factor_expr} as open"
+            d_high = f"COALESCE(b.adj_high, b.high * {ca_factor_expr}) as high" if has_adj else f"b.high * {ca_factor_expr} as high"
+            d_low = f"COALESCE(b.adj_low, b.low * {ca_factor_expr}) as low" if has_adj else f"b.low * {ca_factor_expr} as low"
+            d_close = f"COALESCE(b.adj_close, b.close * {ca_factor_expr}) as close" if has_adj else f"b.close * {ca_factor_expr} as close"
             daily_ca_join = ca_join
 
             q_daily = f"""
@@ -1886,12 +1900,13 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             daily_df = con.execute(q_daily).pl()
 
             # Multi-Year ceiling query (ATH, 5Y, 3Y, 2Y) with session-count guards and split/bonus adjustment
+            my_h = f"MAX(COALESCE(b.adj_high, b.high * {ca_factor_expr}))" if has_adj else f"MAX(b.high * {ca_factor_expr})"
             q_my = f"""
             WITH daily_bars AS (
                 SELECT 
                     {sym_expr} as symbol,
                     CAST(b.trade_date AS DATE) as d,
-                    MAX(b.high * {ca_factor_expr}) as h_val
+                    {my_h} as h_val
                 FROM read_parquet('{pq_pattern}', union_by_name=true) b
                 {sym_join}
                 {ca_join}

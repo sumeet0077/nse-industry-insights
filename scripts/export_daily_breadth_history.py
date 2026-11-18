@@ -793,7 +793,18 @@ def main():
     data_dir = Path(args.output) if args.output else default_data_dir
 
     parquet_path = Path(args.parquet)
-    if args.source:
+    if not parquet_path.exists():
+        candidates = [
+            Path(args.source) / "nse_master_adjusted_2014_onwards.parquet" if args.source else None,
+            Path("/home/ubuntu/NSE_data/nse_master_adjusted_2014_onwards.parquet"),
+            Path("/Users/sumeetdas/Antigravity_NSE_Data/nse_master_adjusted_2014_onwards.parquet"),
+            default_data_dir.parent / "data" / "history" / "master_daily_breadth_history.parquet",
+        ]
+        for c in candidates:
+            if c and c.exists():
+                parquet_path = c
+                break
+    elif args.source:
         candidate_parquet = Path(args.source) / "nse_master_adjusted_2014_onwards.parquet"
         if candidate_parquet.exists():
             parquet_path = candidate_parquet

@@ -3525,7 +3525,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -36.79,
     "price_dist_52w_pct": -34.31,
-    "ibd_rs_rating": 59
+    "ibd_rs_rating": 58
   },
   "AJOONI-RE.NS": {
     "listing_days": 3,
@@ -3669,7 +3669,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -31.86,
     "price_dist_52w_pct": -29.45,
-    "ibd_rs_rating": 45
+    "ibd_rs_rating": 44
   },
   "AKCAPIT.NS": {
     "listing_days": 142,
@@ -4653,7 +4653,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": 1.46,
     "price_dist_52w_pct": 1.22,
-    "ibd_rs_rating": 96
+    "ibd_rs_rating": 95
   },
   "AMARJOTHI.NS": {
     "listing_days": 64,
@@ -8709,7 +8709,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -14.45,
     "price_dist_52w_pct": -12.59,
-    "ibd_rs_rating": 64
+    "ibd_rs_rating": 63
   },
   "AUTOBEES.NS": {
     "listing_days": 1189,
@@ -9477,7 +9477,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -42.24,
     "price_dist_52w_pct": -40.15,
-    "ibd_rs_rating": 44
+    "ibd_rs_rating": 43
   },
   "AXTEL.NS": {
     "listing_days": 64,
@@ -10845,7 +10845,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -9.97,
     "price_dist_52w_pct": -7.92,
-    "ibd_rs_rating": 75
+    "ibd_rs_rating": 74
   },
   "BANKNIFTY1.NS": {
     "listing_days": 1453,
@@ -12045,7 +12045,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -2.68,
     "price_dist_52w_pct": -0.92,
-    "ibd_rs_rating": 71
+    "ibd_rs_rating": 70
   },
   "BFUTILITIE.NS": {
     "listing_days": 1453,
@@ -15309,7 +15309,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -17.74,
     "price_dist_52w_pct": -16.61,
-    "ibd_rs_rating": 70
+    "ibd_rs_rating": 69
   },
   "CAPACITE.NS": {
     "listing_days": 1453,
@@ -15381,7 +15381,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.01,
     "price_dist_52w_pct": -4.9,
-    "ibd_rs_rating": 72
+    "ibd_rs_rating": 71
   },
   "CAPLIPOINT.NS": {
     "listing_days": 1453,
@@ -18453,7 +18453,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.95,
     "price_dist_52w_pct": -25.55,
-    "ibd_rs_rating": 92
+    "ibd_rs_rating": 91
   },
   "COREIN.NS": {
     "listing_days": 32,
@@ -19533,7 +19533,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -27.41,
     "price_dist_52w_pct": -21.09,
-    "ibd_rs_rating": 95
+    "ibd_rs_rating": 94
   },
   "DABUR.NS": {
     "listing_days": 1453,
@@ -20469,7 +20469,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -21.42,
     "price_dist_52w_pct": -17.53,
-    "ibd_rs_rating": 73
+    "ibd_rs_rating": 72
   },
   "DEEPA.NS": {
     "listing_days": 48,
@@ -20589,7 +20589,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.81,
     "price_dist_52w_pct": -22.47,
-    "ibd_rs_rating": 83
+    "ibd_rs_rating": 82
   },
   "DEFENCE.NS": {
     "listing_days": 179,
@@ -20637,7 +20637,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -44.22,
     "price_dist_52w_pct": -40.2,
-    "ibd_rs_rating": 48
+    "ibd_rs_rating": 47
   },
   "DELHIVERY.NS": {
     "listing_days": 1110,
@@ -22125,7 +22125,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.06,
     "price_dist_52w_pct": -19.57,
-    "ibd_rs_rating": 58
+    "ibd_rs_rating": 57
   },
   "DJML.NS": {
     "listing_days": 977,
@@ -22197,7 +22197,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -2.67,
     "price_dist_52w_pct": -0.65,
-    "ibd_rs_rating": 80
+    "ibd_rs_rating": 79
   },
   "DLINKINDIA.NS": {
     "listing_days": 1453,
@@ -22797,7 +22797,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -66.03,
     "price_dist_52w_pct": -39.64,
-    "ibd_rs_rating": 52
+    "ibd_rs_rating": 51
   },
   "DSFCL.NS": {
     "listing_days": 181,
@@ -23133,31 +23133,31 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -16.17,
     "price_dist_52w_pct": -12.63,
-    "ibd_rs_rating": 87
+    "ibd_rs_rating": 86
   },
   "DVL.NS": {
     "listing_days": 1453,
     "is_ipo": false,
-    "1D": -49.81,
-    "1W": -46.15,
-    "1M": 7.38,
-    "3M": -39.16,
-    "6M": -34.69,
-    "YTD": 1.31,
-    "1Y": -1.9,
-    "3Y": -48.85,
-    "5Y": -27.96,
-    "RS (5D)": -45.65,
-    "RS (10D)": 4.33,
-    "RS (20D)": -0.76,
-    "RS (50D)": -45.61,
-    "rs_raw_score": -9.89,
+    "1D": 101.61,
+    "1W": 109.16,
+    "1M": 111.73,
+    "3M": 19.96,
+    "6M": 28.78,
+    "YTD": 13.06,
+    "1Y": 93.44,
+    "3Y": 45.56,
+    "5Y": 23.66,
+    "RS (5D)": 111.11,
+    "RS (10D)": 13.23,
+    "RS (20D)": 95.69,
+    "RS (50D)": 100.51,
+    "rs_raw_score": 105.34,
     "rs_line_52w_high": false,
     "price_52w_high": false,
     "rs_lead_breakout": false,
-    "rs_dist_52w_pct": -52.69,
-    "price_dist_52w_pct": -50.42,
-    "ibd_rs_rating": 40
+    "rs_dist_52w_pct": -6.71,
+    "price_dist_52w_pct": -2.24,
+    "ibd_rs_rating": 97
   },
   "DWARKESH.NS": {
     "listing_days": 1453,
@@ -23661,7 +23661,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -35.12,
     "price_dist_52w_pct": -29.28,
-    "ibd_rs_rating": 85
+    "ibd_rs_rating": 84
   },
   "EBIX.NS": {
     "listing_days": 64,
@@ -24285,7 +24285,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.45,
     "price_dist_52w_pct": -18.92,
-    "ibd_rs_rating": 76
+    "ibd_rs_rating": 75
   },
   "ELCIDIN.NS": {
     "listing_days": 127,
@@ -24717,7 +24717,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -16.83,
     "price_dist_52w_pct": -9.58,
-    "ibd_rs_rating": 81
+    "ibd_rs_rating": 80
   },
   "EMAMIREAL.NS": {
     "listing_days": 1419,
@@ -24957,7 +24957,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -36.12,
     "price_dist_52w_pct": -33.48,
-    "ibd_rs_rating": 46
+    "ibd_rs_rating": 45
   },
   "EMMBI.NS": {
     "listing_days": 1453,
@@ -25029,7 +25029,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -27.97,
     "price_dist_52w_pct": -25.84,
-    "ibd_rs_rating": 61
+    "ibd_rs_rating": 60
   },
   "EMPIND.NS": {
     "listing_days": 64,
@@ -26061,7 +26061,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.24,
     "price_dist_52w_pct": -5.01,
-    "ibd_rs_rating": 63
+    "ibd_rs_rating": 62
   },
   "ESILVER.NS": {
     "listing_days": 735,
@@ -29373,7 +29373,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -49.65,
     "price_dist_52w_pct": -47.54,
-    "ibd_rs_rating": 41
+    "ibd_rs_rating": 40
   },
   "GCSL.NS": {
     "listing_days": 293,
@@ -35613,7 +35613,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -3.32,
     "price_dist_52w_pct": -0.39,
-    "ibd_rs_rating": 77
+    "ibd_rs_rating": 76
   },
   "HECPROJECT.NS": {
     "listing_days": 1238,
@@ -38253,7 +38253,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -9.92,
     "price_dist_52w_pct": -6.2,
-    "ibd_rs_rating": 67
+    "ibd_rs_rating": 66
   },
   "IDFNIFTYET.NS": {
     "listing_days": 1452,
@@ -39189,7 +39189,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.61,
     "price_dist_52w_pct": -3.49,
-    "ibd_rs_rating": 74
+    "ibd_rs_rating": 73
   },
   "INDIANCARD.NS": {
     "listing_days": 1452,
@@ -40221,7 +40221,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.34,
     "price_dist_52w_pct": -20.09,
-    "ibd_rs_rating": 53
+    "ibd_rs_rating": 52
   },
   "INM.NS": {
     "listing_days": 546,
@@ -42693,7 +42693,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -3.81,
     "price_dist_52w_pct": -3.87,
-    "ibd_rs_rating": 89
+    "ibd_rs_rating": 88
   },
   "JBFIND.NS": {
     "listing_days": 570,
@@ -43677,7 +43677,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.58,
     "price_dist_52w_pct": -19.67,
-    "ibd_rs_rating": 51
+    "ibd_rs_rating": 50
   },
   "JPASSOCIAT.NS": {
     "listing_days": 1065,
@@ -45237,7 +45237,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.45,
     "price_dist_52w_pct": -19.41,
-    "ibd_rs_rating": 88
+    "ibd_rs_rating": 87
   },
   "KAUSHALYA.NS": {
     "listing_days": 1312,
@@ -45597,7 +45597,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.54,
     "price_dist_52w_pct": -28.81,
-    "ibd_rs_rating": 43
+    "ibd_rs_rating": 42
   },
   "KEEPLEARN.NS": {
     "listing_days": 1074,
@@ -48405,7 +48405,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -21.22,
     "price_dist_52w_pct": -18.81,
-    "ibd_rs_rating": 90
+    "ibd_rs_rating": 89
   },
   "LANCER.NS": {
     "listing_days": 306,
@@ -49197,7 +49197,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -15.12,
     "price_dist_52w_pct": -11.4,
-    "ibd_rs_rating": 55
+    "ibd_rs_rating": 54
   },
   "LICMFGOLD.NS": {
     "listing_days": 1453,
@@ -49677,7 +49677,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -12.98,
     "price_dist_52w_pct": -0.0,
-    "ibd_rs_rating": 60
+    "ibd_rs_rating": 59
   },
   "LIQUIDPLUS.NS": {
     "listing_days": 494,
@@ -52893,7 +52893,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -29.11,
     "price_dist_52w_pct": -22.93,
-    "ibd_rs_rating": 91
+    "ibd_rs_rating": 90
   },
   "MAXENGS.NS": {
     "listing_days": 8,
@@ -54909,7 +54909,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.41,
     "price_dist_52w_pct": -7.71,
-    "ibd_rs_rating": 93
+    "ibd_rs_rating": 92
   },
   "MINALIND.NS": {
     "listing_days": 64,
@@ -56757,7 +56757,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.75,
     "price_dist_52w_pct": -2.09,
-    "ibd_rs_rating": 60
+    "ibd_rs_rating": 59
   },
   "MOPSE.NS": {
     "listing_days": 354,
@@ -56997,7 +56997,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -9.42,
     "price_dist_52w_pct": -4.47,
-    "ibd_rs_rating": 65
+    "ibd_rs_rating": 64
   },
   "MOTHERSON.NS": {
     "listing_days": 1453,
@@ -58365,7 +58365,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.49,
     "price_dist_52w_pct": -23.47,
-    "ibd_rs_rating": 47
+    "ibd_rs_rating": 46
   },
   "NAHARSPING.NS": {
     "listing_days": 1452,
@@ -58749,7 +58749,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.38,
     "price_dist_52w_pct": -25.61,
-    "ibd_rs_rating": 42
+    "ibd_rs_rating": 41
   },
   "NAVINFLUOR.NS": {
     "listing_days": 1453,
@@ -60285,7 +60285,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.04,
     "price_dist_52w_pct": -3.22,
-    "ibd_rs_rating": 66
+    "ibd_rs_rating": 65
   },
   "NIFTY100EW.NS": {
     "listing_days": 418,
@@ -63813,7 +63813,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": 2.84,
     "price_dist_52w_pct": 2.0,
-    "ibd_rs_rating": 97
+    "ibd_rs_rating": 96
   },
   "PANAMAPET.NS": {
     "listing_days": 1453,
@@ -66597,7 +66597,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -20.3,
     "price_dist_52w_pct": -19.65,
-    "ibd_rs_rating": 57
+    "ibd_rs_rating": 56
   },
   "POLYSIL.NS": {
     "listing_days": 642,
@@ -70437,7 +70437,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -16.29,
     "price_dist_52w_pct": -12.89,
-    "ibd_rs_rating": 78
+    "ibd_rs_rating": 77
   },
   "RAPPID.NS": {
     "listing_days": 514,
@@ -72741,7 +72741,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -27.74,
     "price_dist_52w_pct": -28.04,
-    "ibd_rs_rating": 49
+    "ibd_rs_rating": 48
   },
   "RPSGVENT.NS": {
     "listing_days": 1453,
@@ -75333,7 +75333,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -49.4,
     "price_dist_52w_pct": -35.53,
-    "ibd_rs_rating": 50
+    "ibd_rs_rating": 49
   },
   "SATIA.NS": {
     "listing_days": 1453,
@@ -75885,7 +75885,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.98,
     "price_dist_52w_pct": -19.72,
-    "ibd_rs_rating": 56
+    "ibd_rs_rating": 55
   },
   "SBILIFE.NS": {
     "listing_days": 1453,
@@ -77037,7 +77037,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.75,
     "price_dist_52w_pct": -3.71,
-    "ibd_rs_rating": 68
+    "ibd_rs_rating": 67
   },
   "SENSEXAXIS.NS": {
     "listing_days": 897,
@@ -81261,7 +81261,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -21.09,
     "price_dist_52w_pct": -18.11,
-    "ibd_rs_rating": 79
+    "ibd_rs_rating": 78
   },
   "SKSTEXTILE.NS": {
     "listing_days": 130,
@@ -81453,7 +81453,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -9.32,
     "price_dist_52w_pct": -3.15,
-    "ibd_rs_rating": 69
+    "ibd_rs_rating": 68
   },
   "SMALLGROWW.NS": {
     "listing_days": 103,
@@ -81549,7 +81549,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -29.09,
     "price_dist_52w_pct": -23.28,
-    "ibd_rs_rating": 84
+    "ibd_rs_rating": 83
   },
   "SMARTWORKS.NS": {
     "listing_days": 327,
@@ -82653,7 +82653,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.5,
     "price_dist_52w_pct": -5.78,
-    "ibd_rs_rating": 94
+    "ibd_rs_rating": 93
   },
   "SPEB.NS": {
     "listing_days": 156,
@@ -83877,7 +83877,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -20.2,
     "price_dist_52w_pct": -16.27,
-    "ibd_rs_rating": 54
+    "ibd_rs_rating": 53
   },
   "STEELXIND.NS": {
     "listing_days": 1452,
@@ -86877,7 +86877,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.05,
     "price_dist_52w_pct": -23.25,
-    "ibd_rs_rating": 62
+    "ibd_rs_rating": 61
   },
   "TARSONS.NS": {
     "listing_days": 1231,
@@ -94221,7 +94221,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.23,
     "price_dist_52w_pct": -2.36,
-    "ibd_rs_rating": 86
+    "ibd_rs_rating": 85
   },
   "VIJAYPD.NS": {
     "listing_days": 251,
@@ -97677,7 +97677,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -30.43,
     "price_dist_52w_pct": -25.32,
-    "ibd_rs_rating": 82
+    "ibd_rs_rating": 81
   },
   "ZEEL.NS": {
     "listing_days": 1453,
@@ -98421,7 +98421,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -22.98,
     "price_dist_52w_pct": -19.72,
-    "ibd_rs_rating": 56
+    "ibd_rs_rating": 55
   },
   "SBIETFCON.NS": {
     "listing_days": 1312,
@@ -101541,7 +101541,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.04,
     "price_dist_52w_pct": -3.22,
-    "ibd_rs_rating": 66
+    "ibd_rs_rating": 65
   },
   "KOTAKMNC.NS": {
     "listing_days": 1052,
@@ -101781,7 +101781,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -6.75,
     "price_dist_52w_pct": -3.71,
-    "ibd_rs_rating": 68
+    "ibd_rs_rating": 67
   },
   "DSPQ50ETF.NS": {
     "listing_days": 1207,
@@ -102213,7 +102213,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -12.98,
     "price_dist_52w_pct": -0.0,
-    "ibd_rs_rating": 60
+    "ibd_rs_rating": 59
   },
   "ICICIINFRA.NS": {
     "listing_days": 1047,
@@ -102981,7 +102981,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -2.68,
     "price_dist_52w_pct": -0.92,
-    "ibd_rs_rating": 71
+    "ibd_rs_rating": 70
   },
   "MAESGETF.NS": {
     "listing_days": 1453,
@@ -103005,7 +103005,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -7.24,
     "price_dist_52w_pct": -5.01,
-    "ibd_rs_rating": 63
+    "ibd_rs_rating": 62
   },
   "ADANITRANS.NS": {
     "listing_days": 1453,
@@ -103869,7 +103869,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.38,
     "price_dist_52w_pct": -25.61,
-    "ibd_rs_rating": 42
+    "ibd_rs_rating": 41
   },
   "COSMOFILMS.NS": {
     "listing_days": 1453,
@@ -106053,7 +106053,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -9.92,
     "price_dist_52w_pct": -6.2,
-    "ibd_rs_rating": 67
+    "ibd_rs_rating": 66
   },
   "BAJAJCORP.NS": {
     "listing_days": 1453,
@@ -106082,26 +106082,26 @@
   "DPL.NS": {
     "listing_days": 1453,
     "is_ipo": false,
-    "1D": -49.81,
-    "1W": -46.15,
-    "1M": 7.38,
-    "3M": -39.16,
-    "6M": -34.69,
-    "YTD": 1.31,
-    "1Y": -1.9,
-    "3Y": -48.85,
-    "5Y": -27.96,
-    "RS (5D)": -45.65,
-    "RS (10D)": 4.33,
-    "RS (20D)": -0.76,
-    "RS (50D)": -45.61,
-    "rs_raw_score": -9.89,
+    "1D": 101.61,
+    "1W": 109.16,
+    "1M": 111.73,
+    "3M": 19.96,
+    "6M": 28.78,
+    "YTD": 13.06,
+    "1Y": 93.44,
+    "3Y": 45.56,
+    "5Y": 23.66,
+    "RS (5D)": 111.11,
+    "RS (10D)": 13.23,
+    "RS (20D)": 95.69,
+    "RS (50D)": 100.51,
+    "rs_raw_score": 105.34,
     "rs_line_52w_high": false,
     "price_52w_high": false,
     "rs_lead_breakout": false,
-    "rs_dist_52w_pct": -52.69,
-    "price_dist_52w_pct": -50.42,
-    "ibd_rs_rating": 40
+    "rs_dist_52w_pct": -6.71,
+    "price_dist_52w_pct": -2.24,
+    "ibd_rs_rating": 97
   },
   "BHUSANSTL.NS": {
     "listing_days": 214,
@@ -108506,26 +108506,26 @@
   "DPTL.NS": {
     "listing_days": 1453,
     "is_ipo": false,
-    "1D": -49.81,
-    "1W": -46.15,
-    "1M": 7.38,
-    "3M": -39.16,
-    "6M": -34.69,
-    "YTD": 1.31,
-    "1Y": -1.9,
-    "3Y": -48.85,
-    "5Y": -27.96,
-    "RS (5D)": -45.65,
-    "RS (10D)": 4.33,
-    "RS (20D)": -0.76,
-    "RS (50D)": -45.61,
-    "rs_raw_score": -9.89,
+    "1D": 101.61,
+    "1W": 109.16,
+    "1M": 111.73,
+    "3M": 19.96,
+    "6M": 28.78,
+    "YTD": 13.06,
+    "1Y": 93.44,
+    "3Y": 45.56,
+    "5Y": 23.66,
+    "RS (5D)": 111.11,
+    "RS (10D)": 13.23,
+    "RS (20D)": 95.69,
+    "RS (50D)": 100.51,
+    "rs_raw_score": 105.34,
     "rs_line_52w_high": false,
     "price_52w_high": false,
     "rs_lead_breakout": false,
-    "rs_dist_52w_pct": -52.69,
-    "price_dist_52w_pct": -50.42,
-    "ibd_rs_rating": 40
+    "rs_dist_52w_pct": -6.71,
+    "price_dist_52w_pct": -2.24,
+    "ibd_rs_rating": 97
   },
   "NATHSEED.NS": {
     "listing_days": 920,
@@ -109557,7 +109557,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.05,
     "price_dist_52w_pct": -23.25,
-    "ibd_rs_rating": 62
+    "ibd_rs_rating": 61
   },
   "KALECONSUL.NS": {
     "listing_days": 1453,
@@ -110277,7 +110277,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.49,
     "price_dist_52w_pct": -23.47,
-    "ibd_rs_rating": 47
+    "ibd_rs_rating": 46
   },
   "MID-DAY.NS": {
     "listing_days": 1416,
@@ -110666,26 +110666,26 @@
   "DTIL.NS": {
     "listing_days": 1453,
     "is_ipo": false,
-    "1D": -49.81,
-    "1W": -46.15,
-    "1M": 7.38,
-    "3M": -39.16,
-    "6M": -34.69,
-    "YTD": 1.31,
-    "1Y": -1.9,
-    "3Y": -48.85,
-    "5Y": -27.96,
-    "RS (5D)": -45.65,
-    "RS (10D)": 4.33,
-    "RS (20D)": -0.76,
-    "RS (50D)": -45.61,
-    "rs_raw_score": -9.89,
+    "1D": 101.61,
+    "1W": 109.16,
+    "1M": 111.73,
+    "3M": 19.96,
+    "6M": 28.78,
+    "YTD": 13.06,
+    "1Y": 93.44,
+    "3Y": 45.56,
+    "5Y": 23.66,
+    "RS (5D)": 111.11,
+    "RS (10D)": 13.23,
+    "RS (20D)": 95.69,
+    "RS (50D)": 100.51,
+    "rs_raw_score": 105.34,
     "rs_line_52w_high": false,
     "price_52w_high": false,
     "rs_lead_breakout": false,
-    "rs_dist_52w_pct": -52.69,
-    "price_dist_52w_pct": -50.42,
-    "ibd_rs_rating": 40
+    "rs_dist_52w_pct": -6.71,
+    "price_dist_52w_pct": -2.24,
+    "ibd_rs_rating": 97
   },
   "TATATEA.NS": {
     "listing_days": 1453,
@@ -110949,7 +110949,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.54,
     "price_dist_52w_pct": -28.81,
-    "ibd_rs_rating": 43
+    "ibd_rs_rating": 42
   },
   "GWALCHEM.NS": {
     "listing_days": 1453,
@@ -111213,7 +111213,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -29.09,
     "price_dist_52w_pct": -23.28,
-    "ibd_rs_rating": 84
+    "ibd_rs_rating": 83
   },
   "AKRUTI.NS": {
     "listing_days": 1452,
@@ -111261,7 +111261,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -36.79,
     "price_dist_52w_pct": -34.31,
-    "ibd_rs_rating": 59
+    "ibd_rs_rating": 58
   },
   "GEOJIT.NS": {
     "listing_days": 1453,
@@ -112269,7 +112269,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -26.49,
     "price_dist_52w_pct": -23.47,
-    "ibd_rs_rating": 47
+    "ibd_rs_rating": 46
   },
   "LANCOIND.NS": {
     "listing_days": 256,
@@ -112917,7 +112917,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -49.4,
     "price_dist_52w_pct": -35.53,
-    "ibd_rs_rating": 50
+    "ibd_rs_rating": 49
   },
   "MPHASISBFL.NS": {
     "listing_days": 1453,
@@ -113325,7 +113325,7 @@
     "rs_lead_breakout": false,
     "rs_dist_52w_pct": -28.38,
     "price_dist_52w_pct": -25.61,
-    "ibd_rs_rating": 42
+    "ibd_rs_rating": 41
   },
   "GOODLASNER.NS": {
     "listing_days": 1453,

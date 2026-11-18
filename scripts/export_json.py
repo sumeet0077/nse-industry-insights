@@ -867,6 +867,8 @@ def compute_and_export_ema_stretch_universe(
         from datetime import datetime
 
         con = duckdb.connect()
+        con.execute("PRAGMA max_memory = '256MB'")
+        con.execute("PRAGMA threads = 2")
         pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
 
         has_sym_map = False
@@ -1388,6 +1390,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         try:
             import duckdb
             con = duckdb.connect()
+            con.execute("PRAGMA max_memory = '256MB'")
+            con.execute("PRAGMA threads = 2")
             try:
                 from corporate_actions_util import register_corporate_actions_duckdb
                 register_corporate_actions_duckdb(con)
@@ -1404,6 +1408,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
              AND b.d <= cai.end_date
             """ if has_ca else ""
             adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
+            warmup_filter = f"AND trade_date >= (CAST('{max_pq_date}' AS DATE) - INTERVAL 450 DAY)" if max_pq_date else ""
 
             query = f"""
             WITH base AS (
@@ -1417,6 +1422,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                     volume
                 FROM read_parquet('{parquet_pattern}', union_by_name=true)
                 WHERE series IN ('EQ', 'BE', 'BZ', 'RR')
+                  {warmup_filter}
             ),
             adjusted AS (
                 SELECT 
@@ -1558,6 +1564,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
         try:
             import duckdb
             con = duckdb.connect()
+            con.execute("PRAGMA max_memory = '256MB'")
+            con.execute("PRAGMA threads = 2")
             pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
             min_date = selected_dates[0]
             q = f"""
@@ -1724,6 +1732,8 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
             import polars as pl
 
             con = duckdb.connect()
+            con.execute("PRAGMA max_memory = '256MB'")
+            con.execute("PRAGMA threads = 2")
             pq_pattern = f"{chosen_pq}/**/*.parquet" if chosen_pq.is_dir() else str(chosen_pq)
             min_date = selected_dates[0]
 

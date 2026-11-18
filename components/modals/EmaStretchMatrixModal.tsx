@@ -13,6 +13,7 @@ export interface SetupVerdictInfo {
     textClass: string;
     borderClass: string;
     tooltip: string;
+    explanation: string;
 }
 
 export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVerdictInfo {
@@ -24,6 +25,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-gray-400",
             borderClass: "border-gray-700",
             tooltip: "No stretch data available",
+            explanation: "No stretch data available for this security.",
         };
     }
 
@@ -33,7 +35,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
     const vel = m.velocity ?? 0;
 
     // 1. Hook Active: Daily >= +P90 with negative velocity rollover
-    if (isHook) {
+    if (isHook || (d20?.is_above && (d20?.percentile ?? 0) >= 90 && vel < 0)) {
         return {
             key: "hook",
             badge: "⚡ Hook Active",
@@ -41,6 +43,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-amber-300",
             borderClass: "border-amber-500/40",
             tooltip: "Exhaustion Hook: Daily stretch exceeded +P90 with negative velocity rollover. Take profits / high-probability pullback.",
+            explanation: "Exhaustion Hook Active: Daily stretch reached extreme overbought (≥ +P90) while kinetic velocity rolled negative today (Vt < 0). Price momentum is decelerating rapidly. Action: Protect profits, tighten trailing stops, or anticipate mean-reversion pullback toward the Daily 20 EMA.",
         };
     }
 
@@ -53,22 +56,11 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-[#fce7f3]",
             borderClass: "border-[#8a144e]",
             tooltip: "Climax Exhaustion: Daily and Weekly simultaneously overstretched >= +P90. Extreme overbought risk.",
+            explanation: "Triple Climax / Blow-Off Top: Daily and Weekly moving averages are simultaneously overextended (≥ +P90). Severe asymmetric downside risk. Action: Avoid chasing breakouts; wait for multi-day consolidation or pullback to EMA 20 before fresh risk deployment.",
         };
     }
 
-    // 3. Bull Dip-Buy: Weekly >= +P70, Daily <= 0.8 ATR or <= P40
-    if (w20?.is_above && (w20?.percentile ?? 0) >= 70 && (!d20?.is_above || (d20?.stretch_atr ?? 99) <= 0.8 || (d20?.percentile ?? 0) <= 40)) {
-        return {
-            key: "dip_buy",
-            badge: "🎯 Bull Dip-Buy",
-            bgClass: "bg-emerald-600/20",
-            textClass: "text-emerald-300",
-            borderClass: "border-emerald-500/40",
-            tooltip: "Bull Dip-Buy: Powerful Weekly bull trend (+P70+) resting near Daily 20 EMA. Optimal risk/reward entry.",
-        };
-    }
-
-    // 4. Momentum Thrust: Daily >= +P90 with accelerating velocity > 0.20
+    // 3. Momentum Thrust: Daily >= +P90 with accelerating velocity > 0.20
     if (d20?.is_above && (d20?.percentile ?? 0) >= 90 && vel > 0.2) {
         return {
             key: "thrust",
@@ -77,6 +69,27 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-purple-300",
             borderClass: "border-purple-500/40",
             tooltip: "Momentum Thrust: Extreme stretch expanding with positive velocity. Unchecked trend; trail stops tightly.",
+            explanation: `Momentum Thrust: Extreme stretch expanding with positive kinetic acceleration (+${vel.toFixed(2)} ATR/d). Powerful institutional impulse in motion. Action: Ride the trend with tight trailing stops anchored to Daily 10 EMA; do not counter-trend short.`,
+        };
+    }
+
+    // 4. Bull Dip-Buy (Holy Grail): Weekly >= +P70 (Macro Bull), Daily resting at EMA (-0.5 to +0.8 ATR) and velocity >= 0
+    const dStretchSigned = d20 ? (d20.is_above ? d20.stretch_atr : -d20.stretch_atr) : 99;
+    if (
+        w20?.is_above &&
+        (w20?.percentile ?? 0) >= 70 &&
+        dStretchSigned >= -0.5 &&
+        dStretchSigned <= 0.8 &&
+        vel >= 0
+    ) {
+        return {
+            key: "dip_buy",
+            badge: "🎯 Bull Dip-Buy",
+            bgClass: "bg-emerald-600/20",
+            textClass: "text-emerald-300",
+            borderClass: "border-emerald-500/40",
+            tooltip: "Bull Dip-Buy: Powerful Weekly bull trend (+P70+) resting near Daily 20 EMA (-0.5 to +0.8 ATR) with positive velocity. Optimal risk/reward entry.",
+            explanation: "Bull Dip-Buy (Holy Grail): Macro bull trend is intact (Weekly ≥ +P70) while Daily price has digested excess stretch to rest near the 20 EMA (-0.5 to +0.8 ATR) with positive kinetic velocity. Action: High-probability dip-buy setup. Look for intraday stabilization around EMA 20 for asymmetric long entry.",
         };
     }
 
@@ -89,6 +102,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-cyan-300",
             borderClass: "border-cyan-500/40",
             tooltip: "Squeeze Expansion: Volatility compressed near 20 EMA. Coiled energy preparing for explosive breakout.",
+            explanation: "Squeeze Expansion: Price has compressed within tight volatility bands near the 20 EMA (TTM squeeze coiling). Volatility expansion is imminent. Action: Prepare breakout limit orders above/below range consolidation.",
         };
     }
 
@@ -101,6 +115,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
             textClass: "text-rose-300",
             borderClass: "border-rose-500/40",
             tooltip: "Price Flush: Falling waterfall below moving averages. High-risk breakdown; avoid bottom fishing.",
+            explanation: "Price Flush / Waterfall Decline: Breakdown below moving averages (Daily ≤ -P70) with accelerating negative velocity. Action: High risk of capitulation; avoid bottom-fishing until velocity stabilizes and hooks upward.",
         };
     }
 
@@ -112,6 +127,7 @@ export function getSetupVerdict(m: EMAStretchMatrix | null | undefined): SetupVe
         textClass: "text-gray-300",
         borderClass: "border-gray-700/60",
         tooltip: "Normal price drift around moving average baseline.",
+        explanation: "Trend Equilibrium: Price is oscillating within standard historical ATR bands around the 20 EMA baseline. Action: Monitor multi-timeframe alignment for emerging directional catalysts.",
     };
 }
 
@@ -210,6 +226,7 @@ export function EmaStretchMatrixModal({
         const valStr = Number.isInteger(valAbs) ? `${valAbs}` : valAbs.toFixed(1);
         const dirSign = cell.is_above ? "▲ +" : "▼ -";
         const formattedAtr = `${dirSign}${valStr} ATR`;
+        const cleanPct = (cell.percentile_str || "").replace(/\*/g, "").trim();
 
         return (
             <>
@@ -217,7 +234,7 @@ export function EmaStretchMatrixModal({
                     {formattedAtr}
                 </td>
                 <td className={`px-2 py-2 text-center font-mono text-[11px] whitespace-nowrap ${!isLast ? `border-r ${borderClass}` : ""} ${bgClass} ${textPctClass}`}>
-                    {cell.percentile_str}
+                    {cleanPct}
                 </td>
             </>
         );
@@ -375,7 +392,29 @@ export function EmaStretchMatrixModal({
                         </div>
                     </div>
 
-                    {/* 2. Kinetic Vector & Mean-Reversion Landing Zones */}
+                    {/* 2. Setup Verdict Tactical Guidance Callout */}
+                    {(() => {
+                        const verdict = getSetupVerdict(matrix);
+                        if (verdict.key === "unknown") return null;
+                        return (
+                            <div className={`p-3.5 rounded-xl border text-xs leading-relaxed flex items-start gap-3 ${verdict.bgClass} ${verdict.borderClass}`}>
+                                <div className={`p-1.5 rounded-lg bg-black/30 shrink-0 ${verdict.textClass}`}>
+                                    <Target className="w-4 h-4" />
+                                </div>
+                                <div className="space-y-1">
+                                    <div className={`font-bold text-xs ${verdict.textClass} flex items-center gap-1.5`}>
+                                        <span>Setup Protocol:</span>
+                                        <span>{verdict.badge}</span>
+                                    </div>
+                                    <p className="text-gray-200 text-[11px] leading-relaxed">
+                                        {verdict.explanation}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })()}
+
+                    {/* 3. Kinetic Vector & Mean-Reversion Landing Zones */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                         {/* Kinetic Vector Card */}
                         <div className="bg-[#12121d] border border-gray-800 rounded-xl p-3.5 space-y-2">
@@ -441,9 +480,37 @@ export function EmaStretchMatrixModal({
                                 const discEma10 = calcLandingDiscount(matrix?.landing_ema_10, currentPrice);
                                 const discEma20 = calcLandingDiscount(matrix?.landing_ema_20, currentPrice);
                                 const discCprTop = calcLandingDiscount(matrix?.landing_cpr_top, currentPrice);
+
+                                // Find closest support benchmark
+                                let closestSupport: "ema10" | "ema20" | "cpr_top" | null = null;
+                                if (currentPrice != null && currentPrice > 0) {
+                                    let minDiff = Infinity;
+                                    if (matrix?.landing_ema_10 != null) {
+                                        const d = Math.abs(currentPrice - matrix.landing_ema_10);
+                                        if (d < minDiff) { minDiff = d; closestSupport = "ema10"; }
+                                    }
+                                    if (matrix?.landing_ema_20 != null) {
+                                        const d = Math.abs(currentPrice - matrix.landing_ema_20);
+                                        if (d < minDiff) { minDiff = d; closestSupport = "ema20"; }
+                                    }
+                                    if (matrix?.landing_cpr_top != null) {
+                                        const d = Math.abs(currentPrice - matrix.landing_cpr_top);
+                                        if (d < minDiff) { minDiff = d; closestSupport = "cpr_top"; }
+                                    }
+                                }
+
                                 return (
                                     <div className="grid grid-cols-3 gap-2 text-center font-mono">
-                                        <div className="bg-[#0e0e17] p-2 rounded-lg border border-gray-800">
+                                        <div className={`p-2 rounded-lg border relative transition-all ${
+                                            closestSupport === "ema10"
+                                                ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
+                                                : "bg-[#0e0e17] border-gray-800"
+                                        }`}>
+                                            {closestSupport === "ema10" && (
+                                                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
+                                                    Closest
+                                                </div>
+                                            )}
                                             <div className="text-[10px] text-gray-400 font-sans">EMA 10</div>
                                             <div className="text-xs font-bold text-gray-200 mt-0.5">
                                                 {matrix?.landing_ema_10 != null ? `₹${matrix.landing_ema_10.toFixed(2)}` : "—"}
@@ -454,7 +521,17 @@ export function EmaStretchMatrixModal({
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="bg-[#0e0e17] p-2 rounded-lg border border-gray-800">
+
+                                        <div className={`p-2 rounded-lg border relative transition-all ${
+                                            closestSupport === "ema20"
+                                                ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
+                                                : "bg-[#0e0e17] border-gray-800"
+                                        }`}>
+                                            {closestSupport === "ema20" && (
+                                                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
+                                                    Closest
+                                                </div>
+                                            )}
                                             <div className="text-[10px] text-gray-400 font-sans">EMA 20</div>
                                             <div className="text-xs font-bold text-cyan-300 mt-0.5">
                                                 {matrix?.landing_ema_20 != null ? `₹${matrix.landing_ema_20.toFixed(2)}` : "—"}
@@ -465,7 +542,17 @@ export function EmaStretchMatrixModal({
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="bg-[#0e0e17] p-2 rounded-lg border border-gray-800">
+
+                                        <div className={`p-2 rounded-lg border relative transition-all ${
+                                            closestSupport === "cpr_top"
+                                                ? "bg-cyan-950/30 border-cyan-500/80 ring-1 ring-cyan-500/40"
+                                                : "bg-[#0e0e17] border-gray-800"
+                                        }`}>
+                                            {closestSupport === "cpr_top" && (
+                                                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded-full bg-cyan-600 text-[8px] font-sans font-bold text-white uppercase tracking-wider whitespace-nowrap shadow">
+                                                    Closest
+                                                </div>
+                                            )}
                                             <div className="text-[10px] text-gray-400 font-sans">CPR Top</div>
                                             <div className="text-xs font-bold text-emerald-400 mt-0.5">
                                                 {matrix?.landing_cpr_top != null ? `₹${matrix.landing_cpr_top.toFixed(2)}` : "—"}

@@ -2805,6 +2805,15 @@ def ensure_public_symlinks(output_dir: Path):
         else:
             print(f"  OK   Symlink valid: public/data/{sub} -> {target}")
 
+    # Ensure sec_bands.json is linked in public/data for client-side F&O gating
+    bands_in_public = public_data / "sec_bands.json"
+    if not bands_in_public.exists() and (output_dir / "sec_bands.json").exists():
+        try:
+            bands_in_public.symlink_to("../../data/sec_bands.json")
+            print("  OK   Symlink created: public/data/sec_bands.json -> ../../data/sec_bands.json")
+        except Exception as e:
+            print(f"  WARN Could not create symlink public/data/sec_bands.json: {e}")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Export CSVs to JSON for nse-industry-insights")

@@ -20,6 +20,22 @@ SYMBOL_CHANGES_JSON = ROOT_DIR / "data" / "symbol_changes.json"
 SYMBOL_CHANGES_TS = ROOT_DIR / "lib" / "symbolChanges.ts"
 NSE_SYMBOL_CHANGE_URL = "https://nsearchives.nseindia.com/content/equities/symbolchange.csv"
 
+# Curated overrides for corporate transitions absent from official CSV archives
+CURATED_OVERRIDES: list[dict] = [
+    {
+        "company": "PCBL LIMITED",
+        "old_symbol": "PHILIPCARB",
+        "new_symbol": "PCBL",
+        "effective_date": "2022-01-05",
+    },
+    {
+        "company": "ZF Commercial Vehicle Control Systems India Limited",
+        "old_symbol": "WABCOINDIA",
+        "new_symbol": "ZFCVINDIA",
+        "effective_date": "2022-03-08",
+    },
+]
+
 
 def parse_nse_date(date_str: str) -> str:
     """Converts NSE date string (e.g. '02-NOV-2026' or '2026-11-02') to ISO 'YYYY-MM-DD'."""
@@ -107,9 +123,10 @@ def sync_symbol_changes() -> tuple[int, int]:
     }
 
     online_changes = fetch_nse_symbol_changes()
+    all_incoming = list(CURATED_OVERRIDES) + online_changes
     added_count = 0
 
-    for item in online_changes:
+    for item in all_incoming:
         key = (item["old_symbol"], item["new_symbol"])
         if key not in existing_map:
             existing.append(item)

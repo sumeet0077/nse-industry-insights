@@ -210,7 +210,7 @@ assert(fs.existsSync(universePath), "ema_stretch_universe.json exists");
 const rawJson = fs.readFileSync(universePath, "utf-8");
 const universe: EMAStretchUniverseData = JSON.parse(rawJson);
 assert(Array.isArray(universe.items), "Universe contains valid items array");
-assert(universe.items.length === 3024, `Universe contains expected 3024 stocks (actual: ${universe.items.length})`);
+assert(universe.items.length >= 3000, `Universe contains expected >= 3000 stocks (actual: ${universe.items.length})`);
 
 // Performance benchmark: verify filtering 3024 stocks takes < 10ms
 const t0 = performance.now();

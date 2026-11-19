@@ -434,16 +434,48 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                              WHEN 'SM' THEN 3 
                              WHEN 'ST' THEN 4 
                              WHEN 'SZ' THEN 5 
+                             WHEN 'RR' THEN 6 
+                             WHEN 'IV' THEN 7 
                              ELSE 99 END
                     ) as rn
                 FROM read_parquet('{pq_glob}', union_by_name=true) b
-                WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'ST', 'SZ')
+                WHERE b.series IN ('EQ', 'BE', 'BZ', 'SM', 'ST', 'SZ', 'RR', 'IV')
                   AND b.year >= {_min_year}
+                  AND NOT b.symbol LIKE '%-RE%'
+                  AND NOT b.symbol LIKE '%-RE1%'
+                  AND NOT b.symbol LIKE '%-RE2%'
             )
             SELECT symbol, trade_date, close FROM ranked WHERE rn = 1 ORDER BY trade_date ASC
             """
             df_master = con.execute(q).df()
             con.close()
+
+            # Purge non-equity instruments (ETFs, Rights Entitlements) while protecting active theme constituents
+            try:
+                from etf_util import is_etf_or_re
+                active_theme_syms = set()
+                ms_path = Path(output_dir) / "market_status" / "market_status_latest.json"
+                if ms_path.exists():
+                    try:
+                        with open(ms_path) as ms_f:
+                            ms_data = json.load(ms_f)
+                            for val in ms_data.values():
+                                for t_list in (val.get("above") or [], val.get("below") or [], val.get("new_stock") or []):
+                                    for t in t_list:
+                                        clean_t = t.replace(".NS", "").strip().upper()
+                                        active_theme_syms.add(clean_t)
+                    except Exception:
+                        pass
+
+                def should_purge(sym: str) -> bool:
+                    s = str(sym).strip().upper()
+                    if s in active_theme_syms:
+                        return False
+                    return is_etf_or_re(s)
+
+                df_master = df_master[~df_master["symbol"].astype(str).map(should_purge)]
+            except Exception as e:
+                print(f"    (Notice: ETF/RE filtering skipped in export_constituent_performance: {e})")
 
             # Apply symbol change resolution using fast dictionary map over unique tickers
             try:
@@ -452,6 +484,8 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
                 unique_syms = df_master["symbol"].unique()
                 sym_map = {s: terminal_map.get(str(s).strip().upper(), str(s).strip().upper()) for s in unique_syms}
                 df_master["symbol"] = df_master["symbol"].map(sym_map)
+                # Re-purge to catch any legacy ETF tickers that mapped to terminal ETFs (e.g. PSUBANKICI -> PSUBNKIETF)
+                df_master = df_master[~df_master["symbol"].astype(str).map(should_purge)]
             except Exception as e:
                 print(f"    (Notice: symbol change resolution skipped in export_constituent_performance: {e})")
 
@@ -540,11 +574,17 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             # same (symbol, date).  Block-deal (BL) and auction (P1) close prices differ
             # from the regular EQ close — using them silently corrupts 1D/1W returns.
             if has_series:
-                # Strictly filter to equity series (EQ, BE, BZ for Mainboard, SM, ST, SZ for SME, RR for REITs) to purge debt/bond
+                # Strictly filter to equity series (EQ, BE, BZ for Mainboard, SM, ST, SZ for SME) to purge debt/bond
                 # instruments (N1-N9, NC, Y*, Z*, etc.) which trade at debt face values (₹1,000+) and corrupt equity price histories (e.g. TATACAP).
-                equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ", "RR"]
+                equity_series = ["EQ", "BE", "BZ", "SM", "ST", "SZ"]
                 df_master = df_master[df_master["series"].isin(equity_series)]
-                _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5, "RR": 6}
+                df_master = df_master[~df_master["symbol"].str.contains("-RE", na=False)]
+                try:
+                    from etf_util import is_etf_or_re
+                    df_master = df_master[~df_master["symbol"].astype(str).map(is_etf_or_re)]
+                except Exception:
+                    pass
+                _series_priority = {"EQ": 0, "BE": 1, "BZ": 2, "SM": 3, "ST": 4, "SZ": 5}
                 df_master["_sprio"] = df_master["series"].map(lambda s: _series_priority.get(s, 99) if isinstance(s, str) else 99)
                 df_master = df_master.sort_values(["symbol_ns", "trade_date", "_sprio"])
                 df_master = df_master.drop_duplicates(subset=["symbol_ns", "trade_date"], keep="first")
@@ -557,15 +597,15 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             if hasattr(df_pivot.index, 'tz') and df_pivot.index.tz is not None:
                 df_pivot.index = df_pivot.index.tz_localize(None)
 
-        if not is_adjusted:
-            print("    Applying corporate action adjustments via corporate_actions_util...")
-            try:
-                from corporate_actions_util import apply_corporate_actions_pandas
-                df_pivot = apply_corporate_actions_pandas(df_pivot)
-            except Exception as e:
-                print(f"    WARN: Failed to apply corporate actions to df_pivot: {e}")
-        else:
-            print("    (Parquet data is pre-adjusted via adj_close — corporate actions applied at source)")
+        # Corporate actions adjustment: Apply safe verification & SME fallback via corporate_actions_util.
+        # The distance-minimization guardrail ensures already-adjusted series are skipped (preventing double adjustment),
+        # while ensuring unadjusted SME stocks (e.g. ORIANA, CHAVDA) receive their required splits/bonuses.
+        print("    Applying corporate action verification & fallback via corporate_actions_util...")
+        try:
+            from corporate_actions_util import apply_corporate_actions_pandas
+            df_pivot = apply_corporate_actions_pandas(df_pivot)
+        except Exception as e:
+            print(f"    WARN: Failed to apply corporate actions to df_pivot: {e}")
 
         # Load Nifty 50 for Relative Strength calculations
         nifty_paths = [
@@ -770,6 +810,8 @@ def export_constituent_performance(output_dir: Path, source_dir: Path):
             term_map = get_terminal_symbol_map()
             aliased_count = 0
             for old_sym, new_sym in term_map.items():
+                if should_purge(old_sym) or should_purge(new_sym):
+                    continue
                 new_key = f"{new_sym}.NS"
                 old_key = f"{old_sym}.NS"
                 if new_key in result and old_key not in result:
@@ -1511,13 +1553,25 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 has_ca = False
 
             parquet_pattern = f"{chosen_parquet}/**/*.parquet" if chosen_parquet.is_dir() else str(chosen_parquet)
+
+            # Check if master parquet is pre-adjusted (has non-null adj_close) to prevent double adjustment
+            has_adj = False
+            try:
+                cols_check = [c[0] for c in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{parquet_pattern}', union_by_name=true) LIMIT 1").fetchall()]
+                if "adj_close" in cols_check:
+                    adj_cnt = con.execute(f"SELECT COUNT(adj_close) FROM read_parquet('{parquet_pattern}', union_by_name=true) WHERE adj_close IS NOT NULL LIMIT 1").fetchone()
+                    if adj_cnt and adj_cnt[0] > 0:
+                        has_adj = True
+            except Exception as e:
+                print(f"  Notice: Could not check for adj_close column in master parquet: {e}")
+
             ca_join = """
             LEFT JOIN corporate_action_intervals cai
               ON b.symbol = cai.symbol
              AND b.d >= cai.start_date
              AND b.d <= cai.end_date
-            """ if has_ca else ""
-            adj_factor_expr = "COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0"
+            """ if (has_ca and not has_adj) else ""
+            adj_factor_expr = "1.0" if has_adj else ("COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0")
             warmup_filter = f"AND trade_date >= (CAST('{max_pq_date}' AS DATE) - INTERVAL 450 DAY)" if max_pq_date else ""
 
             query = f"""

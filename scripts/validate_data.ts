@@ -156,6 +156,82 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
             errors.push(`Critical: ${missing1D} active stocks have null 1D return!`);
         }
     }
+
+    // Invariant: Zero Rights Entitlements (-RE) and Zero ETFs in constituent_performance
+    const etfFilePath = path.join(DATA_DIR, "etf_symbols.json");
+    let etfSymbols = new Set<string>();
+    if (fs.existsSync(etfFilePath)) {
+        const etfRaw = JSON.parse(fs.readFileSync(etfFilePath, "utf-8"));
+        const list = Array.isArray(etfRaw) ? etfRaw : (etfRaw.etf_symbols || etfRaw.symbols || []);
+        etfSymbols = new Set(list.map((s: string) => s.trim().toUpperCase()));
+    }
+    ["MINDSPACE", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT", "SBIGOLD", "SBINIFTY50"].forEach(s => etfSymbols.add(s));
+
+    const PROTECTED_EQUITIES = new Set([
+        "SKYGOLD", "GOLDIAM", "SILVERTUC", "EUROBOND", "CHEMBOND", "PNBGILTS",
+        "BHARATFORG", "BHARATGEAR", "BHARATRAS", "BHARATWIRE", "BHARTIARTL",
+        "GOLDENTOBC", "GOLDKENTO", "GOLDTECH", "SILVEROAK", "BOMDYEING",
+        "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
+        "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
+        "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
+        "EMBASSY", "BIRET", "BAGMANE",
+    ]);
+
+    let reCount = 0;
+    let etfCount = 0;
+    Object.keys(cp).forEach((t) => {
+        const clean = cleanTicker(t).toUpperCase();
+        if (clean.endsWith("-RE") || clean.includes("-RE1") || clean.includes("-RE2")) {
+            reCount++;
+            errors.push(`Rights Entitlement found in constituent_performance: ${t}`);
+        }
+        if (!PROTECTED_EQUITIES.has(clean)) {
+            if (
+                etfSymbols.has(clean) ||
+                /(?:BEES|ETF|IETF|GETF|BETF|IWIN)$/i.test(clean) ||
+                /^(?:SETF|NETF|BBETF|EBBETF)/i.test(clean)
+            ) {
+                etfCount++;
+                errors.push(`ETF leaked into constituent_performance: ${t}`);
+            }
+        }
+    });
+    if (reCount === 0 && etfCount === 0) {
+        console.log(`  ✓ Invariant verified: 0 Rights Entitlements (-RE) and 0 ETFs in constituent performance universe.`);
+    }
+
+    // Invariant: SME stocks post-split return sanity (prevent false -85% cliffs)
+    for (const smeTicker of ["ORIANA.NS", "CHAVDA.NS"]) {
+        const row = cp[smeTicker];
+        if (row) {
+            if (row["3M"] !== null && row["3M"] !== undefined && row["3M"] < -50) {
+                errors.push(`SME Return Anomaly: ${smeTicker} 3M return (${row["3M"]}%) indicates missing split adjustment!`);
+            }
+            if (row.YTD !== null && row.YTD !== undefined && row.YTD < -60) {
+                errors.push(`SME Return Anomaly: ${smeTicker} YTD return (${row.YTD}%) indicates missing split adjustment!`);
+            }
+        }
+    }
+
+    // Invariant: Renamed stocks 5Y return sanity (confirm Unified Alias Graph links pre-rename history)
+    for (const renamedTicker of ["MOTHERSON.NS", "TIPSMUSIC.NS", "PCBL.NS"]) {
+        const row = cp[renamedTicker];
+        if (row) {
+            if (row["5Y"] === null || row["5Y"] === undefined || row["5Y"] < 50) {
+                errors.push(`Renamed Stock 5Y Anomaly: ${renamedTicker} 5Y return (${row["5Y"]}%) missing historical compounding across ticker renames (expected > +50%)!`);
+            }
+        }
+    }
+
+    // Invariant: Demerger & Reorganization sanity (confirm continuous compounding without double-counting)
+    for (const reorgTicker of ["ADANIENT.NS", "NTPC.NS", "AHLEAST.NS"]) {
+        const row = cp[reorgTicker];
+        if (row) {
+            if (row["5Y"] === null || row["5Y"] === undefined || row["5Y"] < 30) {
+                errors.push(`Demerger Sanity Anomaly: ${reorgTicker} 5Y return (${row["5Y"]}%) distorted by corporate action adjustment!`);
+            }
+        }
+    }
 });
 
 // 3. Validate Performance Summary
@@ -416,6 +492,7 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
         "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
         "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
+        "EMBASSY", "BIRET", "BAGMANE",
     ]);
 
     // Invariant 1: Mutual Exclusion
@@ -446,16 +523,30 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    // Invariant 3: Corporate Action Split Integrity (POCL, ANGELONE in immediate post-split window)
-    for (const dt of data.dates) {
-        const session = data.daily_lists[dt];
-        if (!session) continue;
-        const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
-        if (dt >= "2026-07-21" && dt <= "2026-08-15" && lowSet.has("POCL")) {
-            errors.push(`Invariant 3 Failure: POCL erroneously in low52w post-split on ${dt}`);
-        }
-        if (dt >= "2026-02-26" && dt <= "2026-03-31" && lowSet.has("ANGELONE")) {
-            errors.push(`Invariant 3 Failure: ANGELONE erroneously in low52w post-split on ${dt}`);
+    // Invariant 3: Corporate Action Split Integrity (Bidirectional: neither highs NOR lows within 5 days of ex-date)
+    const splitCheckWindows: { symbol: string; start: string; end: string }[] = [
+        { symbol: "ANGELONE", start: "2026-02-26", end: "2026-03-05" },
+        { symbol: "POCL", start: "2026-07-21", end: "2026-07-28" },
+        { symbol: "INDIAGLYCO", start: "2025-08-12", end: "2025-08-19" },
+        { symbol: "PGIL", start: "2024-01-05", end: "2024-01-12" },
+        { symbol: "HEG", start: "2024-10-18", end: "2024-10-25" },
+        { symbol: "HEGAM", start: "2024-10-18", end: "2024-10-25" },
+    ];
+
+    for (const chk of splitCheckWindows) {
+        for (const dt of data.dates) {
+            if (dt >= chk.start && dt <= chk.end) {
+                const session = data.daily_lists[dt];
+                if (!session) continue;
+                const highSet = new Set(session.highs.map((s: string) => cleanTicker(s).toUpperCase()));
+                const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
+                if (highSet.has(chk.symbol)) {
+                    errors.push(`Invariant 3 Failure: ${chk.symbol} erroneously in 52W highs post-split on ${dt}`);
+                }
+                if (lowSet.has(chk.symbol)) {
+                    errors.push(`Invariant 3 Failure: ${chk.symbol} erroneously in 52W lows post-split on ${dt}`);
+                }
+            }
         }
     }
 

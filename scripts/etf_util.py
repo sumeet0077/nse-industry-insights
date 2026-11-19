@@ -196,7 +196,8 @@ def sync_etfs_from_nse(file_path=None, url=NSE_ETF_URL, daily_file=None) -> list
     return new_etfs
 
 EXCLUDED_TRUSTS_GILTS = {
-    "EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT"
+    "EMBASSY", "MINDSPACE", "BIRET", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT",
+    "SBIGOLD", "SBINIFTY50"
 }
 
 def is_etf_or_re(symbol: str, etf_set=None, whitelist=None) -> bool:

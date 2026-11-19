@@ -1,5 +1,11 @@
 [
   {
+    "company": "BRAHM VIRAT INDUSTRIES CORPORATION LIMITED",
+    "old_symbol": "VIRAT",
+    "new_symbol": "BRAHMVIRAT",
+    "effective_date": "2026-11-19"
+  },
+  {
     "company": "Evonile Pharma Limited",
     "old_symbol": "NOVARTIND",
     "new_symbol": "EVONILE",
@@ -1728,10 +1734,22 @@
     "effective_date": "2022-04-27"
   },
   {
+    "company": "ZF Commercial Vehicle Control Systems India Limited",
+    "old_symbol": "WABCOINDIA",
+    "new_symbol": "ZFCVINDIA",
+    "effective_date": "2022-03-08"
+  },
+  {
     "company": "Zydus Lifesciences Limited",
     "old_symbol": "CADILAHC",
     "new_symbol": "ZYDUSLIFE",
     "effective_date": "2022-03-07"
+  },
+  {
+    "company": "PCBL LIMITED",
+    "old_symbol": "PHILIPCARB",
+    "new_symbol": "PCBL",
+    "effective_date": "2022-01-05"
   },
   {
     "company": "WinPro Industries Limited",

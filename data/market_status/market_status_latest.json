@@ -1556,23 +1556,6 @@
     ],
     "new_stock": []
   },
-  "NIFTY IT": {
-    "above": [
-      "COFORGE.NS",
-      "HCLTECH.NS",
-      "MPHASIS.NS",
-      "OFSS.NS",
-      "PERSISTENT.NS",
-      "TECHM.NS"
-    ],
-    "below": [
-      "INFY.NS",
-      "LTM.NS",
-      "TCS.NS",
-      "WIPRO.NS"
-    ],
-    "new_stock": []
-  },
   "NIFTY MEDIA": {
     "above": [
       "MPSLTD.NS",

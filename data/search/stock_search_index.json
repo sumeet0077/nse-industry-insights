@@ -2268,6 +2268,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -3557,6 +3562,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -6103,6 +6113,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -6781,6 +6796,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -7451,6 +7471,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -7515,6 +7540,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -9406,6 +9436,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -9423,6 +9458,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -9438,6 +9478,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -10373,6 +10418,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -10393,6 +10443,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -11027,6 +11082,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -11309,6 +11369,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -11653,6 +11718,11 @@
       "id": "market_breadth_midsmallcap400",
       "title": "Nifty MidSmallcap 400",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -14485,6 +14555,11 @@
       "category": "broad-market"
     },
     {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
+    },
+    {
       "id": "breadth_theme_it_services",
       "title": "IT Services",
       "category": "industries"
@@ -14534,6 +14609,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",
@@ -16155,6 +16235,11 @@
       "id": "market_breadth_nifty500",
       "title": "Nifty 500",
       "category": "broad-market"
+    },
+    {
+      "id": "breadth_it",
+      "title": "Nifty IT",
+      "category": "sectors"
     },
     {
       "id": "breadth_theme_it_services",

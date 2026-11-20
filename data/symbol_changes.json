@@ -1,5 +1,11 @@
 [
   {
+    "company": "Shukra Medtech Limited",
+    "old_symbol": "SHUKRAPHAR",
+    "new_symbol": "SHUKRAMED",
+    "effective_date": "2026-11-20"
+  },
+  {
     "company": "BRAHM VIRAT INDUSTRIES CORPORATION LIMITED",
     "old_symbol": "VIRAT",
     "new_symbol": "BRAHMVIRAT",

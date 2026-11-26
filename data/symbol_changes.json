@@ -1,5 +1,11 @@
 [
   {
+    "company": "MRO-TEK Networks Limited",
+    "old_symbol": "UMIYA-MRO",
+    "new_symbol": "MROTEK",
+    "effective_date": "2026-11-26"
+  },
+  {
     "company": "REC Limited",
     "old_symbol": "789REC36",
     "new_symbol": "789RECL36",

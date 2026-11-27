@@ -1,5 +1,11 @@
 [
   {
+    "company": "MONTEIL LIMITED",
+    "old_symbol": "LAL",
+    "new_symbol": "MONTEIL",
+    "effective_date": "2026-11-27"
+  },
+  {
     "company": "MRO-TEK Networks Limited",
     "old_symbol": "UMIYA-MRO",
     "new_symbol": "MROTEK",

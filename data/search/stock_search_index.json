@@ -6255,6 +6255,23 @@
       "category": "industries"
     }
   ],
+  "HEGRAPHITE": [
+    {
+      "id": "market_breadth_nifty500",
+      "title": "Nifty 500",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_midsmallcap400",
+      "title": "Nifty MidSmallcap 400",
+      "category": "broad-market"
+    },
+    {
+      "id": "market_breadth_smallcap",
+      "title": "Nifty Smallcap 250",
+      "category": "broad-market"
+    }
+  ],
   "HEROHONDA": [
     {
       "id": "market_breadth_nifty500",

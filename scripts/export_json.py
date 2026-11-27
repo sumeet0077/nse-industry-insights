@@ -219,6 +219,7 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
             elif q1_ret is not None:
                 rs_raw = 1.0 * q1_ret
 
+            row["_rs_raw_unrounded"] = rs_raw
             row["rs_raw_score"] = round(rs_raw, 2) if rs_raw is not None else None
             
             summary_data.append(row)
@@ -229,8 +230,15 @@ def export_performance_summary(output_dir: Path, source_dir: Path):
     if summary_data:
         out_path = perf_dir / "performance_summary.json"
         
-        # Calculate Percentile-Ranked RS Rating (1-99) across all sectors/themes
-        raw_scores = {r["Theme/Index"]: r["rs_raw_score"] for r in summary_data if r.get("rs_raw_score") is not None}
+        # Calculate Percentile-Ranked RS Rating (1-99) across all sectors/themes using unrounded precision
+        # so tiny differences (e.g. 1.9076 vs 1.9139) don't tie artificially and diverge from daily history.
+        raw_scores = {
+            r["Theme/Index"]: r["_rs_raw_unrounded"]
+            for r in summary_data
+            if r.get("_rs_raw_unrounded") is not None
+        }
+        for r in summary_data:
+            r.pop("_rs_raw_unrounded", None)
         if raw_scores:
             score_series = pd.Series(raw_scores)
             ranks = score_series.rank(pct=True, method="average")
@@ -1572,7 +1580,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
              AND b.d <= cai.end_date
             """ if (has_ca and not has_adj) else ""
             adj_factor_expr = "1.0" if has_adj else ("COALESCE(cai.adj_factor, 1.0)" if has_ca else "1.0")
-            warmup_filter = f"AND trade_date >= (CAST('{max_pq_date}' AS DATE) - INTERVAL 450 DAY)" if max_pq_date else ""
+            warmup_filter = f"AND trade_date >= (CAST('{max_pq_date}' AS DATE) - INTERVAL 560 DAY)" if max_pq_date else ""
 
             query = f"""
             WITH base AS (
@@ -1679,7 +1687,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 continue
             raw_sym = str(row[0]).strip().upper().replace(".NS", "")
             sym = terminal_map.get(raw_sym, raw_sym)
-            if not sym or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE") or sym in ("LUMINO", "SKYWAYS"):
+            if not sym or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE"):
                 continue
             seen_highs.add(sym)
             row_copy = list(row)
@@ -1693,7 +1701,7 @@ def export_52w_high_low_history(output_dir: Path, source_dir: Path):
                 continue
             raw_sym = str(row[0]).strip().upper().replace(".NS", "")
             sym = terminal_map.get(raw_sym, raw_sym)
-            if not sym or sym in seen_lows or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE") or sym in ("LUMINO", "SKYWAYS"):
+            if not sym or sym in seen_lows or sym in seen_highs or is_etf_or_re(sym) or sym.endswith("-RE"):
                 continue
             seen_lows.add(sym)
             row_copy = list(row)
@@ -2949,17 +2957,23 @@ def main():
             with open(ms_out, "r") as f:
                 ms_data = json.load(f)
             
-            # 1. Map ALL tickers across all themes and indices to active terminal symbols
+            # 1. Map ALL tickers across all themes and indices to active terminal symbols (deduplicated)
+            known_ticker_bucket: dict[str, str] = {}
             for entry_name, entry in ms_data.items():
                 if isinstance(entry, dict):
+                    seen_in_entry: set[str] = set()
                     for list_key in ("above", "below", "new_stock"):
                         if list_key in entry and isinstance(entry[list_key], list):
-                            entry[list_key] = [
-                                f"{t_map.get(s.replace('.NS', ''), s.replace('.NS', ''))}.NS" 
-                                for s in entry[list_key]
-                            ]
+                            mapped_unique = []
+                            for s in entry[list_key]:
+                                norm = f"{t_map.get(s.replace('.NS', ''), s.replace('.NS', ''))}.NS"
+                                if norm not in seen_in_entry:
+                                    seen_in_entry.add(norm)
+                                    mapped_unique.append(norm)
+                                    known_ticker_bucket.setdefault(norm, list_key)
+                            entry[list_key] = mapped_unique
 
-            # 2. Re-align industry theme constituents to ensure completeness
+            # 2. Verify industry theme constituent completeness without corrupting "above" counts
             from industry_themes import INDUSTRY_THEMES
             for th_name, th_stocks in INDUSTRY_THEMES.items():
                 if th_name in ms_data and isinstance(ms_data[th_name], dict):
@@ -2968,7 +2982,11 @@ def main():
                     for target_s in th_stocks:
                         mapped_target = f"{t_map.get(target_s.replace('.NS', ''), target_s.replace('.NS', ''))}.NS"
                         if mapped_target not in curr_stocks:
-                            entry.setdefault("above", []).append(mapped_target)
+                            bucket = known_ticker_bucket.get(mapped_target)
+                            if bucket:
+                                entry.setdefault(bucket, []).append(mapped_target)
+                            else:
+                                print(f"  WARN: {th_name} missing {mapped_target} from breadth status; skipping blind bucket assignment.")
             
             with open(ms_out, "w") as f:
                 json.dump(ms_data, f, indent=2)

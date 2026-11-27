@@ -145,14 +145,14 @@
     "stock_count": 5,
     "constituents": [
       "HDFCLIFE.NS",
-      "ICICIPRULI.NS",
+      "ICICILIFE.NS",
       "LICI.NS",
       "MFSL.NS",
       "SBILIFE.NS"
     ],
     "clean_symbols": [
       "HDFCLIFE",
-      "ICICIPRULI",
+      "ICICILIFE",
       "LICI",
       "MFSL",
       "SBILIFE"

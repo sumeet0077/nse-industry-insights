@@ -145,14 +145,14 @@
     "stock_count": 5,
     "constituents": [
       "HDFCLIFE.NS",
-      "ICICIPRULI.NS",
+      "ICICILIFE.NS",
       "LICI.NS",
       "MFSL.NS",
       "SBILIFE.NS"
     ],
     "clean_symbols": [
       "HDFCLIFE",
-      "ICICIPRULI",
+      "ICICILIFE",
       "LICI",
       "MFSL",
       "SBILIFE"
@@ -1442,7 +1442,7 @@
       "HCLTECH.NS",
       "INFY.NS",
       "KPITTECH.NS",
-      "LTIM.NS",
+      "LTM.NS",
       "MPHASIS.NS",
       "NEWGEN.NS",
       "OFSS.NS",
@@ -1457,7 +1457,7 @@
       "HCLTECH",
       "INFY",
       "KPITTECH",
-      "LTIM",
+      "LTM",
       "MPHASIS",
       "NEWGEN",
       "OFSS",
@@ -1792,7 +1792,7 @@
       "CROMPTON.NS",
       "EUREKAFORB.NS",
       "HAVELLS.NS",
-      "HAWKINSCOOK.NS",
+      "HAWKINCOOK.NS",
       "IFBIND.NS",
       "LGEINDIA.NS",
       "ORIENTELEC.NS",
@@ -1813,7 +1813,7 @@
       "CROMPTON",
       "EUREKAFORB",
       "HAVELLS",
-      "HAWKINSCOOK",
+      "HAWKINCOOK",
       "IFBIND",
       "LGEINDIA",
       "ORIENTELEC",
@@ -1986,14 +1986,14 @@
     "constituents": [
       "GOACARBON.NS",
       "GRAPHITE.NS",
-      "HEG.NS",
+      "HEGAM.NS",
       "HSCL.NS",
       "PCBL.NS"
     ],
     "clean_symbols": [
       "GOACARBON",
       "GRAPHITE",
-      "HEG",
+      "HEGAM",
       "HSCL",
       "PCBL"
     ]

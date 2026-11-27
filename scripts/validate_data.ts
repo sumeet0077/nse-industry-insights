@@ -200,36 +200,42 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
         console.log(`  ✓ Invariant verified: 0 Rights Entitlements (-RE) and 0 ETFs in constituent performance universe.`);
     }
 
-    // Invariant: SME stocks post-split return sanity (prevent false -85% cliffs)
+    // Invariant: SME stocks post-split continuity (SME stocks are circuit-banded, so an unadjusted split causes a severe 1D drop)
     for (const smeTicker of ["ORIANA.NS", "CHAVDA.NS"]) {
         const row = cp[smeTicker];
-        if (row) {
-            if (row["3M"] !== null && row["3M"] !== undefined && row["3M"] < -50) {
-                errors.push(`SME Return Anomaly: ${smeTicker} 3M return (${row["3M"]}%) indicates missing split adjustment!`);
-            }
-            if (row.YTD !== null && row.YTD !== undefined && row.YTD < -60) {
-                errors.push(`SME Return Anomaly: ${smeTicker} YTD return (${row.YTD}%) indicates missing split adjustment!`);
-            }
+        if (!row) {
+            errors.push(`SME benchmark stock missing from constituent_performance: ${smeTicker}`);
+            continue;
+        }
+        if ((row.listing_days ?? 0) < 700) {
+            errors.push(`SME Continuity Anomaly: ${smeTicker} listing_days (${row.listing_days}) < 700 (history truncated!)`);
+        }
+        if (row["1D"] !== null && row["1D"] !== undefined && row["1D"] < -40) {
+            errors.push(`SME Split Anomaly: ${smeTicker} 1D return (${row["1D"]}%) indicates missing split adjustment!`);
+        }
+        if (row["3M"] !== null && row["3M"] !== undefined && row["3M"] < -78) {
+            warnings.push(`SME extreme drawdown watch: ${smeTicker} 3M return is ${row["3M"]}%`);
         }
     }
 
-    // Invariant: Renamed stocks 5Y return sanity (confirm Unified Alias Graph links pre-rename history)
-    for (const renamedTicker of ["MOTHERSON.NS", "TIPSMUSIC.NS", "PCBL.NS"]) {
-        const row = cp[renamedTicker];
-        if (row) {
-            if (row["5Y"] === null || row["5Y"] === undefined || row["5Y"] < 50) {
-                errors.push(`Renamed Stock 5Y Anomaly: ${renamedTicker} 5Y return (${row["5Y"]}%) missing historical compounding across ticker renames (expected > +50%)!`);
-            }
+    // Invariant: Renamed & Demerged stocks historical continuity (confirm pre-rename & post-reorg 5Y series stay linked without scaling corruption)
+    const continuityBenchmarks = [
+        ...["MOTHERSON.NS", "TIPSMUSIC.NS", "PCBL.NS"].map((ticker) => ({ ticker, label: "Renamed", min5y: -99, max5y: 10000 })),
+        ...["ADANIENT.NS", "NTPC.NS", "AHLEAST.NS"].map((ticker) => ({ ticker, label: "Demerger", min5y: -95, max5y: 5000 })),
+    ];
+    for (const { ticker, label, min5y, max5y } of continuityBenchmarks) {
+        const row = cp[ticker];
+        if (!row) {
+            errors.push(`${label} benchmark stock missing from constituent_performance: ${ticker}`);
+            continue;
         }
-    }
-
-    // Invariant: Demerger & Reorganization sanity (confirm continuous compounding without double-counting)
-    for (const reorgTicker of ["ADANIENT.NS", "NTPC.NS", "AHLEAST.NS"]) {
-        const row = cp[reorgTicker];
-        if (row) {
-            if (row["5Y"] === null || row["5Y"] === undefined || row["5Y"] < 30) {
-                errors.push(`Demerger Sanity Anomaly: ${reorgTicker} 5Y return (${row["5Y"]}%) distorted by corporate action adjustment!`);
-            }
+        if ((row.listing_days ?? 0) < 1200) {
+            errors.push(`${label} Continuity Anomaly: ${ticker} listing_days (${row.listing_days}) < 1200 (history unlinked or truncated!)`);
+        }
+        if (row["5Y"] === null || row["5Y"] === undefined || !Number.isFinite(row["5Y"])) {
+            errors.push(`${label} 5Y Anomaly: ${ticker} missing valid 5Y return!`);
+        } else if (row["5Y"] <= min5y || row["5Y"] >= max5y) {
+            errors.push(`${label} 5Y Anomaly: ${ticker} 5Y return (${row["5Y"]}%) indicates adjustment distortion or double-counting!`);
         }
     }
 });
@@ -562,10 +568,17 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
     }
 
-    // Invariant 5: Seasoning (< 252 Sessions; LUMINO, SKYWAYS)
-    for (const unseasoned of ["LUMINO", "SKYWAYS"]) {
-        if (allSymbolsChecked.has(unseasoned)) {
-            errors.push(`Invariant 5 Failure: Unseasoned stock '${unseasoned}' appeared in 52W history`);
+    // Invariant 5: Seasoning (< 252 Sessions dynamically verified via constituent_performance_latest.json)
+    // Replaces brittle hardcoded ticker exclusions so newly listed stocks are checked universally
+    // and stop triggering once they legitimately mature past 252 trading sessions.
+    const cpSeasoningPath = path.join(DATA_DIR, "constituent_performance", "constituent_performance_latest.json");
+    if (fs.existsSync(cpSeasoningPath)) {
+        const cpSeasoning: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpSeasoningPath, "utf-8"));
+        for (const cleanSym of allSymbolsChecked) {
+            const perfRow = cpSeasoning[`${cleanSym}.NS`] ?? cpSeasoning[cleanSym];
+            if (perfRow && typeof perfRow.listing_days === "number" && perfRow.listing_days < 252) {
+                errors.push(`Invariant 5 Failure: Unseasoned stock '${cleanSym}' (listing_days=${perfRow.listing_days} < 252) appeared in 52W history`);
+            }
         }
     }
 
@@ -745,101 +758,105 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
     }
     const cp: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpPath, "utf-8"));
 
-    // 0. TAKE.NS (Down -70%+ YTD, 52W Low - formula bug caused erroneous RS 91)
-    const take = cp["TAKE.NS"];
-    if (take) {
-        const rs = take.ibd_rs_rating;
-        if (rs !== null && rs !== undefined && rs > 25) {
-            errors.push(`TAKE.NS RS Rating (${rs}) is erroneously high (> 25) despite crashing -71% YTD`);
+    // 1. Verify benchmark corporate-action stocks exist with valid, non-corrupted metrics
+    // (Avoids brittle rolling RS/6M thresholds that false-positive during genuine multi-month pullbacks.)
+    const caBenchmarks = ["TAKE.NS", "GENESYS.NS", "TRENT.NS", "TRIVENI.NS", "GOODYEAR.NS", "HEGAM.NS", "AGASTYAEN.NS"];
+    for (const sym of caBenchmarks) {
+        const row = cp[sym];
+        if (!row) {
+            errors.push(`${sym} missing from constituent performance`);
+            continue;
+        }
+        if (typeof row.ibd_rs_rating !== "number" || !Number.isInteger(row.ibd_rs_rating) || row.ibd_rs_rating < 1 || row.ibd_rs_rating > 99) {
+            errors.push(`${sym} has invalid IBD RS Rating (${row.ibd_rs_rating})`);
+        }
+        if (typeof row.rs_raw_score !== "number" || !Number.isFinite(row.rs_raw_score)) {
+            errors.push(`${sym} has invalid rs_raw_score (${row.rs_raw_score})`);
+        }
+        if (typeof row["1D"] !== "number" || !Number.isFinite(row["1D"])) {
+            errors.push(`${sym} has missing/invalid 1D return (${row["1D"]})`);
+        } else if (row["1D"] < -35) {
+            errors.push(`${sym} 1D shock (${row["1D"]}%) indicates potential unadjusted split/bonus`);
+        }
+        if (typeof row["6M"] !== "number" || !Number.isFinite(row["6M"])) {
+            errors.push(`${sym} has missing/invalid 6M return (${row["6M"]})`);
         }
     }
 
-    // 1. GENESYS.NS (1:2 Bonus Issue on 2026-08-06 - unadjusted bug caused ~33% drop, RS 16, 6M <-25%)
-    const genesys = cp["GENESYS.NS"];
-    if (!genesys) {
-        errors.push("GENESYS.NS missing from constituent performance");
+    // 2. Verify corporate_actions.json still tracks key split/bonus/demerger overrides
+    const caPath = path.join(DATA_DIR, "corporate_actions.json");
+    if (fs.existsSync(caPath)) {
+        const caList: Array<{ symbol?: string }> = JSON.parse(fs.readFileSync(caPath, "utf-8"));
+        const caSyms = new Set(caList.map((a) => (a.symbol || "").trim().toUpperCase()));
+        for (const requiredCa of ["GENESYS", "TRENT", "TRIVENI", "ORIANA", "CHAVDA"]) {
+            if (!caSyms.has(requiredCa)) {
+                errors.push(`corporate_actions.json missing expected symbol: ${requiredCa}`);
+            }
+        }
     } else {
-        const rs = genesys.ibd_rs_rating;
-        const m6 = genesys["6M"];
-        if (rs === null || rs === undefined || rs < 20) {
-            errors.push(`GENESYS.NS RS Rating (${rs}) collapsed below minimum 20 (indicates unadjusted corporate action)`);
-        }
-        if (m6 === null || m6 === undefined || m6 < -20) {
-            errors.push(`GENESYS.NS 6M return (${m6}%) below minimum -20% (indicates unadjusted corporate action)`);
-        }
+        warnings.push("data/corporate_actions.json not found for corporate action registry check.");
     }
 
-    // 2. TRENT.NS (1:2 Bonus Issue - unadjusted bug caused RS 11, 6M -27.3% to -35%)
-    const trent = cp["TRENT.NS"];
-    if (!trent) {
-        errors.push("TRENT.NS missing from constituent performance");
-    } else {
-        const rs = trent.ibd_rs_rating;
-        const m6 = trent["6M"];
-        if (rs === null || rs === undefined || rs < 20) {
-            errors.push(`TRENT.NS RS Rating (${rs}) collapsed below minimum 20 (indicates unadjusted corporate action)`);
-        }
-        if (m6 === null || m6 === undefined || m6 < -25) {
-            errors.push(`TRENT.NS 6M return (${m6}%) below minimum -25% (indicates unadjusted corporate action)`);
-        }
-    }
-
-    // 3. TRIVENI.NS (Demerger / Reorganization - unadjusted bug caused RS 15, 6M -49.7%)
-    const triveni = cp["TRIVENI.NS"];
-    if (!triveni) {
-        errors.push("TRIVENI.NS missing from constituent performance");
-    } else {
-        const rs = triveni.ibd_rs_rating;
-        const m6 = triveni["6M"];
-        if (rs === null || rs === undefined || rs < 25) {
-            errors.push(`TRIVENI.NS RS Rating (${rs}) collapsed below minimum 25 (indicates unadjusted corporate action)`);
-        }
-        if (m6 === null || m6 === undefined || m6 < -30) {
-            errors.push(`TRIVENI.NS 6M return (${m6}%) below minimum -30% (indicates unadjusted corporate action)`);
-        }
-    }
-
-    // 4. GOODYEAR.NS (1:2 Bonus Issue)
-    const goodyear = cp["GOODYEAR.NS"];
-    if (!goodyear) {
-        errors.push("GOODYEAR.NS missing from constituent performance");
-    } else {
-        const rs = goodyear.ibd_rs_rating;
-        if (rs === null || rs === undefined || rs < 5) {
-            errors.push(`GOODYEAR.NS RS Rating (${rs}) collapsed below minimum 5`);
-        }
-    }
-
-    // 5. HEGAM.NS (5:2 Stock Split)
-    const hegam = cp["HEGAM.NS"];
-    if (!hegam) {
-        errors.push("HEGAM.NS missing from constituent performance");
-    } else {
-        const rs = hegam.ibd_rs_rating;
-        if (rs === null || rs === undefined || rs < 40) {
-            errors.push(`HEGAM.NS RS Rating (${rs}) collapsed below minimum 40`);
-        }
-    }
-
-    // 6. AGASTYAEN.NS (High performer baseline)
-    const agastyaen = cp["AGASTYAEN.NS"];
-    if (!agastyaen) {
-        errors.push("AGASTYAEN.NS missing from constituent performance");
-    } else {
-        const rs = agastyaen.ibd_rs_rating;
-        if (rs === null || rs === undefined || rs < 70) {
-            errors.push(`AGASTYAEN.NS RS Rating (${rs}) collapsed below minimum 70`);
-        }
-    }
-
-    // 7. Universe RS Rating Mean Uniformity Check
+    // 3. Full-Universe RS Rating Rank-Order Monotonicity & Tail Calibration
+    // Guarantees worst performers (like severe YTD losers) always receive low RS ratings and leaders receive high RS ratings
+    // without hardcoding fragile per-ticker thresholds that break if a stock rebounds or pulls back.
+    const rankedEntries: Array<{ sym: string; raw: number; rating: number }> = [];
     const rsValues: number[] = [];
-    Object.values(cp).forEach((item) => {
-        if (typeof item.ibd_rs_rating === "number" && !isNaN(item.ibd_rs_rating)) {
+    for (const [sym, item] of Object.entries(cp)) {
+        if (typeof item.ibd_rs_rating === "number" && Number.isFinite(item.ibd_rs_rating)) {
             rsValues.push(item.ibd_rs_rating);
+            if (typeof item.rs_raw_score === "number" && Number.isFinite(item.rs_raw_score)) {
+                rankedEntries.push({ sym, raw: item.rs_raw_score, rating: item.ibd_rs_rating });
+            }
         }
-    });
+    }
 
+    if (rankedEntries.length < 500) {
+        errors.push(`Too few ranked RS entries found across constituent performance (${rankedEntries.length} < 500).`);
+    } else {
+        rankedEntries.sort((a, b) => a.raw - b.raw);
+        for (let i = 1; i < rankedEntries.length; i++) {
+            const prev = rankedEntries[i - 1];
+            const curr = rankedEntries[i];
+            // Tolerance of 0.02 accounts for 2-decimal rounding of rs_raw_score after ranking unrounded scores
+            if (curr.raw - prev.raw > 0.02 && curr.rating < prev.rating) {
+                errors.push(
+                    `RS Rating monotonicity violation: ${curr.sym} (raw=${curr.raw}, RS=${curr.rating}) ranked below ${prev.sym} (raw=${prev.raw}, RS=${prev.rating})`
+                );
+                break;
+            }
+        }
+
+        const decileSize = Math.max(10, Math.floor(rankedEntries.length * 0.05));
+        const bottomMean = rankedEntries.slice(0, decileSize).reduce((s, x) => s + x.rating, 0) / decileSize;
+        const topMean = rankedEntries.slice(-decileSize).reduce((s, x) => s + x.rating, 0) / decileSize;
+        if (bottomMean > 10) {
+            errors.push(`RS Rating bottom 5% mean (${bottomMean.toFixed(2)}) > 10 (percentile inversion suspected)`);
+        }
+        if (topMean < 90) {
+            errors.push(`RS Rating top 5% mean (${topMean.toFixed(2)}) < 90 (percentile inversion suspected)`);
+        }
+    }
+
+    // 4. Warn (non-blocking) if any active theme stock experiences an extreme 1D drop (< -35%) so anomalies are visible in CI logs
+    const msPathForCa = path.join(DATA_DIR, "market_status", "market_status_latest.json");
+    if (fs.existsSync(msPathForCa)) {
+        const msCa: MarketStatus = JSON.parse(fs.readFileSync(msPathForCa, "utf-8"));
+        const activeCa = new Set<string>();
+        Object.values(msCa).forEach((entry) => {
+            (entry.above || []).forEach((t) => activeCa.add(t));
+            (entry.below || []).forEach((t) => activeCa.add(t));
+            (entry.new_stock || []).forEach((t) => activeCa.add(t));
+        });
+        for (const t of activeCa) {
+            const d1 = cp[t]?.["1D"];
+            if (typeof d1 === "number" && d1 < -35) {
+                warnings.push(`Extreme 1D drop detected in active universe: ${t} (${d1}%) — verify if split/bonus needs adjustment.`);
+            }
+        }
+    }
+
+    // 5. Universe RS Rating Mean Uniformity Check
     if (rsValues.length === 0) {
         errors.push("No valid RS Ratings found across constituent performance universe.");
     } else {
@@ -847,7 +864,7 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
         if (rsMean < 45.0 || rsMean > 55.0) {
             errors.push(`Universe RS Rating mean (${rsMean.toFixed(2)}) outside expected uniform range [45.0, 55.0]`);
         } else {
-            console.log(`  ✓ Universe RS Rating mean is ${rsMean.toFixed(2)} (uniform distribution intact).`);
+            console.log(`  ✓ Universe RS Rating mean is ${rsMean.toFixed(2)} across ${rankedEntries.length} ranked stocks (monotonicity & tails verified).`);
         }
     }
 

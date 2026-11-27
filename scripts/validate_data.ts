@@ -2,11 +2,29 @@ import fs from "fs";
 import path from "path";
 import { ALL_CONFIGS, BROAD_MARKET, SECTORS } from "../lib/config";
 import { REQUIRED_CONSTITUENT_METRICS } from "../lib/metrics";
-import { resolveDataKey, parseBulkTickers, toCAGR, cleanTicker } from "../lib/utils";
+import { resolveDataKey, parseBulkTickers, toCAGR, cleanTicker, resolveActiveTicker } from "../lib/utils";
 import { getAllThemesBreadthMetrics, GAINER_TIMEFRAMES } from "../lib/data";
 import type { MarketStatus, ConstituentPerformanceMap, PerformanceRow } from "../types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
+
+const PROTECTED_EQUITIES = new Set([
+    "SKYGOLD", "GOLDIAM", "SILVERTUC", "EUROBOND", "CHEMBOND", "PNBGILTS",
+    "BHARATFORG", "BHARATGEAR", "BHARATRAS", "BHARATWIRE", "BHARTIARTL",
+    "GOLDENTOBC", "GOLDKENTO", "GOLDTECH", "SILVEROAK", "BOMDYEING",
+    "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
+    "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
+    "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
+    "EMBASSY", "BIRET", "BAGMANE", "ICICILIFE", "ICICIPRULI",
+]);
+
+function findMarketStatusKey(ms: MarketStatus, title: string): string | undefined {
+    const titleLower = title.toLowerCase();
+    const resolvedTitle = resolveDataKey(title).toLowerCase();
+    return Object.keys(ms).find(
+        (k) => k.toLowerCase() === titleLower || k.toLowerCase() === resolvedTitle || k.toLowerCase() === ("nifty " + titleLower)
+    );
+}
 
 interface ValidationResult {
     category: string;
@@ -55,11 +73,7 @@ validate("Market Status (data/market_status/market_status_latest.json)", (errors
 
     // Check mapping against ALL_CONFIGS
     ALL_CONFIGS.forEach((cfg) => {
-        const titleLower = cfg.title.toLowerCase();
-        const resolvedTitle = resolveDataKey(cfg.title).toLowerCase();
-        const foundKey = Object.keys(ms).find(
-            (k) => k.toLowerCase() === titleLower || k.toLowerCase() === resolvedTitle || k.toLowerCase() === ("nifty " + titleLower)
-        );
+        const foundKey = findMarketStatusKey(ms, cfg.title);
         const found = foundKey ? ms[foundKey] : null;
         if (!found) {
             warnings.push(`Config theme "${cfg.title}" has no match in market_status keys.`);
@@ -167,16 +181,6 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
     }
     ["MINDSPACE", "NXST", "PGINVIT", "IRBINVIT", "INDIGRID", "SBI10YGILT", "SBIGOLD", "SBINIFTY50"].forEach(s => etfSymbols.add(s));
 
-    const PROTECTED_EQUITIES = new Set([
-        "SKYGOLD", "GOLDIAM", "SILVERTUC", "EUROBOND", "CHEMBOND", "PNBGILTS",
-        "BHARATFORG", "BHARATGEAR", "BHARATRAS", "BHARATWIRE", "BHARTIARTL",
-        "GOLDENTOBC", "GOLDKENTO", "GOLDTECH", "SILVEROAK", "BOMDYEING",
-        "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
-        "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
-        "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
-        "EMBASSY", "BIRET", "BAGMANE",
-    ]);
-
     let reCount = 0;
     let etfCount = 0;
     Object.keys(cp).forEach((t) => {
@@ -202,9 +206,10 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
 
     // Invariant: SME stocks post-split continuity (SME stocks are circuit-banded, so an unadjusted split causes a severe 1D drop)
     for (const smeTicker of ["ORIANA.NS", "CHAVDA.NS"]) {
-        const row = cp[smeTicker];
+        const resolvedTicker = resolveActiveTicker(smeTicker);
+        const row = cp[resolvedTicker] ?? cp[smeTicker];
         if (!row) {
-            errors.push(`SME benchmark stock missing from constituent_performance: ${smeTicker}`);
+            errors.push(`SME benchmark stock missing from constituent_performance: ${smeTicker} (resolved: ${resolvedTicker})`);
             continue;
         }
         if ((row.listing_days ?? 0) < 700) {
@@ -224,9 +229,10 @@ validate("Constituent Performance (data/constituent_performance/constituent_perf
         ...["ADANIENT.NS", "NTPC.NS", "AHLEAST.NS"].map((ticker) => ({ ticker, label: "Demerger", min5y: -95, max5y: 5000 })),
     ];
     for (const { ticker, label, min5y, max5y } of continuityBenchmarks) {
-        const row = cp[ticker];
+        const resolvedTicker = resolveActiveTicker(ticker);
+        const row = cp[resolvedTicker] ?? cp[ticker];
         if (!row) {
-            errors.push(`${label} benchmark stock missing from constituent_performance: ${ticker}`);
+            errors.push(`${label} benchmark stock missing from constituent_performance: ${ticker} (resolved: ${resolvedTicker})`);
             continue;
         }
         if ((row.listing_days ?? 0) < 1200) {
@@ -491,17 +497,7 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         warnings.push("data/etf_symbols.json not found for ETF leakage audit.");
     }
 
-    const PROTECTED_EQUITIES = new Set([
-        "SKYGOLD", "GOLDIAM", "SILVERTUC", "EUROBOND", "CHEMBOND", "PNBGILTS",
-        "BHARATFORG", "BHARATGEAR", "BHARATRAS", "BHARATWIRE", "BHARTIARTL",
-        "GOLDENTOBC", "GOLDKENTO", "GOLDTECH", "SILVEROAK", "BOMDYEING",
-        "JETFREIGHT", "SHANTIGOLD", "GICRE", "NEWINDIA",
-        "CHEMBONDCH", "DECNGOLD", "GOLDKART", "GOLDSTAR", "PENTAGOLD",
-        "SBIFUNDS", "GROWW", "MUTHOOTMF", "JMFINANCIL", "EDELWEISS", "SSDL",
-        "EMBASSY", "BIRET", "BAGMANE",
-    ]);
-
-    // Invariant 1: Mutual Exclusion
+    // Invariant 1: Mutual Exclusion & Non-Empty Sessions
     for (const dt of data.dates) {
         const session = data.daily_lists[dt];
         if (!session) {
@@ -510,6 +506,9 @@ validate("52W High/Low Recurrence History (Section 8 Invariants)", (errors, warn
         }
         const highSet = new Set(session.highs.map((s: string) => cleanTicker(s).toUpperCase()));
         const lowSet = new Set(session.lows.map((s: string) => cleanTicker(s).toUpperCase()));
+        if (highSet.size === 0 && lowSet.size === 0) {
+            errors.push(`52W History empty session: ${dt} has 0 highs and 0 lows (insufficient DuckDB warmup!)`);
+        }
         const overlap = Array.from(highSet).filter((s) => lowSet.has(s));
         if (overlap.length > 0) {
             errors.push(`Invariant 1 Failure: ${overlap.length} stocks in BOTH highs and lows on ${dt}: ${overlap.join(", ")}`);
@@ -762,9 +761,10 @@ validate("Corporate Action Price Adjustment & RS Rating Integrity", (errors, war
     // (Avoids brittle rolling RS/6M thresholds that false-positive during genuine multi-month pullbacks.)
     const caBenchmarks = ["TAKE.NS", "GENESYS.NS", "TRENT.NS", "TRIVENI.NS", "GOODYEAR.NS", "HEGAM.NS", "AGASTYAEN.NS"];
     for (const sym of caBenchmarks) {
-        const row = cp[sym];
+        const resolvedSym = resolveActiveTicker(sym);
+        const row = cp[resolvedSym] ?? cp[sym];
         if (!row) {
-            errors.push(`${sym} missing from constituent performance`);
+            errors.push(`${sym} (resolved: ${resolvedSym}) missing from constituent performance`);
             continue;
         }
         if (typeof row.ibd_rs_rating !== "number" || !Number.isInteger(row.ibd_rs_rating) || row.ibd_rs_rating < 1 || row.ibd_rs_rating > 99) {
@@ -1131,7 +1131,142 @@ validate("Historical Symbol Change & Ticker Aliasing Gate", (errors, warnings) =
         }
     }
 
-    console.log(`  ✓ Verified ${terminalCount} terminal symbol mappings and historical benchmark resolution invariants.`);
+    // Verify lib/symbolChanges.ts matches every active rename in data/symbol_changes.json
+    const scJsonPath = path.join(DATA_DIR, "symbol_changes.json");
+    if (!fs.existsSync(scJsonPath)) {
+        errors.push("Missing file: data/symbol_changes.json");
+    } else {
+        const scEntries: Array<{ old_symbol?: string; new_symbol?: string }> = JSON.parse(fs.readFileSync(scJsonPath, "utf-8"));
+        const directMap: Record<string, string> = {};
+        for (const entry of scEntries) {
+            const oldS = (entry.old_symbol || "").trim().toUpperCase();
+            const newS = (entry.new_symbol || "").trim().toUpperCase();
+            if (oldS && newS && oldS !== newS) {
+                directMap[oldS] = newS;
+            }
+        }
+        let desyncCount = 0;
+        for (const oldS of Object.keys(directMap)) {
+            const seen = new Set<string>();
+            let terminal = oldS;
+            while (directMap[terminal] && !seen.has(terminal)) {
+                seen.add(terminal);
+                terminal = directMap[terminal];
+            }
+            if (SYMBOL_TERMINAL_MAP[oldS] !== terminal || resolveActiveSymbol(oldS) !== terminal) {
+                desyncCount++;
+                if (desyncCount <= 5) {
+                    errors.push(`lib/symbolChanges.ts out of sync with data/symbol_changes.json for '${oldS}': expected '${terminal}', got '${SYMBOL_TERMINAL_MAP[oldS]}'`);
+                }
+            }
+        }
+        if (desyncCount > 5) {
+            errors.push(`lib/symbolChanges.ts has ${desyncCount} total out-of-sync mappings vs data/symbol_changes.json`);
+        }
+    }
+
+    console.log(`  ✓ Verified ${terminalCount} terminal symbol mappings and full symbol_changes.json synchronization.`);
+});
+
+// 15. Cross-Dataset Date Alignment, Breadth/Status Parity, RS Parity & IPO Bucketing
+validate("Cross-Dataset Date Alignment & Theme Parity", (errors) => {
+    const msPath = path.join(DATA_DIR, "market_status", "market_status_latest.json");
+    const cpPath = path.join(DATA_DIR, "constituent_performance", "constituent_performance_latest.json");
+    const psPath = path.join(DATA_DIR, "performance", "performance_summary.json");
+    const h1yPath = path.join(DATA_DIR, "history", "daily_breadth_history_1y.json");
+    const m52Path = path.join(DATA_DIR, "market_status", "market_52w_history.json");
+    const emaPath = path.join(DATA_DIR, "market_status", "ema_stretch_universe.json");
+    const rrgDPath = path.join(DATA_DIR, "rrg", "rrg_D.json");
+
+    for (const p of [msPath, cpPath, psPath, h1yPath, m52Path, emaPath, rrgDPath]) {
+        if (!fs.existsSync(p)) {
+            errors.push(`Missing file for cross-dataset check: ${path.relative(process.cwd(), p)}`);
+            return;
+        }
+    }
+
+    const ms: MarketStatus = JSON.parse(fs.readFileSync(msPath, "utf-8"));
+    const cp: ConstituentPerformanceMap = JSON.parse(fs.readFileSync(cpPath, "utf-8"));
+    const ps: PerformanceRow[] = JSON.parse(fs.readFileSync(psPath, "utf-8"));
+    const h1y = JSON.parse(fs.readFileSync(h1yPath, "utf-8"));
+    const m52 = JSON.parse(fs.readFileSync(m52Path, "utf-8"));
+    const ema = JSON.parse(fs.readFileSync(emaPath, "utf-8"));
+    const rrgD: Array<{ Date?: string }> = JSON.parse(fs.readFileSync(rrgDPath, "utf-8"));
+
+    const expectedDate: string = h1y.dates?.[0];
+    const observedDates: Array<[string, string | undefined]> = [
+        ["daily_breadth_history_1y.dates[0]", expectedDate],
+        ["market_52w_history.metadata.latest_session", m52.metadata?.latest_session],
+        ["market_52w_history.metadata.end_date", m52.metadata?.end_date],
+        ["ema_stretch_universe.metadata.latest_session", ema.metadata?.latest_session],
+        ["rrg_D max Date", rrgD.reduce((mx, r) => ((r.Date || "") > mx ? (r.Date || "") : mx), "")],
+    ];
+
+    const psByLower = new Map(ps.map((r) => [String(r["Theme/Index"] || "").toLowerCase(), r]));
+    const hRows = h1y.sessions?.[expectedDate] || [];
+    const hByLower = new Map<string, any[]>(hRows.map((r: any[]) => [String(r[0] || "").toLowerCase(), r]));
+
+    for (const cfg of ALL_CONFIGS) {
+        const breadthPath = path.join(DATA_DIR, "breadth", `${cfg.dataFile}.json`);
+        if (fs.existsSync(breadthPath)) {
+            const bArr = JSON.parse(fs.readFileSync(breadthPath, "utf-8"));
+            const bLast = Array.isArray(bArr) && bArr.length > 0 ? bArr[bArr.length - 1] : null;
+            if (!bLast?.Date) {
+                errors.push(`breadth/${cfg.dataFile}.json missing latest Date`);
+            } else {
+                observedDates.push([`breadth/${cfg.dataFile}.json`, bLast.Date]);
+                const msKey = findMarketStatusKey(ms, cfg.title);
+                if (!msKey) {
+                    errors.push(`Theme "${cfg.title}" missing from market_status_latest.json`);
+                } else {
+                    const entry = ms[msKey];
+                    const aLen = (entry.above || []).length;
+                    const bLen = (entry.below || []).length;
+                    const nLen = (entry.new_stock || []).length;
+                    if (bLast.Above !== aLen || bLast.Below !== bLen || bLast.Total !== aLen + bLen + nLen) {
+                        errors.push(
+                            `Parity mismatch on "${cfg.title}": market_status=(above=${aLen}, below=${bLen}, new=${nLen}) vs breadth=(Above=${bLast.Above}, Below=${bLast.Below}, Total=${bLast.Total})`
+                        );
+                    }
+                    for (const bucket of ["above", "below"] as const) {
+                        for (const ticker of entry[bucket] || []) {
+                            const ld = cp[ticker]?.listing_days;
+                            if (typeof ld === "number" && ld < 150) {
+                                errors.push(`Young IPO (${ld}d < 150) "${ticker}" erroneously placed in "${cfg.title}".${bucket}`);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        const stockRrgPath = path.join(DATA_DIR, "stock_rrg", `${cfg.dataFile}.json`);
+        if (fs.existsSync(stockRrgPath)) {
+            const srrg = JSON.parse(fs.readFileSync(stockRrgPath, "utf-8"));
+            if (Array.isArray(srrg.D) && srrg.D.length > 0) {
+                const maxD = srrg.D.reduce((mx: string, r: any) => ((r.Date || "") > mx ? (r.Date || "") : mx), "");
+                observedDates.push([`stock_rrg/${cfg.dataFile}.json`, maxD]);
+            }
+        }
+
+        const tLow = cfg.title.toLowerCase();
+        const rLow = resolveDataKey(cfg.title).toLowerCase();
+        const psRow = psByLower.get(tLow) ?? psByLower.get(rLow);
+        const hRow = hByLower.get(tLow) ?? hByLower.get(rLow);
+        if (!psRow || !hRow) {
+            errors.push(`Missing RS comparison row for "${cfg.title}" (ps=${Boolean(psRow)}, h1y=${Boolean(hRow)})`);
+        } else if (psRow["RS Rating"] !== hRow[14]) {
+            errors.push(`RS Rating mismatch on "${cfg.title}": performance_summary=${psRow["RS Rating"]} vs daily_breadth_history_1y=${hRow[14]}`);
+        }
+    }
+
+    for (const [label, dt] of observedDates) {
+        if (!dt || dt !== expectedDate) {
+            errors.push(`Latest session date mismatch in ${label}: got "${dt}", expected "${expectedDate}"`);
+        }
+    }
+
+    console.log(`  ✓ Verified latest date (${expectedDate}) alignment, 96/96 market_status parity, RS consistency, and IPO bucketing.`);
 });
 
 // Print Summary
